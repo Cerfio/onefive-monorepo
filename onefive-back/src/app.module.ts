@@ -73,6 +73,7 @@ import { DiscordModule } from './discord/discord.module';
 import { ReportModule } from './report/report.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { PostHogModule } from './posthog/posthog.module';
+import { NewsletterModule } from './newsletter/newsletter.module';
 
 @Module({
   imports: [
@@ -160,6 +161,7 @@ import { PostHogModule } from './posthog/posthog.module';
     FeedExtraModule,
     WaitlistModule,
     AdminModule,
+    NewsletterModule,
     SeoModule,
     DiscordModule,
     ReportModule,

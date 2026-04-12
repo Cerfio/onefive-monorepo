@@ -1,0 +1,30 @@
+model NewsletterFeedSource {
+  id        String               @id @default(uuid())
+  slug      String               @unique
+  name      String
+  feedUrl   String
+  isActive  Boolean              @default(true)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  items     NewsletterFeedItem[]
+
+  @@index([isActive])
+}
+
+model NewsletterFeedItem {
+  id          String               @id @default(uuid())
+  sourceId    String
+  externalId  String?
+  link        String
+  title       String
+  summary     String?              @db.Text
+  publishedAt DateTime?
+  fetchedAt   DateTime             @default(now())
+  rawPayload  Json?
+
+  source NewsletterFeedSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, link])
+  @@index([sourceId, publishedAt])
+  @@index([publishedAt])
+}

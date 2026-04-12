@@ -6,6 +6,7 @@ export const ADMIN_PERMISSIONS = {
   ADMIN_CONTENT_MODERATE: 'admin.content.moderate',
   ADMIN_WAITLIST_MANAGE: 'admin.waitlist.manage',
   ADMIN_SPOTLIGHT_MANAGE: 'admin.spotlight.manage',
+  ADMIN_NEWSLETTER_MANAGE: 'admin.newsletter.manage',
   ADMIN_ADMINS_MANAGE: 'admin.admins.manage',
 } as const;
 
