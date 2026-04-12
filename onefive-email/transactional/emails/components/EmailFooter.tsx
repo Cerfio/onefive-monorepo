@@ -110,46 +110,50 @@ export const EmailFooter = ({
         <Text
           style={{
             fontSize: "12px",
-            color: "#9CA3AF",
+            color: "#6B7280",
             lineHeight: "1.6",
             marginTop: "16px",
             marginBottom: "8px",
           }}
         >
-          This email was sent to <span style={{ color: "#6B7280" }}>{userEmail}</span>
+          This email was sent to {userEmail}
         </Text>
       )}
 
-      <Text
-        style={{
-          fontSize: "12px",
-          color: "#9CA3AF",
-          lineHeight: "1.6",
-          marginTop: "0",
-          marginBottom: "0",
-        }}
-      >
+      <Section style={{ marginTop: "0", marginBottom: "0" }}>
         <Link
           href={`${baseUrl}/unsubscribe`}
-          style={{ color: "#6B7280", textDecoration: "underline" }}
+          style={{
+            color: "#6B7280",
+            textDecoration: "underline",
+            fontSize: "12px",
+            marginRight: "8px",
+          }}
         >
           Unsubscribe
         </Link>
-        {" · "}
         <Link
           href={`${baseUrl}/privacy`}
-          style={{ color: "#6B7280", textDecoration: "underline" }}
+          style={{
+            color: "#6B7280",
+            textDecoration: "underline",
+            fontSize: "12px",
+            marginRight: "8px",
+          }}
         >
           Privacy Policy
         </Link>
-        {" · "}
         <Link
           href={`${baseUrl}/terms`}
-          style={{ color: "#6B7280", textDecoration: "underline" }}
+          style={{
+            color: "#6B7280",
+            textDecoration: "underline",
+            fontSize: "12px",
+          }}
         >
           Terms
         </Link>
-      </Text>
+      </Section>
 
       <Text
         style={{

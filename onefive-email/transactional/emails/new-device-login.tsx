@@ -2,13 +2,11 @@ import {
   Body,
   Button,
   Container,
-  Font,
   Head,
   Hr,
   Html,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -44,20 +42,8 @@ export const NewDeviceLoginEmail = ({
   }),
   sessionsUrl = `${appUrl}/settings/sessions`,
 }: NewDeviceLoginEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>New sign-in to your OneFive account</Preview>
       <Body
         style={{
@@ -309,7 +295,6 @@ export const NewDeviceLoginEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default NewDeviceLoginEmail;

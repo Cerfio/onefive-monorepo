@@ -1,7 +1,7 @@
 import { resend } from "@/lib/resend";
 import { headers } from "next/headers";
 import { z } from "zod";
-import { VerificationCodeEmail } from "@/emails/verification-code";
+import { VerificationCodeEmail } from "@/emails/verify-email";
 import { ResetPasswordEmail } from "@/emails/reset-password";
 import { FounderInvitationEmail } from "@/emails/founder-invitation";
 import { MemberInvitationEmail } from "@/emails/member-invitation";
@@ -32,7 +32,7 @@ const emails = {
   [EmailTypeEnum.Values.verification]: {
     sender: "team@onefive.fr",
     email: VerificationCodeEmail,
-    fields: ["code"],
+    fields: ["code", "verificationUrl"],
     subject: "Your verification code has arrived",
   },
   [EmailTypeEnum.Values["reset-password"]]: {
@@ -107,7 +107,7 @@ const BodySendEmail = z.object({
 export async function POST(request: Request) {
   try {
     let body: z.infer<typeof BodySendEmail>;
-    const headersList = headers();
+    const headersList = await headers();
     const apiKey = headersList.get("x-api-key");
 
     /* Check if the API key is valid */
@@ -161,11 +161,26 @@ export async function POST(request: Request) {
       }
     }
 
+    const payload = body.payload as Record<string, unknown>;
+    const emailProps =
+      body.type === EmailTypeEnum.Values.verification
+        ? {
+            code: String(payload.code ?? ""),
+            verificationUrl: String(payload.verificationUrl ?? ""),
+            userEmail: body.to,
+          }
+        : body.type === EmailTypeEnum.Values["reset-password"]
+          ? (() => {
+              const { code, ...rest } = payload;
+              return { ...rest, otp: code };
+            })()
+          : payload;
+
     const emailSent = await resend.emails.send({
       from: `Onefive <${emails[body.type].sender}>`,
       to: body.to,
       subject: emails[body.type].subject,
-      react: emails[body.type].email({ ...(body.payload as any) }),
+      react: emails[body.type].email(emailProps as any),
     });
 
     if (emailSent.error) {

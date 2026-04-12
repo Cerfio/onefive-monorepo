@@ -2,14 +2,12 @@ import {
   Body,
   Button,
   Container,
-  Font,
   Head,
   Hr,
   Html,
   Img,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -33,20 +31,8 @@ export const DataroomInvitationEmail = ({
   startupLogo,
   acceptUrl = appUrl || "/",
 }: DataroomInvitationEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>You&apos;ve been invited to access a dataroom on OneFive</Preview>
       <Body
         style={{
@@ -89,9 +75,8 @@ export const DataroomInvitationEmail = ({
                 marginBottom: "24px",
               }}
             >
-              Hi {firstname}, <strong>{inviterName}</strong> has invited you to
-              access the dataroom <strong>&ldquo;{dataroomName}&rdquo;</strong>{" "}
-              on OneFive.
+              Hi {firstname}, {inviterName} has invited you to access the dataroom
+              &ldquo;{dataroomName}&rdquo; on OneFive.
             </Text>
 
             {startupLogo && (
@@ -201,7 +186,6 @@ export const DataroomInvitationEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default DataroomInvitationEmail;

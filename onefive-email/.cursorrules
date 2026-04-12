@@ -1,0 +1,5 @@
+# OneFive Email — Règles Cursor
+
+Templates transactionnels (**React Email**). Pour l’UI, s’appuyer sur les principes généraux de `docs/untitled-ui-AGENT.md` (lisibilité, accessibilité, hiérarchie) sans imposer les chemins ou patterns Tailwind / React Aria du kit Untitled là où ils ne s’appliquent pas.
+
+Référence monorepo : `.cursorrules` à la racine ; backend : `onefive-back/.cursorrules`.

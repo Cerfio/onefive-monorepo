@@ -2,13 +2,11 @@ import {
   Body,
   Button,
   Container,
-  Font,
   Head,
   Hr,
   Html,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -30,20 +28,8 @@ export const AdminInvitationEmail = ({
   acceptUrl = `${appUrl}/accept-invitation`,
   expiresIn = "48 hours",
 }: AdminInvitationEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>You've been invited to join the OneFive admin team</Preview>
       <Body
         style={{
@@ -86,9 +72,8 @@ export const AdminInvitationEmail = ({
                 marginBottom: "24px",
               }}
             >
-              <strong>{inviterName}</strong> has invited you to join the{" "}
-              <strong>OneFive admin team</strong> as{" "}
-              <strong>{roleName}</strong>.
+              {inviterName} has invited you to join the OneFive admin team as{" "}
+              {roleName}.
             </Text>
 
             <Section
@@ -161,9 +146,9 @@ export const AdminInvitationEmail = ({
                 marginBottom: "0",
               }}
             >
-              This invitation will expire in <strong>{expiresIn}</strong>. If
-              you weren&apos;t expecting this email, you can safely ignore it —
-              no account will be created without your action.
+              This invitation will expire in {expiresIn}. If you weren&apos;t
+              expecting this email, you can safely ignore it — no account will
+              be created without your action.
             </Text>
           </Section>
 
@@ -171,7 +156,6 @@ export const AdminInvitationEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default AdminInvitationEmail;

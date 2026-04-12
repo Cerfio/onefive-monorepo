@@ -2,13 +2,11 @@ import {
   Body,
   Button,
   Container,
-  Font,
   Head,
   Hr,
   Html,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -30,20 +28,8 @@ export const FoundingMemberEmail = ({
   referralCount = 10,
   loginUrl = `${appUrl}/signin`,
 }: FoundingMemberEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>
         🏆 Congratulations! You&apos;re now a Founding Member of OneFive
       </Preview>
@@ -108,8 +94,8 @@ export const FoundingMemberEmail = ({
               }}
             >
               Congratulations {firstName}! You&apos;ve successfully referred{" "}
-              <strong>{referralCount} people</strong> to OneFive and earned the
-              prestigious <strong>Founding Member</strong> badge.
+              {referralCount} people to OneFive and earned the prestigious
+              Founding Member badge.
             </Text>
 
             <Section
@@ -205,7 +191,6 @@ export const FoundingMemberEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default FoundingMemberEmail;

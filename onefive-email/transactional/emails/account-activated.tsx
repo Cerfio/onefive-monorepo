@@ -2,12 +2,10 @@ import {
   Body,
   Button,
   Container,
-  Font,
   Head,
   Html,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -27,20 +25,8 @@ export const AccountActivatedEmail = ({
   userEmail = "",
   loginUrl = `${appUrl}/signin`,
 }: AccountActivatedEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>Your OneFive account is now active! 🎉</Preview>
       <Body
         style={{
@@ -160,7 +146,6 @@ export const AccountActivatedEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default AccountActivatedEmail;

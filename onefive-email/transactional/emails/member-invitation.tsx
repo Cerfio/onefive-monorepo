@@ -2,14 +2,12 @@ import {
   Body,
   Button,
   Container,
-  Font,
   Head,
   Hr,
   Html,
   Img,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -37,20 +35,8 @@ export const MemberInvitationEmail = ({
   acceptUrl = `${appUrl}/invitations/accept`,
   declineUrl = `${appUrl}/invitations/decline`,
 }: MemberInvitationEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>You've been invited to join {startupName}'s team</Preview>
       <Body
         style={{
@@ -114,7 +100,7 @@ export const MemberInvitationEmail = ({
                 textAlign: "center",
               }}
             >
-              <strong>{inviterName}</strong> has invited you to join <strong>{startupName}</strong>'s team.
+              {inviterName} has invited you to join {startupName}&apos;s team.
             </Text>
 
             <Section
@@ -223,7 +209,6 @@ export const MemberInvitationEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default MemberInvitationEmail;

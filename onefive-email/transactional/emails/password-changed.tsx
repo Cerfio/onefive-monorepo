@@ -1,14 +1,12 @@
 import {
   Body,
   Container,
-  Font,
   Head,
   Hr,
   Html,
   Link,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -27,20 +25,8 @@ export const PasswordChangedEmail = ({
   userEmail = "",
   supportUrl = "mailto:support@onefive.fr",
 }: PasswordChangedEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>Your OneFive password has been changed</Preview>
       <Body
         style={{
@@ -104,15 +90,21 @@ export const PasswordChangedEmail = ({
                   lineHeight: "1.6",
                 }}
               >
-                ⚠️ <strong>If you didn&apos;t make this change</strong>, your
-                account may be compromised. Please contact us immediately at{" "}
-                <Link
-                  href={supportUrl}
-                  style={{ color: "#92400E", textDecoration: "underline" }}
-                >
-                  support@onefive.fr
-                </Link>
+                ⚠️ If you didn&apos;t make this change, your account may be
+                compromised. Please contact us immediately using the link below.
               </Text>
+              <Link
+                href={supportUrl}
+                style={{
+                  color: "#92400E",
+                  textDecoration: "underline",
+                  fontSize: "14px",
+                  display: "block",
+                  marginTop: "12px",
+                }}
+              >
+                support@onefive.fr
+              </Link>
             </Section>
 
             <Hr
@@ -141,7 +133,6 @@ export const PasswordChangedEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default PasswordChangedEmail;

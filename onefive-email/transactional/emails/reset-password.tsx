@@ -2,13 +2,11 @@ import {
   Body,
   Button,
   Container,
-  Font,
   Head,
   Hr,
   Html,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -17,8 +15,8 @@ import { EmailHeader, EmailFooter } from "./components";
 const baseUrl = process.env.FRONTEND_URL || "";
 const appUrl = baseUrl.replace(/\/$/, "");
 
-interface ResetPasswordEmailProps {
-  code?: string;
+export interface ResetPasswordEmailProps {
+  otp?: string;
   userEmail?: string;
   resetLink?: string;
 }
@@ -35,43 +33,25 @@ const Square = ({ digit }: { digit: string }) => (
       backgroundColor: "#F9FAFB",
       paddingLeft: "8px",
       paddingRight: "8px",
+      fontSize: "48px",
+      fontWeight: "700",
+      color: "#111827",
+      lineHeight: "1",
+      fontFamily:
+        "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     }}
   >
-    <Text
-      style={{
-        fontSize: "48px",
-        fontWeight: "700",
-        color: "#111827",
-        margin: 0,
-        lineHeight: "1",
-        fontFamily:
-          "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      }}
-    >
-      {digit}
-    </Text>
+    {digit}
   </td>
 );
 
 export const ResetPasswordEmail = ({
-  code = "1234",
+  otp = "1234",
   userEmail = "",
   resetLink = `${appUrl}/auth/reset-password`,
 }: ResetPasswordEmailProps) => (
-  <Tailwind>
-    <Html>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Arial"
-          webFont={{
-            url: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
-            format: "woff2",
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
+  <Html>
+      <Head />
       <Preview>Reset your OneFive password</Preview>
       <Body
         style={{
@@ -128,10 +108,10 @@ export const ResetPasswordEmail = ({
               >
                 <tbody>
                   <tr>
-                    <Square digit={code[0]} />
-                    <Square digit={code[1]} />
-                    <Square digit={code[2]} />
-                    <Square digit={code[3]} />
+                    <Square digit={otp.slice(0, 4).padEnd(4, " ")[0] ?? " "} />
+                    <Square digit={otp.slice(0, 4).padEnd(4, " ")[1] ?? " "} />
+                    <Square digit={otp.slice(0, 4).padEnd(4, " ")[2] ?? " "} />
+                    <Square digit={otp.slice(0, 4).padEnd(4, " ")[3] ?? " "} />
                   </tr>
                 </tbody>
               </table>
@@ -140,15 +120,15 @@ export const ResetPasswordEmail = ({
             <Text
               style={{
                 fontSize: "14px",
-                color: "#9CA3AF",
+                color: "#6B7280",
                 lineHeight: "1.6",
                 marginTop: "32px",
                 marginBottom: "32px",
                 textAlign: "center",
+                fontWeight: "600",
               }}
             >
-              This code will expire in{" "}
-              <strong style={{ color: "#6B7280" }}>20 minutes</strong>
+              This code will expire in 20 minutes
             </Text>
 
             <Hr
@@ -210,7 +190,6 @@ export const ResetPasswordEmail = ({
         </Container>
       </Body>
     </Html>
-  </Tailwind>
 );
 
 export default ResetPasswordEmail;
