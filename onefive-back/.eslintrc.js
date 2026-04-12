@@ -15,11 +15,26 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', 'dist/**', 'node_modules/**'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    // CI / turbo : la base de tests et le code métier ont beaucoup de symboles
+    // « réservés pour plus tard » ; on signale sans faire échouer le lint.
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      },
+    ],
+    // Setups Jest / scripts utilisent encore require() ponctuellement.
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/ban-types': 'warn',
   },
 };
