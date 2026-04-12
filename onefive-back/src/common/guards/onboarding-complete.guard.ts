@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, Inject } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Inject,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { LogService } from 'logstash-winston-3';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -33,15 +38,18 @@ export class OnboardingCompleteGuard implements CanActivate {
       return true;
     }
 
-    const allowOnboardingNotComplete = this.reflector.getAllAndOverride<boolean>(
-      ALLOW_ONBOARDING_NOT_COMPLETE_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    const allowOnboardingNotComplete =
+      this.reflector.getAllAndOverride<boolean>(
+        ALLOW_ONBOARDING_NOT_COMPLETE_KEY,
+        [context.getHandler(), context.getClass()],
+      );
     if (allowOnboardingNotComplete) {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<RequestWithProfileCache>();
+    const request = context
+      .switchToHttp()
+      .getRequest<RequestWithProfileCache>();
     if (!request.userId) {
       return true;
     }

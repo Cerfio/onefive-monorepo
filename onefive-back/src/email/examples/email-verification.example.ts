@@ -16,11 +16,13 @@ export class EmailVerificationExample {
     email: string;
     code: string;
   }) {
+    const base = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
     const result = await this.emailService.sendEmail({
       to: email,
       type: 'verification',
       payload: {
         code,
+        verificationUrl: `${base}/auth/confirm/email?code=${encodeURIComponent(code)}`,
       },
     });
 

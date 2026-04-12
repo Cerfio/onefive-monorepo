@@ -12,7 +12,9 @@ export class AdminExportWaitlistHandler {
     return this.toCsv(entries);
   }
 
-  private toCsv(entries: Awaited<ReturnType<AdminService['exportWaitlist']>>): string {
+  private toCsv(
+    entries: Awaited<ReturnType<AdminService['exportWaitlist']>>,
+  ): string {
     const header = 'id,firstName,lastName,email,createdAt';
     const rows = entries.map((e) =>
       [e.id, e.firstName, e.lastName, e.user.email, e.createdAt]

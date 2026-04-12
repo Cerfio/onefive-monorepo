@@ -38,10 +38,16 @@ export class AdminUpdateProfileHandler {
 
     const changes: Record<string, { before: unknown; after: unknown }> = {};
     if ((before?.firstName ?? null) !== (updated.firstName ?? null)) {
-      changes.firstName = { before: before?.firstName ?? null, after: updated.firstName ?? null };
+      changes.firstName = {
+        before: before?.firstName ?? null,
+        after: updated.firstName ?? null,
+      };
     }
     if ((before?.lastName ?? null) !== (updated.lastName ?? null)) {
-      changes.lastName = { before: before?.lastName ?? null, after: updated.lastName ?? null };
+      changes.lastName = {
+        before: before?.lastName ?? null,
+        after: updated.lastName ?? null,
+      };
     }
     if (newPassword) {
       changes.password = { before: 'hidden', after: 'updated' };

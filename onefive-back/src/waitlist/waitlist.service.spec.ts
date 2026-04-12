@@ -59,7 +59,10 @@ describe('WaitlistService', () => {
         WaitlistService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: EmailService, useValue: mockEmailService },
-        { provide: NotificationHelperService, useValue: mockNotificationHelper },
+        {
+          provide: NotificationHelperService,
+          useValue: mockNotificationHelper,
+        },
         { provide: 'Logger', useValue: mockLogger },
       ],
     }).compile();

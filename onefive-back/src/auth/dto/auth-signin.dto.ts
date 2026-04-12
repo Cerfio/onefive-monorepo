@@ -6,6 +6,8 @@ export class AuthSigninDto {
   email: string;
 
   @IsString({ message: 'Le mot de passe doit être une chaîne de caractères' })
-  @MinLength(VALIDATION_LIMITS.AUTH.PASSWORD_NON_EMPTY_MIN, { message: 'Le mot de passe ne peut pas être vide' })
+  @MinLength(VALIDATION_LIMITS.AUTH.PASSWORD_NON_EMPTY_MIN, {
+    message: 'Le mot de passe ne peut pas être vide',
+  })
   password: string;
 }

@@ -67,7 +67,8 @@ describe('validateEnv', () => {
     process.env.DATABASE_URL = 'postgresql://localhost';
     process.env.SESSION_SECRET = 'a'.repeat(32);
     process.env.PORT = '50050';
-    process.env.FRONTEND_URL = 'https://app.onefive.com,https://staging.onefive.com';
+    process.env.FRONTEND_URL =
+      'https://app.onefive.com,https://staging.onefive.com';
     process.env.KEY_AUTHENTICATION = 'key';
 
     expect(() => validateEnv()).not.toThrow();

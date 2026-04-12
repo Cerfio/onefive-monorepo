@@ -477,7 +477,11 @@ export async function createDataroomForUser(
   app: INestApplication,
   req: any,
   owner: { token: string; profileId: string },
-  options?: { prisma?: { dataroom: { findFirst: (args: any) => Promise<{ id: string } | null> } } },
+  options?: {
+    prisma?: {
+      dataroom: { findFirst: (args: any) => Promise<{ id: string } | null> };
+    };
+  },
 ): Promise<{ dataroomId: string | undefined; startupId: string | undefined }> {
   const { createStartupData } = await import('./fixtures');
   const startupRes = await req(app.getHttpServer())

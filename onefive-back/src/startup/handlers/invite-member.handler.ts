@@ -152,7 +152,9 @@ export class InviteMemberHandler {
         },
       });
 
-      this.posthogService.capture(userId, 'startup_member_invited', { startup_id: startupId });
+      this.posthogService.capture(userId, 'startup_member_invited', {
+        startup_id: startupId,
+      });
 
       return { status: 'INVITED', invitationId: invitation.id };
     } else if (payload.email) {
@@ -234,7 +236,9 @@ export class InviteMemberHandler {
         // Don't throw - invitation is created, email can be retried later
       }
 
-      this.posthogService.capture(userId, 'startup_member_invited', { startup_id: startupId });
+      this.posthogService.capture(userId, 'startup_member_invited', {
+        startup_id: startupId,
+      });
 
       return { status: 'EMAIL_SENT', invitationId: invitation.id };
     } else {

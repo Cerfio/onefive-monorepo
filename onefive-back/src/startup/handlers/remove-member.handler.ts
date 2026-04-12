@@ -75,9 +75,7 @@ export class RemoveMemberHandler {
       member.role === StartupMemberRoleType.ADMIN &&
       currentUserMember.role !== StartupMemberRoleType.SUPER_ADMIN
     ) {
-      throw new ForbiddenException(
-        "Only the creator can remove an admin",
-      );
+      throw new ForbiddenException('Only the creator can remove an admin');
     }
 
     await this.prisma.startupMember.delete({

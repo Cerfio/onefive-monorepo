@@ -63,7 +63,9 @@ export class DeleteDiscussionHandler {
       },
     });
 
-    this.posthogService.capture(userId, 'discussion_deleted', { discussion_id: discussionId });
+    this.posthogService.capture(userId, 'discussion_deleted', {
+      discussion_id: discussionId,
+    });
 
     return true;
   }

@@ -60,7 +60,10 @@ export class AdminService implements OnModuleInit {
 
   @Log()
   async comparePassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password.concat(process.env.KEY_AUTHENTICATION), hash);
+    return bcrypt.compare(
+      password.concat(process.env.KEY_AUTHENTICATION),
+      hash,
+    );
   }
 
   @Log()
@@ -112,6 +115,7 @@ export class AdminService implements OnModuleInit {
       ADMIN_PERMISSIONS.ADMIN_CONTENT_MODERATE,
       ADMIN_PERMISSIONS.ADMIN_WAITLIST_MANAGE,
       ADMIN_PERMISSIONS.ADMIN_SPOTLIGHT_MANAGE,
+      ADMIN_PERMISSIONS.ADMIN_NEWSLETTER_MANAGE,
     ];
 
     const moderatorPermissions = allPermissions.filter((permission) =>
@@ -196,7 +200,9 @@ export class AdminService implements OnModuleInit {
   }
 
   @Log()
-  async getAdminUserById(adminUserId: string): Promise<AdminUserWithRoles | null> {
+  async getAdminUserById(
+    adminUserId: string,
+  ): Promise<AdminUserWithRoles | null> {
     return this.prisma.adminUser.findUnique({
       where: { id: adminUserId },
       include: {
@@ -651,7 +657,9 @@ export class AdminService implements OnModuleInit {
                 content: true,
                 createdAt: true,
                 discussion: { select: { id: true, question: true } },
-                _count: { select: { reactions: true, upvotes: true, replies: true } },
+                _count: {
+                  select: { reactions: true, upvotes: true, replies: true },
+                },
               },
               orderBy: { createdAt: 'desc' },
               take: 20,
@@ -737,9 +745,7 @@ export class AdminService implements OnModuleInit {
 
     return {
       ...user,
-      profile: user.profile
-        ? { ...user.profile, reportsReceived }
-        : null,
+      profile: user.profile ? { ...user.profile, reportsReceived } : null,
     };
   }
 
@@ -872,7 +878,13 @@ export class AdminService implements OnModuleInit {
             content: true,
             createdAt: true,
             author: {
-              select: { id: true, firstName: true, lastName: true, userId: true, avatarId: true },
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                userId: true,
+                avatarId: true,
+              },
             },
             _count: { select: { reactions: true, replies: true } },
           },
@@ -922,9 +934,17 @@ export class AdminService implements OnModuleInit {
             content: true,
             createdAt: true,
             author: {
-              select: { id: true, firstName: true, lastName: true, userId: true, avatarId: true },
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                userId: true,
+                avatarId: true,
+              },
             },
-            _count: { select: { reactions: true, upvotes: true, replies: true } },
+            _count: {
+              select: { reactions: true, upvotes: true, replies: true },
+            },
           },
         },
         reactions: {
@@ -950,13 +970,7 @@ export class AdminService implements OnModuleInit {
   }
 
   @Log()
-  async banUser({
-    userId,
-    isBanned,
-  }: {
-    userId: string;
-    isBanned: boolean;
-  }) {
+  async banUser({ userId, isBanned }: { userId: string; isBanned: boolean }) {
     return this.prisma.user.update({
       where: { id: userId },
       data: { isBanned },
@@ -1091,9 +1105,7 @@ export class AdminService implements OnModuleInit {
   }
 
   @Log()
-  async bulkAcceptWaitlist(
-    count: number,
-  ): Promise<{
+  async bulkAcceptWaitlist(count: number): Promise<{
     acceptedIds: string[];
     acceptedProfiles: Array<{
       profileId: string;
@@ -1244,17 +1256,13 @@ export class AdminService implements OnModuleInit {
     contest: { include: { prices: { include: { plan: true } } } },
     event: { include: { prices: { include: { plan: true } } } },
     incubator: { include: { prices: { include: { plan: true } } } },
-    coworkingSpace: { include: { prices: { include: { plan: true } }, openingHours: true } },
+    coworkingSpace: {
+      include: { prices: { include: { plan: true } }, openingHours: true },
+    },
   };
 
   @Log()
-  async listSpotlight({
-    skip,
-    take,
-  }: {
-    skip: number;
-    take: number;
-  }) {
+  async listSpotlight({ skip, take }: { skip: number; take: number }) {
     const [items, total] = await Promise.all([
       this.prisma.spot.findMany({
         orderBy: { createdAt: 'desc' },
@@ -1508,7 +1516,8 @@ export class AdminService implements OnModuleInit {
       throw new NotFoundException('Admin not found');
     }
 
-    const data: { firstName?: string; lastName?: string; password?: string } = {};
+    const data: { firstName?: string; lastName?: string; password?: string } =
+      {};
 
     if (firstName !== undefined) data.firstName = firstName.trim() || null;
     if (lastName !== undefined) data.lastName = lastName.trim() || null;
@@ -1557,13 +1566,7 @@ export class AdminService implements OnModuleInit {
   }
 
   @Log()
-  async listAdminUsers({
-    skip,
-    take,
-  }: {
-    skip: number;
-    take: number;
-  }) {
+  async listAdminUsers({ skip, take }: { skip: number; take: number }) {
     const [items, total] = await Promise.all([
       this.prisma.adminUser.findMany({
         orderBy: { createdAt: 'desc' },
@@ -1678,13 +1681,7 @@ export class AdminService implements OnModuleInit {
   }
 
   @Log()
-  async listAdminInvitations({
-    skip,
-    take,
-  }: {
-    skip: number;
-    take: number;
-  }) {
+  async listAdminInvitations({ skip, take }: { skip: number; take: number }) {
     const [items, total] = await Promise.all([
       this.prisma.adminInvitation.findMany({
         orderBy: { createdAt: 'desc' },
@@ -1895,7 +1892,9 @@ export class AdminService implements OnModuleInit {
     };
   }
 
-  private async fetchAcceptedProfilesPreview(metadata: Prisma.JsonValue | null) {
+  private async fetchAcceptedProfilesPreview(
+    metadata: Prisma.JsonValue | null,
+  ) {
     if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
       return [];
     }
@@ -2124,20 +2123,39 @@ export class AdminService implements OnModuleInit {
 
   @Log()
   async getDashboardStats() {
-    const [users, waitlist, posts, discussions, startups, datarooms, spots, pendingReports, pendingFeedback] =
-      await Promise.all([
-        this.prisma.user.count(),
-        this.prisma.profile.count({ where: { waitlistStatus: 'WAITING' } }),
-        this.prisma.post.count(),
-        this.prisma.discussion.count(),
-        this.prisma.startup.count(),
-        this.prisma.dataroom.count(),
-        this.prisma.spot.count(),
-        this.prisma.report.count({ where: { status: 'PENDING' } }),
-        this.prisma.feedback.count({ where: { status: 'PENDING' } }),
-      ]);
+    const [
+      users,
+      waitlist,
+      posts,
+      discussions,
+      startups,
+      datarooms,
+      spots,
+      pendingReports,
+      pendingFeedback,
+    ] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.profile.count({ where: { waitlistStatus: 'WAITING' } }),
+      this.prisma.post.count(),
+      this.prisma.discussion.count(),
+      this.prisma.startup.count(),
+      this.prisma.dataroom.count(),
+      this.prisma.spot.count(),
+      this.prisma.report.count({ where: { status: 'PENDING' } }),
+      this.prisma.feedback.count({ where: { status: 'PENDING' } }),
+    ]);
 
-    return { users, waitlist, posts, discussions, startups, datarooms, spots, pendingReports, pendingFeedback };
+    return {
+      users,
+      waitlist,
+      posts,
+      discussions,
+      startups,
+      datarooms,
+      spots,
+      pendingReports,
+      pendingFeedback,
+    };
   }
 
   @Log()

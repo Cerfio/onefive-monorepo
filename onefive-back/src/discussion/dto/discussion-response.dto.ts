@@ -12,7 +12,8 @@ export interface CreateDiscussionResponseDto {
 }
 
 /** Response for list discussions */
-export type ListDiscussionsResponseDto = PaginatedResponseDto<DiscussionResponseDto>;
+export type ListDiscussionsResponseDto =
+  PaginatedResponseDto<DiscussionResponseDto>;
 
 /** Response for get single discussion */
 export type GetDiscussionResponseDto = DiscussionResponseDto;

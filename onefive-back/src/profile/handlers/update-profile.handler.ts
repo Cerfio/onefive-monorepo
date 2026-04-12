@@ -160,7 +160,9 @@ export class UpdateProfileHandler {
       city !== undefined && 'city',
       ecosystemRoles !== undefined && 'ecosystemRoles',
     ].filter(Boolean);
-    this.posthogService.capture(userId, 'profile_updated', { fields_updated: fieldsUpdated });
+    this.posthogService.capture(userId, 'profile_updated', {
+      fields_updated: fieldsUpdated,
+    });
 
     return { success: true };
   }

@@ -108,14 +108,16 @@ describe('Waitlist Guard (E2E)', () => {
       const validCode = statusRes.body.data?.referralCode;
 
       if (validCode) {
-        const validRes = await request(app.getHttpServer())
-          .get(`/waitlist/referrer/${validCode}`);
+        const validRes = await request(app.getHttpServer()).get(
+          `/waitlist/referrer/${validCode}`,
+        );
         expect([200]).toContain(validRes.status);
         expect(validRes.body.data).toBeDefined();
       }
 
-      const invalidRes = await request(app.getHttpServer())
-        .get('/waitlist/referrer/INVALID_CODE_XYZ_123');
+      const invalidRes = await request(app.getHttpServer()).get(
+        '/waitlist/referrer/INVALID_CODE_XYZ_123',
+      );
       expect(invalidRes.status).toBe(404);
     });
   });

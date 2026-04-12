@@ -26,7 +26,10 @@ export class SelfActivateWaitlistHandler {
     transactionId: string;
     userId: string;
   }) {
-    this.logger.info('Self-activating waitlist (dev only)', { transactionId, userId });
+    this.logger.info('Self-activating waitlist (dev only)', {
+      transactionId,
+      userId,
+    });
 
     const profile = await this.prisma.profile.findUnique({
       where: { userId },
@@ -48,7 +51,9 @@ export class SelfActivateWaitlistHandler {
       profileId: profile.id,
     });
 
-    this.posthogService.capture(userId, 'waitlist_self_activated', { previous_status: profile.waitlistStatus });
+    this.posthogService.capture(userId, 'waitlist_self_activated', {
+      previous_status: profile.waitlistStatus,
+    });
 
     return { message: 'Account activated successfully' };
   }

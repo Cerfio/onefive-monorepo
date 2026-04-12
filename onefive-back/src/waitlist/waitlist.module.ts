@@ -15,7 +15,13 @@ import { EmailModule } from '../email/email.module';
 import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [PrismaModule, SessionsModule, EmailModule, NotificationModule, StorageModule],
+  imports: [
+    PrismaModule,
+    SessionsModule,
+    EmailModule,
+    NotificationModule,
+    StorageModule,
+  ],
   controllers: [WaitlistController],
   providers: [
     WaitlistService,

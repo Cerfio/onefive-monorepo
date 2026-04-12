@@ -42,8 +42,7 @@ export class StorageController {
     }
 
     const buffer = await data.toBuffer();
-    const bucketName =
-      process.env.R2_BUCKET_NAME || 'onefive-storage';
+    const bucketName = process.env.R2_BUCKET_NAME || 'onefive-storage';
 
     const result = await this.storageService.uploadFile({
       transactionId: req.id,

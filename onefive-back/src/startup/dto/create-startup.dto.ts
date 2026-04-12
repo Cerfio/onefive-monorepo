@@ -23,7 +23,10 @@ import {
   sanitizeText,
   sanitizeRichText,
 } from '../../common/utils/sanitize.utils';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 
 export class StartupInvitationDto {
   @IsOptional()
@@ -65,9 +68,13 @@ export class StartupInvitationDto {
 
 export class CreateStartupDto {
   @IsString()
-  @Length(VALIDATION_LIMITS.STARTUP.NAME_MIN, VALIDATION_LIMITS.STARTUP.NAME_MAX, {
-    message: VALIDATION_MESSAGES.NAME_REQUIRED,
-  })
+  @Length(
+    VALIDATION_LIMITS.STARTUP.NAME_MIN,
+    VALIDATION_LIMITS.STARTUP.NAME_MAX,
+    {
+      message: VALIDATION_MESSAGES.NAME_REQUIRED,
+    },
+  )
   @SanitizeText()
   name: string;
 
@@ -99,11 +106,17 @@ export class CreateStartupDto {
   foundedDate: string;
 
   @IsString()
-  @Length(VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH, VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH)
+  @Length(
+    VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH,
+    VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH,
+  )
   countryCode: string;
 
   @IsString()
-  @Length(VALIDATION_LIMITS.STARTUP.CITY_MIN, VALIDATION_LIMITS.STARTUP.CITY_MAX)
+  @Length(
+    VALIDATION_LIMITS.STARTUP.CITY_MIN,
+    VALIDATION_LIMITS.STARTUP.CITY_MAX,
+  )
   @SanitizeText()
   city: string;
 

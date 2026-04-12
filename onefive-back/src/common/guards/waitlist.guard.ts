@@ -50,7 +50,9 @@ export class WaitlistGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<RequestWithProfileCache>();
+    const request = context
+      .switchToHttp()
+      .getRequest<RequestWithProfileCache>();
     const userId = request.userId;
 
     // If no userId (not authenticated yet), let SessionGuard handle it

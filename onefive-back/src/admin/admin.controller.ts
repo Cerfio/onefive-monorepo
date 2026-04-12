@@ -28,7 +28,11 @@ import {
 } from './dto/admin-pagination.dto';
 import { AdminGetUserHandler } from './handlers/admin-get-user.handler';
 import { AdminListUsersHandler } from './handlers/admin-list-users.handler';
-import { AdminBanUserDto, AdminToggleAmbassadorDto, AdminChangeWaitlistStatusDto } from './dto/admin-user.dto';
+import {
+  AdminBanUserDto,
+  AdminToggleAmbassadorDto,
+  AdminChangeWaitlistStatusDto,
+} from './dto/admin-user.dto';
 import { AdminBanUserHandler } from './handlers/admin-ban-user.handler';
 import { AdminDeleteUserHandler } from './handlers/admin-delete-user.handler';
 import { AdminToggleAmbassadorHandler } from './handlers/admin-toggle-ambassador.handler';
@@ -409,7 +413,9 @@ export class AdminController {
   @Get('discussions/:id')
   @RequireAdminPermissions(ADMIN_PERMISSIONS.ADMIN_CONTENT_MODERATE)
   async getDiscussion(@Param('id') discussionId: string) {
-    const discussion = await this.getDiscussionHandler.execute({ discussionId });
+    const discussion = await this.getDiscussionHandler.execute({
+      discussionId,
+    });
     return { success: true, data: discussion };
   }
 
@@ -743,7 +749,10 @@ export class AdminController {
   @Get('reports/:id')
   @RequireAdminPermissions(ADMIN_PERMISSIONS.ADMIN_CONTENT_MODERATE)
   async getReport(@Param('id') reportId: string) {
-    const report = await this.reportService.findById({ transactionId: 'admin', reportId });
+    const report = await this.reportService.findById({
+      transactionId: 'admin',
+      reportId,
+    });
     if (!report) throw new NotFoundException('Report not found');
     return { success: true, data: report };
   }
@@ -842,7 +851,10 @@ export class AdminController {
   @Get('feedback/:id')
   @RequireAdminPermissions(ADMIN_PERMISSIONS.ADMIN_CONTENT_MODERATE)
   async getFeedback(@Param('id') feedbackId: string) {
-    const feedback = await this.feedbackService.findById({ transactionId: 'admin', feedbackId });
+    const feedback = await this.feedbackService.findById({
+      transactionId: 'admin',
+      feedbackId,
+    });
     if (!feedback) throw new NotFoundException('Feedback not found');
     return { success: true, data: feedback };
   }

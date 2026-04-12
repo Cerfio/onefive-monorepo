@@ -86,8 +86,7 @@ describe('Profile Views & Analytics Flows (e2e)', () => {
         ? notifData
         : (notifData?.items ?? []);
       const hasProfileViewNotif = notifications.some(
-        (n: any) =>
-          n.actorId === userA.profileId && n.type === 'PROFILE_VIEW',
+        (n: any) => n.actorId === userA.profileId && n.type === 'PROFILE_VIEW',
       );
       expect(hasProfileViewNotif).toBe(true);
     });

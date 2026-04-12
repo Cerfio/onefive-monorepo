@@ -144,9 +144,14 @@ export class AuthLinkedinHandler {
         },
       });
 
-      this.posthogService.capture(user.id, 'user_authenticated_linkedin', { is_new_user: isNewUser });
+      this.posthogService.capture(user.id, 'user_authenticated_linkedin', {
+        is_new_user: isNewUser,
+      });
       if (isNewUser) {
-        this.posthogService.identify(user.id, { email: user.email, auth_type: 'LINKEDIN' });
+        this.posthogService.identify(user.id, {
+          email: user.email,
+          auth_type: 'LINKEDIN',
+        });
       }
 
       return {

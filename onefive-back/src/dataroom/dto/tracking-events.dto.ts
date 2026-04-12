@@ -9,7 +9,10 @@ import {
   ArrayMaxSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 
 export class TrackingEventDto {
   @IsString()

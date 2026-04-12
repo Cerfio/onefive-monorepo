@@ -1,5 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { DiscordChannel, DISCORD_CHANNEL_ENV_MAP, EMBED_COLORS } from './discord.constants';
+import {
+  DiscordChannel,
+  DISCORD_CHANNEL_ENV_MAP,
+  EMBED_COLORS,
+} from './discord.constants';
 
 interface DiscordEmbed {
   title: string;
@@ -28,7 +32,10 @@ export class DiscordWebhookService {
     return url?.trim() || null;
   }
 
-  async send(channel: DiscordChannel, payload: DiscordWebhookPayload): Promise<void> {
+  async send(
+    channel: DiscordChannel,
+    payload: DiscordWebhookPayload,
+  ): Promise<void> {
     const url = this.getWebhookUrl(channel);
     if (!url) return;
 
@@ -43,12 +50,17 @@ export class DiscordWebhookService {
       });
 
       if (!response.ok) {
-        this.logger.warn(`Discord webhook failed: ${response.status} ${response.statusText}`, {
-          channel,
-        });
+        this.logger.warn(
+          `Discord webhook failed: ${response.status} ${response.statusText}`,
+          {
+            channel,
+          },
+        );
       }
     } catch (error) {
-      this.logger.warn(`Discord webhook error: ${(error as Error).message}`, { channel });
+      this.logger.warn(`Discord webhook error: ${(error as Error).message}`, {
+        channel,
+      });
     }
   }
 
@@ -72,8 +84,16 @@ export class DiscordWebhookService {
           color: EMBED_COLORS.ERROR,
           fields: [
             { name: 'URL', value: `\`${method} ${url}\``, inline: false },
-            { name: 'Message', value: errorMessage.substring(0, 1024), inline: false },
-            { name: 'Stack', value: `\`\`\`\n${truncatedStack}\n\`\`\``, inline: false },
+            {
+              name: 'Message',
+              value: errorMessage.substring(0, 1024),
+              inline: false,
+            },
+            {
+              name: 'Stack',
+              value: `\`\`\`\n${truncatedStack}\n\`\`\``,
+              inline: false,
+            },
           ],
           timestamp: new Date().toISOString(),
           footer: { text: 'OneFive Monitoring' },
@@ -93,7 +113,9 @@ export class DiscordWebhookService {
     ecosystemRoles: string[];
     profileId: string;
   }): Promise<void> {
-    const frontendUrl = (process.env.FRONTEND_URL || 'https://onefive.app').split(',')[0].trim();
+    const frontendUrl = (process.env.FRONTEND_URL || 'https://onefive.app')
+      .split(',')[0]
+      .trim();
 
     await this.send(DiscordChannel.OPS_INSCRIPTIONS, {
       embeds: [
@@ -104,10 +126,17 @@ export class DiscordWebhookService {
             { name: 'Nom', value: `${firstName} ${lastName}`, inline: true },
             {
               name: 'Profil',
-              value: ecosystemRoles.length > 0 ? ecosystemRoles.join(', ') : 'Non défini',
+              value:
+                ecosystemRoles.length > 0
+                  ? ecosystemRoles.join(', ')
+                  : 'Non défini',
               inline: true,
             },
-            { name: 'Lien Admin', value: `${frontendUrl}/admin/users`, inline: false },
+            {
+              name: 'Lien Admin',
+              value: `${frontendUrl}/admin/users`,
+              inline: false,
+            },
           ],
           timestamp: new Date().toISOString(),
           footer: { text: 'OneFive Acquisition' },
@@ -140,7 +169,15 @@ export class DiscordWebhookService {
             { name: 'Signalé par', value: reporterName, inline: true },
             { name: 'Type', value: resourceType, inline: true },
             { name: 'Raison', value: reason, inline: true },
-            ...(message ? [{ name: 'Message', value: message.substring(0, 1024), inline: false }] : []),
+            ...(message
+              ? [
+                  {
+                    name: 'Message',
+                    value: message.substring(0, 1024),
+                    inline: false,
+                  },
+                ]
+              : []),
             { name: 'Resource ID', value: `\`${resourceId}\``, inline: false },
           ],
           timestamp: new Date().toISOString(),
@@ -185,7 +222,11 @@ export class DiscordWebhookService {
           fields: [
             { name: 'De', value: reporterName, inline: true },
             { name: 'Type', value: type, inline: true },
-            { name: 'Message', value: message.substring(0, 1024), inline: false },
+            {
+              name: 'Message',
+              value: message.substring(0, 1024),
+              inline: false,
+            },
             ...(url ? [{ name: 'URL', value: url, inline: false }] : []),
           ],
           timestamp: new Date().toISOString(),

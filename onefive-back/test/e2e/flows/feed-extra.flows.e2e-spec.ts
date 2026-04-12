@@ -55,7 +55,11 @@ describe('Feed Extra Flows (e2e)', () => {
 
   describe('Startup Suggestions', () => {
     it('should return startup suggestions for authenticated user', async () => {
-      const user = await completeUserRegistration(app, request, 'feedstartsugg');
+      const user = await completeUserRegistration(
+        app,
+        request,
+        'feedstartsugg',
+      );
 
       const res = await request(app.getHttpServer())
         .get('/feed-extra/startup-suggestions?limit=10&skip=0')
@@ -114,7 +118,11 @@ describe('Feed Extra Flows (e2e)', () => {
 
     it('should toggle bookmark on a post', async () => {
       const user = await completeUserRegistration(app, request, 'feedbooktog');
-      const author = await completeUserRegistration(app, request, 'feedbookauth');
+      const author = await completeUserRegistration(
+        app,
+        request,
+        'feedbookauth',
+      );
 
       // Author creates a post
       const postRes = await request(app.getHttpServer())

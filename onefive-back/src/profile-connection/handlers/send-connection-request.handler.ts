@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { LogService } from 'logstash-winston-3';
 import { Log } from '../../common/logger/logger.decorator';
 import { ProfileConnectionService } from '../profile-connection.service';
@@ -35,11 +40,15 @@ export class SendConnectionRequestHandler {
     }
 
     if (profile.id === profileId) {
-      throw new BadRequestException('You cannot send a connection request to yourself');
+      throw new BadRequestException(
+        'You cannot send a connection request to yourself',
+      );
     }
 
     await this.profileConnectionService.sendRequest(profile.id, profileId);
-    this.posthogService.capture(userId, 'connection_request_sent', { target_profile_id: profileId });
+    this.posthogService.capture(userId, 'connection_request_sent', {
+      target_profile_id: profileId,
+    });
     return { success: true };
   }
 }

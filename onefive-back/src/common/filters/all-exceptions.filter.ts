@@ -48,7 +48,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     // Fire-and-forget Discord alert for 500 errors
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
-      const errorMsg = exception instanceof Error ? exception.message : 'Unknown error';
+      const errorMsg =
+        exception instanceof Error ? exception.message : 'Unknown error';
       const stack = exception instanceof Error ? exception.stack : undefined;
 
       this.discordWebhookService

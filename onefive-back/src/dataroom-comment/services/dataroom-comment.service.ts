@@ -22,14 +22,20 @@ export class DataroomCommentService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async checkCanComment(profileId: string, dataroomId: string, fileId: string): Promise<void> {
+  async checkCanComment(
+    profileId: string,
+    dataroomId: string,
+    fileId: string,
+  ): Promise<void> {
     const member = await this.prisma.member.findFirst({
       where: { profileId, dataroomId },
       include: { group: true },
     });
 
     if (!member) {
-      throw new DataroomCommentForbiddenException('You are not a member of this dataroom');
+      throw new DataroomCommentForbiddenException(
+        'You are not a member of this dataroom',
+      );
     }
 
     if (member.group.hasAllAccess) return;
@@ -53,7 +59,9 @@ export class DataroomCommentService {
     });
 
     if (!permission?.canComment) {
-      throw new DataroomCommentForbiddenException('You do not have permission to comment on this file');
+      throw new DataroomCommentForbiddenException(
+        'You do not have permission to comment on this file',
+      );
     }
   }
 
@@ -135,7 +143,9 @@ export class DataroomCommentService {
 
     if (!comment) throw new DataroomCommentNotFoundException();
     if (comment.profileId !== profileId) {
-      throw new DataroomCommentForbiddenException('You can only edit your own comments');
+      throw new DataroomCommentForbiddenException(
+        'You can only edit your own comments',
+      );
     }
 
     return await this.prisma.dataroomFileComment.update({
@@ -167,7 +177,9 @@ export class DataroomCommentService {
         select: { createdBy: true },
       });
       if (dataroom?.createdBy !== profileId) {
-        throw new DataroomCommentForbiddenException('You can only delete your own comments');
+        throw new DataroomCommentForbiddenException(
+          'You can only delete your own comments',
+        );
       }
     }
 

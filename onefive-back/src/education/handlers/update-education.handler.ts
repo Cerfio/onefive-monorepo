@@ -57,7 +57,9 @@ export class UpdateEducationHandler {
       data: updateData,
     });
 
-    this.posthogService.capture(userId, 'education_updated', { education_id: educationId });
+    this.posthogService.capture(userId, 'education_updated', {
+      education_id: educationId,
+    });
 
     return {
       id: education.id,

@@ -53,7 +53,8 @@ describe('AuthSignupDto', () => {
     });
 
     it('should accept password at maximum length', async () => {
-      const maxPassword = 'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX - 4);
+      const maxPassword =
+        'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX - 4);
       const dto = plainToClass(AuthSignupDto, {
         email: 'test@example.com',
         password: maxPassword,
@@ -71,13 +72,14 @@ describe('AuthSignupDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const passwordError = errors.find(e => e.property === 'password');
+      const passwordError = errors.find((e) => e.property === 'password');
       expect(passwordError).toBeDefined();
       expect(passwordError?.constraints).toHaveProperty('minLength');
     });
 
     it('should reject password exceeding maximum length', async () => {
-      const tooLongPassword = 'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX);
+      const tooLongPassword =
+        'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX);
       const dto = plainToClass(AuthSignupDto, {
         email: 'test@example.com',
         password: tooLongPassword,
@@ -85,7 +87,7 @@ describe('AuthSignupDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const passwordError = errors.find(e => e.property === 'password');
+      const passwordError = errors.find((e) => e.property === 'password');
       expect(passwordError).toBeDefined();
       expect(passwordError?.constraints).toHaveProperty('maxLength');
     });
@@ -98,7 +100,7 @@ describe('AuthSignupDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const passwordError = errors.find(e => e.property === 'password');
+      const passwordError = errors.find((e) => e.property === 'password');
       expect(passwordError).toBeDefined();
       expect(passwordError?.constraints).toHaveProperty('matches');
     });
@@ -111,7 +113,7 @@ describe('AuthSignupDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const passwordError = errors.find(e => e.property === 'password');
+      const passwordError = errors.find((e) => e.property === 'password');
       expect(passwordError).toBeDefined();
       expect(passwordError?.constraints).toHaveProperty('matches');
     });
@@ -124,7 +126,7 @@ describe('AuthSignupDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const passwordError = errors.find(e => e.property === 'password');
+      const passwordError = errors.find((e) => e.property === 'password');
       expect(passwordError).toBeDefined();
       expect(passwordError?.constraints).toHaveProperty('matches');
     });
@@ -137,7 +139,7 @@ describe('AuthSignupDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const passwordError = errors.find(e => e.property === 'password');
+      const passwordError = errors.find((e) => e.property === 'password');
       expect(passwordError).toBeDefined();
       expect(passwordError?.constraints).toHaveProperty('matches');
     });
@@ -145,7 +147,8 @@ describe('AuthSignupDto', () => {
 
   describe('edge cases', () => {
     it('should handle exact limit boundary for password', async () => {
-      const exactMaxPassword = 'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX - 4);
+      const exactMaxPassword =
+        'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX - 4);
       const dto = plainToClass(AuthSignupDto, {
         email: 'test@example.com',
         password: exactMaxPassword,
@@ -157,7 +160,8 @@ describe('AuthSignupDto', () => {
     });
 
     it('should reject password at exact limit + 1', async () => {
-      const oneTooLong = 'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX - 3);
+      const oneTooLong =
+        'Aa1@' + 'x'.repeat(VALIDATION_LIMITS.AUTH.PASSWORD_MAX - 3);
       const dto = plainToClass(AuthSignupDto, {
         email: 'test@example.com',
         password: oneTooLong,

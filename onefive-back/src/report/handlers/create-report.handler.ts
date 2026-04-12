@@ -50,7 +50,11 @@ export class CreateReportHandler {
     });
 
     if (existing) {
-      ReportDuplicateException.throw(this.logger, { transactionId, profileId: reporter.id, resourceId });
+      ReportDuplicateException.throw(this.logger, {
+        transactionId,
+        profileId: reporter.id,
+        resourceId,
+      });
     }
 
     const report = await this.reportService.create({
@@ -84,7 +88,10 @@ export class CreateReportHandler {
         }),
       );
 
-    this.posthogService.capture(userId, 'content_reported', { resource_type: resourceType, reason });
+    this.posthogService.capture(userId, 'content_reported', {
+      resource_type: resourceType,
+      reason,
+    });
 
     return { id: report.id };
   }

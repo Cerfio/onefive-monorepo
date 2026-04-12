@@ -170,12 +170,15 @@ export class ApplyLinkedInSyncHandler {
         for (const exp of syncFields.selectedExperiences) {
           const fromDate = this.parseDate(exp.from);
           if (!fromDate) {
-            this.logger.warn('Sync Experiences - skipping entry with invalid from date', {
-              transactionId,
-              title: exp.title,
-              company: exp.company,
-              from: exp.from,
-            });
+            this.logger.warn(
+              'Sync Experiences - skipping entry with invalid from date',
+              {
+                transactionId,
+                title: exp.title,
+                company: exp.company,
+                from: exp.from,
+              },
+            );
             continue;
           }
 
@@ -239,12 +242,15 @@ export class ApplyLinkedInSyncHandler {
         for (const edu of syncFields.selectedEducation) {
           const fromDate = this.parseDate(edu.from);
           if (!fromDate) {
-            this.logger.warn('Sync Education - skipping entry with invalid from date', {
-              transactionId,
-              degree: edu.degree,
-              school: edu.school,
-              from: edu.from,
-            });
+            this.logger.warn(
+              'Sync Education - skipping entry with invalid from date',
+              {
+                transactionId,
+                degree: edu.degree,
+                school: edu.school,
+                from: edu.from,
+              },
+            );
             continue;
           }
 

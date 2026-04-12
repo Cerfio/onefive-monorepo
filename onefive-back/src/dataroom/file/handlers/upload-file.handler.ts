@@ -192,7 +192,10 @@ export class UploadFileHandler {
       }
     }
 
-    this.posthogService.capture(userId, 'dataroom_file_uploaded', { dataroom_id: dataroomId, file_count: createdFiles.length });
+    this.posthogService.capture(userId, 'dataroom_file_uploaded', {
+      dataroom_id: dataroomId,
+      file_count: createdFiles.length,
+    });
 
     return {
       data: {

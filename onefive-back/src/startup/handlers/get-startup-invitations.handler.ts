@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, Inject, ForbiddenException } from '@nestjs/common';
 import { LogService } from 'logstash-winston-3';
 import { Log } from '../../common/logger/logger.decorator';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -37,9 +33,7 @@ export class GetStartupInvitationsHandler {
       (member.role !== StartupMemberRoleType.SUPER_ADMIN &&
         member.role !== StartupMemberRoleType.ADMIN)
     ) {
-      throw new ForbiddenException(
-        'Only admins can view pending invitations',
-      );
+      throw new ForbiddenException('Only admins can view pending invitations');
     }
 
     const invitations = await this.prisma.startupInvitation.findMany({

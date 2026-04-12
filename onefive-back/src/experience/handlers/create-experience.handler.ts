@@ -3,7 +3,10 @@ import { Log } from 'src/common/logger/logger.decorator';
 import { LogService } from 'logstash-winston-3';
 import { ExperienceService } from '../experience.service';
 import { CreateExperienceDto } from '../dto/create-experience.dto';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from 'src/common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from 'src/common/constants/validation-limits.constants';
 import { PostHogService } from 'src/posthog/posthog.service';
 
 type CreateExperienceHandlerParams = {
@@ -50,7 +53,9 @@ export class CreateExperienceHandler {
       existingExperiences.length >=
       VALIDATION_LIMITS.EXPERIENCE.MAX_EXPERIENCES_PER_PROFILE
     ) {
-      throw new BadRequestException(VALIDATION_MESSAGES.MAX_EXPERIENCES_REACHED);
+      throw new BadRequestException(
+        VALIDATION_MESSAGES.MAX_EXPERIENCES_REACHED,
+      );
     }
 
     const experience = await this.experienceService.create({

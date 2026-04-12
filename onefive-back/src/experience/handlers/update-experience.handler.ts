@@ -56,7 +56,9 @@ export class UpdateExperienceHandler {
       data: updateData,
     });
 
-    this.posthogService.capture(userId, 'experience_updated', { experience_id: experienceId });
+    this.posthogService.capture(userId, 'experience_updated', {
+      experience_id: experienceId,
+    });
 
     return {
       id: experience.id,

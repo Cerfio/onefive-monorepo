@@ -12,20 +12,31 @@ import {
   SanitizeHtml,
   SanitizeArray,
 } from '../../common/decorators/sanitize.decorator';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 
 export class CreateExperienceDto {
   @IsString()
-  @Length(VALIDATION_LIMITS.EXPERIENCE.TITLE_MIN, VALIDATION_LIMITS.EXPERIENCE.TITLE_MAX, {
-    message: VALIDATION_MESSAGES.TITLE_REQUIRED_EXP,
-  })
+  @Length(
+    VALIDATION_LIMITS.EXPERIENCE.TITLE_MIN,
+    VALIDATION_LIMITS.EXPERIENCE.TITLE_MAX,
+    {
+      message: VALIDATION_MESSAGES.TITLE_REQUIRED_EXP,
+    },
+  )
   @SanitizeText()
   title: string;
 
   @IsString()
-  @Length(VALIDATION_LIMITS.EXPERIENCE.COMPANY_MIN, VALIDATION_LIMITS.EXPERIENCE.COMPANY_MAX, {
-    message: VALIDATION_MESSAGES.COMPANY_REQUIRED,
-  })
+  @Length(
+    VALIDATION_LIMITS.EXPERIENCE.COMPANY_MIN,
+    VALIDATION_LIMITS.EXPERIENCE.COMPANY_MAX,
+    {
+      message: VALIDATION_MESSAGES.COMPANY_REQUIRED,
+    },
+  )
   @SanitizeText()
   company: string;
 

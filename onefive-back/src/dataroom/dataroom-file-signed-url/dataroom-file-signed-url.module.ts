@@ -10,7 +10,13 @@ import { LoggerProvider } from '../../common/logger/logger.provider';
 import { StorageModule } from '../../storage/storage.module';
 
 @Module({
-  imports: [ConfigModule, FileModule, PrismaModule, SessionsModule, StorageModule],
+  imports: [
+    ConfigModule,
+    FileModule,
+    PrismaModule,
+    SessionsModule,
+    StorageModule,
+  ],
   controllers: [SignedUrlController],
   providers: [SignedUrlHandler, SignedUrlService, LoggerProvider],
   exports: [SignedUrlService],

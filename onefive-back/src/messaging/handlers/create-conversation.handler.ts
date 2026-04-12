@@ -36,7 +36,10 @@ export class CreateConversationHandler {
       type,
       initialMessage,
     });
-    this.posthogService.capture(profileId, 'conversation_created', { participant_count: participantIds.length, type });
+    this.posthogService.capture(profileId, 'conversation_created', {
+      participant_count: participantIds.length,
+      type,
+    });
     return result;
   }
 }

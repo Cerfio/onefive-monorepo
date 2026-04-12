@@ -103,7 +103,10 @@ export class PostController {
     @Query(new ValidationPipe({ transform: true })) query: FeedQueryDto,
   ): Promise<ApiResponseDto<FeedPostsResponseDto>> {
     const tagsArray = query.tags
-      ? query.tags.split(',').map((t) => t.trim()).filter(Boolean)
+      ? query.tags
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean)
       : undefined;
 
     const posts = await this.postService.listWithEnrichment({

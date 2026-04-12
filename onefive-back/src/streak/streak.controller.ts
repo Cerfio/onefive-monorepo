@@ -1,10 +1,4 @@
-import {
-  Controller,
-  HttpCode,
-  Post,
-  UseGuards,
-  Req,
-} from '@nestjs/common';
+import { Controller, HttpCode, Post, UseGuards, Req } from '@nestjs/common';
 import { SessionGuard } from '../common/guards/session-guard/session.guard';
 import { FastifyRequest } from 'fastify';
 import { FastifyRequestUserId } from 'src/types/fastify-request-user-id';

@@ -8,7 +8,12 @@ import { ReportCreateException } from './report.exception';
 
 export type ReportResourcePreview = {
   content: string;
-  author?: { firstName: string; lastName: string; userId: string; avatarId: string | null };
+  author?: {
+    firstName: string;
+    lastName: string;
+    userId: string;
+    avatarId: string | null;
+  };
   parent?: { id: string; content?: string; link?: string };
   createdAt: string;
   link: string;
@@ -81,7 +86,13 @@ export class ReportService {
         orderBy: { createdAt: 'desc' },
         include: {
           reporter: {
-            select: { id: true, userId: true, firstName: true, lastName: true, avatarId: true },
+            select: {
+              id: true,
+              userId: true,
+              firstName: true,
+              lastName: true,
+              avatarId: true,
+            },
           },
         },
       }),
@@ -103,13 +114,22 @@ export class ReportService {
       where: { id: reportId },
       include: {
         reporter: {
-          select: { id: true, userId: true, firstName: true, lastName: true, avatarId: true },
+          select: {
+            id: true,
+            userId: true,
+            firstName: true,
+            lastName: true,
+            avatarId: true,
+          },
         },
       },
     });
     if (!report) return null;
 
-    const resourcePreview = await this.fetchResourcePreview(report.resourceType, report.resourceId);
+    const resourcePreview = await this.fetchResourcePreview(
+      report.resourceType,
+      report.resourceId,
+    );
     return { ...report, resourcePreview };
   }
 
@@ -124,7 +144,12 @@ export class ReportService {
             where: { id: resourceId },
             include: {
               author: {
-                select: { firstName: true, lastName: true, userId: true, avatarId: true },
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  userId: true,
+                  avatarId: true,
+                },
               },
             },
           });
@@ -149,7 +174,12 @@ export class ReportService {
             where: { id: resourceId },
             include: {
               author: {
-                select: { firstName: true, lastName: true, userId: true, avatarId: true },
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  userId: true,
+                  avatarId: true,
+                },
               },
               post: { select: { id: true, content: true } },
             },
@@ -179,12 +209,19 @@ export class ReportService {
             where: { id: resourceId },
             include: {
               author: {
-                select: { firstName: true, lastName: true, userId: true, avatarId: true },
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  userId: true,
+                  avatarId: true,
+                },
               },
             },
           });
           if (!discussion) return null;
-          const content = [discussion.question, discussion.content].filter(Boolean).join('\n\n');
+          const content = [discussion.question, discussion.content]
+            .filter(Boolean)
+            .join('\n\n');
           return {
             content: content || '(sans contenu)',
             author: discussion.author
@@ -204,7 +241,12 @@ export class ReportService {
             where: { id: resourceId },
             include: {
               author: {
-                select: { firstName: true, lastName: true, userId: true, avatarId: true },
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  userId: true,
+                  avatarId: true,
+                },
               },
               discussion: { select: { id: true, question: true } },
             },
@@ -234,7 +276,12 @@ export class ReportService {
             where: { id: resourceId },
             include: {
               author: {
-                select: { firstName: true, lastName: true, userId: true, avatarId: true },
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  userId: true,
+                  avatarId: true,
+                },
               },
               answer: {
                 select: {
@@ -337,13 +384,29 @@ export class ReportService {
     userId: string;
     take?: number;
   }) {
-    const [postIds, commentIds, discussionIds, answerIds, replyIds] = await Promise.all([
-      this.prisma.post.findMany({ where: { profileId }, select: { id: true } }),
-      this.prisma.postComment.findMany({ where: { profileId }, select: { id: true } }),
-      this.prisma.discussion.findMany({ where: { profileId }, select: { id: true } }),
-      this.prisma.discussionAnswer.findMany({ where: { profileId }, select: { id: true } }),
-      this.prisma.discussionAnswerReply.findMany({ where: { profileId }, select: { id: true } }),
-    ]);
+    const [postIds, commentIds, discussionIds, answerIds, replyIds] =
+      await Promise.all([
+        this.prisma.post.findMany({
+          where: { profileId },
+          select: { id: true },
+        }),
+        this.prisma.postComment.findMany({
+          where: { profileId },
+          select: { id: true },
+        }),
+        this.prisma.discussion.findMany({
+          where: { profileId },
+          select: { id: true },
+        }),
+        this.prisma.discussionAnswer.findMany({
+          where: { profileId },
+          select: { id: true },
+        }),
+        this.prisma.discussionAnswerReply.findMany({
+          where: { profileId },
+          select: { id: true },
+        }),
+      ]);
 
     const profileIds = [profileId];
     const resourceIdsByType = {
@@ -376,7 +439,13 @@ export class ReportService {
       take,
       include: {
         reporter: {
-          select: { id: true, userId: true, firstName: true, lastName: true, avatarId: true },
+          select: {
+            id: true,
+            userId: true,
+            firstName: true,
+            lastName: true,
+            avatarId: true,
+          },
         },
       },
     });

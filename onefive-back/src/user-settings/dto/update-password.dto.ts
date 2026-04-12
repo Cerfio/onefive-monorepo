@@ -1,5 +1,8 @@
 import { IsString, MinLength, MaxLength, Matches } from 'class-validator';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 
 export class UpdatePasswordDto {
   @IsString()

@@ -64,7 +64,9 @@ describe('Discussion Validation E2E Tests', () => {
 
   it('accepts valid content and tags boundaries', async () => {
     const maxContent = 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.CONTENT_MAX);
-    const maxTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT).fill('NETWORKING');
+    const maxTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT).fill(
+      'NETWORKING',
+    );
 
     const res = await request(app.getHttpServer())
       .post('/discussion')
@@ -81,7 +83,9 @@ describe('Discussion Validation E2E Tests', () => {
   });
 
   it('rejects invalid tags boundaries', async () => {
-    const tooManyTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1).fill('NETWORKING');
+    const tooManyTags = Array(
+      VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1,
+    ).fill('NETWORKING');
 
     await request(app.getHttpServer())
       .post('/discussion')
@@ -92,43 +96,75 @@ describe('Discussion Validation E2E Tests', () => {
     await request(app.getHttpServer())
       .post('/discussion')
       .set('Cookie', sessionCookie)
-      .send({ question: 'Valid question', tags: tooManyTags, type: 'DISCUSSION' })
+      .send({
+        question: 'Valid question',
+        tags: tooManyTags,
+        type: 'DISCUSSION',
+      })
       .expect(400);
   });
 
   it('accepts and rejects poll options boundaries', async () => {
-    const minOptions = Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MIN_COUNT).fill('Option');
-    const maxOptions = Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT).fill('Option');
-    const tooManyOptions = Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1).fill('Option');
+    const minOptions = Array(
+      VALIDATION_LIMITS.DISCUSSION.OPTIONS_MIN_COUNT,
+    ).fill('Option');
+    const maxOptions = Array(
+      VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT,
+    ).fill('Option');
+    const tooManyOptions = Array(
+      VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1,
+    ).fill('Option');
 
     await request(app.getHttpServer())
       .post('/discussion')
       .set('Cookie', sessionCookie)
-      .send({ question: 'Valid poll?', options: minOptions, tags: ['NETWORKING'], type: 'POLL' })
+      .send({
+        question: 'Valid poll?',
+        options: minOptions,
+        tags: ['NETWORKING'],
+        type: 'POLL',
+      })
       .expect(201);
 
     await request(app.getHttpServer())
       .post('/discussion')
       .set('Cookie', sessionCookie)
-      .send({ question: 'Valid poll?', options: maxOptions, tags: ['NETWORKING'], type: 'POLL' })
+      .send({
+        question: 'Valid poll?',
+        options: maxOptions,
+        tags: ['NETWORKING'],
+        type: 'POLL',
+      })
       .expect(201);
 
     await request(app.getHttpServer())
       .post('/discussion')
       .set('Cookie', sessionCookie)
-      .send({ question: 'Valid poll?', options: ['Only one option'], tags: ['NETWORKING'], type: 'POLL' })
+      .send({
+        question: 'Valid poll?',
+        options: ['Only one option'],
+        tags: ['NETWORKING'],
+        type: 'POLL',
+      })
       .expect(400);
 
     await request(app.getHttpServer())
       .post('/discussion')
       .set('Cookie', sessionCookie)
-      .send({ question: 'Valid poll?', options: tooManyOptions, tags: ['NETWORKING'], type: 'POLL' })
+      .send({
+        question: 'Valid poll?',
+        options: tooManyOptions,
+        tags: ['NETWORKING'],
+        type: 'POLL',
+      })
       .expect(400);
   });
 
   it('rejects pagination limit above max', async () => {
     await request(app.getHttpServer())
-      .get(`/discussion?limit=${VALIDATION_LIMITS.PAGINATION.TAKE_MAX + 1}&offset=0`)
+      .get(
+        `/discussion?limit=${VALIDATION_LIMITS.PAGINATION.TAKE_MAX + 1}&offset=0`,
+      )
       .set('Cookie', sessionCookie)
       .expect(400);
   });

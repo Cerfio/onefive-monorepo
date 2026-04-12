@@ -14,7 +14,10 @@ import {
   SanitizeHtml,
   SanitizeArray,
 } from '../../common/decorators/sanitize.decorator';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 
 export class CreateDiscussionBodyDto {
   @IsString()

@@ -128,7 +128,11 @@ export class LinkedInSyncService {
       });
 
       if (!existingSync) {
-        return { canSync: true, syncCount: 0, syncLimit: SYNC_LIMIT_PER_PERIOD };
+        return {
+          canSync: true,
+          syncCount: 0,
+          syncLimit: SYNC_LIMIT_PER_PERIOD,
+        };
       }
 
       // Vérifier si la période de 3 mois est expirée (reset du compteur)
@@ -137,7 +141,11 @@ export class LinkedInSyncService {
       const periodExpired = Date.now() - periodStartMs >= periodDurationMs;
 
       if (periodExpired) {
-        return { canSync: true, syncCount: 0, syncLimit: SYNC_LIMIT_PER_PERIOD };
+        return {
+          canSync: true,
+          syncCount: 0,
+          syncLimit: SYNC_LIMIT_PER_PERIOD,
+        };
       }
 
       // Vérifier la limite de syncs dans la période courante

@@ -79,9 +79,7 @@ describe('Profile Validation E2E Tests', () => {
   });
 
   it('rejects title exceeding max length', async () => {
-    const tooLongTitle = 'a'.repeat(
-      VALIDATION_LIMITS.PROFILE.TITLE_MAX + 1,
-    );
+    const tooLongTitle = 'a'.repeat(VALIDATION_LIMITS.PROFILE.TITLE_MAX + 1);
 
     const res = await request(app.getHttpServer())
       .put('/profile')
@@ -97,9 +95,7 @@ describe('Profile Validation E2E Tests', () => {
   });
 
   it('rejects firstName exceeding max length', async () => {
-    const tooLong = 'a'.repeat(
-      VALIDATION_LIMITS.PROFILE.FIRST_NAME_MAX + 1,
-    );
+    const tooLong = 'a'.repeat(VALIDATION_LIMITS.PROFILE.FIRST_NAME_MAX + 1);
 
     const res = await request(app.getHttpServer())
       .put('/profile')

@@ -20,7 +20,8 @@ export class AdminLogoutHandler {
     ipAddress?: string;
     userAgent?: string;
   }) {
-    const existingSession = await this.adminService.getAdminSessionForAudit(token);
+    const existingSession =
+      await this.adminService.getAdminSessionForAudit(token);
     await this.adminService.revokeAdminSession(token);
     await this.adminService.createAuditLog({
       adminUserId,

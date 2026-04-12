@@ -130,7 +130,9 @@ export class SigninHandler {
       },
     });
 
-    this.posthogService.capture(authentication.id, 'user_signed_in', { auth_type: 'EMAIL' });
+    this.posthogService.capture(authentication.id, 'user_signed_in', {
+      auth_type: 'EMAIL',
+    });
 
     return { sessionId: session.sessionId };
   }

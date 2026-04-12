@@ -23,7 +23,8 @@ export class AdminUpdateAdminRoleHandler {
     userAgent?: string;
   }) {
     await this.adminService.requireSuperAdmin(actorAdminUserId);
-    const targetAdmin = await this.adminService.getAdminUserById(targetAdminUserId);
+    const targetAdmin =
+      await this.adminService.getAdminUserById(targetAdminUserId);
     const updated = await this.adminService.setAdminRole({
       adminUserId: targetAdminUserId,
       roleKey,

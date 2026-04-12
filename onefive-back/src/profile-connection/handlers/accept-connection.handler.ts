@@ -35,7 +35,9 @@ export class AcceptConnectionHandler {
     }
 
     await this.profileConnectionService.acceptRequest(profileId, profile.id);
-    this.posthogService.capture(userId, 'connection_request_accepted', { target_profile_id: profileId });
+    this.posthogService.capture(userId, 'connection_request_accepted', {
+      target_profile_id: profileId,
+    });
     return { success: true };
   }
 }

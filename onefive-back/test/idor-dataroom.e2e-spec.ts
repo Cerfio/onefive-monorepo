@@ -19,7 +19,11 @@ describe('IDOR Data Room Security (E2E)', () => {
     app = context.app;
 
     owner = await createAuthenticatedUser(app, request, 'idor-owner');
-    const outsider = await createAuthenticatedUser(app, request, 'idor-outsider');
+    const outsider = await createAuthenticatedUser(
+      app,
+      request,
+      'idor-outsider',
+    );
     outsiderToken = outsider.token;
   });
 

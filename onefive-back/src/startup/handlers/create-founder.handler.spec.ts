@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateFounderHandler } from './create-founder.handler';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotificationService } from '../../notification/notification.service';
@@ -75,8 +79,12 @@ describe('CreateFounderHandler', () => {
         create: jest.fn().mockResolvedValue({ id: 'inv-1' }),
       },
       startup: {
-        update: jest.fn().mockResolvedValue({ id: STARTUP_ID, name: 'Test Startup' }),
-        findUnique: jest.fn().mockResolvedValue({ id: STARTUP_ID, name: 'Test Startup' }),
+        update: jest
+          .fn()
+          .mockResolvedValue({ id: STARTUP_ID, name: 'Test Startup' }),
+        findUnique: jest
+          .fn()
+          .mockResolvedValue({ id: STARTUP_ID, name: 'Test Startup' }),
       },
       profile: {
         findUnique: jest.fn().mockResolvedValue({
@@ -93,7 +101,10 @@ describe('CreateFounderHandler', () => {
         CreateFounderHandler,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: ProfileRelationshipsService, useValue: mockProfileRelationshipsService },
+        {
+          provide: ProfileRelationshipsService,
+          useValue: mockProfileRelationshipsService,
+        },
         { provide: EmailService, useValue: mockEmailService },
         { provide: 'Logger', useValue: mockLogger },
       ],
@@ -114,7 +125,10 @@ describe('CreateFounderHandler', () => {
       prisma.startupMember.findFirst.mockResolvedValue(null);
 
       await expect(
-        handler.execute({ ...baseArgs, payload: { ...basePayload, profileId: NEW_PROFILE_ID } }),
+        handler.execute({
+          ...baseArgs,
+          payload: { ...basePayload, profileId: NEW_PROFILE_ID },
+        }),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -125,7 +139,10 @@ describe('CreateFounderHandler', () => {
       });
 
       await expect(
-        handler.execute({ ...baseArgs, payload: { ...basePayload, profileId: NEW_PROFILE_ID } }),
+        handler.execute({
+          ...baseArgs,
+          payload: { ...basePayload, profileId: NEW_PROFILE_ID },
+        }),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -136,7 +153,10 @@ describe('CreateFounderHandler', () => {
       });
 
       await expect(
-        handler.execute({ ...baseArgs, payload: { ...basePayload, profileId: NEW_PROFILE_ID } }),
+        handler.execute({
+          ...baseArgs,
+          payload: { ...basePayload, profileId: NEW_PROFILE_ID },
+        }),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -164,7 +184,12 @@ describe('CreateFounderHandler', () => {
       // current members: admin (0%) + another (60%) → 60% used
       prisma.startupMember.findMany.mockResolvedValue([
         { ...adminMember, equity: 0 },
-        { id: 'member-other', profileId: 'other', startupId: STARTUP_ID, equity: 60 },
+        {
+          id: 'member-other',
+          profileId: 'other',
+          startupId: STARTUP_ID,
+          equity: 60,
+        },
       ]);
 
       const result = await handler.execute({
@@ -254,16 +279,22 @@ describe('CreateFounderHandler', () => {
       // Without the fix: 85 (existing) + 0 (pending) + 100 (payload) = 185 → BAD
       // With the fix:    (85 - 85) + 0 (pending) + 100 (payload) = 100 → OK
       // Note: the "already member" check will block the CREATE, but equity validation passes
-      const result = await handler.execute({
-        ...baseArgs,
-        payload: { ...basePayload, profileId: EXISTING_PROFILE_ID, equity: 100 },
-      }).catch((err) => {
-        // The member already exists, so "already a member" will throw.
-        // What matters is that it is NOT a BadRequestException about equity.
-        expect(err).toBeInstanceOf(BadRequestException);
-        expect(err.message).toBe('User is already a member of this startup');
-        return null;
-      });
+      const result = await handler
+        .execute({
+          ...baseArgs,
+          payload: {
+            ...basePayload,
+            profileId: EXISTING_PROFILE_ID,
+            equity: 100,
+          },
+        })
+        .catch((err) => {
+          // The member already exists, so "already a member" will throw.
+          // What matters is that it is NOT a BadRequestException about equity.
+          expect(err).toBeInstanceOf(BadRequestException);
+          expect(err.message).toBe('User is already a member of this startup');
+          return null;
+        });
 
       // If we reach this point without the equity error, the test passed
       if (result !== null) {
@@ -277,7 +308,11 @@ describe('CreateFounderHandler', () => {
       try {
         await handler.execute({
           ...baseArgs,
-          payload: { ...basePayload, profileId: EXISTING_PROFILE_ID, equity: 100 },
+          payload: {
+            ...basePayload,
+            profileId: EXISTING_PROFILE_ID,
+            equity: 100,
+          },
         });
       } catch (err) {
         thrownError = err;
@@ -287,7 +322,9 @@ describe('CreateFounderHandler', () => {
       expect(thrownError).not.toBeNull();
       expect(thrownError.message).not.toMatch(/Total equity cannot exceed/);
       // It must be the "already a member" error instead
-      expect(thrownError.message).toBe('User is already a member of this startup');
+      expect(thrownError.message).toBe(
+        'User is already a member of this startup',
+      );
     });
 
     it('should reject when the NEW equity truly exceeds 100% (even after excluding existing)', async () => {
@@ -296,14 +333,28 @@ describe('CreateFounderHandler', () => {
       // effectiveTotal = (105 - 85) + 0 + 101 = 121% → reject
       prisma.startupMember.findMany.mockResolvedValue([
         { ...adminMember, equity: 0 },
-        { id: 'member-existing', profileId: EXISTING_PROFILE_ID, startupId: STARTUP_ID, equity: 85 },
-        { id: 'member-other', profileId: 'other-profile', startupId: STARTUP_ID, equity: 20 },
+        {
+          id: 'member-existing',
+          profileId: EXISTING_PROFILE_ID,
+          startupId: STARTUP_ID,
+          equity: 85,
+        },
+        {
+          id: 'member-other',
+          profileId: 'other-profile',
+          startupId: STARTUP_ID,
+          equity: 20,
+        },
       ]);
 
       await expect(
         handler.execute({
           ...baseArgs,
-          payload: { ...basePayload, profileId: EXISTING_PROFILE_ID, equity: 101 },
+          payload: {
+            ...basePayload,
+            profileId: EXISTING_PROFILE_ID,
+            equity: 101,
+          },
         }),
       ).rejects.toThrow(BadRequestException);
 
@@ -311,9 +362,15 @@ describe('CreateFounderHandler', () => {
       await expect(
         handler.execute({
           ...baseArgs,
-          payload: { ...basePayload, profileId: EXISTING_PROFILE_ID, equity: 101 },
+          payload: {
+            ...basePayload,
+            profileId: EXISTING_PROFILE_ID,
+            equity: 101,
+          },
         }),
-      ).rejects.toMatchObject({ message: expect.stringContaining('Total equity cannot exceed') });
+      ).rejects.toMatchObject({
+        message: expect.stringContaining('Total equity cannot exceed'),
+      });
     });
 
     it('should correctly exclude only the target member equity, not others', async () => {
@@ -322,15 +379,29 @@ describe('CreateFounderHandler', () => {
       // Then "already a member" check triggers
       prisma.startupMember.findMany.mockResolvedValue([
         { ...adminMember, equity: 0 },
-        { id: 'member-existing', profileId: EXISTING_PROFILE_ID, startupId: STARTUP_ID, equity: 85 },
-        { id: 'member-other', profileId: 'other-profile', startupId: STARTUP_ID, equity: 20 },
+        {
+          id: 'member-existing',
+          profileId: EXISTING_PROFILE_ID,
+          startupId: STARTUP_ID,
+          equity: 85,
+        },
+        {
+          id: 'member-other',
+          profileId: 'other-profile',
+          startupId: STARTUP_ID,
+          equity: 20,
+        },
       ]);
 
       let thrownError: any = null;
       try {
         await handler.execute({
           ...baseArgs,
-          payload: { ...basePayload, profileId: EXISTING_PROFILE_ID, equity: 80 },
+          payload: {
+            ...basePayload,
+            profileId: EXISTING_PROFILE_ID,
+            equity: 80,
+          },
         });
       } catch (err) {
         thrownError = err;
@@ -339,7 +410,9 @@ describe('CreateFounderHandler', () => {
       // equity validation passes → error is "already a member", NOT equity error
       expect(thrownError).not.toBeNull();
       expect(thrownError.message).not.toMatch(/Total equity cannot exceed/);
-      expect(thrownError.message).toBe('User is already a member of this startup');
+      expect(thrownError.message).toBe(
+        'User is already a member of this startup',
+      );
     });
   });
 
@@ -352,21 +425,34 @@ describe('CreateFounderHandler', () => {
       prisma.profile.findUnique.mockResolvedValue(null);
 
       await expect(
-        handler.execute({ ...baseArgs, payload: { ...basePayload, profileId: 'unknown-profile' } }),
+        handler.execute({
+          ...baseArgs,
+          payload: { ...basePayload, profileId: 'unknown-profile' },
+        }),
       ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException when profile is already a member', async () => {
       // findUnique on startupMember returns an existing member
-      prisma.startupMember.findUnique.mockResolvedValue({ id: 'existing-member' });
+      prisma.startupMember.findUnique.mockResolvedValue({
+        id: 'existing-member',
+      });
 
       await expect(
-        handler.execute({ ...baseArgs, payload: { ...basePayload, profileId: NEW_PROFILE_ID } }),
+        handler.execute({
+          ...baseArgs,
+          payload: { ...basePayload, profileId: NEW_PROFILE_ID },
+        }),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        handler.execute({ ...baseArgs, payload: { ...basePayload, profileId: NEW_PROFILE_ID } }),
-      ).rejects.toMatchObject({ message: 'User is already a member of this startup' });
+        handler.execute({
+          ...baseArgs,
+          payload: { ...basePayload, profileId: NEW_PROFILE_ID },
+        }),
+      ).rejects.toMatchObject({
+        message: 'User is already a member of this startup',
+      });
     });
   });
 
@@ -440,7 +526,10 @@ describe('CreateFounderHandler', () => {
     });
 
     it('should create an invitation and return INVITED status', async () => {
-      const result = await handler.execute({ ...baseArgs, payload: emailPayload });
+      const result = await handler.execute({
+        ...baseArgs,
+        payload: emailPayload,
+      });
 
       expect(result.status).toBe('INVITED');
       expect(prisma.startupInvitation.create).toHaveBeenCalledWith(
@@ -488,7 +577,10 @@ describe('CreateFounderHandler', () => {
 
   it('should throw BadRequestException when neither profileId nor email is provided', async () => {
     await expect(
-      handler.execute({ ...baseArgs, payload: { position: 'CTO', equity: 10 } as any }),
+      handler.execute({
+        ...baseArgs,
+        payload: { position: 'CTO', equity: 10 } as any,
+      }),
     ).rejects.toThrow(BadRequestException);
   });
 });

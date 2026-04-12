@@ -101,7 +101,10 @@ export class CreatePostReactionHandler {
         this.logger.error('Failed to send reaction notification', error);
       }
 
-      this.posthogService.capture(userId, 'post_reaction_created', { post_id: postId, reaction: createPostReactionDto.reaction });
+      this.posthogService.capture(userId, 'post_reaction_created', {
+        post_id: postId,
+        reaction: createPostReactionDto.reaction,
+      });
 
       return {
         id: reaction.id,

@@ -5,7 +5,10 @@ import {
   MaxLength,
   Matches,
 } from 'class-validator';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 
 export class AuthSignupDto {
   @IsEmail({}, { message: VALIDATION_MESSAGES.EMAIL_INVALID })

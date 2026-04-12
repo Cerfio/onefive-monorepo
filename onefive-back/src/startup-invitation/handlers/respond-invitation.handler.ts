@@ -46,7 +46,9 @@ export class RespondStartupInvitationHandler {
       newStatus: invitation.status,
     });
 
-    this.posthogService.capture(userId, 'startup_invitation_responded', { action });
+    this.posthogService.capture(userId, 'startup_invitation_responded', {
+      action,
+    });
 
     return {
       id: invitation.id,

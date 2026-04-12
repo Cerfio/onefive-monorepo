@@ -227,7 +227,11 @@ describe('AuthGoogleHandler', () => {
 
       expect(sessionsService.createSession).toHaveBeenCalledWith({
         transactionId: mockTransactionId,
-        data: { userId: mockNewUser.id, userAgent: undefined, ipAddress: undefined },
+        data: {
+          userId: mockNewUser.id,
+          userAgent: undefined,
+          ipAddress: undefined,
+        },
       });
     });
 

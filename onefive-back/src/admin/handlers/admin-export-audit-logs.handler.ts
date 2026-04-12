@@ -12,12 +12,16 @@ export class AdminExportAuditLogsHandler {
     return this.toCsv(logs);
   }
 
-  private toCsv(logs: Awaited<ReturnType<AdminService['exportAuditLogs']>>): string {
+  private toCsv(
+    logs: Awaited<ReturnType<AdminService['exportAuditLogs']>>,
+  ): string {
     const header =
       'id,action,resourceType,resourceId,adminEmail,adminName,ipAddress,userAgent,metadata,createdAt';
     const rows = logs.map((l) => {
       const metadataStr =
-        l.metadata != null ? JSON.stringify(l.metadata).replace(/"/g, '""') : '';
+        l.metadata != null
+          ? JSON.stringify(l.metadata).replace(/"/g, '""')
+          : '';
       return [
         l.id,
         l.action,

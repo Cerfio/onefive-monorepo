@@ -83,7 +83,9 @@ export class UpdateFundingDto {
   @IsArray()
   @ArrayMaxSize(VALIDATION_LIMITS.STARTUP.FUNDING_INVESTORS_MAX_COUNT)
   @IsString({ each: true })
-  @MaxLength(VALIDATION_LIMITS.STARTUP.FUNDING_INVESTOR_NAME_MAX, { each: true })
+  @MaxLength(VALIDATION_LIMITS.STARTUP.FUNDING_INVESTOR_NAME_MAX, {
+    each: true,
+  })
   investors?: string[];
 
   @IsOptional()

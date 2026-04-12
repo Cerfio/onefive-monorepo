@@ -63,7 +63,11 @@ describe('Post Validation E2E Tests', () => {
     const response = await request(app.getHttpServer())
       .post('/posts')
       .set('Cookie', sessionCookie)
-      .send({ content: 'Post with media', medias: maxMedias, tags: ['NETWORKING'] })
+      .send({
+        content: 'Post with media',
+        medias: maxMedias,
+        tags: ['NETWORKING'],
+      })
       .expect(201);
 
     expect(response.body).toBeDefined();
@@ -77,7 +81,11 @@ describe('Post Validation E2E Tests', () => {
     const res = await request(app.getHttpServer())
       .post('/posts')
       .set('Cookie', sessionCookie)
-      .send({ content: 'Too many media', medias: tooManyMedias, tags: ['NETWORKING'] });
+      .send({
+        content: 'Too many media',
+        medias: tooManyMedias,
+        tags: ['NETWORKING'],
+      });
 
     expect(res.status).toBe(400);
   });
@@ -125,7 +133,9 @@ describe('Post Validation E2E Tests', () => {
       .send({ content: maxComment })
       .expect(201);
 
-    const tooLongComment = 'a'.repeat(VALIDATION_LIMITS.POST_COMMENT.CONTENT_MAX + 1);
+    const tooLongComment = 'a'.repeat(
+      VALIDATION_LIMITS.POST_COMMENT.CONTENT_MAX + 1,
+    );
     await request(app.getHttpServer())
       .post(`/post-comments/posts/${postId}`)
       .set('Cookie', sessionCookie)

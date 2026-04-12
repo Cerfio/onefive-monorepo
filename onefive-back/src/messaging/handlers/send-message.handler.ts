@@ -39,7 +39,9 @@ export class SendMessageHandler {
       replyToId,
       attachmentId,
     });
-    this.posthogService.capture(profileId, 'message_sent', { conversation_id: conversationId });
+    this.posthogService.capture(profileId, 'message_sent', {
+      conversation_id: conversationId,
+    });
     return result;
   }
 }

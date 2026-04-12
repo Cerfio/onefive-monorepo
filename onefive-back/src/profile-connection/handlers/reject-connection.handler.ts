@@ -35,7 +35,9 @@ export class RejectConnectionHandler {
     }
 
     await this.profileConnectionService.rejectRequest(profileId, profile.id);
-    this.posthogService.capture(userId, 'connection_request_rejected', { target_profile_id: profileId });
+    this.posthogService.capture(userId, 'connection_request_rejected', {
+      target_profile_id: profileId,
+    });
     return { success: true };
   }
 }

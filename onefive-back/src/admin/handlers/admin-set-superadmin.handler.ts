@@ -27,7 +27,8 @@ export class AdminSetSuperAdminHandler {
       throw new BadRequestException('Cannot remove your own superadmin access');
     }
 
-    const targetAdmin = await this.adminService.getAdminUserById(targetAdminUserId);
+    const targetAdmin =
+      await this.adminService.getAdminUserById(targetAdminUserId);
     const updated = await this.adminService.setAdminSuperAdmin({
       adminUserId: targetAdminUserId,
       isSuperAdmin,

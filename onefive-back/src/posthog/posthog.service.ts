@@ -28,10 +28,7 @@ export class PostHogService implements OnModuleDestroy {
     });
   }
 
-  identify(
-    userId: string,
-    properties?: Record<string, unknown>,
-  ): void {
+  identify(userId: string, properties?: Record<string, unknown>): void {
     this.client?.identify({
       distinctId: userId,
       properties,

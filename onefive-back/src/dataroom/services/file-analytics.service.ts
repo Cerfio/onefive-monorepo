@@ -65,9 +65,7 @@ export class FileAnalyticsService {
       const lastViewed =
         trackingEvents.length > 0
           ? new Date(
-              Math.max(
-                ...trackingEvents.map((e) => e.timestamp.getTime()),
-              ),
+              Math.max(...trackingEvents.map((e) => e.timestamp.getTime())),
             ).toISOString()
           : file.createdAt.toISOString();
 

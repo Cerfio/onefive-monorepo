@@ -7,7 +7,15 @@ export class AdminListStartupsHandler {
   constructor(private readonly adminService: AdminService) {}
 
   @Log()
-  async execute({ skip, take, search }: { skip: number; take: number; search?: string }) {
+  async execute({
+    skip,
+    take,
+    search,
+  }: {
+    skip: number;
+    take: number;
+    search?: string;
+  }) {
     return this.adminService.listStartups({ skip, take, search });
   }
 }

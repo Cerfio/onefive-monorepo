@@ -12,7 +12,9 @@ import { ADMIN_COOKIE_NAME } from '../admin.constants';
 export class AdminSessionGuard implements CanActivate {
   constructor(private readonly adminService: AdminService) {}
 
-  private extractAdminTokenFromCookie(cookieHeader: string | undefined): string {
+  private extractAdminTokenFromCookie(
+    cookieHeader: string | undefined,
+  ): string {
     if (!cookieHeader) {
       throw new UnauthorizedException('Missing admin cookie');
     }
@@ -30,8 +32,7 @@ export class AdminSessionGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request =
-      context.switchToHttp().getRequest<FastifyAdminRequest>();
+    const request = context.switchToHttp().getRequest<FastifyAdminRequest>();
     const token = this.extractAdminTokenFromCookie(request.headers.cookie);
     const validated = await this.adminService.validateAdminToken(token);
 

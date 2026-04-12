@@ -165,11 +165,14 @@ export class CreateProfileHandler {
           },
         });
       } catch (error) {
-        this.logger.warn('Failed to force ACTIVE waitlist status in test mode', {
-          transactionId,
-          profileId: profile.id,
-          error: (error as Error).message,
-        });
+        this.logger.warn(
+          'Failed to force ACTIVE waitlist status in test mode',
+          {
+            transactionId,
+            profileId: profile.id,
+            error: (error as Error).message,
+          },
+        );
       }
     }
 

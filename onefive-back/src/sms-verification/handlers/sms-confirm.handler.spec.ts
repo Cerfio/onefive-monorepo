@@ -35,7 +35,10 @@ describe('SmsConfirmHandler', () => {
       providers: [
         SmsConfirmHandler,
         { provide: UsersService, useValue: mockUsersService },
-        { provide: SmsVerificationService, useValue: mockSmsVerificationService },
+        {
+          provide: SmsVerificationService,
+          useValue: mockSmsVerificationService,
+        },
         { provide: 'Logger', useValue: { warn: jest.fn(), error: jest.fn() } },
       ],
     }).compile();
@@ -80,7 +83,10 @@ describe('SmsConfirmHandler', () => {
     });
 
     it('should throw SmsVerificationNotFoundException when no verification exists', async () => {
-      usersService.get.mockResolvedValue({ id: mockUserId, phoneNumber: null } as any);
+      usersService.get.mockResolvedValue({
+        id: mockUserId,
+        phoneNumber: null,
+      } as any);
       smsVerificationService.findMany.mockResolvedValue([]);
 
       await expect(
@@ -94,7 +100,10 @@ describe('SmsConfirmHandler', () => {
 
     it('should throw SmsVerificationCodeExpiredException when code expired', async () => {
       const expiredDate = new Date(Date.now() - 60000);
-      usersService.get.mockResolvedValue({ id: mockUserId, phoneNumber: null } as any);
+      usersService.get.mockResolvedValue({
+        id: mockUserId,
+        phoneNumber: null,
+      } as any);
       smsVerificationService.findMany.mockResolvedValue([
         {
           smsCode: mockCode,
@@ -114,7 +123,10 @@ describe('SmsConfirmHandler', () => {
 
     it('should throw SmsVerificationIncorrectCodeException when code is wrong', async () => {
       const futureDate = new Date(Date.now() + 60000);
-      usersService.get.mockResolvedValue({ id: mockUserId, phoneNumber: null } as any);
+      usersService.get.mockResolvedValue({
+        id: mockUserId,
+        phoneNumber: null,
+      } as any);
       smsVerificationService.findMany.mockResolvedValue([
         {
           smsCode: '654321',
@@ -135,7 +147,10 @@ describe('SmsConfirmHandler', () => {
 
     it('should throw SmsVerificationPhoneNumberAlreadyUsedException when phone used by another user', async () => {
       const futureDate = new Date(Date.now() + 60000);
-      usersService.get.mockResolvedValue({ id: mockUserId, phoneNumber: null } as any);
+      usersService.get.mockResolvedValue({
+        id: mockUserId,
+        phoneNumber: null,
+      } as any);
       smsVerificationService.findMany.mockResolvedValue([
         {
           smsCode: mockCode,
@@ -159,7 +174,10 @@ describe('SmsConfirmHandler', () => {
 
     it('should verify code and update user phone number successfully', async () => {
       const futureDate = new Date(Date.now() + 60000);
-      usersService.get.mockResolvedValue({ id: mockUserId, phoneNumber: null } as any);
+      usersService.get.mockResolvedValue({
+        id: mockUserId,
+        phoneNumber: null,
+      } as any);
       smsVerificationService.findMany.mockResolvedValue([
         {
           smsCode: mockCode,

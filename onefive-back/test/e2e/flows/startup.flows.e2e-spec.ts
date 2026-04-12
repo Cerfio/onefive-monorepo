@@ -249,13 +249,23 @@ describe('Startup Flows (e2e)', () => {
 
   describe('Founders & Funding History Flow', () => {
     it('POST /startup/:id/founders: admin 200, non-admin 403, equity>100 400', async () => {
-      const { startupId, founder1, founder2 } =
-        await createStartupWithFounders(app, request);
-      const stranger = await completeUserRegistration(app, request, 'stfoundstr');
+      const { startupId, founder1, founder2 } = await createStartupWithFounders(
+        app,
+        request,
+      );
+      const stranger = await completeUserRegistration(
+        app,
+        request,
+        'stfoundstr',
+      );
 
       expect(startupId).toBeDefined();
 
-      const newMember = await completeUserRegistration(app, request, 'stfoundnew');
+      const newMember = await completeUserRegistration(
+        app,
+        request,
+        'stfoundnew',
+      );
 
       // Add with equity 0 (founder1 has 100%, so we can't add more equity)
       const adminRes = await request(app.getHttpServer())
@@ -344,7 +354,11 @@ describe('Startup Flows (e2e)', () => {
 
   describe('Invitation by Email Flow', () => {
     it('POST /startup/:id/members/invite with { email, position } returns 200 or 201', async () => {
-      const founder = await completeUserRegistration(app, request, 'stinvemail');
+      const founder = await completeUserRegistration(
+        app,
+        request,
+        'stinvemail',
+      );
       const startupRes = await request(app.getHttpServer())
         .post('/startup')
         .set('Cookie', `token=${founder.token}`)

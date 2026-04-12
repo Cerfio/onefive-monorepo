@@ -297,7 +297,9 @@ describe('Discussion Flows (e2e)', () => {
       const discRes = await request(app.getHttpServer())
         .post('/discussion')
         .set('Cookie', `token=${author.token}`)
-        .send(createDiscussionData({ question: 'Discussion to cascade delete' }));
+        .send(
+          createDiscussionData({ question: 'Discussion to cascade delete' }),
+        );
 
       expect([200, 201]).toContain(discRes.statusCode);
       const discussionId = discRes.body.data?.id;

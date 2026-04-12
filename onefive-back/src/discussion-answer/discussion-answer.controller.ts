@@ -18,7 +18,10 @@ import {
   CreateDiscussionAnswerResponseDto,
   UpdateDiscussionAnswerResponseDto,
 } from './dto/discussion-answer-response.dto';
-import { ApiResponseDto, ApiSuccessResponseDto } from '../common/dto/api-response.dto';
+import {
+  ApiResponseDto,
+  ApiSuccessResponseDto,
+} from '../common/dto/api-response.dto';
 import {
   DiscussionAnswerParamDto,
   AnswerParamDto,

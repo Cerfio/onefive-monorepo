@@ -68,9 +68,7 @@ export class UserAnalyticsService {
       const lastActivity =
         trackingEvents.length > 0
           ? new Date(
-              Math.max(
-                ...trackingEvents.map((e) => e.timestamp.getTime()),
-              ),
+              Math.max(...trackingEvents.map((e) => e.timestamp.getTime())),
             ).toISOString()
           : new Date().toISOString();
 
@@ -86,7 +84,12 @@ export class UserAnalyticsService {
       // Build per-file activity
       const fileMap = new Map<
         string,
-        { fileName: string; views: number; timeSpent: number; category?: string }
+        {
+          fileName: string;
+          views: number;
+          timeSpent: number;
+          category?: string;
+        }
       >();
       trackingEvents.forEach((e) => {
         const current = fileMap.get(e.fileId) || {

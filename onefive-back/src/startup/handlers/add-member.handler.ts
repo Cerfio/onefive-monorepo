@@ -69,7 +69,8 @@ export class AddMemberHandler {
     const isFounder = payload.isFounder === true;
     const equity = isFounder ? (payload.equity ?? 0) : 0;
     const role =
-      payload.role ?? (isFounder ? StartupMemberRoleType.ADMIN : StartupMemberRoleType.MEMBER);
+      payload.role ??
+      (isFounder ? StartupMemberRoleType.ADMIN : StartupMemberRoleType.MEMBER);
 
     if (equity > 0) {
       const currentMembers = await this.prisma.startupMember.findMany({
@@ -114,7 +115,9 @@ export class AddMemberHandler {
         equity,
         isFounder,
       });
-      this.posthogService.capture(userId, 'startup_member_added', { startup_id: startupId });
+      this.posthogService.capture(userId, 'startup_member_added', {
+        startup_id: startupId,
+      });
       return result;
     } else if (payload.email) {
       const result = await this.inviteByEmail({
@@ -130,7 +133,9 @@ export class AddMemberHandler {
         isFounder,
         message: payload.message,
       });
-      this.posthogService.capture(userId, 'startup_member_added', { startup_id: startupId });
+      this.posthogService.capture(userId, 'startup_member_added', {
+        startup_id: startupId,
+      });
       return result;
     } else {
       throw new BadRequestException(
@@ -171,9 +176,7 @@ export class AddMemberHandler {
     });
 
     if (existingMember) {
-      throw new BadRequestException(
-        'User is already a member of this startup',
-      );
+      throw new BadRequestException('User is already a member of this startup');
     }
 
     if (isFounder) {
@@ -219,10 +222,9 @@ export class AddMemberHandler {
 
       return { status: 'ADDED', memberId: profileId };
     } else {
-      const existingInvitation =
-        await this.prisma.startupInvitation.findFirst({
-          where: { startupId, invitedProfileId: profileId, status: 'PENDING' },
-        });
+      const existingInvitation = await this.prisma.startupInvitation.findFirst({
+        where: { startupId, invitedProfileId: profileId, status: 'PENDING' },
+      });
 
       if (existingInvitation) {
         throw new BadRequestException(
@@ -338,8 +340,7 @@ export class AddMemberHandler {
       },
     });
 
-    const frontendUrl =
-      process.env.FRONTEND_URL || 'https://app.onefive.com';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://app.onefive.com';
     const acceptUrl = `${frontendUrl}/startup/invitations/${invitation.id}/accept`;
     const declineUrl = `${frontendUrl}/startup/invitations/${invitation.id}/decline`;
 

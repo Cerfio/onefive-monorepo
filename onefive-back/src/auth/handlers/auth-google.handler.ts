@@ -105,9 +105,14 @@ export class AuthGoogleHandler {
         },
       });
 
-      this.posthogService.capture(user.id, 'user_authenticated_google', { is_new_user: isNewUser });
+      this.posthogService.capture(user.id, 'user_authenticated_google', {
+        is_new_user: isNewUser,
+      });
       if (isNewUser) {
-        this.posthogService.identify(user.id, { email: user.email, auth_type: 'GOOGLE' });
+        this.posthogService.identify(user.id, {
+          email: user.email,
+          auth_type: 'GOOGLE',
+        });
       }
 
       return {

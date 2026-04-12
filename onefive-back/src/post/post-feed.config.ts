@@ -6,10 +6,5 @@ export const FEED_MIX_CONFIG = {
     TRENDING: 1,
     LOCATION_BASED: 1,
   },
-  fallbackOrder: [
-    'RELATION',
-    'FOLLOWED_HASHTAG',
-    'TRENDING',
-    'LOCATION_BASED',
-  ],
+  fallbackOrder: ['RELATION', 'FOLLOWED_HASHTAG', 'TRENDING', 'LOCATION_BASED'],
 };

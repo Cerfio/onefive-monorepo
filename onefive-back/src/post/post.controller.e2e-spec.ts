@@ -430,7 +430,9 @@ describe('PostController (e2e)', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
       const feedItems =
-        response.body.data?.posts ?? response.body.data?.items ?? response.body.data;
+        response.body.data?.posts ??
+        response.body.data?.items ??
+        response.body.data;
       expect(Array.isArray(feedItems)).toBe(true);
       expect(feedItems.length).toBeGreaterThan(0);
     });
@@ -443,7 +445,9 @@ describe('PostController (e2e)', () => {
 
       expect(response.body.success).toBe(true);
       const feedItems =
-        response.body.data?.posts ?? response.body.data?.items ?? response.body.data;
+        response.body.data?.posts ??
+        response.body.data?.items ??
+        response.body.data;
       expect(Array.isArray(feedItems)).toBe(true);
       expect(feedItems.length).toBeLessThanOrEqual(2);
     });
@@ -458,9 +462,8 @@ describe('PostController (e2e)', () => {
     });
 
     it('should reject limit above max', async () => {
-      const { VALIDATION_LIMITS } = await import(
-        '../common/constants/validation-limits.constants'
-      );
+      const { VALIDATION_LIMITS } =
+        await import('../common/constants/validation-limits.constants');
       await request(app.getHttpServer())
         .get(
           `/posts/feed?limit=${VALIDATION_LIMITS.POST.FEED_LIMIT_MAX + 1}&skip=0`,

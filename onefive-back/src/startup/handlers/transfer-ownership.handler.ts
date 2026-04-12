@@ -8,7 +8,11 @@ import { LogService } from 'logstash-winston-3';
 import { Log } from '../../common/logger/logger.decorator';
 import { PrismaService } from '../../prisma/prisma.service';
 import { PostHogService } from 'src/posthog/posthog.service';
-import { StartupMemberRoleType, NotificationType, NotificationCategory } from '@prisma/client';
+import {
+  StartupMemberRoleType,
+  NotificationType,
+  NotificationCategory,
+} from '@prisma/client';
 import { NotificationService } from '../../notification/notification.service';
 
 @Injectable()

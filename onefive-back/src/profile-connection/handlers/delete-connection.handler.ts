@@ -35,7 +35,9 @@ export class DeleteConnectionHandler {
     }
 
     await this.profileConnectionService.deleteConnection(profile.id, profileId);
-    this.posthogService.capture(userId, 'connection_deleted', { target_profile_id: profileId });
+    this.posthogService.capture(userId, 'connection_deleted', {
+      target_profile_id: profileId,
+    });
     return { success: true };
   }
 }

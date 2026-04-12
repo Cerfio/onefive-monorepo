@@ -58,9 +58,8 @@ export class TrackingService {
         VIEW_EVENT_TYPES.includes(e.eventType),
       ).length;
 
-      const uniqueViewers = new Set(
-        trackingEvents.map((e) => e.profileId),
-      ).size;
+      const uniqueViewers = new Set(trackingEvents.map((e) => e.profileId))
+        .size;
 
       // Average session duration from events that have it
       const sessionDurations = trackingEvents

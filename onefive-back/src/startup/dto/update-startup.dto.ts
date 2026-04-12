@@ -17,7 +17,10 @@ import { VALIDATION_LIMITS } from '../../common/constants/validation-limits.cons
 export class UpdateStartupDto {
   @IsOptional()
   @IsString()
-  @Length(VALIDATION_LIMITS.STARTUP.NAME_MIN, VALIDATION_LIMITS.STARTUP.NAME_MAX)
+  @Length(
+    VALIDATION_LIMITS.STARTUP.NAME_MIN,
+    VALIDATION_LIMITS.STARTUP.NAME_MAX,
+  )
   @SanitizeText()
   name?: string;
 
@@ -49,12 +52,18 @@ export class UpdateStartupDto {
 
   @IsOptional()
   @IsString()
-  @Length(VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH, VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH)
+  @Length(
+    VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH,
+    VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH,
+  )
   countryCode?: string;
 
   @IsOptional()
   @IsString()
-  @Length(VALIDATION_LIMITS.STARTUP.CITY_MIN, VALIDATION_LIMITS.STARTUP.CITY_MAX)
+  @Length(
+    VALIDATION_LIMITS.STARTUP.CITY_MIN,
+    VALIDATION_LIMITS.STARTUP.CITY_MAX,
+  )
   @SanitizeText()
   city?: string;
 

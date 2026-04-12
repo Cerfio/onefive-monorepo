@@ -81,7 +81,11 @@ describe('Referral Flows (e2e)', () => {
 
   describe('Referral Accepted Notification (link flow)', () => {
     it('should notify referrer when new user signs up via link and verifies email', async () => {
-      const referrer = await completeUserRegistration(app, request, 'refaccref');
+      const referrer = await completeUserRegistration(
+        app,
+        request,
+        'refaccref',
+      );
 
       // Get referrer's referral code from waitlist status
       const statusRes = await request(app.getHttpServer())
@@ -152,7 +156,8 @@ describe('Referral Flows (e2e)', () => {
         ? notifData
         : (notifData?.items ?? notifData?.notifications ?? []);
       const hasRefAccepted = items.some(
-        (n: any) => n.type === 'REFERRAL_ACCEPTED' || n.entityType === 'REFERRAL',
+        (n: any) =>
+          n.type === 'REFERRAL_ACCEPTED' || n.entityType === 'REFERRAL',
       );
       expect(hasRefAccepted).toBe(true);
     });

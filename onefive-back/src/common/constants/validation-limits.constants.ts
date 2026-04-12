@@ -1,9 +1,9 @@
 /**
  * Constantes de validation partagées
- * 
+ *
  * ⚠️ IMPORTANT : Ces limites doivent être synchronisées avec le frontend
  * Fichier frontend : onefive-front/src/constants/validation-limits.ts
- * 
+ *
  * Toute modification ici DOIT être répliquée côté frontend.
  */
 
@@ -208,7 +208,8 @@ export const VALIDATION_MESSAGES = {
   EMAIL_INVALID: 'Email invalide',
   PASSWORD_TOO_SHORT: `Le mot de passe doit contenir au moins ${VALIDATION_LIMITS.AUTH.PASSWORD_MIN} caractères`,
   PASSWORD_TOO_LONG: `Le mot de passe ne peut pas dépasser ${VALIDATION_LIMITS.AUTH.PASSWORD_MAX} caractères`,
-  PASSWORD_WEAK: 'Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un symbole',
+  PASSWORD_WEAK:
+    'Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un symbole',
 
   // Profile
   FIRST_NAME_REQUIRED: 'Le prénom est obligatoire',
@@ -266,7 +267,7 @@ export const VALIDATION_MESSAGES = {
   QUERY_TOO_SHORT: `La recherche doit contenir au moins ${VALIDATION_LIMITS.SEARCH.QUERY_MIN} caractères`,
 
   // Batch
-  BATCH_TOO_LARGE: 'Trop d\'opérations à la fois',
+  BATCH_TOO_LARGE: "Trop d'opérations à la fois",
 } as const;
 
 /**

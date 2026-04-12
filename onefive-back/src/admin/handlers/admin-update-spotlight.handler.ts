@@ -36,17 +36,24 @@ export class AdminUpdateSpotlightHandler {
     const afterSpot = await this.adminService.getSpotlight(spot.id);
 
     const trackedKeys = Object.keys(spotData) as Array<keyof CreateSpotDto>;
-    const changes = trackedKeys.reduce<Record<string, { before: unknown; after: unknown }>>(
-      (acc, key) => {
-        const beforeValue = (beforeSpot as Record<string, unknown>)[key as string];
-        const afterValue = (afterSpot as Record<string, unknown>)[key as string];
-        if (JSON.stringify(beforeValue ?? null) !== JSON.stringify(afterValue ?? null)) {
-          acc[key as string] = { before: beforeValue ?? null, after: afterValue ?? null };
-        }
-        return acc;
-      },
-      {},
-    );
+    const changes = trackedKeys.reduce<
+      Record<string, { before: unknown; after: unknown }>
+    >((acc, key) => {
+      const beforeValue = (beforeSpot as Record<string, unknown>)[
+        key as string
+      ];
+      const afterValue = (afterSpot as Record<string, unknown>)[key as string];
+      if (
+        JSON.stringify(beforeValue ?? null) !==
+        JSON.stringify(afterValue ?? null)
+      ) {
+        acc[key as string] = {
+          before: beforeValue ?? null,
+          after: afterValue ?? null,
+        };
+      }
+      return acc;
+    }, {});
     const changedFields = Object.keys(changes);
 
     await this.adminService.createAuditLog({
@@ -58,9 +65,7 @@ export class AdminUpdateSpotlightHandler {
         transactionId,
         spotType: spot.spot,
         changedFields,
-        changes: JSON.parse(
-          JSON.stringify(changes),
-        ) as Prisma.InputJsonValue,
+        changes: JSON.parse(JSON.stringify(changes)) as Prisma.InputJsonValue,
       },
       ipAddress,
       userAgent,

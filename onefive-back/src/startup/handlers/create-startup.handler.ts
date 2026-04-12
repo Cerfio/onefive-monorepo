@@ -325,7 +325,8 @@ export class CreateStartupHandler {
       return;
     }
 
-    const inviterName = `${inviterProfile.firstName} ${inviterProfile.lastName}`.trim();
+    const inviterName =
+      `${inviterProfile.firstName} ${inviterProfile.lastName}`.trim();
     const frontendUrl = process.env.FRONTEND_URL || 'https://app.onefive.com';
 
     await Promise.all(
@@ -353,14 +354,16 @@ export class CreateStartupHandler {
           }
         }
 
-        const recipientEmail = invitation.email || invitation.invitedProfile?.user?.email;
+        const recipientEmail =
+          invitation.email || invitation.invitedProfile?.user?.email;
         if (!recipientEmail) {
           return;
         }
 
         const acceptUrl = `${frontendUrl}/startup/invitations/${invitation.id}/accept`;
         const declineUrl = `${frontendUrl}/startup/invitations/${invitation.id}/decline`;
-        const emailType = invitation.equity > 0 ? 'founder-invitation' : 'member-invitation';
+        const emailType =
+          invitation.equity > 0 ? 'founder-invitation' : 'member-invitation';
 
         try {
           await this.emailService.sendEmail({
@@ -378,13 +381,16 @@ export class CreateStartupHandler {
             },
           });
         } catch (error) {
-          this.logger.error('Failed to send startup invitation email on startup creation', {
-            transactionId,
-            startupId,
-            invitationId: invitation.id,
-            recipientEmail,
-            error: error instanceof Error ? error.message : 'Unknown error',
-          });
+          this.logger.error(
+            'Failed to send startup invitation email on startup creation',
+            {
+              transactionId,
+              startupId,
+              invitationId: invitation.id,
+              recipientEmail,
+              error: error instanceof Error ? error.message : 'Unknown error',
+            },
+          );
         }
       }),
     );
@@ -423,10 +429,9 @@ export class CreateStartupHandler {
       }
 
       const arrayBuffer = await response.arrayBuffer();
-      const sourceMimeType = response.headers
-        .get('content-type')
-        ?.split(';')[0]
-        .trim() || 'image/jpeg';
+      const sourceMimeType =
+        response.headers.get('content-type')?.split(';')[0].trim() ||
+        'image/jpeg';
       const buffer = Buffer.from(arrayBuffer);
 
       const processedFile = await this.fileProcessingService.processFile(

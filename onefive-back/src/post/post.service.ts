@@ -243,9 +243,7 @@ export class PostService {
           take: limit + 1,
           where: {
             isHidden: false,
-            ...(tags && tags.length > 0
-              ? { tags: { hasSome: tags } }
-              : {}),
+            ...(tags && tags.length > 0 ? { tags: { hasSome: tags } } : {}),
           },
           orderBy: { createdAt: 'desc' },
           select: {

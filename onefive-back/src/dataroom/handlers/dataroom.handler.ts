@@ -369,7 +369,9 @@ export class DataroomHandler {
     };
   }
 
-  async delete(input: DeleteDataroomDto & { profileId?: string }): Promise<DeleteDataroomResponseDto> {
+  async delete(
+    input: DeleteDataroomDto & { profileId?: string },
+  ): Promise<DeleteDataroomResponseDto> {
     await this.dataroomService.delete({
       transactionId: input.transactionId,
       dataroomId: input.dataroomId,

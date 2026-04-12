@@ -1,4 +1,11 @@
-import { IsEnum, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export enum ReportResourceTypeDto {
   PROFILE = 'PROFILE',
@@ -24,7 +31,8 @@ export enum ReportReasonDto {
  * UUID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
  * CUID: c + 24 caractères alphanumériques
  */
-const UUID_OR_CUID_REGEX = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|c[a-z0-9]{24})$/i;
+const UUID_OR_CUID_REGEX =
+  /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|c[a-z0-9]{24})$/i;
 
 export class CreateReportDto {
   @IsEnum(ReportResourceTypeDto)

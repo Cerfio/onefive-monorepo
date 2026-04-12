@@ -16,7 +16,10 @@ import {
   SanitizeHtml,
   SanitizeArray,
 } from '../../common/decorators/sanitize.decorator';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 import { ProfileRole } from '../profile-role.config';
 
 class SocialLinkDto {
@@ -93,7 +96,10 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @IsString()
-  @Length(VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH, VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH)
+  @Length(
+    VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH,
+    VALIDATION_LIMITS.STARTUP.COUNTRY_CODE_LENGTH,
+  )
   countryCode?: string;
 
   @IsOptional()
@@ -104,7 +110,7 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(2, { message: 'Maximum 2 rôles dans l\'écosystème' })
+  @ArrayMaxSize(2, { message: "Maximum 2 rôles dans l'écosystème" })
   @IsEnum(ProfileRole, { each: true })
   ecosystemRoles?: string[];
 }

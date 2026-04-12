@@ -68,7 +68,10 @@ export class SpotlightService {
       //   → { periodicity, plan: { create: { name, price, ... } } }
       // Event/Contest prices: { name, price, currency, fee }
       //   → { plan: { create: { name, price, currency, fee } } }
-      const transformPriceItems = (items: any[], hasPeriodicityField: boolean) => {
+      const transformPriceItems = (
+        items: any[],
+        hasPeriodicityField: boolean,
+      ) => {
         if (!items || items.length === 0) return [];
         return items.map((item: any) => {
           if (hasPeriodicityField) {
@@ -90,23 +93,34 @@ export class SpotlightService {
       };
 
       if (spotData.accelerator) {
-        spotCreateData.accelerator = { create: prepareRelation(spotData.accelerator, true) };
+        spotCreateData.accelerator = {
+          create: prepareRelation(spotData.accelerator, true),
+        };
       }
       if (spotData.contest) {
-        spotCreateData.contest = { create: prepareRelation(spotData.contest, false) };
+        spotCreateData.contest = {
+          create: prepareRelation(spotData.contest, false),
+        };
       }
       if (spotData.event) {
-        spotCreateData.event = { create: prepareRelation(spotData.event, false) };
+        spotCreateData.event = {
+          create: prepareRelation(spotData.event, false),
+        };
       }
       if (spotData.incubator) {
-        spotCreateData.incubator = { create: prepareRelation(spotData.incubator, true) };
+        spotCreateData.incubator = {
+          create: prepareRelation(spotData.incubator, true),
+        };
       }
       if (spotData.coworkingSpace) {
         const { prices, openingHours, ...cwRest } = spotData.coworkingSpace;
-        const pricesPart = prices !== undefined
-          ? { prices: { create: transformPriceItems(prices, true) } }
+        const pricesPart =
+          prices !== undefined
+            ? { prices: { create: transformPriceItems(prices, true) } }
+            : {};
+        const ohPart = openingHours
+          ? { openingHours: { create: openingHours } }
           : {};
-        const ohPart = openingHours ? { openingHours: { create: openingHours } } : {};
         spotCreateData.coworkingSpace = {
           create: { ...cwRest, ...pricesPart, ...ohPart },
         };
@@ -130,7 +144,9 @@ export class SpotlightService {
             updatePayload.event = {
               update: {
                 ...eventFields,
-                ...(prices ? { prices: { deleteMany: {}, create: prices.create ?? [] } } : {}),
+                ...(prices
+                  ? { prices: { deleteMany: {}, create: prices.create ?? [] } }
+                  : {}),
               },
             };
           }
@@ -183,10 +199,34 @@ export class SpotlightService {
       if (expertiseDomains.length > 0) {
         andFilters.push({
           OR: [
-            { event: { is: { expertiseDomains: { hasSome: expertiseDomains as any[] } } } },
-            { contest: { is: { expertiseDomains: { hasSome: expertiseDomains as any[] } } } },
-            { incubator: { is: { expertiseDomains: { hasSome: expertiseDomains as any[] } } } },
-            { accelerator: { is: { expertiseDomains: { hasSome: expertiseDomains as any[] } } } },
+            {
+              event: {
+                is: {
+                  expertiseDomains: { hasSome: expertiseDomains as any[] },
+                },
+              },
+            },
+            {
+              contest: {
+                is: {
+                  expertiseDomains: { hasSome: expertiseDomains as any[] },
+                },
+              },
+            },
+            {
+              incubator: {
+                is: {
+                  expertiseDomains: { hasSome: expertiseDomains as any[] },
+                },
+              },
+            },
+            {
+              accelerator: {
+                is: {
+                  expertiseDomains: { hasSome: expertiseDomains as any[] },
+                },
+              },
+            },
           ],
         });
       }
@@ -197,11 +237,31 @@ export class SpotlightService {
         if (cost.includes('free')) {
           pricingPredicates.push({
             OR: [
-              { event: { is: { prices: { some: { plan: { price: { lte: 0 } } } } } } },
-              { contest: { is: { prices: { some: { plan: { price: { lte: 0 } } } } } } },
-              { incubator: { is: { prices: { some: { plan: { price: { lte: 0 } } } } } } },
-              { accelerator: { is: { prices: { some: { plan: { price: { lte: 0 } } } } } } },
-              { coworkingSpace: { is: { prices: { some: { plan: { price: { lte: 0 } } } } } } },
+              {
+                event: {
+                  is: { prices: { some: { plan: { price: { lte: 0 } } } } },
+                },
+              },
+              {
+                contest: {
+                  is: { prices: { some: { plan: { price: { lte: 0 } } } } },
+                },
+              },
+              {
+                incubator: {
+                  is: { prices: { some: { plan: { price: { lte: 0 } } } } },
+                },
+              },
+              {
+                accelerator: {
+                  is: { prices: { some: { plan: { price: { lte: 0 } } } } },
+                },
+              },
+              {
+                coworkingSpace: {
+                  is: { prices: { some: { plan: { price: { lte: 0 } } } } },
+                },
+              },
             ],
           });
         }
@@ -209,11 +269,31 @@ export class SpotlightService {
         if (cost.includes('paid')) {
           pricingPredicates.push({
             OR: [
-              { event: { is: { prices: { some: { plan: { price: { gt: 0 } } } } } } },
-              { contest: { is: { prices: { some: { plan: { price: { gt: 0 } } } } } } },
-              { incubator: { is: { prices: { some: { plan: { price: { gt: 0 } } } } } } },
-              { accelerator: { is: { prices: { some: { plan: { price: { gt: 0 } } } } } } },
-              { coworkingSpace: { is: { prices: { some: { plan: { price: { gt: 0 } } } } } } },
+              {
+                event: {
+                  is: { prices: { some: { plan: { price: { gt: 0 } } } } },
+                },
+              },
+              {
+                contest: {
+                  is: { prices: { some: { plan: { price: { gt: 0 } } } } },
+                },
+              },
+              {
+                incubator: {
+                  is: { prices: { some: { plan: { price: { gt: 0 } } } } },
+                },
+              },
+              {
+                accelerator: {
+                  is: { prices: { some: { plan: { price: { gt: 0 } } } } },
+                },
+              },
+              {
+                coworkingSpace: {
+                  is: { prices: { some: { plan: { price: { gt: 0 } } } } },
+                },
+              },
             ],
           });
         }
@@ -221,11 +301,71 @@ export class SpotlightService {
         if (cost.includes('donation')) {
           pricingPredicates.push({
             OR: [
-              { event: { is: { prices: { some: { plan: { name: { contains: 'donation', mode: 'insensitive' } } } } } } },
-              { contest: { is: { prices: { some: { plan: { name: { contains: 'donation', mode: 'insensitive' } } } } } } },
-              { incubator: { is: { prices: { some: { plan: { name: { contains: 'donation', mode: 'insensitive' } } } } } } },
-              { accelerator: { is: { prices: { some: { plan: { name: { contains: 'donation', mode: 'insensitive' } } } } } } },
-              { coworkingSpace: { is: { prices: { some: { plan: { name: { contains: 'donation', mode: 'insensitive' } } } } } } },
+              {
+                event: {
+                  is: {
+                    prices: {
+                      some: {
+                        plan: {
+                          name: { contains: 'donation', mode: 'insensitive' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                contest: {
+                  is: {
+                    prices: {
+                      some: {
+                        plan: {
+                          name: { contains: 'donation', mode: 'insensitive' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                incubator: {
+                  is: {
+                    prices: {
+                      some: {
+                        plan: {
+                          name: { contains: 'donation', mode: 'insensitive' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                accelerator: {
+                  is: {
+                    prices: {
+                      some: {
+                        plan: {
+                          name: { contains: 'donation', mode: 'insensitive' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                coworkingSpace: {
+                  is: {
+                    prices: {
+                      some: {
+                        plan: {
+                          name: { contains: 'donation', mode: 'insensitive' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             ],
           });
         }
@@ -277,7 +417,9 @@ export class SpotlightService {
       };
 
       if (typeof lat === 'number' && typeof lng === 'number') {
-        const nearbySpots = await this.prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+        const nearbySpots = await this.prisma.$queryRaw<
+          Array<{ id: string }>
+        >(Prisma.sql`
           SELECT id FROM spots
           WHERE location IS NOT NULL
             AND ST_DWithin(
@@ -304,10 +446,14 @@ export class SpotlightService {
           include: includeRelations,
         });
 
-        const spotsById = new Map(spotsWithRelations.map((spotItem) => [spotItem.id, spotItem]));
+        const spotsById = new Map(
+          spotsWithRelations.map((spotItem) => [spotItem.id, spotItem]),
+        );
         const orderedFilteredSpots = nearbyIds
           .map((id) => spotsById.get(id))
-          .filter((spotItem): spotItem is NonNullable<typeof spotItem> => Boolean(spotItem));
+          .filter((spotItem): spotItem is NonNullable<typeof spotItem> =>
+            Boolean(spotItem),
+          );
 
         return {
           spots: orderedFilteredSpots.slice(skip, skip + take),
@@ -371,7 +517,10 @@ export class SpotlightService {
       }
 
       // Same price-item transformation as create
-      const transformUpdatePriceItems = (items: any[], hasPeriodicity: boolean) => {
+      const transformUpdatePriceItems = (
+        items: any[],
+        hasPeriodicity: boolean,
+      ) => {
         if (!items || items.length === 0) return [];
         return items.map((item: any) => {
           if (hasPeriodicity) {
@@ -386,13 +535,16 @@ export class SpotlightService {
       // `update` branch uses { deleteMany: {}, create: [] } to replace all existing.
       const buildRelationUpsert = (data: any, hasPeriodicity: boolean) => {
         const { prices, ...fields } = data;
-        const transformed = prices !== undefined
-          ? transformUpdatePriceItems(prices, hasPeriodicity)
-          : undefined;
+        const transformed =
+          prices !== undefined
+            ? transformUpdatePriceItems(prices, hasPeriodicity)
+            : undefined;
         return {
           create: {
             ...fields,
-            ...(transformed !== undefined ? { prices: { create: transformed } } : {}),
+            ...(transformed !== undefined
+              ? { prices: { create: transformed } }
+              : {}),
           },
           update: {
             ...fields,
@@ -404,33 +556,46 @@ export class SpotlightService {
       };
 
       if (spotData.accelerator !== undefined) {
-        updateData.accelerator = { upsert: buildRelationUpsert(spotData.accelerator, true) };
+        updateData.accelerator = {
+          upsert: buildRelationUpsert(spotData.accelerator, true),
+        };
       }
       if (spotData.contest !== undefined) {
-        updateData.contest = { upsert: buildRelationUpsert(spotData.contest, false) };
+        updateData.contest = {
+          upsert: buildRelationUpsert(spotData.contest, false),
+        };
       }
       if (spotData.event !== undefined) {
-        updateData.event = { upsert: buildRelationUpsert(spotData.event, false) };
+        updateData.event = {
+          upsert: buildRelationUpsert(spotData.event, false),
+        };
       }
       if (spotData.incubator !== undefined) {
-        updateData.incubator = { upsert: buildRelationUpsert(spotData.incubator, true) };
+        updateData.incubator = {
+          upsert: buildRelationUpsert(spotData.incubator, true),
+        };
       }
       if (spotData.coworkingSpace !== undefined) {
         const { prices, openingHours, ...cwFields } = spotData.coworkingSpace;
-        const transformed = prices !== undefined
-          ? transformUpdatePriceItems(prices, true)
-          : undefined;
-        const pricesForCreate = transformed !== undefined
-          ? { prices: { create: transformed } }
-          : {};
-        const pricesForUpdate = transformed !== undefined
-          ? { prices: { deleteMany: {}, create: transformed } }
-          : {};
+        const transformed =
+          prices !== undefined
+            ? transformUpdatePriceItems(prices, true)
+            : undefined;
+        const pricesForCreate =
+          transformed !== undefined ? { prices: { create: transformed } } : {};
+        const pricesForUpdate =
+          transformed !== undefined
+            ? { prices: { deleteMany: {}, create: transformed } }
+            : {};
         const ohForCreate = openingHours
           ? { openingHours: { create: openingHours } }
           : {};
         const ohForUpdate = openingHours
-          ? { openingHours: { upsert: { create: openingHours, update: openingHours } } }
+          ? {
+              openingHours: {
+                upsert: { create: openingHours, update: openingHours },
+              },
+            }
           : {};
         updateData.coworkingSpace = {
           upsert: {

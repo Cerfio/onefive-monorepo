@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { LogService } from 'logstash-winston-3';
 import { Log } from '../../common/logger/logger.decorator';
 import { ProfileFollowService } from '../profile-follow.service';
@@ -41,7 +46,9 @@ export class FollowProfileHandler {
     }
 
     await this.profileFollowService.follow(profile.id, profileId);
-    this.posthogService.capture(userId, 'profile_followed', { target_profile_id: profileId });
+    this.posthogService.capture(userId, 'profile_followed', {
+      target_profile_id: profileId,
+    });
 
     try {
       await this.notificationHelper.notifyFollow({

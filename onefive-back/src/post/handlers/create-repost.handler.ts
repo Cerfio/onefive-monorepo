@@ -126,7 +126,9 @@ export class CreateRepostHandler {
         });
       });
 
-    this.posthogService.capture(userId, 'post_reposted', { original_post_id: targetPostId });
+    this.posthogService.capture(userId, 'post_reposted', {
+      original_post_id: targetPostId,
+    });
 
     // Retourner les données minimales
     const createdAt =

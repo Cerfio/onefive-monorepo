@@ -12,20 +12,31 @@ import {
   SanitizeHtml,
   SanitizeArray,
 } from '../../common/decorators/sanitize.decorator';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from '../../common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from '../../common/constants/validation-limits.constants';
 
 export class CreateEducationDto {
   @IsString()
-  @Length(VALIDATION_LIMITS.EDUCATION.DEGREE_MIN, VALIDATION_LIMITS.EDUCATION.DEGREE_MAX, {
-    message: VALIDATION_MESSAGES.DEGREE_REQUIRED,
-  })
+  @Length(
+    VALIDATION_LIMITS.EDUCATION.DEGREE_MIN,
+    VALIDATION_LIMITS.EDUCATION.DEGREE_MAX,
+    {
+      message: VALIDATION_MESSAGES.DEGREE_REQUIRED,
+    },
+  )
   @SanitizeText()
   degree: string;
 
   @IsString()
-  @Length(VALIDATION_LIMITS.EDUCATION.SCHOOL_MIN, VALIDATION_LIMITS.EDUCATION.SCHOOL_MAX, {
-    message: VALIDATION_MESSAGES.SCHOOL_REQUIRED,
-  })
+  @Length(
+    VALIDATION_LIMITS.EDUCATION.SCHOOL_MIN,
+    VALIDATION_LIMITS.EDUCATION.SCHOOL_MAX,
+    {
+      message: VALIDATION_MESSAGES.SCHOOL_REQUIRED,
+    },
+  )
   @SanitizeText()
   school: string;
 

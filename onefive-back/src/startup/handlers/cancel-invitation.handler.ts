@@ -49,9 +49,7 @@ export class CancelInvitationHandler {
       (member.role !== StartupMemberRoleType.SUPER_ADMIN &&
         member.role !== StartupMemberRoleType.ADMIN)
     ) {
-      throw new ForbiddenException(
-        'Only admins can cancel invitations',
-      );
+      throw new ForbiddenException('Only admins can cancel invitations');
     }
 
     const invitation = await this.prisma.startupInvitation.findFirst({
@@ -66,9 +64,7 @@ export class CancelInvitationHandler {
     }
 
     if (invitation.status !== 'PENDING') {
-      throw new ForbiddenException(
-        'Only pending invitations can be cancelled',
-      );
+      throw new ForbiddenException('Only pending invitations can be cancelled');
     }
 
     await this.prisma.startupInvitation.update({

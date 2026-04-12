@@ -51,7 +51,8 @@ export class StorageService {
     @Inject('Logger') private readonly logger: LogService,
   ) {
     const accountId = this.configService.get('R2_ACCOUNT_ID') ?? '';
-    const isLocalStack = accountId.includes('localhost') || accountId.includes('localstack');
+    const isLocalStack =
+      accountId.includes('localhost') || accountId.includes('localstack');
 
     this.s3Client = new S3Client({
       region: isLocalStack ? 'us-east-1' : 'auto',

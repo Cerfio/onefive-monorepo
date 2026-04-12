@@ -57,7 +57,9 @@ export class DeleteStartupHandler {
       where: { id: startupId },
     });
 
-    this.posthogService.capture(userId, 'startup_deleted', { startup_id: startupId });
+    this.posthogService.capture(userId, 'startup_deleted', {
+      startup_id: startupId,
+    });
 
     return { status: 'DELETED', startupId };
   }

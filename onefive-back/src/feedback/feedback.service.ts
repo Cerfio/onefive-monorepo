@@ -53,7 +53,13 @@ export class FeedbackService {
         orderBy: { createdAt: 'desc' },
         include: {
           reporter: {
-            select: { id: true, userId: true, firstName: true, lastName: true, avatarId: true },
+            select: {
+              id: true,
+              userId: true,
+              firstName: true,
+              lastName: true,
+              avatarId: true,
+            },
           },
           screenshot: {
             select: { id: true },
@@ -78,7 +84,13 @@ export class FeedbackService {
       where: { id: feedbackId },
       include: {
         reporter: {
-          select: { id: true, userId: true, firstName: true, lastName: true, avatarId: true },
+          select: {
+            id: true,
+            userId: true,
+            firstName: true,
+            lastName: true,
+            avatarId: true,
+          },
         },
         screenshot: {
           select: { id: true, bucket: true, mimeType: true },

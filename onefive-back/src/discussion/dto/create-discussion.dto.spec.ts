@@ -13,7 +13,9 @@ describe('CreateDiscussionBodyDto', () => {
         type: 'DISCUSSION',
       });
 
-      expect(minQuestion.length).toBe(VALIDATION_LIMITS.DISCUSSION.QUESTION_MIN);
+      expect(minQuestion.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.QUESTION_MIN,
+      );
       const errors = await validate(dto);
       expect(errors).toHaveLength(0);
     });
@@ -26,23 +28,29 @@ describe('CreateDiscussionBodyDto', () => {
         type: 'DISCUSSION',
       });
 
-      expect(maxQuestion.length).toBe(VALIDATION_LIMITS.DISCUSSION.QUESTION_MAX);
+      expect(maxQuestion.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.QUESTION_MAX,
+      );
       const errors = await validate(dto);
       expect(errors).toHaveLength(0);
     });
 
     it('should reject question below minimum length', async () => {
-      const tooShort = 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.QUESTION_MIN - 1);
+      const tooShort = 'a'.repeat(
+        VALIDATION_LIMITS.DISCUSSION.QUESTION_MIN - 1,
+      );
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: tooShort,
         tags: ['NETWORKING'],
         type: 'DISCUSSION',
       });
 
-      expect(tooShort.length).toBe(VALIDATION_LIMITS.DISCUSSION.QUESTION_MIN - 1);
+      expect(tooShort.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.QUESTION_MIN - 1,
+      );
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const questionError = errors.find(e => e.property === 'question');
+      const questionError = errors.find((e) => e.property === 'question');
       expect(questionError).toBeDefined();
       expect(questionError?.constraints).toHaveProperty('minLength');
     });
@@ -55,10 +63,12 @@ describe('CreateDiscussionBodyDto', () => {
         type: 'DISCUSSION',
       });
 
-      expect(tooLong.length).toBe(VALIDATION_LIMITS.DISCUSSION.QUESTION_MAX + 1);
+      expect(tooLong.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.QUESTION_MAX + 1,
+      );
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const questionError = errors.find(e => e.property === 'question');
+      const questionError = errors.find((e) => e.property === 'question');
       expect(questionError).toBeDefined();
       expect(questionError?.constraints).toHaveProperty('maxLength');
     });
@@ -80,7 +90,9 @@ describe('CreateDiscussionBodyDto', () => {
     });
 
     it('should reject content exceeding maximum length', async () => {
-      const tooLongContent = 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.CONTENT_MAX + 1);
+      const tooLongContent = 'a'.repeat(
+        VALIDATION_LIMITS.DISCUSSION.CONTENT_MAX + 1,
+      );
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: 'Valid question here',
         content: tooLongContent,
@@ -88,10 +100,12 @@ describe('CreateDiscussionBodyDto', () => {
         type: 'DISCUSSION',
       });
 
-      expect(tooLongContent.length).toBe(VALIDATION_LIMITS.DISCUSSION.CONTENT_MAX + 1);
+      expect(tooLongContent.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.CONTENT_MAX + 1,
+      );
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const contentError = errors.find(e => e.property === 'content');
+      const contentError = errors.find((e) => e.property === 'content');
       expect(contentError).toBeDefined();
       expect(contentError?.constraints).toHaveProperty('maxLength');
     });
@@ -110,7 +124,9 @@ describe('CreateDiscussionBodyDto', () => {
 
   describe('tags validation', () => {
     it('should accept tags at minimum count', async () => {
-      const minTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MIN_COUNT).fill('NETWORKING');
+      const minTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MIN_COUNT).fill(
+        'NETWORKING',
+      );
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: 'Valid question',
         tags: minTags,
@@ -123,7 +139,9 @@ describe('CreateDiscussionBodyDto', () => {
     });
 
     it('should accept tags at maximum count', async () => {
-      const maxTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT).fill('NETWORKING');
+      const maxTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT).fill(
+        'NETWORKING',
+      );
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: 'Valid question',
         tags: maxTags,
@@ -144,23 +162,27 @@ describe('CreateDiscussionBodyDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const tagsError = errors.find(e => e.property === 'tags');
+      const tagsError = errors.find((e) => e.property === 'tags');
       expect(tagsError).toBeDefined();
       expect(tagsError?.constraints).toHaveProperty('arrayMinSize');
     });
 
     it('should reject tags exceeding maximum count', async () => {
-      const tooManyTags = Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1).fill('NETWORKING');
+      const tooManyTags = Array(
+        VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1,
+      ).fill('NETWORKING');
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: 'Valid question',
         tags: tooManyTags,
         type: 'DISCUSSION',
       });
 
-      expect(tooManyTags.length).toBe(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1);
+      expect(tooManyTags.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1,
+      );
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const tagsError = errors.find(e => e.property === 'tags');
+      const tagsError = errors.find((e) => e.property === 'tags');
       expect(tagsError).toBeDefined();
       expect(tagsError?.constraints).toHaveProperty('arrayMaxSize');
     });
@@ -168,7 +190,9 @@ describe('CreateDiscussionBodyDto', () => {
 
   describe('options validation (for polls)', () => {
     it('should accept options at minimum count', async () => {
-      const minOptions = Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MIN_COUNT).fill('Option');
+      const minOptions = Array(
+        VALIDATION_LIMITS.DISCUSSION.OPTIONS_MIN_COUNT,
+      ).fill('Option');
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: 'Valid poll question',
         options: minOptions,
@@ -176,13 +200,17 @@ describe('CreateDiscussionBodyDto', () => {
         type: 'POLL',
       });
 
-      expect(minOptions.length).toBe(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MIN_COUNT);
+      expect(minOptions.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.OPTIONS_MIN_COUNT,
+      );
       const errors = await validate(dto);
       expect(errors).toHaveLength(0);
     });
 
     it('should accept options at maximum count', async () => {
-      const maxOptions = Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT).fill('Option');
+      const maxOptions = Array(
+        VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT,
+      ).fill('Option');
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: 'Valid poll question',
         options: maxOptions,
@@ -190,7 +218,9 @@ describe('CreateDiscussionBodyDto', () => {
         type: 'POLL',
       });
 
-      expect(maxOptions.length).toBe(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT);
+      expect(maxOptions.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT,
+      );
       const errors = await validate(dto);
       expect(errors).toHaveLength(0);
     });
@@ -205,13 +235,15 @@ describe('CreateDiscussionBodyDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const optionsError = errors.find(e => e.property === 'options');
+      const optionsError = errors.find((e) => e.property === 'options');
       expect(optionsError).toBeDefined();
       expect(optionsError?.constraints).toHaveProperty('arrayMinSize');
     });
 
     it('should reject options exceeding maximum count', async () => {
-      const tooManyOptions = Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1).fill('Option');
+      const tooManyOptions = Array(
+        VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1,
+      ).fill('Option');
       const dto = plainToClass(CreateDiscussionBodyDto, {
         question: 'Valid poll question',
         options: tooManyOptions,
@@ -219,10 +251,12 @@ describe('CreateDiscussionBodyDto', () => {
         type: 'POLL',
       });
 
-      expect(tooManyOptions.length).toBe(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1);
+      expect(tooManyOptions.length).toBe(
+        VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1,
+      );
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      const optionsError = errors.find(e => e.property === 'options');
+      const optionsError = errors.find((e) => e.property === 'options');
       expect(optionsError).toBeDefined();
       expect(optionsError?.constraints).toHaveProperty('arrayMaxSize');
     });
@@ -234,7 +268,9 @@ describe('CreateDiscussionBodyDto', () => {
         question: 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.QUESTION_MAX),
         content: 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.CONTENT_MAX),
         context: 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.CONTEXT_MAX),
-        options: Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT).fill('Option'),
+        options: Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT).fill(
+          'Option',
+        ),
         tags: Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT).fill('TAG'),
         type: 'POLL',
       });
@@ -248,8 +284,12 @@ describe('CreateDiscussionBodyDto', () => {
         question: 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.QUESTION_MAX + 1),
         content: 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.CONTENT_MAX + 1),
         context: 'a'.repeat(VALIDATION_LIMITS.DISCUSSION.CONTEXT_MAX + 1),
-        options: Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1).fill('Option'),
-        tags: Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1).fill('TAG'),
+        options: Array(VALIDATION_LIMITS.DISCUSSION.OPTIONS_MAX_COUNT + 1).fill(
+          'Option',
+        ),
+        tags: Array(VALIDATION_LIMITS.DISCUSSION.TAGS_MAX_COUNT + 1).fill(
+          'TAG',
+        ),
         type: 'POLL',
       });
 

@@ -164,7 +164,9 @@ describe('ProfileController (e2e)', () => {
     });
 
     it('should fail if dateOfBirth is invalid', async () => {
-      const profileData = createProfileData({ dateOfBirth: 'invalid-date' as any });
+      const profileData = createProfileData({
+        dateOfBirth: 'invalid-date' as any,
+      });
 
       const response = await request(app.getHttpServer())
         .post('/profile')
@@ -175,7 +177,9 @@ describe('ProfileController (e2e)', () => {
     });
 
     it('should fail if genderSalutationPreference is invalid', async () => {
-      const profileData = createProfileData({ genderSalutationPreference: 99 as any });
+      const profileData = createProfileData({
+        genderSalutationPreference: 99 as any,
+      });
 
       const response = await request(app.getHttpServer())
         .post('/profile')

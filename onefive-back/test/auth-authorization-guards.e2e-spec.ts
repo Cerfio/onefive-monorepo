@@ -120,7 +120,11 @@ describe('Authentication/Authorization Guards Refactor (E2E)', () => {
   });
 
   it('Waitlist not active: blocks non-allowed endpoint with 403 and allows waitlist endpoints', async () => {
-    const waitingUser = await createUserInWaitlist(app, request, 'waiting-state');
+    const waitingUser = await createUserInWaitlist(
+      app,
+      request,
+      'waiting-state',
+    );
 
     await request(app.getHttpServer())
       .get('/waitlist/status')

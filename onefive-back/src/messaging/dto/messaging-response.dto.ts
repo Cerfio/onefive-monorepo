@@ -1,4 +1,7 @@
-import { PaginatedResponseDto, CursorPaginatedResponseDto } from '../../common/dto';
+import {
+  PaginatedResponseDto,
+  CursorPaginatedResponseDto,
+} from '../../common/dto';
 
 /** Conversation data in API responses */
 export interface ConversationResponseDto {
@@ -13,7 +16,9 @@ export interface MessageResponseDto {
 }
 
 /** Response for list conversations */
-export type ListConversationsResponseDto = PaginatedResponseDto<ConversationResponseDto>;
+export type ListConversationsResponseDto =
+  PaginatedResponseDto<ConversationResponseDto>;
 
 /** Response for get messages (cursor pagination) */
-export type GetMessagesResponseDto = CursorPaginatedResponseDto<MessageResponseDto>;
+export type GetMessagesResponseDto =
+  CursorPaginatedResponseDto<MessageResponseDto>;

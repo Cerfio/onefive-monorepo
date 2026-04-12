@@ -20,6 +20,12 @@ export class AdminListUsersHandler {
     dateFrom?: string;
     dateTo?: string;
   }) {
-    return this.adminService.listUsers({ skip, take, search, dateFrom, dateTo });
+    return this.adminService.listUsers({
+      skip,
+      take,
+      search,
+      dateFrom,
+      dateTo,
+    });
   }
 }

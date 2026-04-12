@@ -8,7 +8,8 @@ export const SKIP_WAITLIST_CHECK_KEY = 'skipWaitlistCheck';
  * Apply on controllers or routes that should be accessible
  * to users with waitlistStatus === 'WAITING' (e.g. auth, profile, referral, waitlist).
  */
-export const SkipWaitlistCheck = () =>
+export const SkipWaitlistCheck =
+  () =>
   (
     target: object,
     propertyKey?: string | symbol,

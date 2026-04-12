@@ -75,14 +75,20 @@ describe('ExperienceController (e2e)', () => {
     });
 
     it(`should reject creating more than ${VALIDATION_LIMITS.EXPERIENCE.MAX_EXPERIENCES_PER_PROFILE} experiences`, async () => {
-      for (let i = 0; i < VALIDATION_LIMITS.EXPERIENCE.MAX_EXPERIENCES_PER_PROFILE; i += 1) {
+      for (
+        let i = 0;
+        i < VALIDATION_LIMITS.EXPERIENCE.MAX_EXPERIENCES_PER_PROFILE;
+        i += 1
+      ) {
         await request(app.getHttpServer())
           .post('/experience')
           .set('Cookie', `token=${authToken}`)
-          .send(createExperienceData({
-            title: `Experience ${i}`,
-            company: `Company ${i}`,
-          }))
+          .send(
+            createExperienceData({
+              title: `Experience ${i}`,
+              company: `Company ${i}`,
+            }),
+          )
           .expect(201);
       }
 

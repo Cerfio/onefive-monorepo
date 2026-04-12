@@ -140,7 +140,9 @@ export function extractAuthTokenFromResponse(response: any): string {
     | string[]
     | undefined;
   if (!setCookieHeader || setCookieHeader.length === 0) {
-    throw new Error('No auth token found in response body or set-cookie header');
+    throw new Error(
+      'No auth token found in response body or set-cookie header',
+    );
   }
 
   const tokenCookie = setCookieHeader.find((cookie) =>
@@ -232,7 +234,12 @@ export async function createUserInWaitlist(
   app: any,
   request: any,
   prefix = 'waitlist',
-): Promise<{ token: string; email: string; profileId: string; userId: string }> {
+): Promise<{
+  token: string;
+  email: string;
+  profileId: string;
+  userId: string;
+}> {
   const email = createUniqueEmail(prefix);
   const signupRes = await request(app.getHttpServer())
     .post('/auth/signup')

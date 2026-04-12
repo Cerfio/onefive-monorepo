@@ -171,12 +171,8 @@ export class SeoPreviewController {
       data: {
         id: discussion.id,
         question: discussion.question,
-        content: discussion.content
-          ? discussion.content.slice(0, 300)
-          : null,
-        context: discussion.context
-          ? discussion.context.slice(0, 200)
-          : null,
+        content: discussion.content ? discussion.content.slice(0, 300) : null,
+        context: discussion.context ? discussion.context.slice(0, 200) : null,
         tags: discussion.tags,
         type: discussion.type,
         author: {
@@ -226,8 +222,14 @@ export class SeoPreviewController {
           { spot: spot.spot },
           ...(domains.length > 0
             ? [
-                { incubator: { expertiseDomains: { hasSome: domains as any } } },
-                { accelerator: { expertiseDomains: { hasSome: domains as any } } },
+                {
+                  incubator: { expertiseDomains: { hasSome: domains as any } },
+                },
+                {
+                  accelerator: {
+                    expertiseDomains: { hasSome: domains as any },
+                  },
+                },
                 { event: { expertiseDomains: { hasSome: domains as any } } },
                 { contest: { expertiseDomains: { hasSome: domains as any } } },
               ]

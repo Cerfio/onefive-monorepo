@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, Inject } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Inject,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { LogService } from 'logstash-winston-3';
 import { ALLOW_OTP_ONLY_SESSION_KEY } from '../decorators/allow-otp-only-session.decorator';

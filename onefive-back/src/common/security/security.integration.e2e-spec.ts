@@ -41,7 +41,9 @@ describe('Security Integration Tests', () => {
 
     it('should have proper CORS configuration', async () => {
       // Use origin matching FRONTEND_URL from .env.test (http://localhost:3000)
-      const origin = process.env.FRONTEND_URL?.split(',')[0]?.trim() || 'http://localhost:3000';
+      const origin =
+        process.env.FRONTEND_URL?.split(',')[0]?.trim() ||
+        'http://localhost:3000';
       const response = await request(app.getHttpServer())
         .options('/auth/signin')
         .set('Origin', origin)

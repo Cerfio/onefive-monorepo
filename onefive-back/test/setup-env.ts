@@ -10,30 +10,30 @@ process.env.DISABLE_EMAIL_SENDING = 'true';
 const originalFetch = globalThis.fetch?.bind(globalThis);
 
 if (originalFetch) {
-	globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
-		const requestUrl =
-			typeof input === 'string'
-				? input
-				: input instanceof URL
-					? input.toString()
-					: input.url;
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const requestUrl =
+      typeof input === 'string'
+        ? input
+        : input instanceof URL
+          ? input.toString()
+          : input.url;
 
-		const emailServiceUrl = process.env.ONEFIVE_MICROSERVICE_EMAIL_URL;
-		const targetsEmailEndpoint = requestUrl.includes('/api/send');
-		const targetsConfiguredEmailService =
-			!emailServiceUrl || requestUrl.startsWith(emailServiceUrl);
+    const emailServiceUrl = process.env.ONEFIVE_MICROSERVICE_EMAIL_URL;
+    const targetsEmailEndpoint = requestUrl.includes('/api/send');
+    const targetsConfiguredEmailService =
+      !emailServiceUrl || requestUrl.startsWith(emailServiceUrl);
 
-		if (
-			process.env.MOCK_EMAIL_SERVICE === 'true' &&
-			targetsEmailEndpoint &&
-			targetsConfiguredEmailService
-		) {
-			return new Response(JSON.stringify({ mocked: true, accepted: true }), {
-				status: 200,
-				headers: { 'Content-Type': 'application/json' },
-			});
-		}
+    if (
+      process.env.MOCK_EMAIL_SERVICE === 'true' &&
+      targetsEmailEndpoint &&
+      targetsConfiguredEmailService
+    ) {
+      return new Response(JSON.stringify({ mocked: true, accepted: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
-		return originalFetch(input, init);
-	}) as typeof fetch;
+    return originalFetch(input, init);
+  }) as typeof fetch;
 }

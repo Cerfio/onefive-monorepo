@@ -105,7 +105,9 @@ export class CreatePostCommentHandler {
       this.logger.error('Failed to send comment notification', error);
     }
 
-    this.posthogService.capture(userId, 'post_comment_created', { post_id: postId });
+    this.posthogService.capture(userId, 'post_comment_created', {
+      post_id: postId,
+    });
 
     return {
       id: comment.id,

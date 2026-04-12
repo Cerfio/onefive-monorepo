@@ -24,7 +24,10 @@ export class AdminHideDiscussionHandler {
   }) {
     const discussionInfo =
       await this.adminService.getDiscussionForAudit(discussionId);
-    const result = await this.adminService.hideDiscussion(discussionId, isHidden);
+    const result = await this.adminService.hideDiscussion(
+      discussionId,
+      isHidden,
+    );
 
     await this.adminService.createAuditLog({
       adminUserId: actorAdminUserId,

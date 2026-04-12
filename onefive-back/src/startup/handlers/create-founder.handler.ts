@@ -181,7 +181,9 @@ export class CreateFounderHandler {
         );
       }
 
-      this.posthogService.capture(userId, 'startup_founder_added', { startup_id: startupId });
+      this.posthogService.capture(userId, 'startup_founder_added', {
+        startup_id: startupId,
+      });
 
       return { status: 'ADDED', memberId: payload.profileId };
     } else if (payload.email) {
@@ -257,7 +259,9 @@ export class CreateFounderHandler {
         // Don't throw - invitation is created, email can be retried later
       }
 
-      this.posthogService.capture(userId, 'startup_founder_added', { startup_id: startupId });
+      this.posthogService.capture(userId, 'startup_founder_added', {
+        startup_id: startupId,
+      });
 
       return { status: 'INVITED', invitationId: invitation.id };
     } else {

@@ -27,7 +27,8 @@ export class AdminSetAdminActiveHandler {
       throw new BadRequestException('Cannot deactivate your own admin account');
     }
 
-    const targetAdmin = await this.adminService.getAdminUserById(targetAdminUserId);
+    const targetAdmin =
+      await this.adminService.getAdminUserById(targetAdminUserId);
     const updated = await this.adminService.setAdminActive({
       adminUserId: targetAdminUserId,
       isActive,
@@ -35,7 +36,9 @@ export class AdminSetAdminActiveHandler {
 
     await this.adminService.createAuditLog({
       adminUserId: actorAdminUserId,
-      action: isActive ? 'admin.admin_user.activate' : 'admin.admin_user.deactivate',
+      action: isActive
+        ? 'admin.admin_user.activate'
+        : 'admin.admin_user.deactivate',
       resourceType: 'admin_user',
       resourceId: targetAdminUserId,
       metadata: {

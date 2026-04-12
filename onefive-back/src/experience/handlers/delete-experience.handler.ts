@@ -34,7 +34,9 @@ export class DeleteExperienceHandler {
       experienceId,
     });
 
-    this.posthogService.capture(userId, 'experience_deleted', { experience_id: experienceId });
+    this.posthogService.capture(userId, 'experience_deleted', {
+      experience_id: experienceId,
+    });
 
     return { success: true };
   }

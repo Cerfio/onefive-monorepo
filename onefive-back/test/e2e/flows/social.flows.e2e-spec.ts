@@ -492,10 +492,10 @@ describe('Social Flows (e2e)', () => {
         .expect(200);
 
       const raw = notifsRes.body?.data;
-      const notifications = Array.isArray(raw)
-        ? raw
-        : (raw?.items ?? []);
-      expect(notifications.length).toBeGreaterThanOrEqual(beforeNotifications.length);
+      const notifications = Array.isArray(raw) ? raw : (raw?.items ?? []);
+      expect(notifications.length).toBeGreaterThanOrEqual(
+        beforeNotifications.length,
+      );
 
       const hasConnectionNotifFromA = notifications.some(
         (n: any) =>
@@ -555,11 +555,14 @@ describe('Social Flows (e2e)', () => {
         const notifications = Array.isArray(notifRaw)
           ? notifRaw
           : (notifRaw?.items ?? []);
-        expect(notifications.length).toBeGreaterThanOrEqual(beforeNotifications.length);
+        expect(notifications.length).toBeGreaterThanOrEqual(
+          beforeNotifications.length,
+        );
 
         const hasReactionNotifFromReactor = notifications.some(
           (n: any) =>
-            (n.actorId === reactor.profileId || n.senderId === reactor.profileId) &&
+            (n.actorId === reactor.profileId ||
+              n.senderId === reactor.profileId) &&
             (n.type === 'LIKE' || n.entityType === 'POST'),
         );
         expect(hasReactionNotifFromReactor).toBe(true);
@@ -607,11 +610,14 @@ describe('Social Flows (e2e)', () => {
         const notifications = Array.isArray(notifRaw)
           ? notifRaw
           : (notifRaw?.items ?? []);
-        expect(notifications.length).toBeGreaterThanOrEqual(beforeNotifications.length);
+        expect(notifications.length).toBeGreaterThanOrEqual(
+          beforeNotifications.length,
+        );
 
         const hasCommentNotifFromCommenter = notifications.some(
           (n: any) =>
-            (n.actorId === commenter.profileId || n.senderId === commenter.profileId) &&
+            (n.actorId === commenter.profileId ||
+              n.senderId === commenter.profileId) &&
             (n.type === 'COMMENT' || n.entityType === 'POST'),
         );
         expect(hasCommentNotifFromCommenter).toBe(true);
@@ -620,7 +626,11 @@ describe('Social Flows (e2e)', () => {
 
     it('should notify parent comment author when someone replies to their comment', async () => {
       const author = await completeUserRegistration(app, request, 'replyauth');
-      const commenter = await completeUserRegistration(app, request, 'replycmtr');
+      const commenter = await completeUserRegistration(
+        app,
+        request,
+        'replycmtr',
+      );
       const replier = await completeUserRegistration(app, request, 'replyrepl');
 
       const postRes = await request(app.getHttpServer())
@@ -676,7 +686,11 @@ describe('Social Flows (e2e)', () => {
 
     it('should notify author when someone reacts to their comment', async () => {
       const author = await completeUserRegistration(app, request, 'creactauth');
-      const commenter = await completeUserRegistration(app, request, 'creactcmtr');
+      const commenter = await completeUserRegistration(
+        app,
+        request,
+        'creactcmtr',
+      );
       const reactor = await completeUserRegistration(app, request, 'creactrct');
 
       const postRes = await request(app.getHttpServer())

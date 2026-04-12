@@ -3,7 +3,10 @@ import { Log } from 'src/common/logger/logger.decorator';
 import { LogService } from 'logstash-winston-3';
 import { EducationService } from '../education.service';
 import { CreateEducationDto } from '../dto/create-education.dto';
-import { VALIDATION_LIMITS, VALIDATION_MESSAGES } from 'src/common/constants/validation-limits.constants';
+import {
+  VALIDATION_LIMITS,
+  VALIDATION_MESSAGES,
+} from 'src/common/constants/validation-limits.constants';
 import { PostHogService } from 'src/posthog/posthog.service';
 
 type CreateEducationHandlerParams = {

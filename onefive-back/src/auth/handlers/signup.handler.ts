@@ -103,7 +103,9 @@ export class SignupHandler {
       },
     });
 
-    this.posthogService.capture(user.id, 'user_signed_up', { auth_type: 'EMAIL' });
+    this.posthogService.capture(user.id, 'user_signed_up', {
+      auth_type: 'EMAIL',
+    });
     this.posthogService.identify(user.id, { email: normalizedEmail });
 
     // Note: Referral acceptance is now handled at profile creation time

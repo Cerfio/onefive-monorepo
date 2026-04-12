@@ -18,7 +18,11 @@ describe('Signed URL Permissions (E2E)', () => {
     context = await setupFastE2E();
     app = context.app;
     owner = await createAuthenticatedUser(app, request, 'signed-owner');
-    const nonMember = await createAuthenticatedUser(app, request, 'signed-nonmem');
+    const nonMember = await createAuthenticatedUser(
+      app,
+      request,
+      'signed-nonmem',
+    );
     nonMemberToken = nonMember.token;
   });
 

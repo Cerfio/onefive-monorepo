@@ -12,7 +12,9 @@ import { VALIDATION_LIMITS } from '../../common/constants/validation-limits.cons
 
 export class SearchBarQueryDto {
   @IsString()
-  @MinLength(VALIDATION_LIMITS.SEARCH.QUERY_MIN, { message: 'Search query must be at least 2 characters' })
+  @MinLength(VALIDATION_LIMITS.SEARCH.QUERY_MIN, {
+    message: 'Search query must be at least 2 characters',
+  })
   @SanitizeText()
   q: string;
 

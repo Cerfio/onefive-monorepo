@@ -63,7 +63,7 @@ export class CreateFundingHistoryHandler {
       const startupName = historyEntry.startupName || 'une startup';
       const inviterName = inviterProfile
         ? `${inviterProfile.firstName} ${inviterProfile.lastName}`
-        : 'Quelqu\'un';
+        : "Quelqu'un";
 
       // Send notifications to OneFive profile investors
       if (historyEntry._newProfileInvestors?.length > 0) {
@@ -118,10 +118,16 @@ export class CreateFundingHistoryHandler {
       }
 
       // Strip internal fields before returning to client
-      const { _newProfileInvestors, _newManualPersonInvestors, startupName: _sn, ...result } =
-        historyEntry;
+      const {
+        _newProfileInvestors,
+        _newManualPersonInvestors,
+        startupName: _sn,
+        ...result
+      } = historyEntry;
 
-      this.posthogService.capture(userId, 'funding_history_created', { startup_id: startupId });
+      this.posthogService.capture(userId, 'funding_history_created', {
+        startup_id: startupId,
+      });
 
       return result;
     } catch (error: unknown) {

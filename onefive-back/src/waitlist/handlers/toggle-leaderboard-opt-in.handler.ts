@@ -43,7 +43,9 @@ export class ToggleLeaderboardOptInHandler {
       showInLeaderboard,
     });
 
-    this.posthogService.capture(userId, 'leaderboard_opt_in_toggled', { show_in_leaderboard: showInLeaderboard });
+    this.posthogService.capture(userId, 'leaderboard_opt_in_toggled', {
+      show_in_leaderboard: showInLeaderboard,
+    });
 
     return { showInLeaderboard };
   }

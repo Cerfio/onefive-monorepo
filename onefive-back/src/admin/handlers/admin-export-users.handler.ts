@@ -12,8 +12,11 @@ export class AdminExportUsersHandler {
     return this.toCsv(users);
   }
 
-  private toCsv(users: Awaited<ReturnType<AdminService['exportUsers']>>): string {
-    const header = 'id,email,firstName,lastName,city,country,waitlistStatus,isEmailVerified,isBanned,createdAt';
+  private toCsv(
+    users: Awaited<ReturnType<AdminService['exportUsers']>>,
+  ): string {
+    const header =
+      'id,email,firstName,lastName,city,country,waitlistStatus,isEmailVerified,isBanned,createdAt';
     const rows = users.map((u) =>
       [
         u.id,

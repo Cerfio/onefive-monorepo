@@ -30,7 +30,10 @@ export class CreateReactionHandler {
       messageId,
       emoji,
     });
-    this.posthogService.capture(profileId, 'message_reaction_created', { message_id: messageId, emoji });
+    this.posthogService.capture(profileId, 'message_reaction_created', {
+      message_id: messageId,
+      emoji,
+    });
     return result;
   }
 }

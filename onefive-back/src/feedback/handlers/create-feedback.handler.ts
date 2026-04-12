@@ -9,7 +9,13 @@ import { PostHogService } from 'src/posthog/posthog.service';
 import { StorageService } from 'src/storage/storage.service';
 import { FileService } from 'src/file/file.service';
 
-const ALLOWED_SCREENSHOT_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+const ALLOWED_SCREENSHOT_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+];
 const MAX_SCREENSHOT_SIZE = 5 * 1024 * 1024; // 5 MB
 
 @Injectable()
@@ -66,7 +72,9 @@ export class CreateFeedbackHandler {
         message,
         url,
         browserInfo,
-        ...(screenshotId ? { screenshot: { connect: { id: screenshotId } } } : {}),
+        ...(screenshotId
+          ? { screenshot: { connect: { id: screenshotId } } }
+          : {}),
       },
     });
 
@@ -87,37 +95,62 @@ export class CreateFeedbackHandler {
         }),
       );
 
-    this.posthogService.capture(userId, 'feedback_submitted', { feedback_type: type });
+    this.posthogService.capture(userId, 'feedback_submitted', {
+      feedback_type: type,
+    });
 
     return { id: feedback.id };
   }
 
-  private async uploadScreenshot(transactionId: string, file: Express.Multer.File): Promise<string> {
+  private async uploadScreenshot(
+    transactionId: string,
+    file: Express.Multer.File,
+  ): Promise<string> {
     if (!ALLOWED_SCREENSHOT_TYPES.includes(file.mimetype)) {
-      this.logger.warn('Invalid screenshot MIME type, skipping upload', { transactionId, mimetype: file.mimetype });
+      this.logger.warn('Invalid screenshot MIME type, skipping upload', {
+        transactionId,
+        mimetype: file.mimetype,
+      });
       return undefined;
     }
     if (file.size > MAX_SCREENSHOT_SIZE) {
-      this.logger.warn('Screenshot too large, skipping upload', { transactionId, size: file.size });
+      this.logger.warn('Screenshot too large, skipping upload', {
+        transactionId,
+        size: file.size,
+      });
       return undefined;
     }
 
-    const bucket = this.configService.get('R2_BUCKET_NAME') || 'onefive-storage';
+    const bucket =
+      this.configService.get('R2_BUCKET_NAME') || 'onefive-storage';
     const timestamp = Date.now();
     const ext = file.mimetype.split('/')[1] || 'png';
     const fileKey = `feedback-screenshots/screenshot-${timestamp}.${ext}`;
 
     const uploadResult = await this.storageService.uploadFile({
       transactionId,
-      data: { buffer: file.buffer, filename: fileKey, mimeType: file.mimetype, bucketName: bucket },
+      data: {
+        buffer: file.buffer,
+        filename: fileKey,
+        mimeType: file.mimetype,
+        bucketName: bucket,
+      },
     });
 
     await this.fileService.create({
       transactionId,
-      data: { id: uploadResult.id, size: file.size, mimeType: file.mimetype, bucket },
+      data: {
+        id: uploadResult.id,
+        size: file.size,
+        mimeType: file.mimetype,
+        bucket,
+      },
     });
 
-    this.logger.info('Feedback screenshot uploaded', { transactionId, fileId: uploadResult.id });
+    this.logger.info('Feedback screenshot uploaded', {
+      transactionId,
+      fileId: uploadResult.id,
+    });
 
     return uploadResult.id;
   }

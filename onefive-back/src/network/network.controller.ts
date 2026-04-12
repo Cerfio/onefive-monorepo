@@ -47,7 +47,8 @@ export class NetworkController {
   @Get('activity')
   async listActivity(
     @Req() req: FastifyRequestUserId,
-    @Query(new ValidationPipe({ transform: true })) filters: GetNetworkActivityDto,
+    @Query(new ValidationPipe({ transform: true }))
+    filters: GetNetworkActivityDto,
   ): Promise<ApiResponseDto<unknown>> {
     const result = await this.listActivityHandler.execute({
       transactionId: req.id,
@@ -60,7 +61,8 @@ export class NetworkController {
   @Get('people')
   async listPeople(
     @Req() req: FastifyRequestUserId,
-    @Query(new ValidationPipe({ transform: true })) filters: GetNetworkPeopleDto,
+    @Query(new ValidationPipe({ transform: true }))
+    filters: GetNetworkPeopleDto,
   ): Promise<ApiResponseDto<unknown>> {
     const result = await this.listPeopleHandler.execute({
       transactionId: req.id,
@@ -73,7 +75,8 @@ export class NetworkController {
   @Get('startups')
   async listStartups(
     @Req() req: FastifyRequestUserId,
-    @Query(new ValidationPipe({ transform: true })) filters: GetNetworkStartupsDto,
+    @Query(new ValidationPipe({ transform: true }))
+    filters: GetNetworkStartupsDto,
   ): Promise<ApiResponseDto<unknown>> {
     const result = await this.listStartupsHandler.execute({
       transactionId: req.id,

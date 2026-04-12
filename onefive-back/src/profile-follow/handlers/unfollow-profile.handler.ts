@@ -35,7 +35,9 @@ export class UnfollowProfileHandler {
     }
 
     await this.profileFollowService.unfollow(profile.id, profileId);
-    this.posthogService.capture(userId, 'profile_unfollowed', { target_profile_id: profileId });
+    this.posthogService.capture(userId, 'profile_unfollowed', {
+      target_profile_id: profileId,
+    });
     return { success: true };
   }
 }

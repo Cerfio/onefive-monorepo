@@ -18,6 +18,11 @@ export class AdminListAuditLogsHandler {
     search?: string;
     resourceType?: string;
   }) {
-    return this.adminService.listAuditLogs({ skip, take, search, resourceType });
+    return this.adminService.listAuditLogs({
+      skip,
+      take,
+      search,
+      resourceType,
+    });
   }
 }

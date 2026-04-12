@@ -30,7 +30,9 @@ export class AdminToggleAmbassadorHandler {
 
     await this.adminService.createAuditLog({
       adminUserId: actorAdminUserId,
-      action: isAmbassador ? 'admin.user.ambassador.grant' : 'admin.user.ambassador.revoke',
+      action: isAmbassador
+        ? 'admin.user.ambassador.grant'
+        : 'admin.user.ambassador.revoke',
       resourceType: 'user',
       resourceId: targetUserId,
       metadata: {

@@ -34,7 +34,9 @@ export class DeleteEducationHandler {
       educationId,
     });
 
-    this.posthogService.capture(userId, 'education_deleted', { education_id: educationId });
+    this.posthogService.capture(userId, 'education_deleted', {
+      education_id: educationId,
+    });
 
     return { success: true };
   }

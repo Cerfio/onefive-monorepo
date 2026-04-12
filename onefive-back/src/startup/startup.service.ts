@@ -112,12 +112,18 @@ export class StartupService {
         return true;
       });
 
-      if (data.invitations && validInvitations.length !== data.invitations.length) {
-        this.logger.warn('Self or invalid invitations were ignored on startup creation', {
-          transactionId,
-          userId,
-          removedCount: data.invitations.length - validInvitations.length,
-        });
+      if (
+        data.invitations &&
+        validInvitations.length !== data.invitations.length
+      ) {
+        this.logger.warn(
+          'Self or invalid invitations were ignored on startup creation',
+          {
+            transactionId,
+            userId,
+            removedCount: data.invitations.length - validInvitations.length,
+          },
+        );
       }
 
       // Calculer les parts totales demandées
@@ -1114,8 +1120,7 @@ export class StartupService {
               ...profileInvestorsToCreate.map((inv) => ({
                 profileId: inv.id,
                 isLead: inv.id === data.leadInvestor,
-                invitationStatus:
-                  'PENDING' as const,
+                invitationStatus: 'PENDING' as const,
               })),
               ...manualPersonInvestorsToCreate.map((inv) => ({
                 firstName: inv.firstName || inv.name?.split(' ')[0] || '',
@@ -1123,8 +1128,7 @@ export class StartupService {
                   inv.lastName || inv.name?.split(' ').slice(1).join(' ') || '',
                 email: inv.email || null,
                 isLead: false,
-                invitationStatus:
-                  'PENDING' as const,
+                invitationStatus: 'PENDING' as const,
                 token: crypto.randomUUID(),
                 expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
               })),
@@ -1368,8 +1372,7 @@ export class StartupService {
                   invitationStatus: 'PENDING' as const,
                 })),
                 ...manualPersonInvestorsToCreate.map((inv) => ({
-                  firstName:
-                    inv.firstName || inv.name?.split(' ')[0] || '',
+                  firstName: inv.firstName || inv.name?.split(' ')[0] || '',
                   lastName:
                     inv.lastName ||
                     inv.name?.split(' ').slice(1).join(' ') ||
@@ -1378,9 +1381,7 @@ export class StartupService {
                   isLead: false,
                   invitationStatus: 'PENDING' as const,
                   token: crypto.randomUUID(),
-                  expiresAt: new Date(
-                    Date.now() + 30 * 24 * 60 * 60 * 1000,
-                  ),
+                  expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
                 })),
               ],
             },
@@ -1642,7 +1643,11 @@ export class StartupService {
       where: { id: invitationId },
       include: {
         fundingHistory: {
-          select: { id: true, startupId: true, startup: { select: { name: true } } },
+          select: {
+            id: true,
+            startupId: true,
+            startup: { select: { name: true } },
+          },
         },
       },
     });
@@ -1709,7 +1714,11 @@ export class StartupService {
       where: { token },
       include: {
         fundingHistory: {
-          select: { id: true, startupId: true, startup: { select: { name: true } } },
+          select: {
+            id: true,
+            startupId: true,
+            startup: { select: { name: true } },
+          },
         },
       },
     });

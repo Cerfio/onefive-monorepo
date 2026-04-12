@@ -58,10 +58,7 @@ export class AdminImportSpotlightImageHandler {
     url: string,
   ): Promise<Buffer> {
     const controller = new AbortController();
-    const timeoutId = setTimeout(
-      () => controller.abort(),
-      FETCH_TIMEOUT_MS,
-    );
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
     try {
       const response = await fetch(url, {
@@ -102,7 +99,7 @@ export class AdminImportSpotlightImageHandler {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
           throw new BadRequestException(
-            'Délai dépassé lors de la récupération de l\'image',
+            "Délai dépassé lors de la récupération de l'image",
           );
         }
         this.logger.warn('Failed to fetch spotlight image URL', {
@@ -114,7 +111,7 @@ export class AdminImportSpotlightImageHandler {
           `Impossible de récupérer l'image : ${error.message}`,
         );
       }
-      throw new BadRequestException('Impossible de récupérer l\'image');
+      throw new BadRequestException("Impossible de récupérer l'image");
     } finally {
       clearTimeout(timeoutId);
     }
