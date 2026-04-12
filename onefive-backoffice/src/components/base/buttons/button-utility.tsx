@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, DetailedHTMLProps, FC, ReactNode } from "react";
 import { isValidElement } from "react";
 import type { Placement } from "react-aria";
@@ -26,7 +27,7 @@ export interface CommonProps {
     /** The color variant of the button */
     color?: "secondary" | "tertiary";
     /** The icon to display in the button */
-    icon?: FC<{ className?: string }> | ReactNode;
+    icon?: IconComponent | ReactNode;
     /** The tooltip to display when hovering over the button */
     tooltip?: string;
     /** The placement of the tooltip */

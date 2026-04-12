@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC, MouseEventHandler } from "react";
 import { Pressable } from "react-aria-components";
 import { Tooltip } from "@/components/base/tooltip/tooltip";
@@ -24,7 +25,7 @@ interface NavItemButtonProps {
     /** Label text for the button. */
     label: string;
     /** Icon component to display. */
-    icon: FC<{ className?: string }>;
+    icon: IconComponent;
     /** Whether the button is currently active. */
     current?: boolean;
     /** Size of the button. */

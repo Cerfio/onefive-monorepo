@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC } from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { Label as AriaLabel, Radio as AriaRadio, RadioGroup as AriaRadioGroup, Text as AriaText } from "react-aria-components";
@@ -13,7 +14,7 @@ type RadioGroupItemType = {
     disabled?: boolean;
     description: string;
     secondaryTitle: string;
-    icon: FC<{ className?: string }>;
+    icon: IconComponent;
 };
 
 interface RadioGroupIconSimpleProps extends RadioGroupProps {

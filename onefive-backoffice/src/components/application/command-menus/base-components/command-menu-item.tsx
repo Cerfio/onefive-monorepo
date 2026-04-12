@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC } from "react";
 import { Text as AriaText, ListBoxItem, type ListBoxItemProps } from "react-aria-components";
 import { Avatar } from "@/components/base/avatar/avatar";
@@ -22,7 +23,7 @@ interface CommandDropdownMenuItemDefaultType extends CommandMenuItemBaseType {
 
 interface CommandDropdownMenuItemIconType extends CommandMenuItemBaseType {
     type: "icon";
-    icon: FC<{ className?: string }>;
+    icon: IconComponent;
 }
 
 interface CommandDropdownMenuItemAvatarType extends CommandMenuItemBaseType {

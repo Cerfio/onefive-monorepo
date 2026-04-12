@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -25,7 +25,7 @@ const schema = z
 
 type FormValues = z.infer<typeof schema>;
 
-export default function AcceptInvitationPage() {
+function AcceptInvitationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -158,5 +158,19 @@ export default function AcceptInvitationPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function AcceptInvitationPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-secondary_subtle p-6 text-sm text-tertiary">
+          Chargement…
+        </main>
+      }
+    >
+      <AcceptInvitationContent />
+    </Suspense>
   );
 }

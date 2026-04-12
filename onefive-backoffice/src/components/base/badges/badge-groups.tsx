@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC, ReactNode } from "react";
 import { isValidElement } from "react";
 import { ArrowRight } from "@untitledui/icons";
@@ -113,7 +114,7 @@ interface BadgeGroupProps {
      * Alignment of the badge addon element.
      */
     align?: Align;
-    iconTrailing?: FC<{ className?: string }> | ReactNode;
+    iconTrailing?: IconComponent | ReactNode;
     className?: string;
 }
 

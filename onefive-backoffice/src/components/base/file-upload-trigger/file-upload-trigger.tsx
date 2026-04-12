@@ -65,7 +65,7 @@ export const FileTrigger = (props: FileTriggerProps) => {
                 onChange={(e) => onSelect?.(e.target.files)}
                 capture={defaultCamera}
                 multiple={allowsMultiple}
-                // @ts-expect-error
+                // @ts-expect-error Non-standard DOM prop; not in React's InputHTMLAttributes.
                 webkitdirectory={acceptDirectory ? "" : undefined}
             />
         </>

@@ -1,6 +1,7 @@
 "use client";
 
-import type { FC, HTMLAttributes, MouseEventHandler, ReactNode } from "react";
+import type { HtmlOrSvgIcon } from "@/types/icon-component";
+import type { MouseEventHandler, ReactNode } from "react";
 import { ChevronDown, Share04 } from "@untitledui/icons";
 import { Link as AriaLink } from "react-aria-components";
 import { Badge } from "@/components/base/badges/badges";
@@ -21,7 +22,7 @@ interface NavItemBaseProps {
     /** Type of the nav item. */
     type: "link" | "collapsible" | "collapsible-child";
     /** Icon component to display. */
-    icon?: FC<HTMLAttributes<HTMLOrSVGElement>>;
+    icon?: HtmlOrSvgIcon;
     /** Badge to display. */
     badge?: ReactNode;
     /** Whether the nav item is currently active. */
@@ -54,7 +55,7 @@ export const NavItemBase = ({ current, type, badge, href, icon: Icon, children, 
                 current && "text-secondary_hover",
             )}
         >
-            {children}
+            {children as any}
         </span>
     );
 
@@ -64,12 +65,9 @@ export const NavItemBase = ({ current, type, badge, href, icon: Icon, children, 
     if (type === "collapsible") {
         return (
             <summary className={cx("px-3 py-2", styles.root, current && styles.rootSelected)} onClick={onClick}>
-                {iconElement}
-
-                {labelElement}
-
-                {badgeElement}
-
+                {iconElement as any}
+                {labelElement as any}
+                {badgeElement as any}
                 <ChevronDown aria-hidden="true" className="ml-3 size-4 shrink-0 stroke-[2.5px] text-fg-quaternary in-open:-scale-y-100" />
             </summary>
         );
@@ -85,9 +83,9 @@ export const NavItemBase = ({ current, type, badge, href, icon: Icon, children, 
                 onClick={onClick}
                 aria-current={current ? "page" : undefined}
             >
-                {labelElement}
-                {externalIcon}
-                {badgeElement}
+                {labelElement as any}
+                {externalIcon as any}
+                {badgeElement as any}
             </AriaLink>
         );
     }
@@ -101,10 +99,10 @@ export const NavItemBase = ({ current, type, badge, href, icon: Icon, children, 
             onClick={onClick}
             aria-current={current ? "page" : undefined}
         >
-            {iconElement}
-            {labelElement}
-            {externalIcon}
-            {badgeElement}
+            {iconElement as any}
+            {labelElement as any}
+            {externalIcon as any}
+            {badgeElement as any}
         </AriaLink>
     );
 };

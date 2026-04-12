@@ -1,8 +1,8 @@
 "use client";
 
-import type { FC, HTMLAttributes } from "react";
+import type { IconComponent } from "@/types/icon-component";
+import type { ComponentProps, HTMLAttributes } from "react";
 import { useCallback, useEffect, useRef } from "react";
-import type { Placement } from "@react-types/overlays";
 import { BookOpen01, ChevronSelectorVertical, LogOut01, Plus, Settings01, User01 } from "@untitledui/icons";
 import { useFocusManager } from "react-aria";
 import type { DialogProps as AriaDialogProps } from "react-aria-components";
@@ -12,6 +12,8 @@ import { Button } from "@/components/base/buttons/button";
 import { RadioButtonBase } from "@/components/base/radio-buttons/radio-buttons";
 import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { cx } from "@/utils/cx";
+
+type PopoverPlacement = NonNullable<ComponentProps<typeof AriaPopover>["placement"]>;
 
 type NavAccountType = {
     /** Unique identifier for the nav item. */
@@ -129,7 +131,7 @@ const NavAccountCardMenuItem = ({
     shortcut,
     ...buttonProps
 }: {
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
     label: string;
     shortcut?: string;
 } & HTMLAttributes<HTMLButtonElement>) => {
@@ -159,7 +161,7 @@ export const NavAccountCard = ({
     selectedAccountId = "olivia",
     items = placeholderAccounts,
 }: {
-    popoverPlacement?: Placement;
+    popoverPlacement?: PopoverPlacement;
     selectedAccountId?: string;
     items?: NavAccountType[];
 }) => {

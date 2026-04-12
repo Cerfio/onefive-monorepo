@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC } from "react";
 import { AlertCircle, CheckCircle, InfoCircle } from "@untitledui/icons";
 import { Avatar } from "@/components/base/avatar/avatar";
@@ -24,7 +25,7 @@ interface IconNotificationProps {
     confirmLabel?: string;
     dismissLabel?: string;
     hideDismissLabel?: boolean;
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
     color?: "default" | "brand" | "gray" | "error" | "warning" | "success";
     progress?: number;
     onClose?: () => void;
@@ -91,7 +92,7 @@ interface AvatarNotificationProps {
     confirmLabel: string;
     dismissLabel?: string;
     hideDismissLabel?: boolean;
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
     color?: "default" | "brand" | "gray" | "error" | "warning" | "success";
     onClose?: () => void;
     onConfirm?: () => void;

@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import { type FC, type PropsWithChildren, type ReactNode, type RefAttributes, createContext, isValidElement, useContext } from "react";
 import {
     ToggleButton as AriaToggleButton,
@@ -45,8 +46,8 @@ type ButtonSize = keyof typeof styles.sizes;
 const ButtonGroupContext = createContext<{ size: ButtonSize }>({ size: "md" });
 
 interface ButtonGroupItemProps extends ToggleButtonProps, RefAttributes<HTMLButtonElement> {
-    iconLeading?: FC<{ className?: string }> | ReactNode;
-    iconTrailing?: FC<{ className?: string }> | ReactNode;
+    iconLeading?: IconComponent | ReactNode;
+    iconTrailing?: IconComponent | ReactNode;
     onClick?: () => void;
     className?: string;
 }

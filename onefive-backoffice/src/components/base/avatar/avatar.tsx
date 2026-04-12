@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import { type FC, type ReactNode, useState } from "react";
 import { User01 } from "@untitledui/icons";
 import { cx } from "@/utils/cx";
@@ -38,7 +39,7 @@ export interface AvatarProps {
     /**
      * An icon to display if no image is available.
      */
-    placeholderIcon?: FC<{ className?: string }>;
+    placeholderIcon?: IconComponent;
     /**
      * A placeholder to display if no image is available.
      */

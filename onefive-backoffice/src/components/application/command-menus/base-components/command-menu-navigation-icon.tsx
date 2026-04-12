@@ -1,10 +1,11 @@
 "use client";
 
+import type { IconComponentStroke } from "@/types/icon-component";
 import type { FC } from "react";
 
 interface CommandMenuNavigationIconProps {
     type: "icon";
-    icon: FC<{ className?: string; strokeWidth?: string | number }>;
+    icon: IconComponentStroke;
 }
 
 interface CommandMenuNavigationTextProps {

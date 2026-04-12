@@ -1,6 +1,7 @@
 "use client";
 
-import type { FC, ReactNode } from "react";
+import type { IconComponent } from "@/types/icon-component";
+import type { ReactNode } from "react";
 import { Bell01, LifeBuoy01, SearchLg, Settings01 } from "@untitledui/icons";
 import { Button as AriaButton, DialogTrigger, Popover } from "react-aria-components";
 import { Avatar } from "@/components/base/avatar/avatar";
@@ -22,7 +23,7 @@ type NavItem = {
     /** Whether the nav item is currently active. */
     current?: boolean;
     /** Icon component to display. */
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
     /** Badge to display. */
     badge?: ReactNode;
     /** List of sub-items to display. */
@@ -125,7 +126,7 @@ export const HeaderNavigationBase = ({
                         </div>
 
                         <div className="flex items-center gap-3">
-                            {trailingContent}
+                            {trailingContent as any}
 
                             <div className="flex gap-0.5">
                                 <NavItemButton

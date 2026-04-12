@@ -1,3 +1,4 @@
+import type { IconComponent } from "@/types/icon-component";
 import type { FC, ReactNode, Ref } from "react";
 import { isValidElement } from "react";
 import { cx, sortCx } from "@/utils/cx";
@@ -121,7 +122,7 @@ interface FeaturedIconProps {
     ref?: Ref<HTMLDivElement>;
     children?: ReactNode;
     className?: string;
-    icon?: FC<{ className?: string }> | ReactNode;
+    icon?: IconComponent | ReactNode;
     size?: "sm" | "md" | "lg" | "xl";
     color: "brand" | "gray" | "success" | "warning" | "error";
     theme?: "light" | "gradient" | "dark" | "outline" | "modern" | "modern-neue";

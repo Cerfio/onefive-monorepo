@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC, RefAttributes } from "react";
 import { DotsVertical } from "@untitledui/icons";
 import type {
@@ -29,7 +30,7 @@ interface DropdownItemProps extends AriaMenuItemProps {
     /** If true, the item will not have any styles. */
     unstyled?: boolean;
     /** An icon to be displayed on the left side of the item. */
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
 }
 
 const DropdownItem = ({ label, children, addon, icon: Icon, unstyled, ...props }: DropdownItemProps) => {

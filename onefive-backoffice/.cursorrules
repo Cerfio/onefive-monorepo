@@ -1,0 +1,13 @@
+# OneFive Backoffice — Untitled UI React
+
+## Référence complète (obligatoire pour ce package)
+
+Appliquer **l’intégralité** des conventions décrites dans :
+
+- `docs/untitled-ui-AGENT.md` (à la racine du monorepo)
+
+Source en ligne (canonique si le fichier local diverge) : https://www.untitledui.com/react/AGENT.md
+
+**Avant ou pendant une modification** de composants / styles, s’appuyer sur ce document (architecture, React Aria `Aria*`, kebab-case, tokens de couleur, icônes, patterns composés, etc.).
+
+Pour l’architecture API / monorepo globale : `onefive-back/.cursorrules` et `.cursorrules` à la racine.

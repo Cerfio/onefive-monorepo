@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC } from "react";
 import { useState } from "react";
 import { LifeBuoy01, LogOut01, Settings01 } from "@untitledui/icons";
@@ -23,9 +24,9 @@ interface SidebarNavigationSlimProps {
     /** URL of the currently active item. */
     activeUrl?: string;
     /** List of items to display. */
-    items: (NavItemType & { icon: FC<{ className?: string }> })[];
+    items: (NavItemType & { icon: IconComponent })[];
     /** List of footer items to display. */
-    footerItems?: (NavItemType & { icon: FC<{ className?: string }> })[];
+    footerItems?: (NavItemType & { icon: IconComponent })[];
     /** Whether to hide the border. */
     hideBorder?: boolean;
     /** Whether to hide the right side border. */

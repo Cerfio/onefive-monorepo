@@ -48,7 +48,7 @@ export const MobileNavigationHeader = ({ children }: PropsWithChildren) => {
                         </AriaButton>
 
                         <AriaModal className="w-full cursor-auto will-change-transform">
-                            <AriaDialog className="h-dvh outline-hidden focus:outline-hidden">{children}</AriaDialog>
+                            <AriaDialog className="h-dvh outline-hidden focus:outline-hidden">{children as any}</AriaDialog>
                         </AriaModal>
                     </>
                 )}

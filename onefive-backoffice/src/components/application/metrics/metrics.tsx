@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconComponent } from "@/types/icon-component";
 import type { FC, ReactNode } from "react";
 import { useId } from "react";
 import { ArrowDown, ArrowDownRight, ArrowUp, ArrowUpRight, Copy01, Eye, Share01, TrendDown01, TrendUp01, Zap } from "@untitledui/icons";
@@ -200,7 +201,7 @@ export const MetricsIcon03 = ({
     className,
     footer,
 }: {
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
     title?: string;
     subtitle?: string;
     change?: string;
@@ -248,7 +249,7 @@ export const MetricsIcon04 = ({
     footer,
     className,
 }: {
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
     title?: string;
     subtitle?: string;
     change?: string;
@@ -424,7 +425,7 @@ export const MetricsChart02 = ({
     footer,
     className,
 }: {
-    icon?: FC<{ className?: string }>;
+    icon?: IconComponent;
     title?: string;
     subtitle?: string;
     change?: string;
