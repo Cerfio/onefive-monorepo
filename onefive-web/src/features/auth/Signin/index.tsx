@@ -51,7 +51,7 @@ const Signin = ({ returnUrl = '/feed' }: SigninProps) => {
   const router = useRouter();
   const currentYear = new Date().getFullYear();
 
-  const getErrorMessage = (err: unknown) => {
+  const getErrorMessage = (err: unknown): string => {
     if (err instanceof HTTPError && err.response.status === 401) {
       return tErrors('bad-authentication-exception');
     }
@@ -154,7 +154,9 @@ const Signin = ({ returnUrl = '/feed' }: SigninProps) => {
             >
               {t('submit')}
             </Button>
-            {error && <div className="mt-2 text-error-primary text-sm text-center">{getErrorMessage(error)}</div>}
+            {error != null ? (
+              <div className="mt-2 text-error-primary text-sm text-center">{getErrorMessage(error)}</div>
+            ) : null}
           </motion.div>
         </motion.div>
       </form>

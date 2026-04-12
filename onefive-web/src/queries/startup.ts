@@ -175,6 +175,7 @@ export interface Startup {
   isMember: boolean;
   canEdit: boolean;
   role?: string;
+  currentProfileId?: string;
 }
 
 // Schemas
@@ -262,6 +263,7 @@ const getStartupSchema = z.object({
     isMember: z.boolean(),
     canEdit: z.boolean(),
     role: z.string().optional(),
+    currentProfileId: z.string().optional(),
   })
 });
 

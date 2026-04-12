@@ -83,9 +83,11 @@ export async function generateMetadata({
   const location =
     profile.city && profile.countryCode
       ? `${profile.city}, ${getCountryName(profile.countryCode)}`
-      : profile.city || profile.countryCode
-        ? getCountryName(profile.countryCode)
-        : '';
+      : profile.city
+        ? profile.city
+        : profile.countryCode
+          ? getCountryName(profile.countryCode)
+          : '';
   const parts = [fullName, profile.highlight, location].filter(Boolean);
   const followers = profile.stats?.followers ?? 0;
   const description =

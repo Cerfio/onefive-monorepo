@@ -6,6 +6,15 @@ const linkedinAuthenticationResponseSchema = z.object({
   data: z.object({
     authenticated: z.boolean(),
     user: z.unknown().optional(),
+    additionalInfo: z
+      .object({
+        language: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
+        country: z.string(),
+        pictureUrl: z.string().optional(),
+      })
+      .optional(),
   }),
 });
 

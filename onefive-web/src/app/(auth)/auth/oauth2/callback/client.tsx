@@ -66,12 +66,14 @@ const Oauth2CallbackPageClient = ({
       posthog.capture('oauth_callback_success', { provider: 'linkedin' });
       toast.success('Linkedin authentication success');
       // Stocker temporairement pour l'onboarding uniquement (nettoyé après usage)
-      sessionStorage.setItem('language', data.additionalInfo.language);
-      sessionStorage.setItem('firstname', data.additionalInfo.firstName);
-      sessionStorage.setItem('lastname', data.additionalInfo.lastName);
-      sessionStorage.setItem('country', data.additionalInfo.country);
-      if (data.additionalInfo.pictureUrl)
-        sessionStorage.setItem('pictureUrl', data.additionalInfo.pictureUrl);
+      const info = data.additionalInfo;
+      if (info) {
+        sessionStorage.setItem('language', info.language);
+        sessionStorage.setItem('firstname', info.firstName);
+        sessionStorage.setItem('lastname', info.lastName);
+        sessionStorage.setItem('country', info.country);
+        if (info.pictureUrl) sessionStorage.setItem('pictureUrl', info.pictureUrl);
+      }
       // ✅ Le cookie httpOnly est maintenant setté côté serveur (protection XSS)
       setTimeout(() => {
         router.push('/feed');

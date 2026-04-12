@@ -894,7 +894,7 @@ const StepProfile = () => {
               id="referralCode"
               placeholder="Entrez le code de votre parrain"
               value={referredByCode}
-              onChange={(e) => setReferredByCode(e.target.value)}
+              onChange={setReferredByCode}
             />
             <p className="text-xs text-gray-500">
               Si quelqu'un vous a référé, entrez son code de parrainage pour obtenir un accès prioritaire.

@@ -82,7 +82,7 @@ export const VersionHistoryModal: React.FC<VersionHistoryModalProps> = ({
     const allVersions = [
         // Version actuelle
         {
-            version: document.version,
+            version: typeof document.version === "number" ? document.version : 1,
             uploadedAt: document.uploaded,
             uploadedBy: "Vous", // Vous pouvez adapter selon vos données
             size: parseInt(document.size.replace(/[^\d]/g, '')) * (document.size.includes('MB') ? 1024 * 1024 : 1024),
@@ -91,7 +91,7 @@ export const VersionHistoryModal: React.FC<VersionHistoryModalProps> = ({
         },
         // Versions précédentes avec isCurrent: false
         ...(document.versionHistory || []).map(v => ({ ...v, isCurrent: false }))
-    ].sort((a, b) => b.version - a.version); // Trier par version décroissante
+    ].sort((a, b) => (b.version ?? 0) - (a.version ?? 0)); // Trier par version décroissante
 
     return (
         <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>

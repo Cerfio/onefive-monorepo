@@ -35,7 +35,7 @@ import { TextArea } from "../base/textarea/textarea";
   const _ATTACHMENT_TYPES = ["pdf", "doc", "xls", "ppt", "zip", "audio", "video"];
   
   type Attachment = {
-    type: (typeof _ATTACHMENT_TYPES)[number] | (string & {});
+    type: (typeof _ATTACHMENT_TYPES)[number] | string;
     name: string;
     size: string;
   };

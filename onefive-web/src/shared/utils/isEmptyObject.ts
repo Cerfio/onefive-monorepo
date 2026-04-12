@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-const isEmptyObject = (obj: {}) => {
+const isEmptyObject = (obj: object) => {
   if (obj === null || obj === undefined) {
     return true;
   }

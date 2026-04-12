@@ -33,6 +33,10 @@ export const UploadNewVersionModal: React.FC<UploadNewVersionModalProps> = ({
 
     if (!isOpen || !document) return null;
 
+    const currentVersionNumber =
+        typeof document.version === "number" ? document.version : 1;
+    const nextVersionNumber = currentVersionNumber + 1;
+
     // Fonction utilitaire pour formater la taille des fichiers (améliorée d'UploadModal)
     const formatFileSize = (bytes: number): string => {
         if (bytes === 0) return '0 B';
@@ -110,11 +114,9 @@ export const UploadNewVersionModal: React.FC<UploadNewVersionModalProps> = ({
             clearInterval(progressInterval);
             setUploadProgress(100);
             
-            // Calculer le numéro de la nouvelle version
-            const currentVersion = typeof document.version === 'number' ? document.version : parseInt(document.version) || 1;
-            const newVersion = currentVersion + 1;
-            
-            toast.success(`Nouvelle version (v${newVersion}) uploadée avec succès !`);
+            toast.success(
+                `Nouvelle version (v${nextVersionNumber}) uploadée avec succès !`,
+            );
             
             // Reset et fermer
             setTimeout(() => {
@@ -216,7 +218,7 @@ export const UploadNewVersionModal: React.FC<UploadNewVersionModalProps> = ({
                                                     L'ancienne version restera accessible dans l'historique des versions.
                                                     <br />
                                                     <span className="font-medium">
-                                                        Sera la version v{typeof document.version === 'number' ? document.version + 1 : (parseInt(document.version) || 1) + 1}
+                                                        Sera la version v{nextVersionNumber}
                                                     </span>
                                                     <br />
                                                     <span className="text-xs text-warning-600">

@@ -12,7 +12,7 @@ import { countries } from '@/utils/countries';
 import { ExternalLink, Trash2 } from 'lucide-react';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from "react-aria-components";
 import { useUpdateProfile, useUploadAvatar, useUploadCover } from '@/queries/profile';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, type DefaultValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ImageUpload } from '../ImageUpload';
@@ -72,11 +72,13 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
   const normalizeCountryCode = (code: string) =>
     countries.find(c => c.code.toLowerCase() === code?.toLowerCase())?.code || code || '';
 
-  const parseRolesFromProfile = (roles: string[] | undefined) => {
+  const parseRolesFromProfile = (
+    roles: string[] | undefined,
+  ): { mainRole: ProfileRole | ''; secondaryRole: ProfileRole | '' } => {
     const valid = (roles || []).filter((r): r is ProfileRole => Object.values(ProfileRole).includes(r as ProfileRole));
     return {
       mainRole: valid[0] ?? ('' as const),
-      secondaryRole: valid[1] && valid[1] !== valid[0] ? valid[1] : '',
+      secondaryRole: valid[1] && valid[1] !== valid[0] ? valid[1] : ('' as const),
     };
   };
 
@@ -85,6 +87,7 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors, isValid },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -97,7 +100,7 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
       countryCode: normalizeCountryCode(profileData?.countryCode || ''),
       city: String(profileData?.city || ''),
       ...parseRolesFromProfile(profileData?.ecosystemRoles),
-    },
+    } as DefaultValues<ProfileFormData>,
     mode: 'onTouched',
   });
 
@@ -112,9 +115,9 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
   // Réinitialiser le rôle secondaire s'il devient identique au principal
   useEffect(() => {
     if (mainRole && secondaryRole && mainRole === secondaryRole) {
-      control.setValue('secondaryRole', '');
+      setValue('secondaryRole', '');
     }
-  }, [mainRole, secondaryRole, control]);
+  }, [mainRole, secondaryRole, setValue]);
 
   useEffect(() => {
     const safeName = String(profileData?.name || '');
@@ -128,7 +131,7 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
       countryCode: normalizeCountryCode(profileData?.countryCode || ''),
       city: String(profileData?.city || ''),
       ...parseRolesFromProfile(profileData?.ecosystemRoles),
-    });
+    } as ProfileFormData);
     // Réinitialiser les fichiers en attente quand le modal s'ouvre/ferme
     setPendingAvatarFile(null);
     setPendingCoverFile(null);

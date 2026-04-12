@@ -16,7 +16,7 @@ interface Candidate {
   name: string;
   position?: string;
   role?: string;
-  avatar?: string;
+  avatar?: string | null;
 }
 
 interface TransferOwnershipModalProps {

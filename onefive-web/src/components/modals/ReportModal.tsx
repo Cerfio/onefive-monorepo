@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -183,7 +183,7 @@ export function ReportModal({ isOpen, onClose, resourceType, resourceId }: Repor
                     size="sm"
                     isDisabled={isLoading}
                     isLoading={isLoading}
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
                       e.preventDefault();
                       handleSubmit();
                     }}

@@ -56,4 +56,12 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'warn',
     'prefer-const': 'warn',
   },
+  overrides: [
+    {
+      files: ['src/lib/utils/clx/**/*.ts', 'src/lib/utils/clx/**/*.tsx'],
+      rules: {
+        '@typescript-eslint/ban-types': 'off',
+      },
+    },
+  ],
 };

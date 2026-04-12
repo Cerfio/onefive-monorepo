@@ -37,8 +37,7 @@ export interface LinkedInOnboardingData {
   skills: string[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-const OnboardingContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
+const OnboardingContextProvider = ({ children }: React.PropsWithChildren) => {
   const [firstname, setFirstname] = useState(sessionStorage.getItem('firstname') || '');
   const [lastname, setLastname] = useState(sessionStorage.getItem('lastname') || '');
   const [countryCode, setCountryCode] = useState(sessionStorage.getItem('countryCode') || '');

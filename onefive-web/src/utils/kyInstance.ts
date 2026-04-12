@@ -1,10 +1,10 @@
-import ky from 'ky';
+import ky, { type NormalizedOptions } from 'ky';
 import { deleteCookie } from 'cookies-next';
 
 // Handle common HTTP errors across all API calls
 async function handleResponseErrors(
   request: Request,
-  options: ky.NormalizedOptions,
+  options: NormalizedOptions,
   response: Response,
 ) {
   // 401 Unauthorized - Session expired or not authenticated

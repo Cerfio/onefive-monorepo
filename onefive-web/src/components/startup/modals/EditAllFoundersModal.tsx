@@ -141,7 +141,6 @@ export const EditAllFoundersModal: React.FC<EditAllFoundersModalProps> = ({
       originalFoundersRef.current = [...founders];
       setSelectedProfiles(founders.map(f => f.id).filter(Boolean) as string[]);
       setEquityValues(defaultFounders.map(f => f.equity || 0));
-      setCustomRoleIndices(new Set());
       // Trigger validation so isValid reflects the initial data immediately
       setTimeout(() => form.trigger(), 0);
     }

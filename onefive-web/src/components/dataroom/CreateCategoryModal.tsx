@@ -5,7 +5,7 @@ import { Button } from "@/components/base/buttons/button";
 import { CloseButton } from "@/components/base/buttons/close-button";
 import { Input } from "@/components/base/input/input";
 import { FolderPlus } from "@untitledui/icons";
-import { Dataroom } from "@/types/dataroom";
+import type { Dataroom } from "../../types/dataroom";
 
 interface CreateCategoryModalProps {
     isOpen: boolean;

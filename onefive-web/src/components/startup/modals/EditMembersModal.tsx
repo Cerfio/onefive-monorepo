@@ -9,7 +9,7 @@ import { PositionSelect } from '@/components/startup/PositionSelect';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { Select } from '@/components/base/select/select';
 import { SmartProfileSearch } from '@/components/startup/SmartProfileSearch';
-import { ProfileSearchResult, useInviteMember } from '@/queries/startup';
+import { ProfileSearchResult, useAddMember } from '@/queries/startup';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from "react-aria-components";
 import { Users, Mail, UserPlus, Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -44,7 +44,7 @@ export const EditMembersModal: React.FC<EditMembersModalProps> = ({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   
-  const inviteMemberMutation = useInviteMember();
+  const addMemberMutation = useAddMember();
 
   const handleProfileSelect = (profile: ProfileSearchResult) => {
     setSelectedProfile(profile);
@@ -103,7 +103,7 @@ export const EditMembersModal: React.FC<EditMembersModalProps> = ({
     if (!validateForm()) return;
     
     try {
-      await inviteMemberMutation.mutateAsync({
+      await addMemberMutation.mutateAsync({
         startupId,
         payload: {
           profileId: selectedProfile?.id,
@@ -302,9 +302,9 @@ export const EditMembersModal: React.FC<EditMembersModalProps> = ({
                   color="primary"
                   size="lg"
                   onClick={onSubmit}
-                  isDisabled={inviteMemberMutation.isPending}
+                  isDisabled={addMemberMutation.isPending}
                 >
-                  {inviteMemberMutation.isPending ? (
+                  {addMemberMutation.isPending ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       Envoi...

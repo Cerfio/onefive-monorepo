@@ -284,7 +284,7 @@ const DataroomPage = () => {
                 }
             }
 
-            const blob = new Blob(chunks);
+            const blob = new Blob(chunks as BlobPart[]);
             const blobUrl = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = blobUrl;

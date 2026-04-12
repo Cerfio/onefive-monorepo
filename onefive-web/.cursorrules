@@ -1,5 +1,9 @@
 # OneFive Frontend - Règles Cursor
 
+## Untitled UI React
+
+Ce projet suit les conventions **Untitled UI React**. Référence complète : `docs/untitled-ui-AGENT.md` (racine du monorepo) ; source officielle : https://www.untitledui.com/react/AGENT.md
+
 ## 🚫 Interdictions Strictes
 
 ### NE JAMAIS :

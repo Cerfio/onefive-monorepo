@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { Key } from 'react-aria-components';
 import { ChevronLeft } from 'lucide-react';
 import { Select } from '@/components/base/select/select';
 import { Input } from '@/components/base/input/input';
@@ -50,12 +51,16 @@ export const PositionSelect = ({
   const isCustom = value !== '' && !PRESET_IDS.has(value);
   const [mode, setMode] = useState<'select' | 'custom'>(isCustom ? 'custom' : 'select');
 
-  const handleSelectChange = (key: string | number) => {
+  const handleSelectChange = (key: Key | null) => {
+    if (key == null) {
+      onChange?.('');
+      return;
+    }
     if (key === '__OTHER__') {
       setMode('custom');
       onChange?.('');
     } else {
-      onChange?.(key as string);
+      onChange?.(String(key));
     }
   };
 

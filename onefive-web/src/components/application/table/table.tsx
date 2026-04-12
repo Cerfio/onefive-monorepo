@@ -205,7 +205,9 @@ const TableHead = ({ className, tooltip, label, children, ...props }: TableHeadP
 };
 TableHead.displayName = "TableHead";
 
-interface TableRowProps<T extends object> extends AriaRowProps<T>, Omit<ComponentPropsWithRef<"tr">, "children" | "className" | "slot" | "style" | "id"> {
+interface TableRowProps<T extends object>
+    extends AriaRowProps<T>,
+        Omit<ComponentPropsWithRef<"tr">, "children" | "className" | "id" | "onClick" | "slot" | "style"> {
     highlightSelectedRow?: boolean;
 }
 

@@ -36,12 +36,18 @@ const profileSchema = z.object({
   })).max(VALIDATION_LIMITS.PROFILE.SOCIALS_MAX_COUNT).optional(),
 });
 
+type ProfileFormValues = z.infer<typeof profileSchema>;
+
 export function ProfileEditForm() {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
   });
 
   const bio = watch('bio', '');
+
+  const onSubmit = (_data: ProfileFormValues) => {
+    // Example only — wire to your API as needed
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

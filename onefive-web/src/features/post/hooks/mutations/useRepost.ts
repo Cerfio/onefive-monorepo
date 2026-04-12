@@ -171,7 +171,13 @@ export const useRepost = () => {
       };
     },
     onSuccess: (response, variables, context) => {
-      const payload = response?.data ?? response;
+      const r = response as {
+        data?: { id?: string; createdAt?: string; updatedAt?: string };
+        id?: string;
+        createdAt?: string;
+        updatedAt?: string;
+      };
+      const payload = r?.data ?? r;
       const repostId = payload?.id as string | undefined;
       if (!repostId || !context?.optimisticRepostId) return;
 
