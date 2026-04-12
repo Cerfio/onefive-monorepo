@@ -5,9 +5,20 @@ Ce fichier est intentionnellement minimal pour éviter toute duplication.
 Veuillez consulter le fichier dédié pour les règles détaillées, l’architecture et les conventions:
 - onefive-back/.cursorrules
 
-Pour le frontend, référez-vous à:
-- onefive-front/README.md
-- onefive-front/docs/ (si disponible)
+## Frontend — Untitled UI React (tous les fronts)
 
-Règle principale:
-- Utiliser exclusivement `onefive-back/.cursorrules` comme source d’autorité pour les règles Cursor du projet.
+Pour **`onefive-web`**, **`onefive-backoffice`**, **`landing-page`** et **`onefive-bo-landing-page`**, appliquer les conventions du guide :
+
+- `docs/untitled-ui-AGENT.md` (copie versionnée)
+- Source en ligne : https://www.untitledui.com/react/AGENT.md
+
+Règles Cursor par app (compléments locaux) :
+
+- `onefive-web/.cursorrules`
+- `onefive-backoffice/.cursorrules`
+- `landing-page/.cursorrules`
+- `onefive-bo-landing-page/.cursorrules`
+- `onefive-email/.cursorrules` (React Email — référence légère au guide ci-dessus)
+
+Règle principale (backend / monorepo) :
+- Utiliser exclusivement `onefive-back/.cursorrules` comme source d’autorité pour l’architecture et les conventions **API / Nest**.

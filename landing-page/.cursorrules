@@ -1,0 +1,10 @@
+# Landing page — Règles Cursor
+
+## Untitled UI React
+
+Aligner l’UI et les conventions de composants sur **Untitled UI React** lorsque c’est pertinent pour ce dépôt :
+
+- `docs/untitled-ui-AGENT.md` (racine du monorepo)
+- https://www.untitledui.com/react/AGENT.md
+
+Pour l’architecture API / monorepo globale : `onefive-back/.cursorrules` et `.cursorrules` à la racine.
