@@ -13,6 +13,16 @@ const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     rules: {
+      // ESLint 9 + @typescript-eslint v7: évite le crash au chargement de la règle
+      // ("Cannot read properties of undefined (reading 'allowShortCircuit')").
+      '@typescript-eslint/no-unused-expressions': [
+        'warn',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+          allowTaggedTemplates: true,
+        },
+      ],
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',

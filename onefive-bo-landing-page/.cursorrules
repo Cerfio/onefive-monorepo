@@ -1,0 +1,10 @@
+# Backoffice landing (Payload) — Règles Cursor
+
+## Untitled UI React
+
+Pour tout composant ou style UI custom hors écran admin Payload, s’aligner sur **Untitled UI React** :
+
+- `docs/untitled-ui-AGENT.md` (racine du monorepo)
+- https://www.untitledui.com/react/AGENT.md
+
+Pour l’architecture API / monorepo globale : `onefive-back/.cursorrules` et `.cursorrules` à la racine.
