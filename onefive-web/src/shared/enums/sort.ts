@@ -1,0 +1,7 @@
+export enum Sort {
+  NEWEST = 'NEWEST',
+  POPULAR = 'POPULAR',
+  INTERESTING = 'INTERESTING',
+  WEEK = 'WEEK',
+  MONTH = 'MONTH',
+}

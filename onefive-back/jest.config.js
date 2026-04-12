@@ -1,0 +1,50 @@
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src', '<rootDir>/test'],
+  testMatch: [
+    '**/*.test.ts',
+    '**/*.spec.ts',
+    '**/*.e2e-spec.ts',
+  ],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+    '!src/main.ts',
+    '!src/**/*.module.ts',
+    '!src/**/*.config.ts',
+    '!src/**/dto/**/*.ts',
+    '!src/**/entities/**/*.ts',
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
+  globalSetup: '<rootDir>/test/global-setup.ts',
+  setupFilesAfterEnv: ['<rootDir>/test/setup-unit.ts'],
+  setupFiles: ['<rootDir>/test/setup-env.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^generated/prisma$': '<rootDir>/generated/prisma',
+    '^src/(.*)$': '<rootDir>/src/$1',
+    '^test/(.*)$': '<rootDir>/test/$1',
+    '^uuid$': '<rootDir>/test/mocks/uuid.ts',
+  },
+  testTimeout: 15000,
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
+  moduleFileExtensions: ['ts', 'js', 'json'],
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/dist/',
+  ],
+  verbose: true,
+  detectOpenHandles: true,
+};

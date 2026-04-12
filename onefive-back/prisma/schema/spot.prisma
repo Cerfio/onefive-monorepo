@@ -1,0 +1,278 @@
+model Spot {
+  id             String              @id @default(uuid())
+  url            String
+  spot           SpotType
+  name           String
+  highlight      String?
+  address        String?
+  image          String?
+  description    String?
+  location       Json?
+  provider       ProviderType
+  raw            Json?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  accelerator    SpotAccelerator?
+  contest        SpotContest?
+  coworkingSpace SpotCoworkingSpace?
+  event          SpotEvent?
+  incubator      SpotIncubator?
+
+  @@map("spots")
+}
+
+model SpotAccelerator {
+  id               String                 @id @default(uuid())
+  spotId           String                 @unique
+  expertiseDomains ExpertiseDomain[]
+  hiringPeriod     Periodicity?
+  date             DateTime?
+  fundingModel     FundingModel?
+  equityPercentage Float?
+  investmentAmount Float?
+  stage            StartupStage?
+  capacity         Int?
+  programDuration  Int?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  spot             Spot                   @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  prices           SpotAcceleratorPrice[]
+}
+
+model SpotContest {
+  id               String             @id @default(uuid())
+  spotId           String             @unique
+  beginDate        DateTime
+  endDate          DateTime
+  expertiseDomains ExpertiseDomain[]
+  prizeType        PrizeType?
+  prizeAmount      Float?
+  eligibility      String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  spot             Spot               @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  prices           SpotContestPrice[]
+}
+
+model SpotEvent {
+  id               String            @id @default(uuid())
+  spotId           String            @unique
+  beginDate        DateTime
+  endDate          DateTime
+  uniqueId         String            @unique
+  expertiseDomains ExpertiseDomain[]
+  days             Day[]
+  format           EventFormat?
+  attendees        Int?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  spot             Spot              @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  prices           SpotEventPrice[]
+}
+
+model SpotIncubator {
+  id               String               @id @default(uuid())
+  spotId           String               @unique
+  expertiseDomains ExpertiseDomain[]
+  hiringPeriod     Periodicity?
+  dates            String[]
+  fundingModel     FundingModel?
+  equityPercentage Float?
+  investmentAmount Float?
+  stage            StartupStage?
+  capacity         Int?
+  programDuration  Int?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  spot             Spot                 @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  prices           SpotIncubatorPrice[]
+}
+
+model SpotCoworkingSpace {
+  id           String                    @id @default(uuid())
+  spotId       String                    @unique
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  spot         Spot                      @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  prices       SpotCoworkingSpacePrice[]
+  openingHours SpotOpeningHours?
+}
+
+model SpotAcceleratorPrice {
+  id            String          @id @default(uuid())
+  acceleratorId String
+  periodicity   Periodicity
+  planId        String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  accelerator   SpotAccelerator @relation(fields: [acceleratorId], references: [id], onDelete: Cascade)
+  plan          SpotPricePlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+}
+
+model SpotContestPrice {
+  id        String        @id @default(uuid())
+  contestId String
+  planId    String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  contest   SpotContest   @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  plan      SpotPricePlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+}
+
+model SpotEventPrice {
+  id        String        @id @default(uuid())
+  eventId   String
+  planId    String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  event     SpotEvent     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  plan      SpotPricePlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+}
+
+model SpotIncubatorPrice {
+  id          String        @id @default(uuid())
+  incubatorId String
+  periodicity Periodicity
+  planId      String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  incubator   SpotIncubator @relation(fields: [incubatorId], references: [id], onDelete: Cascade)
+  plan        SpotPricePlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+}
+
+model SpotCoworkingSpacePrice {
+  id               String             @id @default(uuid())
+  coworkingSpaceId String
+  periodicity      Periodicity
+  planId           String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  coworkingSpace   SpotCoworkingSpace @relation(fields: [coworkingSpaceId], references: [id], onDelete: Cascade)
+  plan             SpotPricePlan      @relation(fields: [planId], references: [id], onDelete: Cascade)
+}
+
+model SpotPricePlan {
+  id                   String                    @id @default(uuid())
+  name                 String
+  price                Float
+  currency             String
+  fee                  Float
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  acceleratorPrices    SpotAcceleratorPrice[]
+  contestPrices        SpotContestPrice[]
+  coworkingSpacePrices SpotCoworkingSpacePrice[]
+  eventPrices          SpotEventPrice[]
+  incubatorPrices      SpotIncubatorPrice[]
+}
+
+model SpotOpeningHours {
+  id               String             @id @default(uuid())
+  coworkingSpaceId String             @unique
+  begin            String
+  end              String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  coworkingSpace   SpotCoworkingSpace @relation(fields: [coworkingSpaceId], references: [id], onDelete: Cascade)
+}
+
+enum SpotType {
+  EVENT
+  CONTEST
+  INCUBATOR
+  ACCELERATOR
+  COWORKINGSPACE
+}
+
+enum ProviderType {
+  ONEFIVE
+  EVENTBRITE
+  MEETUP
+  BPI_FRANCE
+}
+
+enum ExpertiseDomain {
+  TECH
+  AI
+  FINTECH
+  INSURTECH
+  HEALTHTECH
+  EDTECH
+  GREENTECH
+  ECOMMERCE
+  SOCIALIMPACT
+  LEGALTECH
+  PROPTECH
+  FOODTECH
+  MOBILITY
+  GAMING
+  MEDIA
+  CYBERSECURITY
+  BIOTECH
+  WEB3
+  HR
+  DESIGN
+  MARKETING
+  BUSINESS
+  LUXURY
+  BEAUTY
+  SPORTS
+  QUANTUM
+  ADTECH
+  URBAN
+  OTHER
+}
+
+enum FundingModel {
+  GRANT
+  EQUITY
+  REVENUE_SHARE
+  EQUITY_AND_GRANT
+  NONE
+}
+
+enum StartupStage {
+  IDEA
+  PRESEED
+  SEED
+  SERIES_A
+  GROWTH
+  ALL
+}
+
+enum EventFormat {
+  ONLINE
+  INPERSON
+  HYBRID
+}
+
+enum PrizeType {
+  CASH
+  GRANT
+  SERVICES
+  VISIBILITY
+  MIXED
+}
+
+enum Periodicity {
+  HOURLY
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  BIMONTHLY
+  QUARTERLY
+  SEMESTERLY
+  SEMIANNUAL
+  ANNUAL
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}

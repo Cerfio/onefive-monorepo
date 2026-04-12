@@ -1,0 +1,52 @@
+model Notification {
+  id         String               @id @default(uuid())
+  profileId  String               // Destinataire de la notification
+  type       NotificationType
+  category   NotificationCategory
+  title      String
+  message    String
+  data       Json?                // Données contextuelles (postId, commentId, startupId, etc.)
+  read       Boolean              @default(false)
+  actorId    String?              // Profil qui a déclenché la notification (peut être null pour système)
+  entityId   String?              // ID de l'entité concernée (post, comment, startup, etc.)
+  entityType String?              // Type de l'entité (POST, COMMENT, STARTUP, etc.)
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+
+  @@index([profileId])
+  @@index([profileId, read])
+  @@index([profileId, category])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  // Engagement
+  LIKE
+  COMMENT
+  COMMENT_REPLY
+  MENTION
+  SHARE
+  FOLLOW
+  PROFILE_VIEW
+  DATAROOM_ENGAGEMENT
+
+  // Invitations
+  STARTUP_INVITATION
+  INVESTOR_INVITATION
+  DATAROOM_INVITATION
+  CONNECTION_REQUEST
+  REFERRAL_ACCEPTED
+
+  // Système
+  SYSTEM_ANNOUNCEMENT
+  DATAROOM_UPDATE
+  DOCUMENT_UPLOADED
+  STARTUP_UPDATE
+  ACHIEVEMENT_UNLOCKED
+}
+
+enum NotificationCategory {
+  ENGAGEMENT
+  INVITATIONS
+  SYSTEM
+}

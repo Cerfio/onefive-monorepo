@@ -1,0 +1,71 @@
+model Report {
+  id           String       @id @default(uuid())
+  reporterId   String
+  resourceType ReportResourceType
+  resourceId   String
+  reason       ReportReason
+  message      String?      @db.VarChar(500)
+  status       ReportStatus @default(PENDING)
+  resolvedAt   DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  reporter     Profile      @relation("ReportsSubmitted", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([reporterId])
+  @@index([resourceType, resourceId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Feedback {
+  id          String         @id @default(uuid())
+  reporterId  String
+  type        FeedbackType
+  message     String         @db.VarChar(500)
+  url         String?        @db.VarChar(500)
+  browserInfo String?        @db.VarChar(500)
+  screenshotId String?
+  status      ReportStatus   @default(PENDING)
+  resolvedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  reporter    Profile        @relation("FeedbackSubmitted", fields: [reporterId], references: [id], onDelete: Cascade)
+  screenshot  File?          @relation("FeedbackScreenshot", fields: [screenshotId], references: [id])
+
+  @@index([reporterId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum ReportResourceType {
+  PROFILE
+  POST
+  POST_COMMENT
+  POST_COMMENT_REPLY
+  DISCUSSION
+  DISCUSSION_ANSWER
+  DISCUSSION_ANSWER_REPLY
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  INAPPROPRIATE_CONTENT
+  MISINFORMATION
+  IMPERSONATION
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum FeedbackType {
+  BUG
+  SUGGESTION
+  COMMENT
+  FUNCTIONAL
+}

@@ -1,0 +1,8 @@
+packages:
+  - 'landing-page'
+  - 'onefive-back'
+  - 'onefive-web'
+  - 'onefive-backoffice'
+  - 'onefive-bo-landing-page'
+  - 'onefive-email'
+  - 'onefive-email/transactional'

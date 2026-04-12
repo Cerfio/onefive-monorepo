@@ -1,0 +1,17 @@
+model LinkedInSync {
+  id                  String   @id @default(uuid())
+  profileId           String   @unique
+  linkedinPublicId    String?
+  linkedinUrl         String?
+  rawData             Json     // Données brutes de l'API Apify
+  lastSyncedAt        DateTime @default(now())
+  syncCount           Int      @default(0) // Nombre de syncs dans la période courante
+  syncPeriodStart     DateTime @default(now()) // Début de la période de comptage (trimestre)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  profile             Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([lastSyncedAt])
+}
+

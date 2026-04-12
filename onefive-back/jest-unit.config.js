@@ -1,0 +1,37 @@
+/** Jest config pour les tests UNIT uniquement - pas de Testcontainers, pas de DB */
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src', '<rootDir>/test'],
+  testMatch: ['**/*.spec.ts', '**/*.test.ts'],
+  testPathIgnorePatterns: [
+    'e2e-spec',
+    'flows',
+    '<rootDir>/node_modules/',
+    '<rootDir>/dist/',
+  ],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+    '!src/main.ts',
+    '!src/**/*.module.ts',
+    '!src/**/*.config.ts',
+    '!src/**/dto/**/*.ts',
+    '!src/**/entities/**/*.ts',
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
+  setupFilesAfterEnv: ['<rootDir>/test/setup-unit.ts'],
+  setupFiles: ['<rootDir>/test/setup-env.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^generated/prisma$': '<rootDir>/generated/prisma',
+    '^src/(.*)$': '<rootDir>/src/$1',
+    '^test/(.*)$': '<rootDir>/test/$1',
+    '^uuid$': '<rootDir>/test/mocks/uuid.ts',
+  },
+  testTimeout: 15000,
+  transform: { '^.+\\.ts$': 'ts-jest' },
+  moduleFileExtensions: ['ts', 'js', 'json'],
+  verbose: true,
+};

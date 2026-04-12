@@ -1,0 +1,169 @@
+{
+  "auth": {
+    "common": {
+      "image-title": "Station F",
+      "image-description": "Le plus grand campus de startups au monde",
+      "description-1": "Plus de 1000 startups hébergées",
+      "description-2": "Un écosystème entrepreneurial unique",
+      "description-3": "Connectez-vous à l'innovation",
+      "onefive-ecosystem": "Écosystème OneFive"
+    },
+    "login": {
+      "header-title": "Connectez-vous à votre compte",
+      "header-description": "Bon retour ! Veuillez saisir vos informations.",
+      "email-title": "Email",
+      "email-placeholder": "Veuillez saisir votre email",
+      "password-title": "Mot de passe",
+      "password-placeholder": "••••••••",
+      "submit": "Se connecter",
+      "or-continue-with": "Ou continuez avec",
+      "continue-with-google": "Continuer avec Google",
+      "continue-with-apple": "Continuer avec Apple",
+      "continue-with-linkedin": "Continuer avec LinkedIn",
+      "dont-have-account": "Vous n'avez pas de compte ?",
+      "sign-up": "S'inscrire",
+      "forgot-password": "Mot de passe oublié ?",
+      "error": "Échec de la connexion",
+      "errors": {
+        "form": {
+          "email-invalid": "Veuillez saisir une adresse email valide",
+          "password-invalid": "Veuillez saisir un mot de passe"
+        },
+        "error-occured": "Une erreur est survenue. Veuillez réessayer.",
+        "bad-authentication-exception": "Email ou mot de passe invalide. Veuillez réessayer."
+      }
+    },
+    "signup": {
+      "header-title": "Créer votre compte",
+      "header-description": "Rejoignez la prochaine génération d'entrepreneurs sur OneFive.",
+      "email-title": "Email",
+      "email-placeholder": "Veuillez saisir votre email",
+      "password-title": "Mot de passe",
+      "password-placeholder": "••••••••",
+      "submit": "Créer un compte",
+      "or-continue-with": "Ou continuez avec",
+      "continue-with-google": "Continuer avec Google",
+      "continue-with-apple": "Continuer avec Apple",
+      "continue-with-linkedin": "Continuer avec LinkedIn",
+      "already-have-account": "Vous avez déjà un compte ?",
+      "sign-in": "Se connecter",
+      "create-conditions": "En créant un compte, vous acceptez nos",
+      "create-conditions-link": "Conditions Générales d'Utilisation.",
+      "password-strength": "Force du mot de passe",
+      "password-strength-1": "Très faible",
+      "password-strength-2": "Faible",
+      "password-strength-3": "Moyen",
+      "password-strength-4": "Bon",
+      "password-strength-5": "Très bon",
+      "errors": {
+        "form": {
+          "email-invalid": "Veuillez saisir une adresse email valide",
+          "password-invalid": "Veuillez saisir un mot de passe",
+          "password-length": "Le mot de passe doit contenir au moins 8 caractères",
+          "password-lowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+          "password-uppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+          "password-number": "Le mot de passe doit contenir au moins un chiffre"
+        },
+        "error-occured": "Une erreur est survenue. Veuillez réessayer.",
+        "bad-authentication-exception": "Email ou mot de passe invalide. Veuillez réessayer.",
+        "email-already-exists": "Cette adresse email est déjà associée à un compte. Veuillez utiliser une autre adresse email."
+      }
+    }
+  },
+  "onboarding": {
+    "welcome": "Bienvenue sur Onefive",
+    "continue": "Continuer",
+    "detailProfile": {
+      "addPhoto": "Ajouter une photo",
+      "firstname": "Prénom",
+      "firstnamePlaceholder": "Veuillez entrer votre prénom",
+      "lastname": "Nom",
+      "lastnamePlaceholder": "Veuillez entrer votre nom",
+      "gender": "Genre",
+      "genderPlaceholder": "Veuillez choisir votre genre",
+      "dateOfBirth": "Date de naissance",
+      "dateOfBirthPlaceholder": "Veuillez entrer votre date de naissance",
+      "country": "Pays",
+      "countryPlaceholder": "Veuillez choisir votre pays",
+      "city": "Ville",
+      "cityPlaceholder": "Veuillez choisir votre ville"
+    },
+    "progressStep": {
+      "step1Title": "Vos informations",
+      "step1Description": "Complétez votre profil",
+      "step2Title": "Sélectionnez vos rôles",
+      "step2Description": "Définissez votre identité",
+      "step3Title": "Choisir vos centres d'intérêts",
+      "step3Description": "Customisez votre feed",
+      "step4Title": "Suivre des entrepreneurs",
+      "step4Description": "Développez votre réseau",
+      "step5Title": "Startups insights",
+      "step5Description": "Découvrez des startups innovantes",
+      "step6Title": "Sécuritez votre compte",
+      "step6Description": "Améliorez la sécurité de votre compte"
+    },
+    "roles": {
+      "title": "Sélectionnez vos rôles dans l'écosystème",
+      "description": "Choisissez votre rôle principal et optionnellement un rôle secondaire pour mieux vous identifier",
+      "selected": "Sélectionné",
+      "rolesSelected": "rôle(s) sélectionné(s)",
+      "selectMainRole": "Sélectionnez au moins un rôle principal",
+      "optionalSecondaryRole": "Vous pouvez ajouter un rôle secondaire (optionnel)",
+      "rolesComplete": "Parfait ! Vos rôles sont sélectionnés",
+      "selectRolesTitle": "Quel est votre rôle dans l'écosystème startup ?",
+      "selectRolesDescription": "Sélectionnez votre rôle principal (obligatoire) et éventuellement un rôle secondaire pour mieux vous identifier",
+      "mainRoleLabel": "Principal",
+      "secondaryRoleLabel": "Secondaire",
+      "mainRole": "Rôle principal",
+      "mainRoleDescription": "Sélectionnez votre rôle principal dans l'écosystème startup",
+      "mainRoleSelected": "Rôle principal sélectionné",
+      "secondaryRoleSelected": "Rôle secondaire sélectionné"
+    },
+    "profileCard": {
+      "follow": "Suivre",
+      "firstnameAndLastname": "{firstname} {lastname}"
+    },
+    "startupCard": {
+      "follow": "Suivre"
+    },
+    "fillPhoneNumber": {
+      "phoneNumber": "Numéro de téléphone",
+      "phoneNumberPlaceholder": "Veuillez entrer votre numéro de téléphone"
+    },
+    "verifyPhoneNumber": {
+      "sentCode": "Nous venons de vous envoyez un code par sms à",
+      "letsStart": "Commencer",
+      "didntReceiveCode": "Vous n'avez pas reçu le code ?",
+      "resendCode": " Cliquer pour renvoyer le code",
+      "changePhoneNumber": "Changer de numéro de téléphone"
+    }
+  },
+  "messages": {
+    "messages": "Messages",
+    "call": "Appeler",
+    "search": "Rechercher",
+    "work": "{position} à {company}",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "viewProfile": "Voir le profil",
+    "send": "Envoyer",
+    "sendMessage": "Envoyer un message",
+    "discussion": {
+      "work": "{position} à {company}"
+    },
+    "yourMessage": {
+      "you": "Vous"
+    }
+  },
+  "metadata": {
+    "signIn": {
+      "title": "Se connecter | Onefive, le réseau social pour les entrepreneurs",
+      "description": "Connectez-vous à votre compte Onefive pour vous connecter avec des entrepreneurs et développer votre réseau.",
+      "keywords": "Onefive, Entrepreneurial, Network, Se connecter",
+      "ogTitle": "Se connecter à Onefive | Le réseau social pour les entrepreneurs",
+      "ogDescription": "Connectez-vous à votre compte Onefive pour vous connecter avec des entrepreneurs et développer votre réseau.",
+      "twitterTitle": "Se connecter à Onefive | Le réseau social pour les entrepreneurs",
+      "twitterDescription": "Connectez-vous à votre compte Onefive pour vous connecter avec des entrepreneurs et développer votre réseau."
+    }
+  }
+}

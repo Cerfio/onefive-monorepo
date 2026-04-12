@@ -1,0 +1,468 @@
+model Profile {
+  id                             String                          @id @default(uuid())
+  userId                         String                          @unique
+  firstName                      String
+  lastName                       String
+  gender                         String
+  genderSalutationPreferenceType GenderSalutationPreferenceType
+  dateOfBirth                    DateTime
+  countryCode                    String
+  city                           String
+  bio                            String?
+  avatarId                       String?
+  coverId                        String?
+  highlight                      String?
+  skills                         String[]
+  roles                          String[]
+  ecosystemRoles                 ProfileRole[]
+  linkedinUrl                    String?                 @db.VarChar(500)
+  // Waitlist system
+  isAmbassador                   Boolean                         @default(false)
+  ambassadorTitle                String?
+  ambassadorInterviewUrl         String?
+  waitlistStatus                 WaitlistStatus                  @default(WAITING)
+  activatedAt                    DateTime?
+  referralCode                   String                          @unique @default(uuid())
+  referrerId                     String?
+  showInLeaderboard              Boolean                         @default(false)
+  createdAt                      DateTime                        @default(now())
+  updatedAt                      DateTime                        @updatedAt
+  achievements                   Achievement[]
+  discussions                    Discussion[]
+  discussionAnswers              DiscussionAnswer[]
+  discussionAnswerReactions      DiscussionAnswerReaction[]
+  discussionAnswerReplies        DiscussionAnswerReply[]
+  discussionAnswerReplyReactions DiscussionAnswerReplyReaction[]
+  discussionAnswerReplyUpvotes   DiscussionAnswerReplyUpvote[]
+  discussionAnswerUpvotes        DiscussionAnswerUpvote[]
+  discussionReactions            DiscussionReaction[]
+  discussionUpvotes              DiscussionUpvote[]
+  discussionViews                DiscussionView[]
+  discussionPollVotes            DiscussionPollVote[]
+  educations                     Education[]
+  experiences                    Experience[]
+  fundingHistoryInvestments      FundingHistoryInvestor[]
+  posts                          Post[]
+  postBookmarks                  PostBookmark[]
+  dataroomFileComments           DataroomFileComment[]
+  postComments                   PostComment[]
+  postCommentReactions           PostCommentReaction[]
+  postReactions                  PostReaction[]
+  postViews                      PostView[]
+  avatar                         File?                           @relation("ProfileAvatar", fields: [avatarId], references: [id])
+  cover                          File?                           @relation("ProfileCover", fields: [coverId], references: [id])
+  user                           User                            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  followedBy                     ProfileFollow[]                 @relation("followedBy")
+  following                      ProfileFollow[]                 @relation("following")
+  viewedBy                       ProfileView[]                   @relation("viewedBy")
+  viewer                         ProfileView[]                   @relation("viewer")
+  relationshipAccepter           Relationship[]                  @relation("accepter")
+  relationshipRequest            Relationship[]                  @relation("requester")
+  socials                        Social[]
+  startupFollowing               StartupFollow[]
+  applies                        StartupHiringApply[]
+  startupInvitedBy               StartupInvitation[]             @relation("startupInvitedBy")
+  startupInvitations             StartupInvitation[]             @relation("startupInvitations")
+  startups                       StartupMember[]
+  viewedStartup                  StartupView[]
+  tagFollowing                   TagFollow[]
+  conversationMembers            ConversationMember[]
+  sentMessages                   Message[]            @relation("MessageSender")
+  messageReactions               MessageReaction[]    @relation("MessageReactions")
+  readMessages                   MessageRead[]        @relation("MessageReads")
+  referralsMade                  Referral[]           @relation("ReferralsMade")
+  referralReceived               Referral?            @relation("ReferralReceived")
+  referralStats                  ReferralStats?
+  badges                         UserBadge[]
+  linkedInSync                   LinkedInSync?
+  referrer                        Profile?            @relation("Referrer", fields: [referrerId], references: [id])
+  referredBy                     Profile[]            @relation("Referrer")
+  reportsSubmitted               Report[]             @relation("ReportsSubmitted")
+  feedbackSubmitted              Feedback[]           @relation("FeedbackSubmitted")
+}
+
+model Streak {
+  id        String   @id @default(uuid())
+  userId    String
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model Social {
+  id        String   @id @default(uuid())
+  title     String
+  url       String
+  profileId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model ProfileView {
+  id         String   @id @default(uuid())
+  viewerId   String
+  viewedById String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  viewedBy   Profile  @relation("viewedBy", fields: [viewedById], references: [id], onDelete: Cascade)
+  viewer     Profile  @relation("viewer", fields: [viewerId], references: [id], onDelete: Cascade)
+
+  @@index([viewerId])
+  @@index([viewedById])
+}
+
+model StartupView {
+  id        String   @id @default(uuid())
+  profileId String
+  startupId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  startup   Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+
+  @@index([startupId])
+  @@index([profileId])
+}
+
+model Startup {
+  id             String                  @id @default(uuid())
+  name           String
+  categories     String[]
+  description    String?
+  countryCode    String
+  city           String
+  teamSize       Int?
+  investorsCount Int?
+  partnersCount  Int?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  coverImage     String?                 @db.VarChar(500)
+  foundedDate    DateTime?
+  linkedin       String?                 @db.VarChar(500)
+  logo           String?                 @db.VarChar(500)
+  tagline        String?                 @db.VarChar(200)
+  website        String?                 @db.VarChar(500)
+  dataroom       Dataroom?
+  followedBy     StartupFollow[]
+  fundingHistory StartupFundingHistory[]
+  fundingInfo    StartupFundingInfo?
+  hiring         StartupHiring[]
+  invitations    StartupInvitation[]
+  members        StartupMember[]
+  views          StartupView[]
+  linkedInSync   LinkedInCompanySync?
+}
+
+model StartupMember {
+  id           String                @id @default(uuid())
+  profileId    String
+  startupId    String
+  position     String
+  role         StartupMemberRoleType
+  equity       Int                   @default(0)
+  isFounder    Boolean               @default(false)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  invitationId String?               @unique
+  invitation   StartupInvitation?    @relation(fields: [invitationId], references: [id])
+  profile      Profile               @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  startup      Startup               @relation(fields: [startupId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, startupId])
+  @@index([profileId, role])
+}
+
+model StartupFollow {
+  startupId String
+  profileId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  startup   Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+
+  @@id([profileId, startupId])
+}
+
+model StartupHiring {
+  id         String               @id @default(uuid())
+  startupId  String
+  title      String
+  remotely   Boolean
+  fullTime   Boolean
+  languages  String[]
+  category   String
+  bio        String?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  startup    Startup              @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  applicants StartupHiringApply[]
+}
+
+model StartupHiringApply {
+  startupHiringId String
+  profileId       String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  profile         Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  startupHiring   StartupHiring @relation(fields: [startupHiringId], references: [id], onDelete: Cascade)
+
+  @@id([startupHiringId, profileId])
+}
+
+model StartupInvitation {
+  id               String                  @id @default(uuid())
+  startupId        String
+  status           StartupInvitationStatus @default(PENDING)
+  expiresAt        DateTime
+  invitedProfileId String?
+  email            String?
+  firstName        String?
+  lastName         String?
+  position         String
+  equity           Int                     @default(0)
+  role             StartupMemberRoleType   @default(MEMBER)
+  message          String?
+  memberId         String?
+  invitedById      String
+  respondedAt      DateTime?
+  respondedById    String?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  invitedBy        Profile                 @relation("startupInvitedBy", fields: [invitedById], references: [id])
+  invitedProfile   Profile?                @relation("startupInvitations", fields: [invitedProfileId], references: [id])
+  startup          Startup                 @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  member           StartupMember?
+
+  @@index([status, expiresAt])
+  @@index([invitedProfileId])
+  @@index([email])
+}
+
+model ProfileFollow {
+  followedById String
+  followingId  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  followedBy   Profile  @relation("followedBy", fields: [followedById], references: [id], onDelete: Cascade)
+  following    Profile  @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followingId, followedById])
+  @@index([followedById, createdAt])
+}
+
+model Relationship {
+  requesterId String
+  accepterId  String
+  status      RelationshipStatus @default(ACCEPTED)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  accepter    Profile            @relation("accepter", fields: [accepterId], references: [id], onDelete: Cascade)
+  requester   Profile            @relation("requester", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  @@id([requesterId, accepterId])
+  @@index([accepterId, status])
+}
+
+model TagFollow {
+  id        String   @id @default(uuid())
+  name      String
+  profileId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Experience {
+  id          String    @id @default(uuid())
+  title       String
+  company     String
+  domain      String?
+  logoUrl     String?
+  city        String
+  from        DateTime
+  to          DateTime?
+  description String?
+  urlLinkedin String?
+  tags        String[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Education {
+  id          String    @id @default(uuid())
+  degree      String
+  school      String
+  domain      String?
+  logoUrl     String?
+  city        String
+  from        DateTime
+  to          DateTime?
+  description String?
+  urlLinkedin String?
+  tags        String[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  date        String?
+  profileId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model StartupFundingInfo {
+  id                     String   @id @default(uuid())
+  startupId              String   @unique
+  totalRaised            String?  @db.VarChar(50)
+  lastRound              String?  @db.VarChar(50)
+  investors              String[]
+  fundraisingType        String?  @db.VarChar(20)
+  structuredTargetAmount String?  @db.VarChar(50)
+  structuredMinTicket    String?  @db.VarChar(50)
+  structuredInstrument   String?  @db.VarChar(20)
+  structuredCap          String?  @db.VarChar(50)
+  structuredDiscount     String?  @db.VarChar(50)
+  structuredDeadline     String?  @db.VarChar(100)
+  structuredDeckUrl      String?  @db.VarChar(500)
+  rollingInstrument      String?  @db.VarChar(20)
+  rollingCap             String?  @db.VarChar(50)
+  rollingDiscount        String?  @db.VarChar(50)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  startup                Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+}
+
+model StartupFundingHistory {
+  id               String                   @id @default(uuid())
+  startupId        String
+  date             DateTime
+  amountRaised     Float
+  valuation        Float?
+  round            StartupFundingRound
+  instrument       String?
+  notes            String?
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+  leadInvestorId   String?
+  manualInvestors  Json?
+  profileInvestors FundingHistoryInvestor[]
+  startup          Startup                  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+
+  @@index([startupId])
+  @@index([date])
+}
+
+model FundingHistoryInvestor {
+  id               String                       @id @default(uuid())
+  fundingHistoryId String
+  profileId        String?
+  email            String?
+  firstName        String?
+  lastName         String?
+  isLead           Boolean                      @default(false)
+  invitationStatus InvestorInvitationStatus      @default(PENDING)
+  isVisible        Boolean                      @default(true)
+  token            String?                      @unique
+  expiresAt        DateTime?
+  respondedAt      DateTime?
+  createdAt        DateTime                     @default(now())
+  updatedAt        DateTime                     @updatedAt
+  fundingHistory   StartupFundingHistory        @relation(fields: [fundingHistoryId], references: [id], onDelete: Cascade)
+  profile          Profile?                     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([fundingHistoryId, profileId])
+  @@index([fundingHistoryId])
+  @@index([profileId])
+  @@index([token])
+  @@index([email])
+}
+
+enum InvestorInvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum RelationshipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
+enum GenderSalutationPreferenceType {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum StartupMemberRoleType {
+  SUPER_ADMIN
+  ADMIN
+  MEMBER
+}
+
+enum StartupInvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CANCELLED
+}
+
+enum StartupFundingRound {
+  LOVE_MONEY
+  PRESEED
+  SEED
+  SERIESA
+  SERIESB
+  SERIESC
+  SERIESD
+  BRIDGE
+  VENTUREDEBT
+  OTHER
+}
+
+enum ProfileRole {
+  FOUNDER
+  BUSINESS_ANGEL
+  VENTURE_CAPITALIST
+  INSTITUTIONAL_INVESTOR
+  MENTOR
+  STRATEGIC_ADVISOR
+  STUDENT_ENTREPRENEUR
+  SERVICE_PROVIDER
+  MEDIA
+  INCUBATOR_ACCELERATOR
+  RECRUITER_HR
+  OTHER
+}
+
+enum WaitlistStatus {
+  WAITING
+  ACTIVE
+  IGNORED
+}
+

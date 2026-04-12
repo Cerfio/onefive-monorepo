@@ -1,0 +1,121 @@
+model AdminUser {
+  id          String              @id @default(uuid())
+  email       String              @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  isActive    Boolean             @default(true)
+  isSuperAdmin Boolean            @default(false)
+  lastLoginAt DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  sessions    AdminSession[]
+  roles       AdminUserRole[]
+  auditLogs   AdminAuditLog[]
+  sentInvitations AdminInvitation[] @relation("AdminInvitationInvitedBy")
+  acceptedInvitations AdminInvitation[] @relation("AdminInvitationAcceptedBy")
+}
+
+model AdminSession {
+  id          String    @id @default(uuid())
+  token       String    @unique
+  adminUserId String
+  isRevoked   Boolean   @default(false)
+  expiresAt   DateTime
+  lastUsage   DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userAgent   String    @default("")
+  ipAddress   String    @default("")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+  @@index([expiresAt])
+}
+
+model AdminRole {
+  id          String                @id @default(uuid())
+  key         String                @unique
+  name        String
+  description String?
+  isSystem    Boolean               @default(false)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  users       AdminUserRole[]
+  permissions AdminRolePermission[]
+  invitations AdminInvitation[]
+}
+
+model AdminPermission {
+  id          String                @id @default(uuid())
+  key         String                @unique
+  description String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  roles       AdminRolePermission[]
+}
+
+model AdminUserRole {
+  adminUserId String
+  roleId      String
+  assignedAt  DateTime  @default(now())
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  role        AdminRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([adminUserId, roleId])
+  @@index([roleId])
+}
+
+model AdminRolePermission {
+  roleId       String
+  permissionId String
+  createdAt    DateTime        @default(now())
+  role         AdminRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   AdminPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model AdminInvitation {
+  id          String                @id @default(uuid())
+  email       String
+  roleId      String
+  token       String                @unique
+  status      AdminInvitationStatus @default(PENDING)
+  expiresAt   DateTime
+  invitedById String
+  acceptedById String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  role        AdminRole             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  invitedBy   AdminUser             @relation("AdminInvitationInvitedBy", fields: [invitedById], references: [id], onDelete: Restrict)
+  acceptedBy  AdminUser?            @relation("AdminInvitationAcceptedBy", fields: [acceptedById], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([status, expiresAt])
+}
+
+model AdminAuditLog {
+  id           String    @id @default(uuid())
+  adminUserId  String?
+  action       String
+  resourceType String
+  resourceId   String?
+  metadata     Json?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime  @default(now())
+  adminUser    AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@index([adminUserId])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+}
+
+enum AdminInvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}

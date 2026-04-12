@@ -1,0 +1,668 @@
+# OneFive - Règles Cursor - Architecture Monolith
+
+## 🏗️ Architecture du Projet
+
+Ce projet suit une **architecture monolithique** avec le pattern **"Controller → Handler → Service"**.
+
+### Structure Principale
+- **`onefive-back`** (port 3000) : Monolith principal avec toutes les fonctionnalités
+- **Base de données unifiée** : PostgreSQL avec PostGIS
+- **Cache/Sessions** : Redis
+- **Stockage** : LocalStack (S3 compatible)
+
+### Modules Migrés
+Tous les anciens microservices sont maintenant intégrés dans le monolith :
+- `onefive-authentication` → `auth/`
+- `onefive-profile` → `profile/`
+- `onefive-discussion` → `discussion/`
+- `onefive-location` → `countries/` + `cities/`
+- `onefive-session` → `sessions/`
+- `onefive-sms` → `sms/`
+- `onefive-email` → `email/`
+- `onefive-dataroom` → `dataroom/`
+- `onefive-storage` → `storage/`
+- `onefive-spotlight` → `spotlight/`
+
+## 🎯 Pattern Architecture OBLIGATOIRE
+
+### Controller → Handler → Service
+**TOUJOURS respecter cette hiérarchie :**
+
+1. **Controller** : Reçoit les requêtes HTTP, mappe les inputs/outputs
+2. **Handler** : Gère la logique métier de l'endpoint
+3. **Service** : Contient les appels à la base de données
+
+### Structure des Dossiers
+```
+src/module-name/
+├── module-name.controller.ts    # Controller HTTP
+├── module-name.service.ts       # Service base de données
+├── module-name.module.ts         # Module NestJS
+├── module-name.exception.ts      # Exceptions custom
+├── dto/                         # Data Transfer Objects
+│   ├── create-module.dto.ts
+│   ├── update-module.dto.ts
+│   └── get-module.dto.ts
+└── handlers/                    # Handlers logique métier
+    ├── create-module.handler.ts
+    ├── update-module.handler.ts
+    └── get-module.handler.ts
+```
+
+### Modules Composés (Composite Modules)
+Lorsqu'une fonctionnalité relie explicitement deux domaines (ex: profils et posts), créez un module « composé » dédié qui respecte le pattern Controller → Handler → Service, au lieu de surcharger un module existant.
+
+Exemple: lister les posts d'un profil via un module `profile-post`.
+
+```
+src/profile-post/
+├── profile-post.controller.ts            # @Controller('profile-post')
+├── profile-post.module.ts
+├── dto/
+│   └── list-profile-posts.dto.ts         # skip, take, orderBy, order
+└── handlers/
+    └── list-profile-posts.handler.ts     # Logique métier, mapping sortie
+```
+
+Règles:
+- Le controller ne contient pas de logique; validation DTO et réponse standard `{ success: true, data }`.
+- Le handler ne fait aucun accès DB; il orchestre et réutilise les services existants (ex: `PostService`) par injection.
+- Éviter de dupliquer des services: pour récupérer des posts, injecter `PostService` du module `post` plutôt que créer un `profile-post.service` redondant.
+- Protéger avec `SessionGuard` si nécessaire (ex: endpoints privés).
+- Tests: E2E pour le controller, unit pour le handler.
+
+API recommandée pour `profile-post`:
+- `GET /profile-post/:profileId` → Liste paginée des posts d'un profil (query: `skip`, `take`, `orderBy`, `order`).
+- Réponse: `{ success: true, data: { items: PostItem[], skip, take, hasMore } }`.
+- `PostItem` minimal: `{ id, content, mediaUrls, tags, createdAt, commentCount, reactionCount, userReaction? }`.
+
+Notes:
+- Préférer un module composé plutôt qu'ajouter des routes dans `post` ou `profile` lorsque la responsabilité est transverse.
+- Réutiliser les services d'autres modules via injection pour éviter la duplication et les dépendances cycliques.
+
+## 📝 Règles de Développement
+
+### 1. Controllers
+- **NE JAMAIS** mettre de logique métier dans les controllers
+- **TOUJOURS** utiliser des DTOs pour la validation
+- **TOUJOURS** appeler un handler, jamais un service directement
+- **TOUJOURS** retourner des réponses standardisées : `{ success: true, data: ... }`
+
+```typescript
+@Controller('module')
+export class ModuleController {
+  constructor(private readonly createHandler: CreateHandler) {}
+
+  @Post()
+  async create(@Body() body: CreateDto) {
+    const result = await this.createHandler.execute({
+      transactionId: req.id,
+      ...body,
+    });
+    return { success: true, data: result };
+  }
+}
+```
+
+### 2. Handlers
+- **TOUJOURS** contenir la logique métier
+- **TOUJOURS** utiliser le décorateur `@Log()`
+- **TOUJOURS** recevoir un `transactionId`
+- **TOUJOURS** appeler les services pour les accès données
+- **NE JAMAIS** faire d'appels HTTP ou base de données directement
+
+```typescript
+@Injectable()
+export class CreateHandler {
+  constructor(
+    @Inject('Logger') private readonly logger: LogService,
+    private readonly moduleService: ModuleService,
+  ) {}
+
+  @Log()
+  async execute({ transactionId, data }: { transactionId: string; data: any }) {
+    // Logique métier ici
+    const result = await this.moduleService.create({
+      transactionId,
+      data,
+    });
+    return result;
+  }
+}
+```
+
+### 3. Services
+- **TOUJOURS** utiliser Prisma pour les accès base de données
+- **TOUJOURS** utiliser le décorateur `@Log()`
+- **TOUJOURS** gérer les erreurs avec des exceptions custom
+- **TOUJOURS** recevoir un `transactionId`
+
+```typescript
+@Injectable()
+export class ModuleService {
+  constructor(
+    private prisma: PrismaService,
+    @Inject('Logger') private readonly logger: LogService,
+  ) {}
+
+  @Log()
+  async create({ transactionId, data }: { transactionId: string; data: Prisma.ModuleCreateInput }) {
+    try {
+      return await this.prisma.module.create({ data });
+    } catch (error) {
+      ModuleCreateException.throw(this.logger, { transactionId, error });
+    }
+  }
+}
+```
+
+## 🗄️ Base de Données
+
+### Prisma Schema
+- **TOUJOURS** utiliser Prisma comme ORM
+- **TOUJOURS** définir les modèles dans `prisma/models/*.prisma`
+- **TOUJOURS** utiliser des relations Prisma appropriées
+- **TOUJOURS** générer le client avec `npx prisma generate`
+
+### Modèles Principaux
+- `user.prisma` : Utilisateurs et authentification
+- `profile.prisma` : Profils utilisateur
+- `discussion.prisma` : Discussions et réponses
+- `post.prisma` : Posts et commentaires
+- `dataroom.prisma` : Documents et groupes
+- `file.prisma` : Fichiers et stockage
+- `session.prisma` : Sessions utilisateur
+- `spot.prisma` : Spotlight/recherche
+
+## 🔐 Sécurité et Authentification
+
+### Guards et Interceptors
+- **TOUJOURS** utiliser `SessionGuard` pour protéger les endpoints
+- **TOUJOURS** utiliser `@Public()` pour les endpoints publics
+- **TOUJOURS** valider les tokens JWT
+- **TOUJOURS** utiliser `FastifyRequestUserId` pour récupérer l'userId
+
+### Endpoints Publics
+```typescript
+@Public()
+@Post('/signup')
+async signup(@Body() body: SignupDto) {
+  // Endpoint public
+}
+```
+
+### Endpoints Protégés
+```typescript
+@Post('/protected')
+async protected(@Req() req: FastifyRequest & FastifyRequestUserId) {
+  // req.userId disponible
+}
+```
+
+### Vérifications de Propriété (Ownership Checks)
+- **TOUJOURS** vérifier que l'utilisateur est propriétaire des ressources
+- **UTILISER** les relations Prisma pour éviter les requêtes supplémentaires
+- **LEVER** `UnauthorizedException` si tentative d'accès non autorisé
+
+```typescript
+// ✅ BON : Vérification via relation Prisma
+const result = await this.prisma.resource.updateMany({
+  where: {
+    id: resourceId,
+    profile: { userId }, // Vérifie propriété en 1 requête
+  },
+  data,
+});
+
+// ❌ MAUVAIS : 2 requêtes séparées
+const resource = await this.prisma.resource.findUnique({ where: { id: resourceId } });
+if (resource.profileId !== profileId) throw new UnauthorizedException();
+```
+
+## 📊 Validation et DTOs
+
+### DTOs Obligatoires
+- **TOUJOURS** créer des DTOs pour chaque endpoint
+- **TOUJOURS** utiliser `class-validator` pour la validation
+- **TOUJOURS** utiliser `ValidationPipe` dans les controllers
+- **TOUJOURS** typer les réponses avec des interfaces
+- **TOUJOURS** ajouter des limites de caractères pour éviter les abus
+- **TOUJOURS** limiter la taille des tableaux pour éviter les attaques DOS
+
+### Limites de Validation Recommandées
+
+| Type de champ | Limite recommandée | Décorateur |
+|---------------|-------------------|------------|
+| Titre / Nom court | 100 caractères | `@Length(1, 100)` |
+| Description courte | 500 caractères | `@MaxLength(500)` |
+| Description longue | 2000 caractères | `@MaxLength(2000)` |
+| URL | 500 caractères | `@MaxLength(500)` |
+| Tags (tableau) | 10 éléments max | `@ArrayMaxSize(10)` |
+| Tag individuel | 50 caractères | `@MaxLength(50, { each: true })` |
+| Batch operations | 20 éléments max | `@ArrayMaxSize(20)` |
+
+### Exemple de DTO avec Validations Sécurisées
+
+```typescript
+import { IsString, IsOptional, IsArray, Length, MaxLength, ArrayMaxSize } from 'class-validator';
+
+export class CreateModuleDto {
+  @IsString()
+  @Length(1, 100) // Min 1, Max 100 caractères
+  name: string;
+
+  @IsString()
+  @MaxLength(2000) // Max 2000 caractères pour description
+  description: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(10) // Maximum 10 tags
+  @IsString({ each: true })
+  @MaxLength(50, { each: true }) // Chaque tag max 50 caractères
+  tags?: string[];
+}
+```
+
+### Validation des Batch Operations
+
+Pour les opérations en batch (création/mise à jour multiple), **TOUJOURS** limiter le nombre d'éléments :
+
+```typescript
+export class BatchUpdateDto {
+  @IsArray()
+  @ArrayMaxSize(20) // Maximum 20 opérations à la fois
+  items: Array<{
+    id?: string;
+    data: UpdateItemDto;
+  }>;
+
+  @IsArray()
+  @ArrayMaxSize(20) // Maximum 20 suppressions à la fois
+  deleteIds: string[];
+}
+```
+
+### Pourquoi ces Limites ?
+
+1. **Sécurité** : Prévenir les attaques par débordement de mémoire
+2. **Performance** : Éviter les requêtes trop lourdes
+3. **UX** : Un profil avec 50 expériences n'est pas réaliste ni utile
+4. **Database** : Limiter la charge sur la base de données
+
+### Limites Spécifiques par Module
+
+#### Expériences/Éducations
+- Maximum **10 expériences** par profil
+- Maximum **10 éducations** par profil
+- Titre/Entreprise/École : **100 caractères**
+- Description : **2000 caractères**
+- Tags : **10 max**, chaque tag **50 caractères**
+
+#### Profil
+- Prénom/Nom : **100 caractères**
+- Bio : **2000 caractères**
+- Highlight : **200 caractères**
+- Liens sociaux : **5 max**
+
+#### Posts/Discussions
+- Contenu : **10000 caractères**
+- Tags : **10 max**, chaque tag **50 caractères**
+- Commentaires : **2000 caractères**
+
+## ⚠️ Exceptions Custom
+
+### Pattern Obligatoire
+- **TOUJOURS** créer des exceptions custom pour chaque module
+- **TOUJOURS** étendre `BaseLoggedException` pour le logging automatique
+- **TOUJOURS** utiliser des exceptions HTTP appropriées (BadRequestException, InternalServerErrorException, etc.)
+- **TOUJOURS** inclure le `transactionId` dans les arguments de logging
+
+### Structure des Exceptions
+```typescript
+// module-name.exception.ts
+import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { BaseLoggedException } from 'src/common/exceptions/base.exeption';
+import { LogService } from 'logstash-winston-3';
+
+export class ModuleCreateException extends BaseLoggedException {
+  constructor(logger: LogService, args: object, errorMessage: string) {
+    super(InternalServerErrorException, logger, args, errorMessage);
+  }
+}
+
+export class ModuleValidationException extends BaseLoggedException {
+  constructor(logger: LogService, args: object, errorMessage: string) {
+    super(BadRequestException, logger, args, errorMessage);
+  }
+}
+```
+
+### Utilisation dans les Services
+```typescript
+@Injectable()
+export class ModuleService {
+  constructor(
+    private prisma: PrismaService,
+    @Inject('Logger') private readonly logger: LogService,
+  ) {}
+
+  @Log()
+  async create({ transactionId, data }: { transactionId: string; data: any }) {
+    try {
+      return await this.prisma.module.create({ data });
+    } catch (error) {
+      ModuleCreateException.throw(this.logger, { transactionId, error });
+    }
+  }
+}
+```
+
+### Types d'Exceptions par Module
+- **CreateException** : Erreurs lors de la création (InternalServerErrorException)
+- **UpdateException** : Erreurs lors de la mise à jour (InternalServerErrorException)
+- **GetException** : Erreurs lors de la récupération (InternalServerErrorException)
+- **ValidationException** : Erreurs de validation (BadRequestException)
+- **NotFoundException** : Ressource non trouvée (NotFoundException)
+- **UnauthorizedException** : Accès non autorisé (UnauthorizedException)
+
+## 🛡️ Bonnes Pratiques de Sécurité et Performance
+
+### Vérifications de Propriété (Ownership Checks)
+- **TOUJOURS** vérifier que l'utilisateur est propriétaire des ressources
+- **UTILISER** les relations Prisma pour éviter les requêtes supplémentaires
+- **LEVER** `UnauthorizedException` si tentative d'accès non autorisé
+
+```typescript
+// ✅ BON : Vérification via relation Prisma
+const result = await this.prisma.resource.updateMany({
+  where: {
+    id: resourceId,
+    profile: { userId }, // Vérifie propriété en 1 requête
+  },
+  data,
+});
+
+// ❌ MAUVAIS : 2 requêtes séparées
+const resource = await this.prisma.resource.findUnique({ where: { id: resourceId } });
+if (resource.profileId !== profileId) throw new UnauthorizedException();
+```
+
+### Validation et Limites de Sécurité
+- **TOUJOURS** ajouter des `maxLength` sur les inputs côté frontend
+- **TOUJOURS** ajouter des validations `@Length()` / `@MaxLength()` côté backend
+- **TOUJOURS** limiter le nombre d'entrées dans les listes (expériences, éducations, etc.)
+- **TOUJOURS** afficher des messages clairs à l'utilisateur quand une limite est atteinte
+
+```typescript
+// ✅ BON : Frontend avec maxLength visible
+<Input 
+  placeholder="Titre * (max 100 car.)" 
+  maxLength={100}
+  onChange={(value) => handleChange('title', value)}
+/>
+
+// ✅ BON : Backend avec validation stricte
+@IsString()
+@Length(1, 100)
+title: string;
+
+// ✅ BON : Limite sur le nombre d'entrées
+const addExperience = () => {
+  if (experiences.length >= MAX_EXPERIENCES) {
+    toast.error(`Maximum ${MAX_EXPERIENCES} expériences atteintes`);
+    return;
+  }
+  // ... ajouter l'expérience
+};
+```
+
+### Opérations Batch
+- **PRÉFÉRER** les endpoints batch pour éviter le spam de requêtes
+- **UTILISER** les transactions Prisma pour l'atomicité
+- **RETOURNER** les nouveaux IDs pour synchronisation frontend
+
+```typescript
+// ✅ BON : Endpoint batch avec transaction
+@Put('/batch')
+async batchUpdate(@Body() body: BatchUpdateDto) {
+  return await this.service.batchUpdate({
+    userId: req.userId,
+    experiences: body.experiences,
+    deleteIds: body.deleteIds,
+  });
+}
+```
+
+### Gestion d'Erreurs Robuste
+- **NE PAS** utiliser `as any` - typer correctement
+- **UTILISER** `instanceof Error` pour les vérifications de type
+- **RELANCER** les exceptions custom sans les wrapper
+
+```typescript
+// ✅ BON : Gestion d'erreur propre
+catch (error: unknown) {
+  if (error instanceof Error && error.name?.includes('Exception')) {
+    throw error; // Relancer l'exception custom
+  }
+  CustomException.throw(this.logger, { transactionId, error });
+}
+```
+
+### Optimisations Prisma
+- **UTILISER** les relations dans les `where` clauses
+- **ÉVITER** les requêtes `findUnique` suivies de vérifications manuelles
+- **PRÉFÉRER** `updateMany`/`deleteMany` avec vérification de propriété
+
+```typescript
+// ✅ BON : Optimisé avec relation
+await this.prisma.experience.deleteMany({
+  where: {
+    id: experienceId,
+    profile: { userId }, // Propriété vérifiée dans la requête
+  },
+});
+```
+
+## 🧪 Tests
+
+### Stratégie de Tests
+
+**Unit tests** : isolent la logique (handlers, services) avec des mocks/fakes pour la DB et les dépendances.
+
+**Integration tests** : utilisent Testcontainers pour lancer une vraie instance de PostgreSQL, Redis, et LocalStack afin de tester en conditions réelles.
+
+**E2E tests** : vérifient les flux complets via des appels API (Supertest).
+
+### Politique de Tests par Couche
+
+| Couche | Type de Test | Obligatoire | Pourquoi |
+|--------|--------------|-------------|----------|
+| **Controllers** | E2E (Supertest) | ✅ **Obligatoire** | Garantit que l'API entière fonctionne comme attendu |
+| **Handlers** | Unit tests | ✅ **Obligatoire** | Logique métier pure, feedback rapide, isolation |
+| **Services** | Unit tests | ⚠️ **Conditionnel** | Seulement si logique non-triviale (pas juste CRUD) |
+
+#### 🎯 Controllers → E2E Obligatoires
+- **Pourquoi** : Garantit que l'application entière fonctionne
+- **Comment** : Tests HTTP réels avec Supertest + Testcontainers
+- **Couverture** : Endpoints publics/protégés, validation DTOs, réponses API
+
+#### 🎯 Handlers → Unit Tests Obligatoires  
+- **Pourquoi** : Contiennent la logique métier principale
+- **Avantages** : Plus rapides, isolation parfaite, TDD facilité
+- **Comment** : Mocks des services, tests de tous les cas métier
+
+#### 🎯 Services → Tests Conditionnels
+- **Obligatoire si** : Logique non-triviale (transformations, validations, cascades)
+- **Optionnel si** : Simple pass-through vers Prisma (`prisma.model.create({data})`)
+- **Alternative** : Les tests E2E + Testcontainers couvrent déjà l'accès DB
+
+### Règles Générales
+
+- **TOUJOURS** placer les fichiers de tests à côté des fichiers qu'ils testent
+- **TOUJOURS** tester les controllers avec des appels HTTP réels (Supertest)
+- **TOUJOURS** tester les endpoints publics et protégés
+- **TOUJOURS** valider les paramètres et body des requêtes
+- **TOUJOURS** tester les réponses attendues
+- **TOUJOURS** couvrir les cas de succès ET d'erreurs (validation, auth, DB, etc.)
+- **TOUJOURS** tester la validation des DTOs (champs manquants, invalides, types incorrects)
+- **TOUJOURS** utiliser Testcontainers pour les tests d'intégration (DB, Redis, LocalStack)
+
+### Organisation des Fichiers de Tests
+
+**Structure recommandée :**
+```
+src/module-name/
+├── module-name.controller.ts
+├── module-name.controller.e2e-spec.ts    # Tests E2E du controller
+├── module-name.service.ts
+├── module-name.service.spec.ts           # Tests unitaires du service
+├── handlers/
+│   ├── create-module.handler.ts
+│   └── create-module.handler.spec.ts     # Tests unitaires du handler
+└── dto/
+    ├── create-module.dto.ts
+    └── create-module.dto.spec.ts         # Tests de validation DTO
+```
+
+**Exemples de nommage :**
+- `auth.controller.ts` → `auth.controller.e2e-spec.ts`
+- `profile.service.ts` → `profile.service.spec.ts`
+- `create-user.handler.ts` → `create-user.handler.spec.ts`
+
+### Exemple : E2E avec Supertest + Testcontainers
+
+```typescript
+describe('ModuleController (e2e)', () => {
+  let app: INestApplication;
+
+  beforeAll(async () => {
+    // Démarrage avec Testcontainers
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
+
+  it('should create module successfully', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/module')
+      .send({ name: 'test', email: 'test@example.com' })
+      .expect(201);
+    
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toBeDefined();
+  });
+
+  it('should fail if DTO validation fails', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/module')
+      .send({ email: 'not-an-email' }) // champ manquant et invalide
+      .expect(400);
+    
+    expect(response.body.success).toBe(false);
+    expect(response.body.error).toBeDefined();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+});
+```
+
+## 📝 Logging et Monitoring
+
+### Logging Obligatoire
+- **TOUJOURS** utiliser le décorateur `@Log()` sur services et handlers
+- **TOUJOURS** propager le `transactionId` à travers toute la chaîne
+- **TOUJOURS** utiliser `LogService` injecté pour le logging
+- **TOUJOURS** logger les erreurs avec le contexte
+
+```typescript
+@Log()
+async execute({ transactionId, data }) {
+  this.logger.info('Processing request', { transactionId, data });
+  // ...
+}
+```
+
+## 🐳 Docker et Configuration
+
+### Docker Compose
+- **TOUJOURS** utiliser `docker-compose.monolith.yml` pour le développement
+- **TOUJOURS** utiliser les variables d'environnement définies
+- **TOUJOURS** respecter les healthchecks des services
+
+### Variables d'Environnement
+```bash
+# Base de données
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/onefive-back
+
+# Redis
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+# LocalStack (S3)
+AWS_ENDPOINT=http://localstack:4566
+S3_BUCKET_NAME=onefive-storage
+
+# Sécurité
+KEY_AUTHENTICATION=dev-key-12345
+SESSION_SECRET=dev-session-secret
+```
+
+## 🚫 Interdictions Strictes
+
+### NE JAMAIS :
+- ❌ Appeler un service directement depuis un controller
+- ❌ Mettre de la logique métier dans un controller
+- ❌ Faire des appels HTTP ou base de données dans un handler
+- ❌ Utiliser des communications gRPC (remplacées par des appels directs)
+- ❌ Créer des microservices séparés
+- ❌ Ignorer la validation des DTOs
+- ❌ Oublier le décorateur `@Log()`
+- ❌ Ignorer la gestion d'erreurs avec des exceptions custom
+- ❌ Lancer le serveur avec `npm run start:dev` ou toute commande de démarrage
+- ❌ Exécuter des commandes qui démarrent des processus longs (serveurs, watchers, etc.)
+
+## ✅ Bonnes Pratiques
+
+### Code Quality
+- **TOUJOURS** utiliser TypeScript strict
+- **TOUJOURS** respecter les conventions de nommage
+- **TOUJOURS** documenter les fonctions complexes
+- **TOUJOURS** utiliser des interfaces pour les types complexes
+
+### Performance
+- **TOUJOURS** utiliser des requêtes Prisma optimisées
+- **TOUJOURS** utiliser des `select` pour limiter les champs récupérés
+- **TOUJOURS** utiliser des `include` pour les relations nécessaires
+- **TOUJOURS** éviter les N+1 queries
+
+### Maintenance
+- **TOUJOURS** garder les modules indépendants
+- **TOUJOURS** utiliser des exceptions custom pour chaque module
+- **TOUJOURS** maintenir la cohérence des réponses API
+- **TOUJOURS** documenter les changements d'API
+
+## 🎯 Objectifs de l'Architecture
+
+1. **Simplicité** : Un seul service au lieu de multiples microservices
+2. **Performance** : Pas de communication réseau entre services
+3. **Maintenabilité** : Code bien structuré et testable
+4. **Scalabilité** : Architecture monolithique modulaire
+5. **Sécurité** : Authentification centralisée et cohérente
+
+## 📚 Ressources
+
+- **Documentation Prisma** : https://www.prisma.io/docs
+- **Documentation NestJS** : https://docs.nestjs.com
+- **Documentation Fastify** : https://www.fastify.io/docs/latest
+- **Schéma Prisma** : `onefive-back/prisma/schema.prisma`
+- **Configuration Docker** : `docker-compose.monolith.yml`
+
+---
+
+**RAPPEL IMPORTANT** : Cette architecture monolithique remplace complètement l'ancienne architecture microservices. Tous les endpoints sont maintenant disponibles dans `onefive-back` avec une performance améliorée et une maintenance simplifiée.

@@ -1,0 +1,128 @@
+// Messaging Schema - Conversations and Messages
+
+model Conversation {
+  id           String               @id @default(uuid())
+  type         ConversationType     @default(DIRECT)
+  name         String?              // For group conversations
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  messages     Message[]
+  participants ConversationMember[]
+}
+
+model ConversationMember {
+  id             String       @id @default(uuid())
+  conversationId String
+  profileId      String
+  role           MemberRole   @default(MEMBER)
+  isAdmin        Boolean      @default(false)
+  isMuted        Boolean      @default(false)
+  lastReadAt     DateTime?
+  joinedAt       DateTime     @default(now())
+  leftAt         DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  profile        Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, profileId])
+  @@index([profileId])
+  @@index([conversationId])
+}
+
+model Message {
+  id             String           @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String?
+  type           MessageType      @default(TEXT)
+  status         MessageStatus    @default(SENT)
+  replyToId      String?
+  editedAt       DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         Profile          @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo        Message?         @relation("MessageReply", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies        Message[]        @relation("MessageReply")
+  attachments    MessageAttachment[]
+  reactions      MessageReaction[]
+  readBy         MessageRead[]
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+model MessageAttachment {
+  id        String             @id @default(uuid())
+  messageId String
+  fileId    String
+  type      AttachmentType     @default(FILE)
+  createdAt DateTime           @default(now())
+  message   Message            @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  file      File               @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+}
+
+model MessageReaction {
+  id        String   @id @default(uuid())
+  messageId String
+  profileId String
+  emoji     String
+  createdAt DateTime @default(now())
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation("MessageReactions", fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, profileId, emoji])
+  @@index([messageId])
+}
+
+model MessageRead {
+  id        String   @id @default(uuid())
+  messageId String
+  profileId String
+  readAt    DateTime @default(now())
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation("MessageReads", fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, profileId])
+  @@index([messageId])
+}
+
+enum ConversationType {
+  DIRECT
+  GROUP
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  AUDIO
+  VIDEO
+  SYSTEM
+}
+
+enum MessageStatus {
+  SENDING
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum AttachmentType {
+  IMAGE
+  FILE
+  AUDIO
+  VIDEO
+}

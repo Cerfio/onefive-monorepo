@@ -1,0 +1,29 @@
+# OneFive Frontend - Règles Cursor
+
+## 🚫 Interdictions Strictes
+
+### NE JAMAIS :
+- ❌ Lancer le serveur avec `npm run dev`, `yarn dev` ou toute commande de démarrage
+- ❌ Exécuter des commandes qui démarrent des processus longs (serveurs, watchers, etc.)
+- ❌ Utiliser `npm run start`, `npm run build` pour tester le code
+- ❌ Démarrer le serveur de développement Next.js
+
+## ✅ Bonnes Pratiques
+
+### Développement
+- **TOUJOURS** utiliser TypeScript strict
+- **TOUJOURS** respecter les conventions de nommage Next.js
+- **TOUJOURS** utiliser les composants existants du design system
+- **TOUJOURS** préférer les hooks personnalisés pour la logique réutilisable
+
+### Architecture
+- Suivre la structure Next.js App Router
+- Utiliser React Query pour la gestion d'état serveur
+- Organiser les composants par fonctionnalité
+- Séparer la logique métier des composants UI
+
+### API
+- Utiliser les hooks personnalisés pour les appels API
+- Implémenter la gestion d'erreur appropriée
+- Optimiser les requêtes avec React Query
+- Typer correctement toutes les réponses API

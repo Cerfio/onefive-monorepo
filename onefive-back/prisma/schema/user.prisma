@@ -1,0 +1,61 @@
+model User {
+  id                    String             @id @default(uuid())
+  email                 String             @unique
+  password              String?
+  isBanned              Boolean            @default(false)
+  phoneNumber           String?            @unique
+  isEmailVerified       Boolean            @default(false)
+  authType              AuthType
+  linkedinId            String?            @unique
+  googleId              String?            @unique
+  lastSignupAttemptAt   DateTime?          // Tentative signup avec email existant → rate limit email sécurité
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  emailVerification EmailVerification?
+  passwordReset     PasswordReset?
+  profile           Profile?
+  sessions          Session[]
+  smsVerifications  SmsVerification[]
+  streaks           Streak[]
+  settings          UserSettings?
+}
+
+model SmsVerification {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  smsCode       String
+  phoneNumber   String
+  codeExpiresAt DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailVerification {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  emailCode     String
+  codeExpiresAt DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum AuthType {
+  EMAIL
+  LINKEDIN
+  GOOGLE
+}
+
+model PasswordReset {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  resetCode     String
+  resetToken    String   @unique
+  codeExpiresAt DateTime
+  isCodeVerified Boolean @default(false)
+  attempts      Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

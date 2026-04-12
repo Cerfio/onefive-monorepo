@@ -1,0 +1,27 @@
+// Badge system for waitlist achievements
+model Badge {
+  id          String    @id @default(uuid())
+  type        BadgeType @unique
+  name        String
+  description String
+  iconUrl     String?
+  createdAt   DateTime  @default(now())
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  profileId String
+  badgeId   String
+  awardedAt DateTime @default(now())
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, badgeId])
+  @@index([profileId])
+}
+
+enum BadgeType {
+  EARLY_ADOPTER
+  FOUNDING_MEMBER
+}

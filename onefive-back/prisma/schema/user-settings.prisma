@@ -1,0 +1,56 @@
+model UserSettings {
+  id                       String                @id @default(uuid())
+  userId                   String                @unique
+  emailNotifications       Boolean               @default(true)
+  pushNotifications        Boolean               @default(true)
+  marketingNotifications   Boolean               @default(false)
+  connectionsNotifications Boolean               @default(true)
+  mentionsNotifications    Boolean               @default(true)
+  discussionsNotifications Boolean               @default(true)
+  quietHours               Boolean               @default(false)
+  weekendNotifications     Boolean               @default(true)
+  showEmail                Boolean               @default(false)
+  showPhone                Boolean               @default(false)
+  allowMessages            Boolean               @default(true)
+  showActivity             Boolean               @default(true)
+  searchVisibility         Boolean               @default(true)
+  dataProcessing           Boolean               @default(true)
+  analyticsSharing         Boolean               @default(false)
+  language                 String                @default("fr")
+  timezone                 String                @default("Europe/Paris")
+  twoFactorEnabled         Boolean               @default(false)
+  lastPasswordChange       DateTime              @default(now())
+  createdAt                DateTime              @default(now())
+  updatedAt                DateTime              @updatedAt
+  notificationFrequency    NotificationFrequency @default(IMMEDIATE)
+  profileVisibility        ProfileVisibility     @default(PUBLIC)
+  theme                    Theme                 @default(SYSTEM)
+  dateFormat               DateFormat            @default(DD_MM_YYYY)
+  user                     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum NotificationFrequency {
+  IMMEDIATE
+  DAILY
+  WEEKLY
+}
+
+enum ProfileVisibility {
+  PUBLIC
+  NETWORK
+  PRIVATE
+}
+
+enum DateFormat {
+  DD_MM_YYYY
+  MM_DD_YYYY
+  YYYY_MM_DD
+}

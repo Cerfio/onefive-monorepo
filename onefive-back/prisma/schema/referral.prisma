@@ -1,0 +1,41 @@
+// Referral/Parrainage system
+model Referral {
+  id              String         @id @default(uuid())
+  referrerId      String         // Le parrain (celui qui invite)
+  invitedEmail    String         // Email de la personne invitée
+  invitedProfileId String?       @unique // Lié après création du profil
+  status          ReferralStatus @default(PENDING)
+  code            String         @unique @default(uuid()) // Code unique pour le tracking
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  acceptedAt      DateTime?      // Date d'acceptation (inscription complétée)
+  expiresAt       DateTime?      // Date d'expiration de l'invitation
+
+  referrer        Profile        @relation("ReferralsMade", fields: [referrerId], references: [id], onDelete: Cascade)
+  invitedProfile  Profile?       @relation("ReferralReceived", fields: [invitedProfileId], references: [id])
+
+  @@unique([referrerId, invitedEmail])
+  @@index([referrerId])
+  @@index([invitedEmail])
+  @@index([status])
+  @@index([code])
+  @@index([referrerId, status])
+}
+
+// Stats de parrainage pour chaque profil (no counters - computed dynamically)
+model ReferralStats {
+  id              String   @id @default(uuid())
+  profileId       String   @unique
+  currentTier     String   @default("starter")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  profile         Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+enum ReferralStatus {
+  PENDING    // Invitation envoyée, en attente
+  ACCEPTED   // L'invité a créé son compte
+  EXPIRED    // L'invitation a expiré
+  CANCELLED  // L'invitation a été annulée
+}

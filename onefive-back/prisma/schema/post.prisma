@@ -1,0 +1,105 @@
+model Post {
+  id             String         @id @default(cuid())
+  profileId      String
+  content        String         @db.VarChar(3000)
+  medias         Json[]
+  tags           String[]
+  isHidden       Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  repostedPostId String?
+  author         Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  repostedPost   Post?          @relation("Reposts", fields: [repostedPostId], references: [id], onDelete: Cascade)
+  reposts        Post[]         @relation("Reposts")
+  bookmarks      PostBookmark[]
+  comments       PostComment[]
+  reactions      PostReaction[]
+  views          PostView[]
+
+  @@index([repostedPostId])
+  @@index([profileId, createdAt])
+}
+
+model PostComment {
+  id        String                @id @default(cuid())
+  postId    String
+  profileId String
+  content   String                @db.VarChar(3000)
+  parentId  String?
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  parent    PostComment?          @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   PostComment[]         @relation("CommentReplies")
+  post      Post                  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    Profile               @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  reactions PostCommentReaction[]
+
+  @@index([parentId])
+  @@index([postId, createdAt])
+  @@index([profileId])
+}
+
+model PostView {
+  id        String   @id @default(cuid())
+  postId    String
+  profileId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  viewer    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, profileId])
+  @@index([profileId])
+}
+
+model PostReaction {
+  id        String       @id @default(cuid())
+  reaction  ReactionType
+  postId    String
+  profileId String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  post      Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  profile   Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, profileId])
+}
+
+model PostCommentReaction {
+  id        String       @id @default(cuid())
+  reaction  ReactionType
+  commentId String
+  profileId String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  comment   PostComment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  profile   Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, profileId])
+}
+
+model PostBookmark {
+  id        String   @id @default(cuid())
+  postId    String
+  profileId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, profileId])
+  @@index([profileId])
+}
+
+enum ReactionType {
+  THUMBS_UP
+  THUMBS_DOWN
+  SMILE
+  COTILLON
+  THINKING
+  LAUGH
+  HEART
+  EYES
+  ROCKET
+  CRY
+}

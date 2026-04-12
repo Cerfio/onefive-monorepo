@@ -1,0 +1,376 @@
+'use client';
+
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Upload, Euro, DollarSign, PoundSterling } from 'lucide-react';
+
+interface InvestmentProposalModalProps {
+  open: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+  startupName: string;
+}
+
+const INVESTMENT_TYPES = [
+  { value: 'equity', label: 'Equity (prise de participation)' },
+  { value: 'bsa-safe', label: 'BSA-Air / SAFE' },
+  { value: 'convertible-loan', label: 'Prêt convertible' },
+  { value: 'grant', label: 'Subvention' },
+  { value: 'other', label: 'Autre' },
+];
+
+const INVESTMENT_HORIZONS = [
+  { value: 'less-than-6-months', label: 'Moins de 6 mois' },
+  { value: '6-12-months', label: '6–12 mois' },
+  { value: '1-3-years', label: '1–3 ans' },
+  { value: 'long-term', label: 'Long terme' },
+  { value: 'to-discuss', label: 'À discuter' },
+];
+
+const INVESTMENT_OBJECTIVES = [
+  { value: 'strategic-support', label: 'Accompagnement stratégique' },
+  { value: 'monthly-follow-up', label: 'Suivi mensuel' },
+  { value: 'network-access', label: 'Accès à mon réseau' },
+  { value: 'board-seat', label: 'Board seat (siéger au conseil)' },
+  { value: 'passive-investment', label: 'Investissement passif' },
+];
+
+const CURRENCIES = [
+  { value: 'EUR', label: '€', icon: Euro },
+  { value: 'USD', label: '$', icon: DollarSign },
+  { value: 'GBP', label: '£', icon: PoundSterling },
+];
+
+export const InvestmentProposalModal = ({ 
+  open, 
+  onOpenChange, 
+  startupName 
+}: InvestmentProposalModalProps) => {
+  const [formData, setFormData] = useState({
+    amount: '',
+    currency: 'EUR',
+    investmentType: '',
+    otherInvestmentType: '',
+    valuation: '',
+    equityPercentage: '',
+    horizon: '',
+    objectives: [] as string[],
+    message: '',
+    document: null as File | null,
+    isConfidential: true,
+    allowRecommendations: false,
+  });
+
+  const [errors, setErrors] = useState<string[]>([]);
+
+  // Validation en temps réel pour le bouton d'envoi
+  const isFormValid = () => {
+    return (
+      formData.amount.trim() !== '' &&
+      formData.investmentType !== '' &&
+      (formData.investmentType !== 'other' || formData.otherInvestmentType.trim() !== '') &&
+      formData.horizon !== '' &&
+      formData.message.trim() !== ''
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validation
+    const newErrors: string[] = [];
+    if (!formData.amount) newErrors.push('Le montant est requis');
+    if (!formData.investmentType) newErrors.push('Le type d\'investissement est requis');
+    if (formData.investmentType === 'other' && !formData.otherInvestmentType) {
+      newErrors.push('Veuillez préciser le type d\'investissement');
+    }
+    if (!formData.horizon) newErrors.push('L\'horizon d\'investissement est requis');
+    if (!formData.message) newErrors.push('Un message est requis');
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      // Simulation d'envoi
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success('Proposition d\'investissement envoyée avec succès !');
+      onOpenChange(false);
+      
+      // Reset form
+      setFormData({
+        amount: '',
+        currency: 'EUR',
+        investmentType: '',
+        otherInvestmentType: '',
+        valuation: '',
+        equityPercentage: '',
+        horizon: '',
+        objectives: [],
+        message: '',
+        document: null,
+        isConfidential: true,
+        allowRecommendations: false,
+      });
+      setErrors([]);
+    } catch {
+      toast.error('Erreur lors de l\'envoi de la proposition');
+    }
+  };
+
+  const handleObjectiveChange = (objective: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      objectives: checked 
+        ? [...prev.objectives, objective]
+        : prev.objectives.filter(obj => obj !== objective)
+    }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, document: file }));
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-semibold">
+            Proposer un investissement à {startupName}
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {errors.length > 0 && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm font-medium text-red-800 mb-2">Erreurs à corriger :</p>
+              <ul className="text-sm text-red-700 space-y-1">
+                {errors.map((error, index) => (
+                  <li key={index}>• {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Montant proposé */}
+          <div className="space-y-2">
+            <Label htmlFor="amount">Montant proposé *</Label>
+            <div className="flex gap-2">
+              <Select 
+                value={formData.currency} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}
+              >
+                <SelectTrigger className="w-20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CURRENCIES.map((currency) => {
+                    const Icon = currency.icon;
+                    return (
+                      <SelectItem key={currency.value} value={currency.value}>
+                        <div className="flex items-center gap-2">
+                          <Icon className="w-4 h-4" />
+                          {currency.label}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="25 000"
+                value={formData.amount}
+                onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
+                className="flex-1"
+              />
+            </div>
+          </div>
+
+          {/* Type d'investissement */}
+          <div className="space-y-2">
+            <Label>Type d'investissement *</Label>
+            <RadioGroup 
+              value={formData.investmentType} 
+              onValueChange={(value) => setFormData(prev => ({ ...prev, investmentType: value }))}
+            >
+              {INVESTMENT_TYPES.map((type) => (
+                <div key={type.value} className="flex items-center space-x-2">
+                  <RadioGroupItem value={type.value} id={type.value} />
+                  <Label htmlFor={type.value} className="text-sm font-normal">
+                    {type.label}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+            {formData.investmentType === 'other' && (
+              <Input
+                placeholder="Précisez le type d'investissement"
+                value={formData.otherInvestmentType}
+                onChange={(e) => setFormData(prev => ({ ...prev, otherInvestmentType: e.target.value }))}
+                className="mt-2"
+              />
+            )}
+          </div>
+
+          {/* Valorisation de référence */}
+          <div className="space-y-2">
+            <Label htmlFor="valuation">Valorisation de référence (optionnel)</Label>
+            <Input
+              id="valuation"
+              placeholder="Ex: Pré-money : 1M€"
+              value={formData.valuation}
+              onChange={(e) => setFormData(prev => ({ ...prev, valuation: e.target.value }))}
+            />
+          </div>
+
+          {/* Pourcentage de parts visé */}
+          <div className="space-y-2">
+            <Label htmlFor="equityPercentage">Pourcentage de parts visé (optionnel)</Label>
+            <Input
+              id="equityPercentage"
+              placeholder="Ex: 2.5%"
+              value={formData.equityPercentage}
+              onChange={(e) => setFormData(prev => ({ ...prev, equityPercentage: e.target.value }))}
+            />
+          </div>
+
+          {/* Horizon d'investissement */}
+          <div className="space-y-2">
+            <Label>Horizon d'investissement *</Label>
+            <Select 
+              value={formData.horizon} 
+              onValueChange={(value) => setFormData(prev => ({ ...prev, horizon: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionnez un horizon" />
+              </SelectTrigger>
+              <SelectContent>
+                {INVESTMENT_HORIZONS.map((horizon) => (
+                  <SelectItem key={horizon.value} value={horizon.value}>
+                    {horizon.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Objectifs de l'investissement */}
+          <div className="space-y-2">
+            <Label>Objectifs de l'investissement</Label>
+            <div className="space-y-2">
+              {INVESTMENT_OBJECTIVES.map((objective) => (
+                <div key={objective.value} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={objective.value}
+                    checked={formData.objectives.includes(objective.value)}
+                    onCheckedChange={(checked) => handleObjectiveChange(objective.value, checked as boolean)}
+                  />
+                  <Label htmlFor={objective.value} className="text-sm font-normal">
+                    {objective.label}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Message à l'équipe */}
+          <div className="space-y-2">
+            <Label htmlFor="message">Message à l'équipe *</Label>
+            <Textarea
+              id="message"
+              placeholder="Expliquez votre démarche, posez une question, etc."
+              value={formData.message}
+              onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+              rows={4}
+            />
+          </div>
+
+          {/* Document joint */}
+          <div className="space-y-2">
+            <Label htmlFor="document">Joindre un document (optionnel)</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="document"
+                type="file"
+                accept=".pdf,.doc,.docx,.ppt,.pptx"
+                onChange={handleFileChange}
+                className="flex-1"
+              />
+              <Upload className="w-4 h-4 text-gray-400" />
+            </div>
+            <p className="text-xs text-gray-500">
+              Termsheet, lettre d'intention, présentation...
+            </p>
+          </div>
+
+          {/* Confidentialité */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="confidential"
+                checked={formData.isConfidential}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isConfidential: checked as boolean }))}
+              />
+              <Label htmlFor="confidential" className="text-sm font-normal">
+                Cette proposition est visible uniquement par les fondateurs de la startup
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="recommendations"
+                checked={formData.allowRecommendations}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, allowRecommendations: checked as boolean }))}
+              />
+              <Label htmlFor="recommendations" className="text-sm font-normal">
+                J'autorise Onefive à me recommander d'autres startups similaires
+              </Label>
+            </div>
+          </div>
+        </form>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Annuler
+          </Button>
+          <Button 
+            onClick={handleSubmit} 
+            disabled={!isFormValid()}
+            className={`${
+              isFormValid() 
+                ? 'bg-violet-600 hover:bg-violet-700' 
+                : 'bg-gray-300 cursor-not-allowed'
+            }`}
+          >
+            Envoyer la proposition
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}; 

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # 🗄️ Base de données PostgreSQL avec PostGIS
+  postgres-postgis:
+    image: postgis/postgis:15-3.3
+    container_name: onefive-postgres-postgis
+    environment:
+      POSTGRES_DB: onefive-back
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"  # Port différent pour éviter les conflits
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./enable-postgis.sql:/docker-entrypoint-initdb.d/enable-postgis.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 🗄️ Redis pour les sessions et cache
+  redis:
+    image: redis:7-alpine
+    container_name: onefive-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 🪣 LocalStack pour S3/R2 compatible storage
+  localstack:
+    image: localstack/localstack:latest
+    container_name: onefive-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/var/lib/localstack/data
+      - TMPDIR=/var/lib/localstack/tmp
+    volumes:
+      - localstack_data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 🚀 Application OneFive Backend (optionnel pour le développement)
+  onefive-back:
+    build: .
+    container_name: onefive-back-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-postgis:5432/onefive-back
+      - PORT=3000
+      - SESSION_SECRET=dev-session-secret-12345
+      - KEY_AUTHENTICATION=dev-key-12345
+      - FRONTEND_URL=http://localhost:3000
+      - ONEFIVE_MICROSERVICE_EMAIL_URL=http://localhost:3001
+      - ONEFIVE_MICROSERVICE_EMAIL_API_KEY=dev-email-key
+      # Redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # LocalStack S3/R2
+      - R2_ACCOUNT_ID=localstack
+      - R2_ACCESS_KEY_ID=test
+      - R2_SECRET_ACCESS_KEY=test
+      - R2_BUCKET_NAME=onefive-storage
+      - R2_PUBLIC_URL=http://localhost:4566
+      - AWS_ENDPOINT=http://localstack:4566
+    depends_on:
+      postgres-postgis:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  localstack_data:

@@ -1,0 +1,30 @@
+{
+  "name": "onefive",
+  "private": true,
+  "packageManager": "pnpm@9.15.6",
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "dev:back": "pnpm --filter onefive-back start:dev",
+    "dev:web": "pnpm --filter onefive-web dev",
+    "dev:landing": "pnpm --filter landing-page dev",
+    "dev:backoffice": "pnpm --filter onefive-backoffice dev",
+    "dev:bo-landing": "pnpm --filter onefive-landing-page-bo dev",
+    "dev:email": "pnpm --filter onefive-email dev",
+    "dev:email-transactional": "pnpm --filter onefive-email-transactional dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "@swc/core",
+      "bcrypt",
+      "esbuild",
+      "prisma",
+      "@prisma/client",
+      "@prisma/engines"
+    ]
+  }
+}

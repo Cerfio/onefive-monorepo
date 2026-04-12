@@ -1,0 +1,13 @@
+model File {
+  id                 String              @id @default(cuid())
+  size               Int
+  mimeType           String
+  bucket             String
+  url                String?             @db.VarChar(500)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  profileAvatar      Profile[]           @relation("ProfileAvatar")
+  profileCover       Profile[]           @relation("ProfileCover")
+  messageAttachments MessageAttachment[]
+  feedbackScreenshots Feedback[]         @relation("FeedbackScreenshot")
+}

@@ -1,0 +1,11 @@
+model OAuthState {
+  id        String   @id @default(uuid())
+  state     String   @unique
+  provider  String   // 'linkedin' | 'google'
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([state])
+  @@index([expiresAt])
+}

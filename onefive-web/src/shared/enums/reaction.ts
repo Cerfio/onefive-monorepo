@@ -1,0 +1,12 @@
+export enum Reaction {
+  COTILLON = 'COTILLON',
+  CRY = 'CRY',
+  EYES = 'EYES',
+  HEART = 'HEART',
+  LAUGH = 'LAUGH',
+  ROCKET = 'ROCKET',
+  SMILE = 'SMILE',
+  THINKING = 'THINKING',
+  THUMBS_DOWN = 'THUMBS_DOWN',
+  THUMBS_UP = 'THUMBS_UP',
+}

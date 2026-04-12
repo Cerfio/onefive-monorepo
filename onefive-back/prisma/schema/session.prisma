@@ -1,0 +1,24 @@
+model Session {
+  id                String   @id @default(uuid())
+  sessionId         String   @unique @default(uuid())
+  userId            String
+  token             String   @unique
+  fingerprint       String   @default("")
+  deviceFingerprint String   @default("") // Stable fingerprint based on userAgent (for new device detection)
+  isOtpOnlySession  Boolean  @default(false)
+  isRevoked         Boolean  @default(false)
+  lastUsage         DateTime @default(now())
+  expiresAt         DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  deviceInfo        String   @default("")
+  ipAddress         String   @default("")
+  location          String   @default("")
+  userAgent         String   @default("")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([userId, deviceFingerprint]) // Index for new device detection
+  @@index([userId, isRevoked])
+}
