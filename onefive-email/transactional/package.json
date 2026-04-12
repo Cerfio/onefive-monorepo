@@ -9,7 +9,9 @@
     "lint": "echo 'No linter configured for email templates'"
   },
   "dependencies": {
-    "@react-email/components": "0.0.12",
-    "react-email": "1.10.0"
+    "@react-email/components": "1.0.12",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-email": "5.2.10"
   }
 }
