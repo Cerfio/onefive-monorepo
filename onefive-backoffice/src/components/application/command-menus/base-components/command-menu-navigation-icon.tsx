@@ -1,25 +1,2 @@
-"use client";
-
-import type { IconComponentStroke } from "@/types/icon-component";
-import type { FC } from "react";
-
-interface CommandMenuNavigationIconProps {
-    type: "icon";
-    icon: IconComponentStroke;
-}
-
-interface CommandMenuNavigationTextProps {
-    type: "text";
-    label: string;
-}
-
-type Props = CommandMenuNavigationIconProps | CommandMenuNavigationTextProps;
-
-export const CommandMenuNavigationIcon = (props: Props) => {
-    return (
-        <div className="flex h-7 min-w-7 items-center justify-between rounded-lg bg-primary p-1.5 ring-1 ring-secondary ring-inset">
-            {props.type === "icon" && <props.icon strokeWidth={2.4} className="size-4 text-fg-quaternary" />}
-            {props.type === "text" && <span className="text-sm font-semibold text-fg-quaternary">{props.label}</span>}
-        </div>
-    );
-};
+// Re-export from @onefive/ui — voir packages/ui/src/components/application/command-menus/base-components/command-menu-navigation-icon
+export * from "@onefive/ui/components/application/command-menus/base-components/command-menu-navigation-icon";
