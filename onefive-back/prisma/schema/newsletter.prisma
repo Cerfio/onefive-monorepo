@@ -1,3 +1,5 @@
+// ─── Flux RSS ──────────────────────────────────────────────────────────────
+
 model NewsletterFeedSource {
   id        String               @id @default(uuid())
   slug      String               @unique
@@ -27,4 +29,79 @@ model NewsletterFeedItem {
   @@unique([sourceId, link])
   @@index([sourceId, publishedAt])
   @@index([publishedAt])
+}
+
+// ─── Abonnés ───────────────────────────────────────────────────────────────
+
+enum NewsletterFrequency {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+}
+
+model NewsletterSubscriber {
+  id               String               @id @default(uuid())
+  email            String               @unique
+  /// Jeton aléatoire (hex 32 octets) inclus dans les liens d'email.
+  /// Permet accès à préférences + désinscription sans compte.
+  preferenceToken  String               @unique
+  isSubscribed     Boolean              @default(true)
+  frequency        NewsletterFrequency  @default(WEEKLY)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  unsubscribedAt   DateTime?
+
+  @@index([isSubscribed])
+  @@index([preferenceToken])
+}
+
+// ─── Deals extraits ────────────────────────────────────────────────────────
+
+enum NewsletterDealType {
+  FUNDRAISING
+  MA
+  LBO
+  OTHER
+}
+
+enum NewsletterDealStatus {
+  DRAFT
+  VALIDATED
+  SENT
+}
+
+model NewsletterDeal {
+  id             String               @id @default(uuid())
+  /// Société concernée par l'opération.
+  company        String
+  dealType       NewsletterDealType   @default(OTHER)
+  /// Montant en unité d'origine (ex : "45" pour 45 M€).
+  amount         Float?
+  currency       String?              @db.VarChar(10)
+  /// Tour de financement (Seed, Série A…). Null pour M&A / LBO.
+  round          String?
+  /// Investisseurs ou acquéreur (liste sérialisée en JSON).
+  investors      Json?
+  sector         String?
+  /// Résumé court de l'opération (~2 phrases).
+  summary        String?              @db.Text
+  /// Pays principal de l'opération (ISO 3166-1 alpha-2, ex : "FR").
+  primaryCountry String               @db.VarChar(5)
+  sourceUrl      String
+  publishedAt    DateTime?
+  status         NewsletterDealStatus @default(DRAFT)
+  /// Identifiant du NewsletterFeedItem dont ce deal a été extrait.
+  feedItemId     String?
+  /// Modèle LLM utilisé pour l'extraction.
+  extractedBy    String?
+  /// Version du prompt utilisé.
+  promptVersion  String?
+  /// Score de confiance LLM (0–1).
+  confidence     Float?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([status, primaryCountry])
+  @@index([publishedAt])
+  @@index([feedItemId])
 }
