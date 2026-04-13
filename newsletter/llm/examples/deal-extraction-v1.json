@@ -1,0 +1,58 @@
+[
+  {
+    "_comment": "Levée Série B complète — tous les champs présents, confidence élevée.",
+    "input": {
+      "sourceUrl": "https://www.frenchweb.fr/la-fintech-alma-leve-45-millions-deuros-en-serie-b/",
+      "publishedAt": "2026-03-15T09:00:00Z",
+      "title": "La fintech Alma lève 45 millions d'euros en Série B",
+      "contentSnippet": "La startup française spécialisée dans le paiement fractionné Alma annonce une levée de fonds de 45 millions d'euros en Série B, menée par Eurazeo avec la participation de Bpifrance. Les fonds serviront à accélérer l'expansion en Espagne et en Italie."
+    },
+    "expected_output": {
+      "company": "Alma",
+      "dealType": "FUNDRAISING",
+      "amount": 45,
+      "currency": "M€",
+      "round": "Série B",
+      "investors": ["Eurazeo", "Bpifrance"],
+      "sector": "Fintech",
+      "summary": "La fintech française Alma lève 45 M€ en Série B auprès d'Eurazeo et Bpifrance pour accélérer son expansion en Espagne et en Italie.",
+      "primaryCountry": "FR",
+      "sourceUrl": "https://www.frenchweb.fr/la-fintech-alma-leve-45-millions-deuros-en-serie-b/",
+      "publishedAt": "2026-03-15T09:00:00Z",
+      "confidence": 0.95
+    }
+  },
+  {
+    "_comment": "Acquisition — pas de montant annoncé, confidence moyenne.",
+    "input": {
+      "sourceUrl": "https://www.lesechos.fr/tech-medias/services-informatiques/rachat-de-payfit-par-personio",
+      "publishedAt": "2026-02-20T07:30:00Z",
+      "title": "Personio acquiert PayFit pour renforcer sa position en Europe",
+      "contentSnippet": "L'éditeur RH allemand Personio a finalisé l'acquisition de la licorne française PayFit, spécialisée dans la gestion de la paie. Le montant de la transaction n'a pas été communiqué."
+    },
+    "expected_output": {
+      "company": "PayFit",
+      "dealType": "MA",
+      "amount": null,
+      "currency": null,
+      "round": null,
+      "investors": ["Personio"],
+      "sector": "RH / SaaS",
+      "summary": "La licorne française PayFit (gestion de la paie) est acquise par l'éditeur RH allemand Personio. Le montant de la transaction reste confidentiel.",
+      "primaryCountry": "FR",
+      "sourceUrl": "https://www.lesechos.fr/tech-medias/services-informatiques/rachat-de-payfit-par-personio",
+      "publishedAt": "2026-02-20T07:30:00Z",
+      "confidence": 0.75
+    }
+  },
+  {
+    "_comment": "Article sans opération financière — doit retourner null.",
+    "input": {
+      "sourceUrl": "https://www.usine-digitale.fr/article/interview-tendances-ia-generative-2026.N2359876",
+      "publishedAt": "2026-04-01T10:00:00Z",
+      "title": "IA générative : les tendances à suivre en 2026",
+      "contentSnippet": "Nous avons interrogé cinq experts sur les grandes tendances de l'intelligence artificielle générative pour les prochains mois. De l'IA multimodale aux agents autonomes, voici leur analyse."
+    },
+    "expected_output": null
+  }
+]

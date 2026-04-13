@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "newsletter-deal-v1",
+  "title": "NewsletterDeal",
+  "description": "Opération financière extraite d'un article (levée, M&A, LBO). Correspond au modèle Prisma NewsletterDeal.",
+  "type": "object",
+  "required": ["company", "dealType", "primaryCountry", "sourceUrl", "summary", "confidence"],
+  "additionalProperties": false,
+  "properties": {
+    "company": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Nom de la société concernée (tel qu'il apparaît dans l'article, sans ajout)."
+    },
+    "dealType": {
+      "type": "string",
+      "enum": ["FUNDRAISING", "MA", "LBO", "OTHER"],
+      "description": "FUNDRAISING = levée de fonds (venture, growth…). MA = fusion-acquisition. LBO = rachat avec effet levier. OTHER = autre type d'opération ou ambiguïté."
+    },
+    "amount": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Montant en unité de base (euros ou dollars selon currency). Ex : 45 pour 45 M€. null si non mentionné."
+    },
+    "currency": {
+      "type": ["string", "null"],
+      "maxLength": 10,
+      "description": "Code devise ISO 4217 + unité si applicable. Exemples : 'EUR', 'USD', 'M€', 'M$'. null si non mentionné."
+    },
+    "round": {
+      "type": ["string", "null"],
+      "maxLength": 50,
+      "description": "Tour de financement : Seed, Série A, Série B, Growth, etc. null pour M&A / LBO ou si non précisé."
+    },
+    "investors": {
+      "type": ["array", "null"],
+      "items": { "type": "string" },
+      "description": "Liste des investisseurs (venture, LPs) ou du nom de l'acquéreur. null si non mentionné."
+    },
+    "sector": {
+      "type": ["string", "null"],
+      "maxLength": 100,
+      "description": "Secteur d'activité en français (ex : 'Fintech', 'Healthtech', 'SaaS B2B', 'Industrie'). null si peu clair."
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 400,
+      "description": "Résumé factuel de l'opération en 1–2 phrases, en français. Ton neutre. Inclure : qui, quoi, combien (si dispo), pourquoi (si explicite)."
+    },
+    "primaryCountry": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "ISO 3166-1 alpha-2 du pays principal de l'opération. Utiliser 'FR' si la société ou le marché est principalement français. 'XX' si inconnu."
+    },
+    "sourceUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL canonique de l'article source."
+    },
+    "publishedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Date de publication ISO 8601. null si non disponible."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Score de confiance : 1.0 = tous les champs sont explicitement mentionnés dans l'article. 0.5 = champs partiellement inférés. < 0.4 = beaucoup d'ambiguïté."
+    }
+  }
+}

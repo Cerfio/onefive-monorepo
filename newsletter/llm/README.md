@@ -12,7 +12,8 @@ Espace pour tout ce qui concerne **l’extraction et la structuration** du conte
 
 ## Principes
 
-- **Sortie structurée** : forcer un JSON avec champs fixes (`company`, `dealType`, `amount`, `currency`, `round`, `investors`, `sector`, `summary`, `sourceUrl`, `confidence`…).
+- **v1 France** : prompts et schémas doivent permettre d’étiqueter le **marché principal** du deal (ex. `primaryCountry: "FR"`) et d’ignorer ou déprioriser les opérations sans lien France quand la source est ambiguë.
+- **Sortie structurée** : forcer un JSON avec champs fixes (`company`, `dealType`, `amount`, `currency`, `round`, `investors`, `sector`, `summary`, `sourceUrl`, `primaryCountry`, `confidence`…).
 - **Séparer** extraction factuelle et rédaction marketing : deux appels ou deux sections de prompt si besoin.
 - **Traçabilité** : conserver `model`, version de prompt et hash du texte source pour debug.
 
