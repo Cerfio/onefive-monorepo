@@ -1,4 +1,5 @@
 packages:
+  - 'packages/*'
   - 'landing-page'
   - 'onefive-back'
   - 'onefive-web'
@@ -6,3 +7,4 @@ packages:
   - 'onefive-bo-landing-page'
   - 'onefive-email'
   - 'onefive-email/transactional'
+  - 'newsletter/scripts'
