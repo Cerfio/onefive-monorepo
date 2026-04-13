@@ -7,11 +7,17 @@
     "lint": "turbo run lint",
     "dev:back": "pnpm --filter onefive-back start:dev",
     "dev:web": "pnpm --filter onefive-web dev",
+    "dev:web-stack": "pnpm --parallel --filter onefive-back --filter onefive-web run dev",
+    "dev:app-with-email": "pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-email run dev",
+    "dev:platform": "pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-backoffice run dev",
+    "dev:platform-with-email": "pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-backoffice --filter onefive-email run dev",
+    "dev:marketing": "pnpm --parallel --filter landing-page --filter onefive-landing-page-bo run dev",
     "dev:landing": "pnpm --filter landing-page dev",
     "dev:backoffice": "pnpm --filter onefive-backoffice dev",
     "dev:bo-landing": "pnpm --filter onefive-landing-page-bo dev",
     "dev:email": "pnpm --filter onefive-email dev",
-    "dev:email-transactional": "pnpm --filter onefive-email-transactional dev"
+    "dev:email-transactional": "pnpm --filter onefive-email-transactional dev",
+    "dev:email-stack": "pnpm --parallel --filter onefive-email --filter onefive-email-transactional run dev"
   },
   "devDependencies": {
     "turbo": "^2.4.4"
