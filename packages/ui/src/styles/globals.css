@@ -1,0 +1,18 @@
+/**
+ * @onefive/ui — styles de base
+ *
+ * Importez ce fichier dans le globals.css de chaque app :
+ *   @import "@onefive/ui/styles/globals.css";
+ *
+ * Tailwind et les plugins sont déclarés par l'app elle-même.
+ * Ce fichier expose uniquement les tokens du thème Untitled UI via theme.css.
+ */
+@import "./theme.css";
+
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+
+@utility transition-inherit-all {
+  transition-property: inherit;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+}
