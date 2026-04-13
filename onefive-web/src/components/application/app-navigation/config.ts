@@ -1,13 +1,2 @@
-export type NavItemType = {
-    label: string;
-    href?: string;
-    icon?: any;
-    badge?: any;
-    items?: { label: string; href: string; icon?: any; badge?: any }[];
-    divider?: boolean;
-};
-
-export type NavItemDividerType = Omit<NavItemType, "label" | "divider"> & {
-    label?: string;
-    divider: true;
-};
+// Re-export depuis @onefive/ui — voir packages/ui/src/components/application/app-navigation/config
+export * from "@onefive/ui/components/application/app-navigation/config";

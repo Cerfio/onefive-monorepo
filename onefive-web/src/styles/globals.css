@@ -4,9 +4,13 @@
 @plugin "tailwindcss-react-aria-components";
 @plugin "tailwindcss-animate";
 
-@import './theme.css';
+/* Tokens Untitled UI partagés depuis @onefive/ui */
+@import "@onefive/ui/styles/globals.css";
 @import './typography.css';
 @import 'react-image-crop/dist/ReactCrop.css';
+
+/* Tailwind doit scanner les composants du package pour générer les classes */
+@source "../../packages/ui/src";
 
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @custom-variant label (& [data-label]);

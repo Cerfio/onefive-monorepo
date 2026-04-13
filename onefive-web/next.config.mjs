@@ -5,6 +5,7 @@ const withNextIntl = createNextIntlPlugin('./src/lib/i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  transpilePackages: ["@onefive/ui"],
   skipTrailingSlashRedirect: true,
   experimental: {
     optimizePackageImports: ['@untitledui/icons'],

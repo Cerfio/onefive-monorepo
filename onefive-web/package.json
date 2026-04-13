@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@onefive/ui": "workspace:*",
     "@cyntler/react-doc-viewer": "^1.17.0",
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@floating-ui/react-dom": "^2.1.4",

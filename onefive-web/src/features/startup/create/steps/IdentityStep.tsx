@@ -140,7 +140,7 @@ export const IdentityStep = ({ onNext, data, onDataChange, onImport }: IdentityS
             placeholder="https://www.linkedin.com/company/..."
             value={linkedinUrl}
             onChange={setLinkedinUrl}
-            icon={(props) => <LinkedInSquareIcon size={20} {...props} />}
+            icon={(props: Record<string, unknown>) => <LinkedInSquareIcon size={20} {...props} />}
             hint="Collez l'URL de votre page entreprise pour pré-remplir les informations"
           />
         </div>

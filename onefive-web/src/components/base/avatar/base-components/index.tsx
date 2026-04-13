@@ -1,4 +1,2 @@
-export * from "./avatar-add-button";
-export * from "./avatar-company-icon";
-export * from "./avatar-online-indicator";
-export * from "./verified-tick";
+// Re-export depuis @onefive/ui — voir packages/ui/src/components/base/avatar/base-components/index
+export * from "@onefive/ui/components/base/avatar/base-components/index";
