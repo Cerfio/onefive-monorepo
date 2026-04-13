@@ -1,0 +1,9 @@
+{
+  "name": "newsletter-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Scripts de test pour la collecte (RSS) — hors production.",
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
