@@ -10,7 +10,7 @@ export class ReportController {
   constructor(private readonly createReportHandler: CreateReportHandler) {}
 
   @Post()
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Throttle({ long: { limit: 5, ttl: 60000 } })
   async create(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Body() body: CreateReportDto,

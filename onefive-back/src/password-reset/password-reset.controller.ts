@@ -13,7 +13,7 @@ import { PasswordResetConfirmDto } from './dto/password-reset-confirm.dto';
 @Controller('auth/password')
 @Public()
 @Throttle({
-  default: { limit: 3, ttl: 60000 },
+  long: { limit: 3, ttl: 60000 },
 })
 export class PasswordResetController {
   constructor(
@@ -37,7 +37,7 @@ export class PasswordResetController {
 
   @Post('reset/verify')
   @HttpCode(200)
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Throttle({ long: { limit: 5, ttl: 60000 } })
   async verifyCode(
     @Req() req: FastifyRequest & { id: string },
     @Body() body: PasswordResetVerifyDto,
@@ -52,7 +52,7 @@ export class PasswordResetController {
 
   @Post('reset')
   @HttpCode(200)
-  @Throttle({ default: { limit: 3, ttl: 60000 } })
+  @Throttle({ long: { limit: 3, ttl: 60000 } })
   async resetPassword(
     @Req() req: FastifyRequest & { id: string },
     @Body() body: PasswordResetConfirmDto,

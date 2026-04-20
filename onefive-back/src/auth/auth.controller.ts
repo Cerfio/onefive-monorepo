@@ -48,9 +48,8 @@ import { AllowWaitlistNotActive } from '../common/decorators/allow-waitlist-not-
 
 @Controller('auth')
 @Throttle({
-  default: { limit: 10, ttl: 60000 },
-  auth: { limit: 5, ttl: 60000 },
-}) // ✅ Rate limiting spécifique
+  long: { limit: 20, ttl: 60000 }, // 20 auth operations / minute (controller default)
+})
 export class AuthController {
   constructor(
     private readonly signupHandler: SignupHandler,
@@ -66,7 +65,7 @@ export class AuthController {
   ) {}
 
   @Public()
-  @Throttle({ default: { limit: 3, ttl: 60000 } }) // ✅ 3 inscriptions par minute
+  @Throttle({ long: { limit: 3, ttl: 60000 } }) // 3 signups / minute
   @Post('/signup')
   async signup(
     @Req() req: FastifyRequest,
@@ -98,7 +97,7 @@ export class AuthController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 5, ttl: 60000 } }) // ✅ 5 tentatives de connexion par minute
+  @Throttle({ long: { limit: 5, ttl: 60000 } }) // 5 signin attempts / minute
   @Post('/signin')
   @HttpCode(200)
   async signin(
@@ -129,7 +128,7 @@ export class AuthController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @Throttle({ long: { limit: 10, ttl: 60000 } })
   @Get('/oauth-url')
   async getOAuthUrl(
     @Query('provider') provider: string,
