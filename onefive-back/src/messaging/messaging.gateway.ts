@@ -34,10 +34,16 @@ const RATE_LIMIT_CONFIG = {
   heartbeat: { maxRequests: 5, windowMs: 30000 }, // 5 heartbeats par 30 secondes
 };
 
+const parseOrigins = (raw: string | undefined): string[] =>
+  (raw ?? 'http://localhost:3002,http://localhost:3003')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
 @Injectable()
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+    origin: parseOrigins(process.env.CORS_ALLOWED_ORIGINS ?? process.env.FRONTEND_URL),
     credentials: true,
   },
   namespace: '/messaging',

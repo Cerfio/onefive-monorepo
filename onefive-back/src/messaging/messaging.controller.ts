@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  NotFoundException,
   Post,
   Put,
   Delete,
@@ -14,6 +15,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { SessionGuard } from '../common/guards/session-guard/session.guard';
 import { FastifyRequestUserId } from 'src/types/fastify-request-user-id';
+import { PrismaService } from '../prisma/prisma.service';
 
 // Handlers
 import { ListConversationsHandler } from './handlers/list-conversations.handler';
@@ -44,6 +46,7 @@ import { ApiResponseDto } from '../common/dto';
 @UseGuards(SessionGuard)
 export class MessagingController {
   constructor(
+    private readonly prisma: PrismaService,
     private readonly listConversationsHandler: ListConversationsHandler,
     private readonly getConversationMessagesHandler: GetConversationMessagesHandler,
     private readonly createConversationHandler: CreateConversationHandler,
@@ -55,6 +58,17 @@ export class MessagingController {
     private readonly deleteReactionHandler: DeleteReactionHandler,
     private readonly messagingGateway: MessagingGateway,
   ) {}
+
+  private async getProfileIdFromUserId(userId: string): Promise<string> {
+    const profile = await this.prisma.profile.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+    return profile.id;
+  }
 
   // ==================== CONVERSATIONS ====================
 
@@ -125,9 +139,10 @@ export class MessagingController {
     @Req() req: FastifyRequestUserId,
     @Body() body: SendMessageDto,
   ): Promise<ApiResponseDto<unknown>> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
     const result = await this.sendMessageHandler.execute({
       transactionId: req.id,
-      profileId: req.userId,
+      profileId,
       conversationId: body.conversationId,
       content: body.content,
       type: body.type,
@@ -135,11 +150,11 @@ export class MessagingController {
       attachmentId: body.attachmentId,
     });
 
-    // ✅ Notifier les autres participants via WebSocket
+    // ✅ Notifier les autres participants via WebSocket (exclure par profileId)
     await this.messagingGateway.notifyNewMessage(
       body.conversationId,
       result,
-      req.userId, // Exclure l'expéditeur
+      profileId,
     );
 
     return { success: true, data: result };
@@ -151,9 +166,10 @@ export class MessagingController {
     @Param('messageId') messageId: string,
     @Body() body: UpdateMessageDto,
   ): Promise<ApiResponseDto<unknown>> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
     const result = await this.updateMessageHandler.execute({
       transactionId: req.id,
-      profileId: req.userId,
+      profileId,
       messageId,
       content: body.content,
     });
@@ -174,9 +190,10 @@ export class MessagingController {
     @Req() req: FastifyRequestUserId,
     @Param('messageId') messageId: string,
   ): Promise<ApiResponseDto<unknown>> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
     const result = await this.deleteMessageHandler.execute({
       transactionId: req.id,
-      profileId: req.userId,
+      profileId,
       messageId,
     });
 
@@ -200,9 +217,10 @@ export class MessagingController {
     @Param('conversationId') conversationId: string,
     @Body('messageId') messageId?: string,
   ): Promise<ApiResponseDto<unknown>> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
     const result = await this.markAsReadHandler.execute({
       transactionId: req.id,
-      profileId: req.userId,
+      profileId,
       conversationId,
       messageId,
     });
@@ -210,7 +228,7 @@ export class MessagingController {
     // ✅ Notifier les autres participants via WebSocket (read receipt)
     await this.messagingGateway.notifyMessageRead(
       conversationId,
-      req.userId,
+      profileId,
       messageId,
     );
 
@@ -230,9 +248,10 @@ export class MessagingController {
     @Param('messageId') messageId: string,
     @Body() body: CreateReactionDto,
   ): Promise<ApiResponseDto<unknown>> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
     const result = await this.createReactionHandler.execute({
       transactionId: req.id,
-      profileId: req.userId,
+      profileId,
       messageId,
       emoji: body.emoji,
     });
@@ -242,7 +261,7 @@ export class MessagingController {
       await this.messagingGateway.notifyReactionAdded(result.conversationId, {
         messageId,
         emoji: body.emoji,
-        profileId: req.userId,
+        profileId,
       });
     }
 
@@ -255,10 +274,11 @@ export class MessagingController {
     @Param('messageId') messageId: string,
     @Param('emoji') emoji: string,
   ): Promise<ApiResponseDto<unknown>> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
     const decodedEmoji = decodeURIComponent(emoji);
     const result = await this.deleteReactionHandler.execute({
       transactionId: req.id,
-      profileId: req.userId,
+      profileId,
       messageId,
       emoji: decodedEmoji,
     });
@@ -268,7 +288,7 @@ export class MessagingController {
       await this.messagingGateway.notifyReactionRemoved(result.conversationId, {
         messageId,
         emoji: decodedEmoji,
-        profileId: req.userId,
+        profileId,
       });
     }
 
