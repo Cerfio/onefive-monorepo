@@ -8,6 +8,7 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { LogService } from 'logstash-winston-3';
 import { FastifyRequest } from 'fastify';
 import { FastifyRequestUserId } from 'src/types/fastify-request-user-id';
@@ -49,6 +50,15 @@ function isManualUrlRequired(
   );
 }
 
+// Tight throttle for routes that trigger Apify scraping (paid per call).
+// Defense-in-depth: most routes also check canSync (24h per profile/startup)
+// but this stops brute-force and covers routes without canSync (preview, onboarding).
+const SCRAPE_THROTTLE = {
+  short: { limit: 1, ttl: 2000 }, // 1 per 2s
+  medium: { limit: 3, ttl: 30000 }, // 3 per 30s
+  long: { limit: 10, ttl: 3600000 }, // 10 per hour
+};
+
 @Controller('linkedin-sync')
 export class LinkedInSyncController {
   constructor(
@@ -72,6 +82,7 @@ export class LinkedInSyncController {
    */
   @Post('/initiate')
   @HttpCode(200)
+  @Throttle(SCRAPE_THROTTLE)
   async initiate(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Body() body: InitiateLinkedInSyncDto,
@@ -163,6 +174,7 @@ export class LinkedInSyncController {
    */
   @Post('/oauth')
   @HttpCode(200)
+  @Throttle(SCRAPE_THROTTLE)
   async oauthSync(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Body() body: OAuthLinkedInSyncDto,
@@ -195,6 +207,7 @@ export class LinkedInSyncController {
    */
   @Post('/oauth/complete')
   @HttpCode(200)
+  @Throttle(SCRAPE_THROTTLE)
   async completeOAuthSync(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Body() body: CompleteOAuthLinkedInSyncDto,
@@ -220,6 +233,7 @@ export class LinkedInSyncController {
   @AllowOnboardingNotComplete()
   @Post('/onboarding')
   @HttpCode(200)
+  @Throttle(SCRAPE_THROTTLE)
   async getOnboardingData(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Body() body: OAuthLinkedInSyncDto,
@@ -252,6 +266,7 @@ export class LinkedInSyncController {
   @AllowOnboardingNotComplete()
   @Post('/onboarding/complete')
   @HttpCode(200)
+  @Throttle(SCRAPE_THROTTLE)
   async completeOnboardingSync(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Body() body: CompleteOAuthLinkedInSyncDto,
@@ -294,6 +309,7 @@ export class LinkedInSyncController {
    */
   @Post('/company/:startupId/initiate')
   @HttpCode(200)
+  @Throttle(SCRAPE_THROTTLE)
   async initiateCompany(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Param('startupId') startupId: string,
@@ -349,6 +365,7 @@ export class LinkedInSyncController {
    */
   @Post('/company/preview')
   @HttpCode(200)
+  @Throttle(SCRAPE_THROTTLE)
   async previewCompany(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Body() body: InitiateCompanySyncDto,
