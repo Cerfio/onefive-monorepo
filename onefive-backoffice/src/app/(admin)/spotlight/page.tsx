@@ -1070,7 +1070,7 @@ export default function SpotlightPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <a
-                          href={`${process.env.NEXT_PUBLIC_FRONT_URL || 'http://localhost:3002'}/spotlight/${item.id}`}
+                          href={`${process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3002'}/spotlight/${item.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center rounded-lg border border-secondary px-3 py-1.5 text-sm font-medium text-tertiary transition hover:bg-secondary"

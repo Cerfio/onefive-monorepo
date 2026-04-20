@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import * as Sentry from '@sentry/nestjs';
 import { DiscordWebhookService } from '../../discord/discord-webhook.service';
 
 @Catch()
@@ -46,11 +47,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
       }
     }
 
-    // Fire-and-forget Discord alert for 500 errors
+    // Fire-and-forget Discord alert + Sentry capture for 500 errors
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
       const errorMsg =
         exception instanceof Error ? exception.message : 'Unknown error';
       const stack = exception instanceof Error ? exception.stack : undefined;
+
+      Sentry.captureException(exception, {
+        tags: { path: request.url, method: request.method },
+      });
 
       this.discordWebhookService
         .sendError500({
