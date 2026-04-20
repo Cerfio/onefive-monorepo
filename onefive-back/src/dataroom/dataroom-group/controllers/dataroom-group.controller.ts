@@ -14,6 +14,8 @@ import {
 import { SessionGuard } from '../../../common/guards/session-guard/session.guard';
 import { FastifyRequest } from 'fastify';
 import { FastifyRequestUserId } from '../../../types/fastify-request-user-id';
+import { DataroomMemberGuard } from '../../guards/dataroom-member.guard';
+import { DataroomOwnerGuard } from '../../guards/dataroom-owner.guard';
 import { DataroomGroupService } from '../services/dataroom-group.service';
 import { MemberService } from '../../services/member.service';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -32,7 +34,7 @@ interface UpdateGroupDto {
 }
 
 @Controller('dataroom/:dataroomId/group')
-@UseGuards(SessionGuard)
+@UseGuards(SessionGuard, DataroomMemberGuard)
 export class DataroomGroupController {
   constructor(
     private readonly dataroomGroupService: DataroomGroupService,
@@ -41,6 +43,7 @@ export class DataroomGroupController {
   ) {}
 
   @Post()
+  @UseGuards(DataroomOwnerGuard)
   async create(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Param('dataroomId') dataroomId: string,
@@ -85,6 +88,7 @@ export class DataroomGroupController {
   }
 
   @Put(':groupId')
+  @UseGuards(DataroomOwnerGuard)
   async update(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Param('dataroomId') dataroomId: string,
@@ -106,6 +110,7 @@ export class DataroomGroupController {
   }
 
   @Delete(':groupId')
+  @UseGuards(DataroomOwnerGuard)
   async delete(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Param('dataroomId') dataroomId: string,
@@ -125,6 +130,7 @@ export class DataroomGroupController {
   }
 
   @Delete(':groupId/member/:memberId')
+  @UseGuards(DataroomOwnerGuard)
   async removeMember(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Param('dataroomId') dataroomId: string,

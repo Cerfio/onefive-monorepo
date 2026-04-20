@@ -9,6 +9,9 @@ export class GetFileDto {
   fileId: string;
 
   @IsString()
+  dataroomId: string;
+
+  @IsString()
   profileId: string;
 }
 

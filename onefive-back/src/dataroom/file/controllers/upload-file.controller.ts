@@ -16,6 +16,7 @@ import { LogService } from 'logstash-winston-3';
 import { FastifyRequest } from 'fastify';
 import { SessionGuard } from '../../../common/guards/session-guard/session.guard';
 import { FastifyRequestUserId } from '../../../types/fastify-request-user-id';
+import { DataroomMemberGuard } from '../../guards/dataroom-member.guard';
 import { UploadFileHandler } from '../handlers/upload-file.handler';
 import { FileHandler } from '../handlers/file.handler';
 import { GetFileResponseDto } from '../dto/get-file.dto';
@@ -23,7 +24,7 @@ import { UpdateFileResponseDto } from '../dto/update-file.dto';
 import { DeleteFileResponseDto } from '../dto/delete-file.dto';
 
 @Controller('dataroom/:dataroomId/file')
-@UseGuards(SessionGuard)
+@UseGuards(SessionGuard, DataroomMemberGuard)
 export class UploadFileController {
   constructor(
     @Inject('Logger') private readonly logger: LogService,
@@ -72,6 +73,7 @@ export class UploadFileController {
 
     const result = await this.fileHandler.get({
       fileId,
+      dataroomId,
       profileId: req.userId,
       transactionId: transactionId || req.id,
     });
@@ -97,6 +99,7 @@ export class UploadFileController {
 
     return await this.fileHandler.update({
       fileId,
+      dataroomId,
       transactionId: body.transactionId || req.id,
       name: body.name,
       categoryId: body.categoryId,
@@ -119,6 +122,7 @@ export class UploadFileController {
 
     return await this.fileHandler.delete({
       fileId,
+      dataroomId,
       profileId: req.userId,
       transactionId: transactionId || req.id,
     });

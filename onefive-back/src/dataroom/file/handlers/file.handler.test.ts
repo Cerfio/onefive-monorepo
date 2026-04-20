@@ -100,6 +100,7 @@ describe('FileHandler', () => {
 
     const result = await handler.get({
       fileId: 'file-1',
+      dataroomId: 'dataroom-1',
       profileId: 'user-1',
       transactionId: 'test-transaction',
     });
@@ -154,6 +155,7 @@ describe('FileHandler', () => {
 
     const result = await handler.delete({
       fileId: 'file-1',
+      dataroomId: 'dataroom-1',
       profileId: 'user-1',
       transactionId: 'test-transaction',
     });

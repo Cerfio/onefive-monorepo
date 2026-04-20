@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -11,6 +12,7 @@ import {
 import { SessionGuard } from '../../../common/guards/session-guard/session.guard';
 import { FastifyRequest } from 'fastify';
 import { FastifyRequestUserId } from '../../../types/fastify-request-user-id';
+import { DataroomOwnerGuard } from '../../guards/dataroom-owner.guard';
 import { DataroomInvitationService } from '../services/dataroom-invitation.service';
 import { PrismaService } from '../../../prisma/prisma.service';
 
@@ -39,6 +41,7 @@ export class DataroomInvitationController {
   ) {}
 
   @Post('dataroom/:dataroomId/invitation')
+  @UseGuards(DataroomOwnerGuard)
   async createInvitation(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Param('dataroomId') dataroomId: string,
@@ -68,7 +71,7 @@ export class DataroomInvitationController {
       select: { id: true },
     });
     if (!profile) {
-      throw new Error('Profile not found');
+      throw new NotFoundException('Profile not found');
     }
     const result = await this.dataroomInvitationService.accept({
       transactionId: req.id,
@@ -95,7 +98,7 @@ export class DataroomInvitationController {
       select: { id: true },
     });
     if (!profile) {
-      throw new Error('Profile not found');
+      throw new NotFoundException('Profile not found');
     }
     const result = await this.dataroomInvitationService.decline({
       transactionId: req.id,
@@ -111,6 +114,7 @@ export class DataroomInvitationController {
   }
 
   @Delete('dataroom/:dataroomId/invitation/:invitationId')
+  @UseGuards(DataroomOwnerGuard)
   async deleteInvitation(
     @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
     @Param('dataroomId') dataroomId: string,
@@ -121,7 +125,7 @@ export class DataroomInvitationController {
       select: { id: true },
     });
     if (!profile) {
-      throw new Error('Profile not found');
+      throw new NotFoundException('Profile not found');
     }
     const result = await this.dataroomInvitationService.delete({
       transactionId: req.id,

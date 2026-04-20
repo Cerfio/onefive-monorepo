@@ -1,29 +1,30 @@
 import {
   Controller,
-  Post,
+  ForbiddenException,
   Get,
-  Delete,
-  Put,
-  Body,
-  Param,
-  Query,
   Inject,
+  NotFoundException,
+  Query,
   Req,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { LogService } from 'logstash-winston-3';
 import { FileHandler } from '../handlers/file.handler';
-import { CreateFileDto, CreateFileResponseDto } from '../dto/create-file.dto';
-import { GetFileDto, GetFileResponseDto } from '../dto/get-file.dto';
 import { ListFilesDto, ListFilesResponseDto } from '../dto/list-files.dto';
-import { DeleteFileDto, DeleteFileResponseDto } from '../dto/delete-file.dto';
-import { UpdateFileDto, UpdateFileResponseDto } from '../dto/update-file.dto';
 import { FastifyRequest } from 'fastify';
 import { SessionGuard } from '../../../common/guards/session-guard/session.guard';
 import { FastifyRequestUserId } from '../../../types/fastify-request-user-id';
+import { PrismaService } from '../../../prisma/prisma.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
+/**
+ * Lists files in a dataroom.
+ *
+ * Note: mutation routes (POST/GET/:id/PUT/DELETE) were removed — use the scoped
+ * `/dataroom/:dataroomId/file(/...)` routes (UploadFileController) which enforce
+ * membership via DataroomMemberGuard.
+ */
 @Controller('dataroom/files')
 @UseGuards(SessionGuard)
 @ApiTags('dataroom-files')
@@ -31,48 +32,8 @@ export class FileController {
   constructor(
     @Inject('Logger') private readonly logger: LogService,
     private readonly fileHandler: FileHandler,
+    private readonly prisma: PrismaService,
   ) {}
-
-  @Post()
-  async create(
-    @Req() req: FastifyRequest & FastifyRequestUserId,
-    @Body() createFileDto: CreateFileDto,
-  ): Promise<CreateFileResponseDto> {
-    // Override client-provided profileId with authenticated user
-    createFileDto.profileId = req.userId;
-
-    this.logger.info('Creating files', {
-      transactionId: createFileDto.transactionId,
-      dataroomId: createFileDto.dataroomId,
-      profileId: req.userId,
-      fileCount: createFileDto.files.length,
-    });
-
-    return await this.fileHandler.create(createFileDto);
-  }
-
-  @Get(':fileId')
-  async get(
-    @Req() req: FastifyRequest & FastifyRequestUserId,
-    @Param('fileId') fileId: string,
-    @Query('transactionId') transactionId?: string,
-  ): Promise<GetFileResponseDto> {
-    const profileId = req.userId;
-
-    this.logger.info('Getting file', {
-      transactionId,
-      fileId,
-      profileId,
-    });
-
-    const getFileDto: GetFileDto = {
-      fileId,
-      profileId,
-      transactionId,
-    };
-
-    return await this.fileHandler.get(getFileDto);
-  }
 
   @Get()
   @ApiQuery({ name: 'dataroomId', required: true, type: String })
@@ -88,78 +49,40 @@ export class FileController {
     @Req() req: FastifyRequest & FastifyRequestUserId,
     @Query(ValidationPipe) query: ListFilesDto,
   ): Promise<ListFilesResponseDto> {
-    const profileId = req.userId;
+    const profile = await this.prisma.profile.findUnique({
+      where: { userId: req.userId },
+      select: { id: true },
+    });
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+
+    const member = await this.prisma.member.findFirst({
+      where: { profileId: profile.id, dataroomId: query.dataroomId },
+      select: { id: true },
+    });
+    if (!member) {
+      throw new ForbiddenException('You are not a member of this dataroom');
+    }
 
     this.logger.info('Listing files', {
       transactionId: query.transactionId,
       dataroomId: query.dataroomId,
-      profileId,
+      profileId: profile.id,
       categoryId: query.categoryId,
       skip: query.skip,
       take: query.take,
       orderBy: query.orderBy,
     });
 
-    const listFilesDto: ListFilesDto = {
+    return await this.fileHandler.list({
       dataroomId: query.dataroomId,
-      profileId,
+      profileId: profile.id,
       categoryId: query.categoryId,
       skip: query.skip,
       take: query.take,
       orderBy: query.orderBy,
       transactionId: query.transactionId,
-    };
-
-    return await this.fileHandler.list(listFilesDto);
-  }
-
-  @Put(':fileId')
-  async update(
-    @Req() req: FastifyRequest & FastifyRequestUserId,
-    @Param('fileId') fileId: string,
-    @Body() updateFileDto: UpdateFileDto,
-  ): Promise<UpdateFileResponseDto> {
-    const profileId = req.userId;
-
-    this.logger.info('Updating file', {
-      transactionId: updateFileDto.transactionId,
-      fileId,
-      profileId,
-      name: updateFileDto.name,
-      categoryId: updateFileDto.categoryId,
     });
-
-    const updateFileRequestDto = {
-      fileId,
-      profileId,
-      transactionId: updateFileDto.transactionId,
-      name: updateFileDto.name,
-      categoryId: updateFileDto.categoryId,
-    };
-
-    return await this.fileHandler.update(updateFileRequestDto);
-  }
-
-  @Delete(':fileId')
-  async delete(
-    @Req() req: FastifyRequest & FastifyRequestUserId,
-    @Param('fileId') fileId: string,
-    @Query('transactionId') transactionId?: string,
-  ): Promise<DeleteFileResponseDto> {
-    const profileId = req.userId;
-
-    this.logger.info('Deleting file', {
-      transactionId,
-      fileId,
-      profileId,
-    });
-
-    const deleteFileDto: DeleteFileDto = {
-      fileId,
-      profileId,
-      transactionId,
-    };
-
-    return await this.fileHandler.delete(deleteFileDto);
   }
 }

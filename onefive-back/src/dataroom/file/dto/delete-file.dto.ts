@@ -9,6 +9,9 @@ export class DeleteFileDto {
   fileId: string;
 
   @IsString()
+  dataroomId: string;
+
+  @IsString()
   profileId: string;
 }
 

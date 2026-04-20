@@ -75,7 +75,7 @@ export class FileHandler {
   async get(input: GetFileDto): Promise<GetFileResponseDto> {
     const file = await this.fileService.get({
       transactionId: input.transactionId,
-      where: { id: input.fileId },
+      where: { id: input.fileId, dataroomId: input.dataroomId },
     });
 
     if (!file) {
@@ -165,7 +165,7 @@ export class FileHandler {
   async delete(input: DeleteFileDto): Promise<DeleteFileResponseDto> {
     const file = await this.fileService.get({
       transactionId: input.transactionId,
-      where: { id: input.fileId },
+      where: { id: input.fileId, dataroomId: input.dataroomId },
     });
 
     if (!file) {
@@ -187,11 +187,11 @@ export class FileHandler {
   }
 
   async update(
-    input: UpdateFileDto & { fileId: string },
+    input: UpdateFileDto & { fileId: string; dataroomId: string },
   ): Promise<UpdateFileResponseDto> {
     const file = await this.fileService.get({
       transactionId: input.transactionId,
-      where: { id: input.fileId },
+      where: { id: input.fileId, dataroomId: input.dataroomId },
     });
 
     if (!file) {
