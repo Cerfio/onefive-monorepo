@@ -199,7 +199,53 @@ Temps : 15-30 min. **Perte de données entre le snapshot et maintenant**.
 
 ---
 
-## 7. Contacts & escalation
+## 7. Tests d'intégration (cascades)
+
+Suite de tests e2e qui assertent les effets de bord (notifications, emails, WebSocket emits, PostHog). Chaque test mocke les services externes via `installMocks()` — aucun email/SMS/Apify/Discord/Sentry n'est jamais émis.
+
+### Pré-requis
+- Postgres local accessible avec PostGIS activé
+- Une DB vide dédiée aux tests (ex. `onefive_test`)
+
+### Setup unique
+```bash
+psql -d postgres -c "CREATE DATABASE onefive_test;"
+psql -d onefive_test -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+```
+
+### Run
+```bash
+cd onefive-back
+
+# Toute la suite cascades (46 tests, ~25s)
+TEST_DATABASE_URL="postgresql://$USER@localhost:5432/onefive_test" \
+  pnpm jest \
+  test/referral-founding-member.e2e-spec.ts \
+  test/feed-cascades.e2e-spec.ts \
+  test/network-cascades.e2e-spec.ts \
+  test/waitlist-flows.e2e-spec.ts \
+  test/dataroom-idor-regression.e2e-spec.ts \
+  test/auth-cascades.e2e-spec.ts \
+  test/startup-cascades.e2e-spec.ts \
+  test/messaging-cascades.e2e-spec.ts \
+  test/discussion-gap.e2e-spec.ts \
+  --forceExit --runInBand
+
+# Un seul fichier
+TEST_DATABASE_URL="postgresql://$USER@localhost:5432/onefive_test" \
+  pnpm jest test/feed-cascades.e2e-spec.ts --forceExit --runInBand
+```
+
+### Si tu n'as pas Postgres local
+Le `global-setup.ts` peut démarrer Postgres via Testcontainers (Docker requis). Lance OrbStack/Docker Desktop puis omets `TEST_DATABASE_URL` :
+```bash
+pnpm jest test/feed-cascades.e2e-spec.ts --forceExit --runInBand
+```
+
+### Ce que la suite vérifie
+Chaque test asserts une cascade utilisateur → effets de bord. Voir `docs/QA_SIDE_EFFECTS_MATRIX.md` pour la cartographie complète.
+
+## 8. Contacts & escalation
 
 - **DB** : snapshots sur [provider], accès via [admin panel URL]
 - **Monitoring** : Sentry ([url]), PostHog ([url]), uptime ([url])
