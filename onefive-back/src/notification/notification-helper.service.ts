@@ -618,7 +618,16 @@ export class NotificationHelperService {
   }
 
   /**
-   * Notification quand quelqu'un visite un profil
+   * Notification quand quelqu'un visite un profil — agrégation 24h LinkedIn-style.
+   *
+   * Comportement attendu :
+   * - 1 viewer       → "Alice a consulté votre profil"
+   * - 2 viewers      → "Alice et Bob ont consulté votre profil"
+   * - 3 viewers      → "Alice, Bob et Carol ont consulté votre profil"
+   * - 4+ viewers     → "Alice et N autres personnes ont consulté votre profil"
+   *
+   * Le même viewer dans la fenêtre 24h n'est compté qu'une fois (idempotent).
+   * On agrège tant qu'il existe une notification non-lue dans la fenêtre.
    */
   async notifyProfileView({
     viewedProfileId,
@@ -629,27 +638,77 @@ export class NotificationHelperService {
     viewerProfileId: string;
     viewerName: string;
   }) {
-    // Ne pas notifier si c'est son propre profil
     if (viewedProfileId === viewerProfileId) {
       return null;
     }
 
-    // Vérifier si une notification de vue de profil existe déjà récemment (dernières 24h)
-    // pour éviter le spam de notifications
-    const recentNotification = await this.prisma.notification.findFirst({
+    const aggregationCutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    const recent = await this.prisma.notification.findFirst({
       where: {
         profileId: viewedProfileId,
-        actorId: viewerProfileId,
         type: NotificationType.PROFILE_VIEW,
-        createdAt: {
-          gte: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24 heures
-        },
+        category: NotificationCategory.ENGAGEMENT,
+        read: false,
+        createdAt: { gte: aggregationCutoff },
       },
+      orderBy: { createdAt: 'desc' },
     });
 
-    if (recentNotification) {
-      // Une notification récente existe déjà, ne pas en créer une nouvelle
-      return null;
+    const existingData = recent?.data as {
+      viewers?: Array<{ id: string; name: string; timestamp: string }>;
+    } | null;
+
+    if (recent && existingData?.viewers) {
+      const isAlreadyInList = existingData.viewers.some(
+        (v) => v.id === viewerProfileId,
+      );
+      if (isAlreadyInList) {
+        return null;
+      }
+
+      const updatedViewers = [
+        ...existingData.viewers,
+        {
+          id: viewerProfileId,
+          name: viewerName,
+          timestamp: new Date().toISOString(),
+        },
+      ];
+
+      const totalCount = updatedViewers.length;
+      let title: string;
+      let message: string;
+
+      if (totalCount === 1) {
+        title = updatedViewers[0].name;
+        message = 'a consulté votre profil';
+      } else if (totalCount === 2) {
+        title = updatedViewers[0].name;
+        message = `et ${updatedViewers[1].name} ont consulté votre profil`;
+      } else if (totalCount === 3) {
+        title = updatedViewers[0].name;
+        message = `, ${updatedViewers[1].name} et ${updatedViewers[2].name} ont consulté votre profil`;
+      } else {
+        const othersCount = totalCount - 1;
+        title = updatedViewers[0].name;
+        message = `et ${othersCount} autres personnes ont consulté votre profil`;
+      }
+
+      return this.prisma.notification.update({
+        where: { id: recent.id },
+        data: {
+          title,
+          message,
+          actorId: updatedViewers[0].id,
+          updatedAt: new Date(),
+          data: {
+            viewers: updatedViewers,
+            count: totalCount,
+            aggregated: true,
+          },
+        },
+      });
     }
 
     return this.notificationService.create({
@@ -661,6 +720,17 @@ export class NotificationHelperService {
       actorId: viewerProfileId,
       entityId: viewerProfileId,
       entityType: 'PROFILE',
+      data: {
+        viewers: [
+          {
+            id: viewerProfileId,
+            name: viewerName,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+        count: 1,
+        aggregated: false,
+      },
     });
   }
 
