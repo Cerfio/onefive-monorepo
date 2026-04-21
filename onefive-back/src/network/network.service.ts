@@ -1,8 +1,9 @@
 import {
-  Injectable,
-  Inject,
+  BadRequestException,
   ConflictException,
   HttpException,
+  Inject,
+  Injectable,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { LogService } from 'logstash-winston-3';
@@ -832,6 +833,13 @@ export class NetworkService {
       }
 
       const requesterId = requesterProfile.id;
+
+      // Reject self-connection before touching the DB further
+      if (requesterId === profileId) {
+        throw new BadRequestException(
+          'You cannot send a connection request to yourself',
+        );
+      }
 
       // Check if accepter profile exists
       const accepterProfile = await this.prisma.profile.findUnique({

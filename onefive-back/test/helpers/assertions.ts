@@ -101,6 +101,28 @@ export async function latestNotificationFor(
   });
 }
 
+/**
+ * Poll until at least `count` notifications of `type` exist for `profileId`,
+ * or until timeout. Needed for fire-and-forget notifyXxx calls that aren't
+ * awaited by their handler (e.g. create-repost.handler.ts) — the HTTP response
+ * returns before the notification row is committed.
+ */
+export async function waitForNotifications(
+  prisma: PrismaService,
+  profileId: string,
+  type: string,
+  count = 1,
+  timeoutMs = 2000,
+) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const notifs = await notificationsFor(prisma, profileId, type);
+    if (notifs.length >= count) return notifs;
+    await new Promise((r) => setTimeout(r, 50));
+  }
+  return notificationsFor(prisma, profileId, type);
+}
+
 // ── Badge assertions ──────────────────────────────────────
 
 export async function badgesFor(prisma: PrismaService, profileId: string) {
