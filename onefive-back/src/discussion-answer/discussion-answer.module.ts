@@ -7,9 +7,10 @@ import { CreateDiscussionAnswerHandler } from './handlers/create-discussion-answ
 import { UpdateDiscussionAnswerHandler } from './handlers/update-discussion-answer.handler';
 import { DeleteDiscussionAnswerHandler } from './handlers/delete-discussion-answer.handler';
 import { ProfileModule } from '../profile/profile.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [ProfileModule],
+  imports: [ProfileModule, NotificationModule],
   controllers: [DiscussionAnswerController],
   providers: [
     DiscussionAnswerService,

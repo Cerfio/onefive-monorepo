@@ -711,4 +711,42 @@ export class NotificationHelperService {
       entityType: 'PROFILE',
     });
   }
+
+  /**
+   * Notification quand quelqu'un poste une answer sur une discussion.
+   * Réutilise NotificationType.COMMENT (pas de type dédié pour les answers).
+   */
+  async notifyDiscussionAnswer({
+    discussionId,
+    answerId,
+    actorProfileId,
+    actorName,
+  }: {
+    discussionId: string;
+    answerId: string;
+    actorProfileId: string;
+    actorName: string;
+  }) {
+    const discussion = await this.prisma.discussion.findUnique({
+      where: { id: discussionId },
+      select: { profileId: true },
+    });
+
+    if (!discussion || discussion.profileId === actorProfileId) {
+      // Pas de self-notif
+      return null;
+    }
+
+    return this.notificationService.create({
+      profileId: discussion.profileId,
+      type: NotificationType.COMMENT,
+      category: NotificationCategory.ENGAGEMENT,
+      title: actorName,
+      message: 'a répondu à votre discussion',
+      actorId: actorProfileId,
+      entityId: discussionId,
+      entityType: 'DISCUSSION',
+      data: { answerId },
+    });
+  }
 }
