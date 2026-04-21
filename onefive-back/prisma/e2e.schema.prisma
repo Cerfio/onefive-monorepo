@@ -17,6 +17,129 @@ datasource db {
 // NOTE: Models are defined in one or more files under prisma/schema/*.prisma
 
 
+model AdminUser {
+  id          String              @id @default(uuid())
+  email       String              @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  isActive    Boolean             @default(true)
+  isSuperAdmin Boolean            @default(false)
+  lastLoginAt DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  sessions    AdminSession[]
+  roles       AdminUserRole[]
+  auditLogs   AdminAuditLog[]
+  sentInvitations AdminInvitation[] @relation("AdminInvitationInvitedBy")
+  acceptedInvitations AdminInvitation[] @relation("AdminInvitationAcceptedBy")
+}
+
+model AdminSession {
+  id          String    @id @default(uuid())
+  token       String    @unique
+  adminUserId String
+  isRevoked   Boolean   @default(false)
+  expiresAt   DateTime
+  lastUsage   DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userAgent   String    @default("")
+  ipAddress   String    @default("")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+  @@index([expiresAt])
+}
+
+model AdminRole {
+  id          String                @id @default(uuid())
+  key         String                @unique
+  name        String
+  description String?
+  isSystem    Boolean               @default(false)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  users       AdminUserRole[]
+  permissions AdminRolePermission[]
+  invitations AdminInvitation[]
+}
+
+model AdminPermission {
+  id          String                @id @default(uuid())
+  key         String                @unique
+  description String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  roles       AdminRolePermission[]
+}
+
+model AdminUserRole {
+  adminUserId String
+  roleId      String
+  assignedAt  DateTime  @default(now())
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  role        AdminRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([adminUserId, roleId])
+  @@index([roleId])
+}
+
+model AdminRolePermission {
+  roleId       String
+  permissionId String
+  createdAt    DateTime        @default(now())
+  role         AdminRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   AdminPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model AdminInvitation {
+  id          String                @id @default(uuid())
+  email       String
+  roleId      String
+  token       String                @unique
+  status      AdminInvitationStatus @default(PENDING)
+  expiresAt   DateTime
+  invitedById String
+  acceptedById String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  role        AdminRole             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  invitedBy   AdminUser             @relation("AdminInvitationInvitedBy", fields: [invitedById], references: [id], onDelete: Restrict)
+  acceptedBy  AdminUser?            @relation("AdminInvitationAcceptedBy", fields: [acceptedById], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([status, expiresAt])
+}
+
+model AdminAuditLog {
+  id           String    @id @default(uuid())
+  adminUserId  String?
+  action       String
+  resourceType String
+  resourceId   String?
+  metadata     Json?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime  @default(now())
+  adminUser    AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@index([adminUserId])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+}
+
+enum AdminInvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+
 // Badge system for waitlist achievements
 model Badge {
   id          String    @id @default(uuid())
@@ -58,6 +181,7 @@ model Dataroom {
   logs                   ActivityLog[]
   captables              Captable[]
   categories             Category[]
+  comments               DataroomFileComment[]
   files                  DataroomFile[]
   groups                 DataroomGroup[]
   invitations            DataroomInvitation[]
@@ -239,9 +363,10 @@ model DataroomFile {
   deletedAt      DateTime?
   fundraisingId  String?
   accessLogs     AccessLog[]
-  category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  dataroom       Dataroom         @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
-  fundraising    Fundraising?     @relation(fields: [fundraisingId], references: [id], onDelete: Cascade)
+  category       Category              @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  dataroom       Dataroom              @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
+  fundraising    Fundraising?          @relation(fields: [fundraisingId], references: [id], onDelete: Cascade)
+  comments       DataroomFileComment[]
   directAccess   DirectAccess[]
   PermissionFile PermissionFile[]
   trackingEvents TrackingEvent[]
@@ -453,6 +578,29 @@ enum InvitationType {
   DIRECTACCESS
 }
 
+model DataroomFileComment {
+  id         String                @id @default(uuid())
+  dataroomId String
+  fileId     String
+  profileId  String
+  content    String                @db.VarChar(3000)
+  pageNumber Int?
+  parentId   String?
+  isDeleted  Boolean               @default(false)
+  deletedAt  DateTime?
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+  dataroom   Dataroom              @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
+  file       DataroomFile          @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  author     Profile               @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  parent     DataroomFileComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies    DataroomFileComment[] @relation("CommentReplies")
+
+  @@index([fileId, createdAt])
+  @@index([profileId])
+  @@index([parentId])
+}
+
 
 model Discussion {
   id                 String               @id @default(uuid())
@@ -464,6 +612,7 @@ model Discussion {
   options            String[]
   tags               String[]
   type               DiscussionType
+  isHidden           Boolean              @default(false)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   author             Profile              @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -629,6 +778,7 @@ model File {
   profileAvatar      Profile[]           @relation("ProfileAvatar")
   profileCover       Profile[]           @relation("ProfileCover")
   messageAttachments MessageAttachment[]
+  feedbackScreenshots Feedback[]         @relation("FeedbackScreenshot")
 }
 
 
@@ -655,6 +805,8 @@ model LinkedInSync {
   linkedinUrl         String?
   rawData             Json     // Données brutes de l'API Apify
   lastSyncedAt        DateTime @default(now())
+  syncCount           Int      @default(0) // Nombre de syncs dans la période courante
+  syncPeriodStart     DateTime @default(now()) // Début de la période de comptage (trimestre)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   profile             Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -795,6 +947,115 @@ enum AttachmentType {
 }
 
 
+// ─── Flux RSS ──────────────────────────────────────────────────────────────
+
+model NewsletterFeedSource {
+  id        String               @id @default(uuid())
+  slug      String               @unique
+  name      String
+  feedUrl   String
+  isActive  Boolean              @default(true)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  items     NewsletterFeedItem[]
+
+  @@index([isActive])
+}
+
+model NewsletterFeedItem {
+  id          String               @id @default(uuid())
+  sourceId    String
+  externalId  String?
+  link        String
+  title       String
+  summary     String?              @db.Text
+  publishedAt DateTime?
+  fetchedAt   DateTime             @default(now())
+  rawPayload  Json?
+
+  source NewsletterFeedSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, link])
+  @@index([sourceId, publishedAt])
+  @@index([publishedAt])
+}
+
+// ─── Abonnés ───────────────────────────────────────────────────────────────
+
+enum NewsletterFrequency {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+}
+
+model NewsletterSubscriber {
+  id               String               @id @default(uuid())
+  email            String               @unique
+  /// Jeton aléatoire (hex 32 octets) inclus dans les liens d'email.
+  /// Permet accès à préférences + désinscription sans compte.
+  preferenceToken  String               @unique
+  isSubscribed     Boolean              @default(true)
+  frequency        NewsletterFrequency  @default(WEEKLY)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  unsubscribedAt   DateTime?
+
+  @@index([isSubscribed])
+  @@index([preferenceToken])
+}
+
+// ─── Deals extraits ────────────────────────────────────────────────────────
+
+enum NewsletterDealType {
+  FUNDRAISING
+  MA
+  LBO
+  OTHER
+}
+
+enum NewsletterDealStatus {
+  DRAFT
+  VALIDATED
+  SENT
+}
+
+model NewsletterDeal {
+  id             String               @id @default(uuid())
+  /// Société concernée par l'opération.
+  company        String
+  dealType       NewsletterDealType   @default(OTHER)
+  /// Montant en unité d'origine (ex : "45" pour 45 M€).
+  amount         Float?
+  currency       String?              @db.VarChar(10)
+  /// Tour de financement (Seed, Série A…). Null pour M&A / LBO.
+  round          String?
+  /// Investisseurs ou acquéreur (liste sérialisée en JSON).
+  investors      Json?
+  sector         String?
+  /// Résumé court de l'opération (~2 phrases).
+  summary        String?              @db.Text
+  /// Pays principal de l'opération (ISO 3166-1 alpha-2, ex : "FR").
+  primaryCountry String               @db.VarChar(5)
+  sourceUrl      String
+  publishedAt    DateTime?
+  status         NewsletterDealStatus @default(DRAFT)
+  /// Identifiant du NewsletterFeedItem dont ce deal a été extrait.
+  feedItemId     String?
+  /// Modèle LLM utilisé pour l'extraction.
+  extractedBy    String?
+  /// Version du prompt utilisé.
+  promptVersion  String?
+  /// Score de confiance LLM (0–1).
+  confidence     Float?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([status, primaryCountry])
+  @@index([publishedAt])
+  @@index([feedItemId])
+}
+
+
 model Notification {
   id         String               @id @default(uuid())
   profileId  String               // Destinataire de la notification
@@ -825,14 +1086,15 @@ enum NotificationType {
   SHARE
   FOLLOW
   PROFILE_VIEW
-  
+  DATAROOM_ENGAGEMENT
+
   // Invitations
   STARTUP_INVITATION
   INVESTOR_INVITATION
   DATAROOM_INVITATION
   CONNECTION_REQUEST
   REFERRAL_ACCEPTED
-  
+
   // Système
   SYSTEM_ANNOUNCEMENT
   DATAROOM_UPDATE
@@ -867,6 +1129,7 @@ model Post {
   content        String         @db.VarChar(3000)
   medias         Json[]
   tags           String[]
+  isHidden       Boolean        @default(false)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   repostedPostId String?
@@ -1013,6 +1276,7 @@ model Profile {
   fundingHistoryInvestments      FundingHistoryInvestor[]
   posts                          Post[]
   postBookmarks                  PostBookmark[]
+  dataroomFileComments           DataroomFileComment[]
   postComments                   PostComment[]
   postCommentReactions           PostCommentReaction[]
   postReactions                  PostReaction[]
@@ -1045,6 +1309,8 @@ model Profile {
   linkedInSync                   LinkedInSync?
   referrer                        Profile?            @relation("Referrer", fields: [referrerId], references: [id])
   referredBy                     Profile[]            @relation("Referrer")
+  reportsSubmitted               Report[]             @relation("ReportsSubmitted")
+  feedbackSubmitted              Feedback[]           @relation("FeedbackSubmitted")
 }
 
 model Streak {
@@ -1429,6 +1695,7 @@ enum ProfileRole {
 enum WaitlistStatus {
   WAITING
   ACTIVE
+  IGNORED
 }
 
 
@@ -1473,6 +1740,79 @@ enum ReferralStatus {
   ACCEPTED   // L'invité a créé son compte
   EXPIRED    // L'invitation a expiré
   CANCELLED  // L'invitation a été annulée
+}
+
+
+model Report {
+  id           String       @id @default(uuid())
+  reporterId   String
+  resourceType ReportResourceType
+  resourceId   String
+  reason       ReportReason
+  message      String?      @db.VarChar(500)
+  status       ReportStatus @default(PENDING)
+  resolvedAt   DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  reporter     Profile      @relation("ReportsSubmitted", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([reporterId])
+  @@index([resourceType, resourceId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Feedback {
+  id          String         @id @default(uuid())
+  reporterId  String
+  type        FeedbackType
+  message     String         @db.VarChar(500)
+  url         String?        @db.VarChar(500)
+  browserInfo String?        @db.VarChar(500)
+  screenshotId String?
+  status      ReportStatus   @default(PENDING)
+  resolvedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  reporter    Profile        @relation("FeedbackSubmitted", fields: [reporterId], references: [id], onDelete: Cascade)
+  screenshot  File?          @relation("FeedbackScreenshot", fields: [screenshotId], references: [id])
+
+  @@index([reporterId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum ReportResourceType {
+  PROFILE
+  POST
+  POST_COMMENT
+  POST_COMMENT_REPLY
+  DISCUSSION
+  DISCUSSION_ANSWER
+  DISCUSSION_ANSWER_REPLY
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  INAPPROPRIATE_CONTENT
+  MISINFORMATION
+  IMPERSONATION
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum FeedbackType {
+  BUG
+  SUGGESTION
+  COMMENT
+  FUNCTIONAL
 }
 
 
@@ -1531,6 +1871,12 @@ model SpotAccelerator {
   expertiseDomains ExpertiseDomain[]
   hiringPeriod     Periodicity?
   date             DateTime?
+  fundingModel     FundingModel?
+  equityPercentage Float?
+  investmentAmount Float?
+  stage            StartupStage?
+  capacity         Int?
+  programDuration  Int?
   createdAt        DateTime               @default(now())
   updatedAt        DateTime               @updatedAt
   spot             Spot                   @relation(fields: [spotId], references: [id], onDelete: Cascade)
@@ -1538,14 +1884,18 @@ model SpotAccelerator {
 }
 
 model SpotContest {
-  id        String             @id @default(uuid())
-  spotId    String             @unique
-  beginDate DateTime
-  endDate   DateTime
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
-  spot      Spot               @relation(fields: [spotId], references: [id], onDelete: Cascade)
-  prices    SpotContestPrice[]
+  id               String             @id @default(uuid())
+  spotId           String             @unique
+  beginDate        DateTime
+  endDate          DateTime
+  expertiseDomains ExpertiseDomain[]
+  prizeType        PrizeType?
+  prizeAmount      Float?
+  eligibility      String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  spot             Spot               @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  prices           SpotContestPrice[]
 }
 
 model SpotEvent {
@@ -1556,6 +1906,8 @@ model SpotEvent {
   uniqueId         String            @unique
   expertiseDomains ExpertiseDomain[]
   days             Day[]
+  format           EventFormat?
+  attendees        Int?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   spot             Spot              @relation(fields: [spotId], references: [id], onDelete: Cascade)
@@ -1568,6 +1920,12 @@ model SpotIncubator {
   expertiseDomains ExpertiseDomain[]
   hiringPeriod     Periodicity?
   dates            String[]
+  fundingModel     FundingModel?
+  equityPercentage Float?
+  investmentAmount Float?
+  stage            StartupStage?
+  capacity         Int?
+  programDuration  Int?
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   spot             Spot                 @relation(fields: [spotId], references: [id], onDelete: Cascade)
@@ -1679,8 +2037,65 @@ enum ProviderType {
 
 enum ExpertiseDomain {
   TECH
+  AI
+  FINTECH
+  INSURTECH
+  HEALTHTECH
+  EDTECH
+  GREENTECH
+  ECOMMERCE
+  SOCIALIMPACT
+  LEGALTECH
+  PROPTECH
+  FOODTECH
+  MOBILITY
+  GAMING
+  MEDIA
+  CYBERSECURITY
+  BIOTECH
+  WEB3
+  HR
+  DESIGN
   MARKETING
   BUSINESS
+  LUXURY
+  BEAUTY
+  SPORTS
+  QUANTUM
+  ADTECH
+  URBAN
+  OTHER
+}
+
+enum FundingModel {
+  GRANT
+  EQUITY
+  REVENUE_SHARE
+  EQUITY_AND_GRANT
+  NONE
+}
+
+enum StartupStage {
+  IDEA
+  PRESEED
+  SEED
+  SERIES_A
+  GROWTH
+  ALL
+}
+
+enum EventFormat {
+  ONLINE
+  INPERSON
+  HYBRID
+}
+
+enum PrizeType {
+  CASH
+  GRANT
+  SERVICES
+  VISIBILITY
+  MIXED
 }
 
 enum Periodicity {
@@ -1769,6 +2184,7 @@ model User {
   id                    String             @id @default(uuid())
   email                 String             @unique
   password              String?
+  isBanned              Boolean            @default(false)
   phoneNumber           String?            @unique
   isEmailVerified       Boolean            @default(false)
   authType              AuthType

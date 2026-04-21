@@ -323,3 +323,105 @@ export async function approveProfileInWaitlist(
     data: { waitlistStatus: 'ACTIVE', activatedAt: new Date() },
   });
 }
+
+// ── Badges (idempotent) ────────────────────────────────────
+
+/**
+ * Ensure the two waitlist badges exist in DB. WaitlistService.checkFoundingMember
+ * silently skips badge creation if the row is missing, so tests must seed them.
+ * Safe to call repeatedly.
+ */
+export async function ensureBadgesSeeded(prisma: PrismaService): Promise<void> {
+  const types = [
+    {
+      type: 'EARLY_ADOPTER' as const,
+      name: 'Early Adopter',
+      description: 'Activated manually by an admin during the waitlist period.',
+    },
+    {
+      type: 'FOUNDING_MEMBER' as const,
+      name: 'Founding Member',
+      description: 'Brought 10+ accepted referrals before activation.',
+    },
+  ];
+
+  for (const b of types) {
+    await prisma.badge.upsert({
+      where: { type: b.type as any },
+      update: {},
+      create: b as any,
+    });
+  }
+}
+
+// ── Referral signup flow (Flow C) ──────────────────────────
+
+/**
+ * Sign up a brand new user who used a referral code, complete their onboarding
+ * (profile creation), and force their email verified. Returns the same shape as
+ * createAuthenticatedUser. The resulting profile stays WAITING (because we
+ * explicitly override the test-mode ACTIVE flip only when no ref is involved).
+ *
+ * Pass the referrer's `referralCode`, NOT their profileId.
+ */
+export async function signupWithReferralAndComplete(
+  app: any,
+  request: any,
+  referralCode: string,
+  prefix = 'filleul',
+): Promise<{ token: string; email: string; profileId: string; userId: string }> {
+  const email = createUniqueEmail(prefix);
+  const prisma: PrismaService = app.get(PrismaService);
+
+  // 1. Signup (email verification auto via E2E_AUTO_VERIFY_SIGNUP)
+  const signupRes = await request(app.getHttpServer())
+    .post('/auth/signup')
+    .send({ email, password: validPassword })
+    .expect(201);
+  const token = extractAuthTokenFromResponse(signupRes);
+
+  const session = await prisma.session.findUnique({
+    where: { id: token },
+    select: { userId: true },
+  });
+  const user =
+    (session?.userId
+      ? await prisma.user.findUnique({ where: { id: session.userId } })
+      : null) ??
+    (await prisma.user.findUnique({ where: { email: email.toLowerCase() } }));
+  if (!user) throw new Error(`User not found for ${email}`);
+
+  // Ensure isEmailVerified so waitlist logic accepts the referral (status=ACCEPTED)
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { isEmailVerified: true },
+  });
+
+  // 2. Profile creation with referredByCode — triggers processNewProfile
+  await request(app.getHttpServer())
+    .post('/profile')
+    .set('Cookie', `token=${token}`)
+    .send({ ...createProfileData(), referredByCode: referralCode })
+    .expect(201);
+
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+  });
+  if (!profile) throw new Error(`Profile not created for ${email}`);
+
+  return { token, email, profileId: profile.id, userId: user.id };
+}
+
+/**
+ * Promote an existing profile to Ambassador (referrerType AMBASSADOR).
+ * When a user signs up with an ambassador's code, they activate immediately.
+ */
+export async function makeProfileAmbassador(
+  prisma: PrismaService,
+  profileId: string,
+): Promise<void> {
+  await prisma.profile.update({
+    where: { id: profileId },
+    data: { isAmbassador: true },
+  });
+}
