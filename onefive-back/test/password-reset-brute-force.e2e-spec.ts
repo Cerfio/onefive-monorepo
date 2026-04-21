@@ -24,7 +24,8 @@ describe('Password Reset Brute-Force Protection (E2E)', () => {
       .post('/auth/password/reset/request')
       .send({ email: `bruteforce-${Date.now()}@example.com` });
 
-    expect([201, 400, 404]).toContain(res.status);
+    // Endpoint returns 200 (no user enumeration) — accept legacy values too
+    expect([200, 201, 400, 404]).toContain(res.status);
   });
 
   it('handles reset verify endpoint safely', async () => {

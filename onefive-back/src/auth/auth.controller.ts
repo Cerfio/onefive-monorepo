@@ -40,6 +40,7 @@ import { EmailHasVerifiedHandler } from './handlers/email-has-verified.handler';
 import { EmailConfirmHandler } from './handlers/email-confirm.handler';
 import { EmailRequestHandler } from './handlers/email-request.handler';
 import { OAuthStateService } from './oauth-state/oauth-state.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { clearAuthCookie, setAuthCookie } from '../common/utils/cookie.utils';
 import { AllowOtpOnlySession } from '../common/decorators/allow-otp-only-session.decorator';
 import { AllowEmailNotVerified } from '../common/decorators/allow-email-not-verified.decorator';
@@ -62,7 +63,17 @@ export class AuthController {
     private readonly emailConfirmHandler: EmailConfirmHandler,
     private readonly emailRequestHandler: EmailRequestHandler,
     private readonly oauthStateService: OAuthStateService,
+    private readonly prisma: PrismaService,
   ) {}
+
+  private extractTokenFromCookie(cookieHeader?: string): string | null {
+    if (!cookieHeader) return null;
+    const tokenCookie = cookieHeader
+      .split(';')
+      .map((c) => c.trim())
+      .find((c) => c.startsWith('token='));
+    return tokenCookie ? tokenCookie.slice('token='.length) : null;
+  }
 
   @Public()
   @Throttle({ long: { limit: 3, ttl: 60000 } }) // 3 signups / minute
@@ -227,8 +238,28 @@ export class AuthController {
   @Post('/logout')
   @HttpCode(200)
   async logout(
+    @Req() req: FastifyRequest,
     @Res({ passthrough: true }) reply: FastifyReply,
   ): Promise<ApiSuccessResponseDto> {
+    // Revoke the server-side session before clearing the cookie. Without this,
+    // a saved cookie keeps working even after logout (SessionGuard only
+    // rejects sessions where isRevoked=true). The cookie token is
+    // `${hmac}${uuid}` — the DB session is keyed on `sessionId` (the uuid).
+    const token = this.extractTokenFromCookie(req.headers.cookie);
+    if (token) {
+      const uuidLength = 32; // 36 char uuid minus 4 hyphens
+      const uuid = token.slice(-uuidLength);
+      try {
+        await this.prisma.session.updateMany({
+          where: { sessionId: uuid, isRevoked: false },
+          data: { isRevoked: true },
+        });
+      } catch {
+        // Don't fail the logout if revocation has a transient DB issue —
+        // the cookie clear below still logs the user out client-side.
+      }
+    }
+
     clearAuthCookie(reply);
     return { success: true };
   }
