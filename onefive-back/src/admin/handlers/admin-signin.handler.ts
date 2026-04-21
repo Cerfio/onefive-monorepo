@@ -33,6 +33,12 @@ export class AdminSigninHandler {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Reject signin for deactivated admins — same opaque error so we do not
+    // leak whether the account exists.
+    if (!admin.isActive) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
     const session = await this.adminService.createAdminSession({
       adminUserId: admin.id,
       ipAddress,

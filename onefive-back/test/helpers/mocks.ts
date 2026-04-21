@@ -16,6 +16,9 @@ import { DiscordWebhookService } from '../../src/discord/discord-webhook.service
 import { PostHogService } from '../../src/posthog/posthog.service';
 import { LinkedinService } from '../../src/linkedin/linkedin.service';
 import { MessagingGateway } from '../../src/messaging/messaging.gateway';
+import { StorageService } from '../../src/storage/storage.service';
+import { GoogleService } from '../../src/google/google.service';
+import { OAuthStateService } from '../../src/auth/oauth-state/oauth-state.service';
 
 export type ExternalCallMocks = {
   email: jest.SpyInstance;
@@ -31,6 +34,14 @@ export type ExternalCallMocks = {
   wsMessageDeleted?: jest.SpyInstance;
   wsReactionAdded?: jest.SpyInstance;
   wsReactionRemoved?: jest.SpyInstance;
+  storageUpload?: jest.SpyInstance;
+  storageDelete?: jest.SpyInstance;
+  storageSignedUrl?: jest.SpyInstance;
+  googleAccessToken?: jest.SpyInstance;
+  googleUserInfo?: jest.SpyInstance;
+  linkedinAccessToken?: jest.SpyInstance;
+  linkedinUserInfo?: jest.SpyInstance;
+  oauthStateValidate?: jest.SpyInstance;
 };
 
 /**
@@ -109,6 +120,106 @@ export function installMocks(app: INestApplication): ExternalCallMocks {
     // MessagingModule not registered (e.g. NODE_ENV=test skips it in app.module.ts)
   }
 
+  // Storage (R2 / S3) — must never actually hit an S3 endpoint.
+  let storageUpload: jest.SpyInstance | undefined;
+  let storageDelete: jest.SpyInstance | undefined;
+  let storageSignedUrl: jest.SpyInstance | undefined;
+  try {
+    const storage = app.get(StorageService, { strict: false });
+    if (storage) {
+      storageUpload = jest
+        .spyOn(storage as any, 'uploadFile')
+        .mockImplementation(async () => ({
+          // DataroomFile.storageId is @unique — must return a fresh id each call
+          id: `mock-file-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+          url: 'https://mock.local/file',
+        }));
+      storageDelete = jest
+        .spyOn(storage as any, 'deleteFile')
+        .mockResolvedValue(undefined);
+      if (typeof (storage as any).getSignedUrl === 'function') {
+        storageSignedUrl = jest
+          .spyOn(storage as any, 'getSignedUrl')
+          .mockResolvedValue('https://mock.local/signed');
+      }
+    }
+  } catch {
+    /* StorageModule might not be registered */
+  }
+
+  // Google OAuth — never hit the real accounts.google.com
+  let googleAccessToken: jest.SpyInstance | undefined;
+  let googleUserInfo: jest.SpyInstance | undefined;
+  try {
+    const google = app.get(GoogleService, { strict: false });
+    if (google) {
+      googleAccessToken = jest
+        .spyOn(google as any, 'getAccessToken')
+        .mockResolvedValue({
+          access_token: 'mock_google_token',
+          expires_in: 3600,
+          scope: 'email profile',
+          token_type: 'Bearer',
+          id_token: 'mock_id_token',
+        });
+      googleUserInfo = jest
+        .spyOn(google as any, 'getUserInfo')
+        .mockImplementation(async () => ({
+          id: `google-${Date.now()}`,
+          email: `google-user-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`,
+          verified_email: true,
+          name: 'Mock User',
+          given_name: 'Mock',
+          family_name: 'User',
+          picture: 'https://mock.local/avatar.png',
+          locale: 'fr',
+        }));
+    }
+  } catch {
+    /* GoogleService unavailable */
+  }
+
+  // LinkedIn OAuth
+  let linkedinAccessToken: jest.SpyInstance | undefined;
+  let linkedinUserInfo: jest.SpyInstance | undefined;
+  try {
+    const linkedin = app.get(LinkedinService, { strict: false });
+    if (linkedin) {
+      if (typeof (linkedin as any).getAccessToken === 'function') {
+        linkedinAccessToken = jest
+          .spyOn(linkedin as any, 'getAccessToken')
+          .mockResolvedValue({ access_token: 'mock_linkedin_token', expires_in: 3600 });
+      }
+      if (typeof (linkedin as any).getUserInfo === 'function') {
+        linkedinUserInfo = jest
+          .spyOn(linkedin as any, 'getUserInfo')
+          .mockImplementation(async () => ({
+            sub: `linkedin-${Date.now()}`,
+            email: `linkedin-user-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`,
+            email_verified: true,
+            given_name: 'Mock',
+            family_name: 'User',
+            picture: 'https://mock.local/linkedin-avatar.png',
+          }));
+      }
+    }
+  } catch {
+    /* LinkedinService unavailable */
+  }
+
+  // OAuthStateService — bypass CSRF state check (state value is fresh per request)
+  let oauthStateValidate: jest.SpyInstance | undefined;
+  try {
+    const oauthState = app.get(OAuthStateService, { strict: false });
+    if (oauthState) {
+      oauthStateValidate = jest
+        .spyOn(oauthState as any, 'validateState')
+        .mockResolvedValue(true);
+    }
+  } catch {
+    /* not registered */
+  }
+
   return {
     email,
     sms,
@@ -123,6 +234,14 @@ export function installMocks(app: INestApplication): ExternalCallMocks {
     wsMessageDeleted,
     wsReactionAdded,
     wsReactionRemoved,
+    storageUpload,
+    storageDelete,
+    storageSignedUrl,
+    googleAccessToken,
+    googleUserInfo,
+    linkedinAccessToken,
+    linkedinUserInfo,
+    oauthStateValidate,
   };
 }
 
