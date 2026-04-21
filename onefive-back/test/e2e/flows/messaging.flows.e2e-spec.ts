@@ -23,14 +23,16 @@ describe('Messaging Flows (e2e)', () => {
     await safeCleanup(context);
   });
 
-  it('returns 404 for messaging routes when messaging module is disabled in test env', async () => {
-    const user = await completeUserRegistration(app, request, 'msg-disabled');
+  it('messaging module is enabled in test env (was previously disabled)', async () => {
+    // Historical: MessagingModule was skipped in NODE_ENV=test until commit 670ccae.
+    // It is now enabled so cascade tests can run; the route must respond 2xx.
+    const user = await completeUserRegistration(app, request, 'msg-enabled');
 
     const res = await request(app.getHttpServer())
       .get('/messaging/conversations')
       .set('Cookie', `token=${user.token}`);
 
-    expect([404]).toContain(res.status);
+    expect([200, 201]).toContain(res.status);
   });
 
   it('when messaging enabled: A creates conversation with B, A sends message, B lists and sees it', async () => {

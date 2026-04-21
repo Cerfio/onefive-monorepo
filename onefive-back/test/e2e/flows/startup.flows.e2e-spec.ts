@@ -269,7 +269,7 @@ describe('Startup Flows (e2e)', () => {
 
       // Add with equity 0 (founder1 has 100%, so we can't add more equity)
       const adminRes = await request(app.getHttpServer())
-        .post(`/startup/${startupId}/founders`)
+        .post(`/startup/${startupId}/members`)
         .set('Cookie', `token=${founder1.token}`)
         .send({
           profileId: newMember.profileId,
@@ -279,7 +279,7 @@ describe('Startup Flows (e2e)', () => {
       expect([200, 201]).toContain(adminRes.statusCode);
 
       const nonAdminRes = await request(app.getHttpServer())
-        .post(`/startup/${startupId}/founders`)
+        .post(`/startup/${startupId}/members`)
         .set('Cookie', `token=${stranger.token}`)
         .send({
           profileId: newMember.profileId,
@@ -289,11 +289,12 @@ describe('Startup Flows (e2e)', () => {
       expect(nonAdminRes.statusCode).toBe(403);
 
       const equityRes = await request(app.getHttpServer())
-        .post(`/startup/${startupId}/founders`)
+        .post(`/startup/${startupId}/members`)
         .set('Cookie', `token=${founder1.token}`)
         .send({
           profileId: founder2.profileId,
           position: 'CTO',
+          isFounder: true,
           equity: 150,
         });
       expect(equityRes.statusCode).toBe(400);
@@ -368,7 +369,7 @@ describe('Startup Flows (e2e)', () => {
 
       const inviteEmail = `invitee-${Date.now()}@example.com`;
       const res = await request(app.getHttpServer())
-        .post(`/startup/${startupId}/members/invite`)
+        .post(`/startup/${startupId}/members`)
         .set('Cookie', `token=${founder.token}`)
         .send({
           email: inviteEmail,
@@ -390,13 +391,13 @@ describe('Startup Flows (e2e)', () => {
       const inviteEmail = `dup-${Date.now()}@example.com`;
 
       const first = await request(app.getHttpServer())
-        .post(`/startup/${startupId}/members/invite`)
+        .post(`/startup/${startupId}/members`)
         .set('Cookie', `token=${founder.token}`)
         .send({ email: inviteEmail, position: 'Designer' });
       expect([200, 201]).toContain(first.statusCode);
 
       const second = await request(app.getHttpServer())
-        .post(`/startup/${startupId}/members/invite`)
+        .post(`/startup/${startupId}/members`)
         .set('Cookie', `token=${founder.token}`)
         .send({ email: inviteEmail, position: 'Designer' });
       expect([400, 409]).toContain(second.statusCode);
