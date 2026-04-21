@@ -15,6 +15,7 @@ import { ApifyService } from '../../src/linkedin-sync/apify.service';
 import { DiscordWebhookService } from '../../src/discord/discord-webhook.service';
 import { PostHogService } from '../../src/posthog/posthog.service';
 import { LinkedinService } from '../../src/linkedin/linkedin.service';
+import { MessagingGateway } from '../../src/messaging/messaging.gateway';
 
 export type ExternalCallMocks = {
   email: jest.SpyInstance;
@@ -24,6 +25,12 @@ export type ExternalCallMocks = {
   discord: jest.SpyInstance;
   posthog: jest.SpyInstance;
   linkedinExchange?: jest.SpyInstance;
+  wsNewMessage?: jest.SpyInstance;
+  wsMessageRead?: jest.SpyInstance;
+  wsMessageEdited?: jest.SpyInstance;
+  wsMessageDeleted?: jest.SpyInstance;
+  wsReactionAdded?: jest.SpyInstance;
+  wsReactionRemoved?: jest.SpyInstance;
 };
 
 /**
@@ -80,7 +87,43 @@ export function installMocks(app: INestApplication): ExternalCallMocks {
     // Service not registered in this test context — skip.
   }
 
-  return { email, sms, apifyProfile, apifyCompany, discord, posthog, linkedinExchange };
+  // Messaging gateway WS emissions — spy without replacing so participant
+  // tracking inside the gateway still works. Tests assert on .mock.calls.
+  let wsNewMessage: jest.SpyInstance | undefined;
+  let wsMessageRead: jest.SpyInstance | undefined;
+  let wsMessageEdited: jest.SpyInstance | undefined;
+  let wsMessageDeleted: jest.SpyInstance | undefined;
+  let wsReactionAdded: jest.SpyInstance | undefined;
+  let wsReactionRemoved: jest.SpyInstance | undefined;
+  try {
+    const gateway = app.get(MessagingGateway, { strict: false });
+    if (gateway) {
+      wsNewMessage = jest.spyOn(gateway, 'notifyNewMessage').mockResolvedValue(undefined);
+      wsMessageRead = jest.spyOn(gateway, 'notifyMessageRead').mockResolvedValue(undefined);
+      wsMessageEdited = jest.spyOn(gateway, 'notifyMessageEdited').mockResolvedValue(undefined);
+      wsMessageDeleted = jest.spyOn(gateway, 'notifyMessageDeleted').mockResolvedValue(undefined);
+      wsReactionAdded = jest.spyOn(gateway, 'notifyReactionAdded').mockResolvedValue(undefined);
+      wsReactionRemoved = jest.spyOn(gateway, 'notifyReactionRemoved').mockResolvedValue(undefined);
+    }
+  } catch {
+    // MessagingModule not registered (e.g. NODE_ENV=test skips it in app.module.ts)
+  }
+
+  return {
+    email,
+    sms,
+    apifyProfile,
+    apifyCompany,
+    discord,
+    posthog,
+    linkedinExchange,
+    wsNewMessage,
+    wsMessageRead,
+    wsMessageEdited,
+    wsMessageDeleted,
+    wsReactionAdded,
+    wsReactionRemoved,
+  };
 }
 
 export function resetMocks(mocks: ExternalCallMocks): void {

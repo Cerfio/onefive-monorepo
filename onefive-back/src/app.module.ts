@@ -152,8 +152,11 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     UserSettingsModule,
     ProfileFollowModule,
     ProfileConnectionModule,
-    // Skip MessagingModule in test mode (WebSocket issues)
-    ...(process.env.NODE_ENV !== 'test' ? [MessagingModule] : []),
+    // MessagingModule was previously skipped in tests due to WebSocket adapter
+    // issues; kept enabled now so cascading tests (notifyNewMessage, read
+    // receipts) can run. The IoAdapter is set up in main.ts and the gateway
+    // tolerates absence of Socket.io clients in unit-scoped tests.
+    MessagingModule,
     NotificationModule,
     ReferralModule,
     LinkedInSyncModule,
