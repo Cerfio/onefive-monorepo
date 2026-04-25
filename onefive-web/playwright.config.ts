@@ -11,15 +11,19 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 2,
   workers: 1,
   reporter: [['html', { open: 'never' }], ['list']],
-  timeout: 90_000,
-  expect: { timeout: 10_000 },
+  // Bumped: Next.js dev server slows down significantly during long test runs
+  // (HMR + on-demand compilation). Production build is much faster but we run
+  // against dev for now. If you switch to `pnpm build && pnpm start`, you can
+  // reduce these back to 60s/10s.
+  timeout: 180_000,
+  expect: { timeout: 15_000 },
   use: {
     baseURL: BASE_URL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    navigationTimeout: 90_000,
-    actionTimeout: 15_000,
+    navigationTimeout: 120_000,
+    actionTimeout: 20_000,
   },
   projects: [
     {
