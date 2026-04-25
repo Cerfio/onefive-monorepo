@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from '@/components/base/dialog/dialog';
 import { Input } from '@/components/base/input/input';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/base/label/label';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { Checkbox } from '@/components/base/checkbox/checkbox';
 import { Select } from '@/components/base/select/select';

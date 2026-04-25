@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/base/buttons/button';
 import { TextArea } from '@/components/base/textarea/textarea';
-import { Label } from '../ui/label';
+import { Label } from '@/components/base/label/label';
 import { BadgeWithDot } from '@/components/base/badges/badges';
 import { RadioButton, RadioGroup } from '@/components/base/radio-buttons/radio-buttons';
 import { Dialog, Modal, ModalOverlay } from '@/components/application/modals/modal';

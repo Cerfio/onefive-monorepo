@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/base/tabs/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
 import { Input } from "@/components/base/input/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/base/label/label";
 import { 
     Users, 
     User, 

@@ -52,6 +52,7 @@ export {
   TabsTrigger,
   TabsContent,
 } from '@/components/base/tabs/tabs';
+export { Label } from '@/components/base/label/label';
 
 // Composants shadcn pas encore migrés
 export * from './alert';
@@ -60,7 +61,6 @@ export * from './dropdown-menu';
 export * from './form';
 export * from './hover-card';
 export * from './input-search';
-export * from './label';
 export * from './placeholder';
 export * from './popover';
 export * from './spinner';

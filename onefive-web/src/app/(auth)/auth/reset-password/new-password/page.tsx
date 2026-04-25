@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/base/label/label';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';

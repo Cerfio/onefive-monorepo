@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import dialCodeEmoji from "@/assets/dial-code-emoji.json";
 import { motion } from "framer-motion";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/base/label/label";
 import InputSelect from "@/components/ui/input-search";
 import { Input } from "@/components/base/input/input";
 import { Check, X } from "lucide-react";

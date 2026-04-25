@@ -13,7 +13,7 @@ import { useSessions, useRevokeSession } from '@/features/sessions/hooks/useSess
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/base/label/label';
 import { Toggle } from '@/components/base/toggle/toggle';
 import { Tabs } from '@/components/application/tabs/tabs';
 import { Select } from '@/components/base/select/select';

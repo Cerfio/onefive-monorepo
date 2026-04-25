@@ -9,7 +9,7 @@ import {
 } from "@/components/base/dialog/dialog";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/base/label/label";
 import { Plus, Trash2 } from "lucide-react";
 
 interface Category {
