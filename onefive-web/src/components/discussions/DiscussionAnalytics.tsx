@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, ChevronUp, ChevronDown, Star } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
-import { Progress } from '@/components/ui/progress';
+import { ProgressBarBase as Progress } from '@onefive/ui/components/base/progress-indicators/progress-indicators';
 import NumberFlow from '@number-flow/react';
 
 const DiscussionAnalytics = ({ discussion }: { discussion: any }) => {
