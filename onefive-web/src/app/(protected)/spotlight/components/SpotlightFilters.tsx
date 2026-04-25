@@ -1,12 +1,6 @@
 import { Button } from '@/components/base/buttons/button';
 import { X, Filter } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select } from '@/components/base/select/select';
 import { Badge } from '@/components/base/badges/badges';
 import { motion } from 'framer-motion';
 
@@ -165,102 +159,102 @@ export const SpotlightFilters = ({
         {/* Date */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Date</label>
-          <Select value={dateFilter} onValueChange={setDateFilter}>
-            <SelectTrigger className={`transition-all duration-200 ${dateFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}>
-              <SelectValue placeholder="Sélectionner une date" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.dateRange.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
+          <Select
+            selectedKey={dateFilter}
+            onSelectionChange={(key) => setDateFilter(key as string)}
+            placeholder="Sélectionner une date"
+            className={`transition-all duration-200 ${dateFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}
+          >
+            {filterOptions.dateRange.map(option => (
+              <Select.Item key={option.value} id={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
           </Select>
         </div>
 
         {/* Type */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Type</label>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className={`transition-all duration-200 ${typeFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}>
-              <SelectValue placeholder="Sélectionner un type" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.placeType.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
+          <Select
+            selectedKey={typeFilter}
+            onSelectionChange={(key) => setTypeFilter(key as string)}
+            placeholder="Sélectionner un type"
+            className={`transition-all duration-200 ${typeFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}
+          >
+            {filterOptions.placeType.map(option => (
+              <Select.Item key={option.value} id={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
           </Select>
         </div>
 
         {/* Secteur */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Secteur</label>
-          <Select value={sectorFilter} onValueChange={setSectorFilter}>
-            <SelectTrigger className={`transition-all duration-200 ${sectorFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}>
-              <SelectValue placeholder="Sélectionner un secteur" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.sector.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
+          <Select
+            selectedKey={sectorFilter}
+            onSelectionChange={(key) => setSectorFilter(key as string)}
+            placeholder="Sélectionner un secteur"
+            className={`transition-all duration-200 ${sectorFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}
+          >
+            {filterOptions.sector.map(option => (
+              <Select.Item key={option.value} id={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
           </Select>
         </div>
 
         {/* Prix */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Prix</label>
-          <Select value={pricingFilter} onValueChange={setPricingFilter}>
-            <SelectTrigger className={`transition-all duration-200 ${pricingFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}>
-              <SelectValue placeholder="Sélectionner un prix" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.pricing.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
+          <Select
+            selectedKey={pricingFilter}
+            onSelectionChange={(key) => setPricingFilter(key as string)}
+            placeholder="Sélectionner un prix"
+            className={`transition-all duration-200 ${pricingFilter !== 'all' ? 'border-blue-500 bg-blue-50' : ''}`}
+          >
+            {filterOptions.pricing.map(option => (
+              <Select.Item key={option.value} id={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
           </Select>
         </div>
 
         {/* Distance */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Distance</label>
-          <Select value={distanceFilter} onValueChange={setDistanceFilter}>
-            <SelectTrigger className={`transition-all duration-200 ${distanceFilter !== '25' ? 'border-blue-500 bg-blue-50' : ''}`}>
-              <SelectValue placeholder="Sélectionner une distance" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.distance.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
+          <Select
+            selectedKey={distanceFilter}
+            onSelectionChange={(key) => setDistanceFilter(key as string)}
+            placeholder="Sélectionner une distance"
+            className={`transition-all duration-200 ${distanceFilter !== '25' ? 'border-blue-500 bg-blue-50' : ''}`}
+          >
+            {filterOptions.distance.map(option => (
+              <Select.Item key={option.value} id={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
           </Select>
         </div>
 
         {/* Tri */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Trier par</label>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className={`transition-all duration-200 ${sortBy !== 'recent' ? 'border-blue-500 bg-blue-50' : ''}`}>
-              <SelectValue placeholder="Sélectionner un tri" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.sortBy.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
+          <Select
+            selectedKey={sortBy}
+            onSelectionChange={(key) => setSortBy(key as string)}
+            placeholder="Sélectionner un tri"
+            className={`transition-all duration-200 ${sortBy !== 'recent' ? 'border-blue-500 bg-blue-50' : ''}`}
+          >
+            {filterOptions.sortBy.map(option => (
+              <Select.Item key={option.value} id={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
           </Select>
         </div>
       </div>

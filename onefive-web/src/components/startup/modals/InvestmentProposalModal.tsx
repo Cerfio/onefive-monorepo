@@ -15,14 +15,8 @@ import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { Checkbox } from '@/components/base/checkbox/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select } from '@/components/base/select/select';
+import { RadioGroup, RadioButton } from '@/components/base/radio-buttons/radio-buttons';
 import { Upload, Euro, DollarSign, PoundSterling } from 'lucide-react';
 
 interface InvestmentProposalModalProps {
@@ -181,26 +175,22 @@ export const InvestmentProposalModal = ({
           <div className="space-y-2">
             <Label htmlFor="amount">Montant proposé *</Label>
             <div className="flex gap-2">
-              <Select 
-                value={formData.currency} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}
+              <Select
+                selectedKey={formData.currency}
+                onSelectionChange={(key) => setFormData(prev => ({ ...prev, currency: key as string }))}
+                className="w-20"
               >
-                <SelectTrigger className="w-20">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {CURRENCIES.map((currency) => {
-                    const Icon = currency.icon;
-                    return (
-                      <SelectItem key={currency.value} value={currency.value}>
-                        <div className="flex items-center gap-2">
-                          <Icon className="w-4 h-4" />
-                          {currency.label}
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
+                {CURRENCIES.map((currency) => {
+                  const Icon = currency.icon;
+                  return (
+                    <Select.Item key={currency.value} id={currency.value}>
+                      <div className="flex items-center gap-2">
+                        <Icon className="w-4 h-4" />
+                        {currency.label}
+                      </div>
+                    </Select.Item>
+                  );
+                })}
               </Select>
               <Input
                 id="amount"
@@ -216,17 +206,12 @@ export const InvestmentProposalModal = ({
           {/* Type d'investissement */}
           <div className="space-y-2">
             <Label>Type d'investissement *</Label>
-            <RadioGroup 
-              value={formData.investmentType} 
-              onValueChange={(value) => setFormData(prev => ({ ...prev, investmentType: value }))}
+            <RadioGroup
+              value={formData.investmentType}
+              onChange={(value) => setFormData(prev => ({ ...prev, investmentType: value }))}
             >
               {INVESTMENT_TYPES.map((type) => (
-                <div key={type.value} className="flex items-center space-x-2">
-                  <RadioGroupItem value={type.value} id={type.value} />
-                  <Label htmlFor={type.value} className="text-sm font-normal">
-                    {type.label}
-                  </Label>
-                </div>
+                <RadioButton key={type.value} value={type.value} label={type.label} />
               ))}
             </RadioGroup>
             {formData.investmentType === 'other' && (
@@ -264,20 +249,16 @@ export const InvestmentProposalModal = ({
           {/* Horizon d'investissement */}
           <div className="space-y-2">
             <Label>Horizon d'investissement *</Label>
-            <Select 
-              value={formData.horizon} 
-              onValueChange={(value) => setFormData(prev => ({ ...prev, horizon: value }))}
+            <Select
+              selectedKey={formData.horizon}
+              onSelectionChange={(key) => setFormData(prev => ({ ...prev, horizon: key as string }))}
+              placeholder="Sélectionnez un horizon"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Sélectionnez un horizon" />
-              </SelectTrigger>
-              <SelectContent>
-                {INVESTMENT_HORIZONS.map((horizon) => (
-                  <SelectItem key={horizon.value} value={horizon.value}>
-                    {horizon.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
+              {INVESTMENT_HORIZONS.map((horizon) => (
+                <Select.Item key={horizon.value} id={horizon.value}>
+                  {horizon.label}
+                </Select.Item>
+              ))}
             </Select>
           </div>
 

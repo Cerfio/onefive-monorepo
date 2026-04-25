@@ -9,13 +9,7 @@ import { Input } from '@/components/base/input/input';
 import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+import { Select } from '@/components/base/select/select';
 import {
   Dialog,
   DialogContent,
@@ -256,17 +250,17 @@ const SupportPage = () => {
                           className="pl-10"
                         />
                       </div>
-                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                        <SelectTrigger className="w-full sm:w-48">
-                          <SelectValue placeholder="Catégorie" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {supportCategoryItems.map((item) => (
-                            <SelectItem key={item.id} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
+                      <Select
+                        selectedKey={selectedCategory}
+                        onSelectionChange={(key) => setSelectedCategory(key as string)}
+                        placeholder="Catégorie"
+                        className="w-full sm:w-48"
+                      >
+                        {supportCategoryItems.map((item) => (
+                          <Select.Item key={item.id} id={item.value}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
                       </Select>
                     </div>
 
@@ -316,17 +310,17 @@ const SupportPage = () => {
                           className="pl-10"
                         />
                       </div>
-                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                        <SelectTrigger className="w-full sm:w-48">
-                          <SelectValue placeholder="Catégorie" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {supportCategoryItems.map((item) => (
-                            <SelectItem key={item.id} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
+                      <Select
+                        selectedKey={selectedCategory}
+                        onSelectionChange={(key) => setSelectedCategory(key as string)}
+                        placeholder="Catégorie"
+                        className="w-full sm:w-48"
+                      >
+                        {supportCategoryItems.map((item) => (
+                          <Select.Item key={item.id} id={item.value}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
                       </Select>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

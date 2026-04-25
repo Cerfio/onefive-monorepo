@@ -13,11 +13,11 @@ import { DatePicker } from '@/components/application/date-picker/date-picker';
 import { Label } from '@/components/base/input/label';
 import { parseDate } from '@internationalized/date';
 import type { DateValue } from 'react-aria-components';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select } from '@/components/base/select/select';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import InputSelect from '@/components/ui/input-search';
 import { Button } from '@/components/base/buttons/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { RadioGroup, RadioButton } from '@/components/base/radio-buttons/radio-buttons';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { Plus, User } from 'lucide-react';
 import { AvatarCropModal } from '@/components/profile/modals/AvatarCropModal';
@@ -104,37 +104,14 @@ const ModalGender = () => {
         </div>
       </div>
       <div className="text-base font-normal text-gray-700">Onefive doit s'addresser à vous comme :</div>
-      <RadioGroup defaultValue={addressGender} className="flex flex-col gap-6 text-sm font-medium text-gray-700">
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="man" id="r1" />
-          <Label className="cursor-pointer" htmlFor="r1" onClick={() => setAddressGender('man')}>
-            Homme
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="woman" id="r2" />
-          <Label
-            className="cursor-pointer"
-            htmlFor="r2"
-            onClick={() => {
-              setAddressGender('woman');
-            }}
-          >
-            Femme
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="other" id="r3" />
-          <Label
-            className="cursor-pointer"
-            htmlFor="r3"
-            onClick={() => {
-              setAddressGender('other');
-            }}
-          >
-            Autre
-          </Label>
-        </div>
+      <RadioGroup
+        value={addressGender}
+        onChange={(value) => setAddressGender(value as 'man' | 'woman' | 'other')}
+        className="flex flex-col gap-6 text-sm font-medium text-gray-700"
+      >
+        <RadioButton value="man" label="Homme" />
+        <RadioButton value="woman" label="Femme" />
+        <RadioButton value="other" label="Autre" />
       </RadioGroup>
       <div className="text-gray-700 font-normal">
         (Exemple : Invitez-
@@ -750,38 +727,28 @@ const StepProfile = () => {
                 />
               )}
             </Label>
-            <Select
-              open={genderSelectState}
-              onOpenChange={newState => {
-                setGenderSelectState(newState);
-              }}
-              value={gender}
-              onValueChange={newGender => {
-                setGender(newGender);
-              }}
-            >
-              <SelectTrigger
-                defaultValue={anotherGender.genderName}
+            <Dialog open={genderSelectState} onOpenChange={setGenderSelectState}>
+              <Select
+                selectedKey={gender}
+                onSelectionChange={(key) => {
+                  if (key === '__add_gender__') {
+                    setGenderSelectState(true);
+                    return;
+                  }
+                  setGender(key as string);
+                }}
+                placeholder={t('genderPlaceholder')}
                 className="w-full transition-all duration-200 focus:ring-2 focus:ring-[#5E6AD2]/20"
               >
-                <SelectValue placeholder={t('genderPlaceholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="man">Homme</SelectItem>
-                  <SelectItem value="woman">Femme</SelectItem>
-                  {anotherGender.genderName && (
-                    <SelectItem value={anotherGender.genderName}>{anotherGender.genderName}</SelectItem>
-                  )}
-                  <Dialog>
-                    <DialogTrigger className="relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                      Ajouter un genre
-                    </DialogTrigger>
-                    <ModalGender />
-                  </Dialog>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+                <Select.Item id="man">Homme</Select.Item>
+                <Select.Item id="woman">Femme</Select.Item>
+                {anotherGender.genderName ? (
+                  <Select.Item id={anotherGender.genderName}>{anotherGender.genderName}</Select.Item>
+                ) : null}
+                <Select.Item id="__add_gender__">Ajouter un genre</Select.Item>
+              </Select>
+              <ModalGender />
+            </Dialog>
           </div>
           <div className="flex flex-col gap-1.5 w-full sm:w-1/2">
             <Label className="text-gray-700 text-sm font-medium flex items-center gap-2" htmlFor="birthday">
