@@ -2,7 +2,7 @@ import React from 'react';
 import { Activity, Eye, FileText, Clock } from 'lucide-react';
 import { Badge } from '@/components/base/badges/badges';
 import { Avatar } from '@/components/base/avatar/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { SlideoutMenu } from '@/components/application/slideout-menus/slideout-menu';
 import { getAvatarUrl } from '@/utils/avatar';
 import { UserAnalytics } from '../../app/(protected)/dataroom/[id]/analytics/types';

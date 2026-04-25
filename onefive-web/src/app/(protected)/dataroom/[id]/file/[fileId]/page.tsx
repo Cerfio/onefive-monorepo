@@ -18,7 +18,7 @@ import DocxViewer from "@/viewers/DocxViewer";
 import ImageViewer from "@/viewers/ImageViewer";
 import VideoViewer from "@/viewers/VideoViewer";
 import SecurityAlert from "@/components/SecurityAlert";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/base/skeleton/skeleton";
 import { ArrowLeft, Home, AlertCircle, Lock, FileX, Wifi, ChevronRight } from "lucide-react";
 
 const UnauthorizedView = ({ onBack }: { onBack: () => void }) => (

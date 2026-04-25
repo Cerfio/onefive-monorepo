@@ -1,7 +1,7 @@
 import React from 'react';
 import { Activity, Eye, Download } from 'lucide-react';
 import { EmptyState } from '@/components/application/empty-state/empty-state';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { ActivityLog } from '../../app/(protected)/dataroom/[id]/analytics/types';
 
 const ITEMS_PER_PAGE = 15;

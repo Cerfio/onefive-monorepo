@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useStartup } from '@/queries/startup';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 
 interface ProjectAvatarProps {
   projectId: string;

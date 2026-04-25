@@ -4,7 +4,7 @@ import Image from "next/image";
 import OnefiveLogo from '@/images/onefiveLogo.png';
 import { Button } from "@/components/base/buttons/button";
 import Navbar from '@/components/navbar';
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/base/skeleton/skeleton";
 import { getDataroom, getDataroomFiles, getSignedUrl } from "@/queries/dataroom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";

@@ -6,7 +6,7 @@ import { Loader2, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { cn } from '@/lib/utils';
 import likeTrueEmoji from '@/icons/reactions/like-true.svg';
 import celebrateEmoji from '@/icons/reactions/celebrate.svg';

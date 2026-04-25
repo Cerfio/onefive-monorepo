@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/base/skeleton/skeleton";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 
 interface KPICardProps {

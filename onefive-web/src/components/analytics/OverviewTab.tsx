@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Eye, Users, FileText, Clock } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { Toggle } from '@/components/base/toggle/toggle';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { getAvatarUrl } from '@/utils/avatar';

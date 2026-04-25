@@ -5,7 +5,7 @@ import { Badge } from '@/components/base/badges/badges';
 import { Select } from '@/components/base/select/select';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { EmptyState } from '@/components/application/empty-state/empty-state';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { getAvatarUrl } from '@/utils/avatar';
 import { UserAnalytics, SortField, SortDirection } from '../../app/(protected)/dataroom/[id]/analytics/types';
 

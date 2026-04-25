@@ -1,5 +1,5 @@
 import React from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/base/skeleton/skeleton";
 import Navbar from "@/components/navbar";
 
 const DataroomCardSkeleton = () => (

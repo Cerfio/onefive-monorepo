@@ -3,7 +3,7 @@ import { FileText, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
 import { Badge } from '@/components/base/badges/badges';
 import { EmptyState } from '@/components/application/empty-state/empty-state';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { FileAnalytics, FileSortField, SortDirection } from '../../app/(protected)/dataroom/[id]/analytics/types';
 
 const ITEMS_PER_PAGE = 10;

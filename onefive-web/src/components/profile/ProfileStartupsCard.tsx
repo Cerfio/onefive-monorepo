@@ -6,7 +6,7 @@ import { Building2, MapPin, Users, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { useUserStartups, useProfileStartups, UserStartup } from '@/queries/startup';
 import { formatLocationDisplay } from '@/lib/country';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/base/skeleton/skeleton';
 
 interface ProfileStartupsCardProps {
   profileId: string;
