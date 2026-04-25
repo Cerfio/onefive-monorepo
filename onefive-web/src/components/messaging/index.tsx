@@ -16,9 +16,7 @@ import {
   } from "@untitledui/icons";
   import type { HTMLAttributes, ReactNode } from "react";
   import { useState, useRef, useEffect } from "react";
-  
-  // import Avatar from "@/components/ui/avatar";
-  
+
   import {
     Tooltip,
     TooltipTrigger,
