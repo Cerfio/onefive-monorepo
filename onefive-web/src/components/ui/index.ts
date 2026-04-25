@@ -1,29 +1,67 @@
+// Re-exports vers les composants Untitled UI migrés (Vagues 1-4)
+// Maintenu temporairement pour les fichiers qui utilisent encore le barrel
+// `from '@/components/ui'` — à terme ces imports doivent passer en direct.
+export { Badge } from '@/components/base/badges/badges';
+export { Skeleton } from '@/components/base/skeleton/skeleton';
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardAction,
+  CardContent,
+  CardFooter,
+} from '@/components/base/card/card';
+export { Separator } from '@/components/base/separator/separator';
+export { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
+export { Input } from '@/components/base/input/input';
+export { TextArea as Textarea } from '@/components/base/textarea/textarea';
+export { Avatar } from '@/components/base/avatar/avatar';
+export { Checkbox } from '@/components/base/checkbox/checkbox';
+export { Toggle } from '@/components/base/toggle/toggle';
+export {
+  RadioGroup,
+  RadioButton,
+} from '@/components/base/radio-buttons/radio-buttons';
+export { Select } from '@/components/base/select/select';
+export { Button } from '@/components/base/buttons/button';
+export {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/base/dialog/dialog';
+export {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogTrigger,
+} from '@/components/base/dialog/alert-dialog';
+
+// Composants shadcn pas encore migrés
 export * from './alert';
-export * from './avatar';
-export * from './badge';
-export * from './button';
 export * from './button-group';
-export * from './card';
 export * from './command';
-export * from './dialog';
 export * from './dropdown-menu';
 export * from './form';
 export * from './hover-card';
-export * from './input';
 export * from './input-search';
 export * from './label';
 export * from './pagination';
 export * from './placeholder';
 export * from './popover';
-export * from './radio-group';
-export * from './select';
-export * from './separator';
-export * from './skeleton';
 export * from './spinner';
 export * from './tabs';
-export { Textarea } from './textarea';
 export {
   TextareaAutoResize,
   type TextareaProps as AutoResizeTextareaProps,
 } from './textareaAutoresize';
-export * from './tooltip';

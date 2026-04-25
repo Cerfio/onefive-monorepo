@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/base/dialog/dialog';
-import { Input as ShadcnInput } from '@/components/ui/input';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { TextArea } from '@/components/base/textarea/textarea';
@@ -297,12 +296,12 @@ export const InvestmentProposalModal = ({
           <div className="space-y-2">
             <Label htmlFor="document">Joindre un document (optionnel)</Label>
             <div className="flex items-center gap-2">
-              <ShadcnInput
+              <input
                 id="document"
                 type="file"
                 accept=".pdf,.doc,.docx,.ppt,.pptx"
                 onChange={handleFileChange}
-                className="flex-1"
+                className="flex-1 rounded-lg bg-primary px-3 py-2 text-sm text-primary shadow-xs ring-1 ring-primary ring-inset"
               />
               <Upload className="w-4 h-4 text-gray-400" />
             </div>
