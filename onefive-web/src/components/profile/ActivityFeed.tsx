@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/base/card/card';
 
 export const ActivityFeed = ({ profileData }: { profileData: any }) => {
   if (!profileData.posts || profileData.posts.length === 0) {

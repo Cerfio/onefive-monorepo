@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MapPin, Calendar, Users, UserPlus } from 'lucide-react';
 import { getCountryName } from '@/lib/country';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { getSectorColor } from '@/shared/constants/sector-colors';
 import { StartupPrivateSection } from './StartupPrivateSection';

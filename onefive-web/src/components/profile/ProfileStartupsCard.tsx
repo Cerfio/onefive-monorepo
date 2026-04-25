@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Building2, MapPin, Users, ExternalLink } from 'lucide-react';
 import Link from 'next/link';

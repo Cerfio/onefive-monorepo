@@ -7,7 +7,7 @@ import LinkedInSquareIcon from '@/components/shared/LinkedInSquareIcon';
 import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { getSectorColor } from '@/shared/constants/sector-colors';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 
 import { AnimatedNumber } from '@/components/ui/animated-number';
 import {

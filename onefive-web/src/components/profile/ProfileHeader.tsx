@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Calendar, Globe, ExternalLink, Edit3, Share2, Eye } from 'lucide-react';
 import LinkedInSquareIcon from '@/components/shared/LinkedInSquareIcon';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { Tooltip } from '../base/tooltip/tooltip';
 import { Badge } from '../base/badges/badges';

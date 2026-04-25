@@ -1,7 +1,7 @@
 'use client';
 
 import { Edit3, Building, GraduationCap, MapPin, Calendar, ExternalLink } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { getSectorColor } from '@/shared/constants/sector-colors';

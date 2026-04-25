@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import { Button } from '../base/buttons/button';
 import { Separator } from '@/components/base/separator/separator';
 import { Edit3, Briefcase, GraduationCap } from 'lucide-react';

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Calendar, Users, Briefcase } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { ProfilePrivateSection } from './ProfilePrivateSection';
 import { ProfileAuthSwitch } from './ProfileAuthSwitch';

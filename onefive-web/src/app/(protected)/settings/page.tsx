@@ -10,7 +10,7 @@ import { useUpdatePrivacy } from '@/features/settings/hooks/useUpdatePrivacy';
 import { useUpdatePreferences } from '@/features/settings/hooks/useUpdatePreferences';
 import { useUpdatePassword } from '@/features/settings/hooks/useUpdatePassword';
 import { useSessions, useRevokeSession } from '@/features/sessions/hooks/useSessions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';

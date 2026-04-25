@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/base/buttons/button';
 import { Checkbox } from '@/components/base/checkbox/checkbox';
 import { Badge } from '@/components/base/badges/badges';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 
 export interface AdvancedFilterState {

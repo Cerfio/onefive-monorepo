@@ -14,7 +14,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Toggle } from '@/components/base/toggle/toggle';
 import {

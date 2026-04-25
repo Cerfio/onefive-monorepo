@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/base/buttons/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { 

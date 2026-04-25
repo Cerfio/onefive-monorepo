@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MessageCircle, ThumbsUp, Eye, Calendar } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { DiscussionPrivateSection } from './DiscussionPrivateSection';

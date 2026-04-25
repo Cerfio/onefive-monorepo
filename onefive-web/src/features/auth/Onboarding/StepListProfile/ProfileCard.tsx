@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/base/card/card";
 import Image from "next/image";
 import { UserCheck, Users } from "lucide-react";
 import { Flag } from "@/components/ui/flag";

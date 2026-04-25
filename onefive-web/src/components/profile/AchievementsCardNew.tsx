@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardAction } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardAction } from "@/components/base/card/card";
 import { Button } from "@/components/base/buttons/button";
 import { Edit3, Trophy } from "lucide-react";
 import EditAchievementsModalNew from "./modals/EditAchievementsModalNew";

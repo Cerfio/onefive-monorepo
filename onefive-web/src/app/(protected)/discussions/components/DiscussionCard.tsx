@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { Triangle, MessageCircle, Eye, Clock } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import NumberFlow from '@number-flow/react';
 import { useFormatter } from 'next-intl';

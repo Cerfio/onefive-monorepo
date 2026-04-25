@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Clock, Plus as UserPlus, CheckCircle, Eye } from '@untitledui/icons';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
 import { Flag } from '@/components/ui/flag';

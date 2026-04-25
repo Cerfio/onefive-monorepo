@@ -13,7 +13,7 @@ import {
 } from "../constant";
 import Image, { StaticImageData } from "next/image";
 import { useTranslations } from "next-intl";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/base/card/card";
 import { UserCheck, Users } from "lucide-react";
 import { Badge } from '@/components/base/badges/badges';
 import { Flag } from "@/components/ui/flag";

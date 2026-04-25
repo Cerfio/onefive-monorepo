@@ -1,7 +1,7 @@
 'use client';
 
 import { Post } from '@/features/post/components/post';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import {
   ResponsiveContainer,
   BarChart,

@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { getCookie } from 'cookies-next';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 import { AuthGate } from '@/components/seo/AuthGate';
 

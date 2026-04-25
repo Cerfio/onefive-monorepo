@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { DollarSign, Users, FileText, Calendar, Plus, Trash2, Edit3 } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
 import { Avatar } from '@/components/base/avatar/avatar';

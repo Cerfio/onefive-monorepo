@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import Navbar from '@/components/navbar';
 import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
 import { Tabs } from '@/components/application/tabs/tabs';

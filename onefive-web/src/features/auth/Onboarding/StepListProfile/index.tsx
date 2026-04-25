@@ -3,7 +3,7 @@ import { useOnboardingContext } from "../OnboardingContext";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/base/card/card";
 import ProfileCard from "./ProfileCard";
 import { enhancedCardVariants, enhancedContainerVariants } from "../constant";
 import { useProfileSuggestions } from "@/hooks/useFeedExtra";

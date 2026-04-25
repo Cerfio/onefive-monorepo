@@ -1,7 +1,7 @@
 'use client';
 
 import { Star, Edit3, Plus } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 
 export const AchievementsCard = ({ achievements, currentUser, onEdit }: {

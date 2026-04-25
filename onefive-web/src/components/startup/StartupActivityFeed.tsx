@@ -1,7 +1,7 @@
 'use client';
 
 import { Heart, MessageCircle, Share2 } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/base/card/card';
 import { decodeBuildInPublicData, hasBuildInPublicData } from '@/utils/buildInPublic';
 import ProjectAvatar from '@/features/post/components/post/ProjectAvatar';
 import PostTypeBadge from '@/features/post/components/post/PostTypeBadge';

@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Building2, Check, X, Loader2, AlertCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/base/card/card';
 import {
   useInvestorInvitationByToken,
   useAcceptInvestorInvitationByToken,

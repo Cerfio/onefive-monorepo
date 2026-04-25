@@ -3,7 +3,7 @@ import { Search, Mail, UserPlus, Loader2 } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
 import { Button } from '@/components/base/buttons/button';
 import { Avatar } from '@/components/base/avatar/avatar';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { ProfileSearchResult } from '@/queries/startup';
 import { useSearchProfiles } from '@/hooks/useSearchProfiles';
