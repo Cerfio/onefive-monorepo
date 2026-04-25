@@ -1,5 +1,5 @@
 'use client';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/base/separator/separator';
 import { useOnboardingContext } from './OnboardingContext';
 import { useMutation } from '@tanstack/react-query';
 import { Check } from 'lucide-react';

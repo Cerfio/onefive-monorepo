@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/base/separator/separator';
 import { SocialButton } from '@/components/base/buttons/social-button';
 import OnefiveLogo from '@/assets/images/onefiveLogo.png';
 

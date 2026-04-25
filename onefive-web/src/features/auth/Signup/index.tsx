@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/base/buttons/button';
 import { SocialButton } from '@/components/base/buttons/social-button';
 import { Input } from '@/components/base/input/input';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/base/separator/separator';
 import OnefiveLogo from '@/images/onefiveLogo.png';
 import Link from 'next/link';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';

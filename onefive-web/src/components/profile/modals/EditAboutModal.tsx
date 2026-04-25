@@ -6,7 +6,7 @@ import { Button } from '../../base/buttons/button';
 import { CloseButton } from '../../base/buttons/close-button';
 import { Modal, ModalOverlay, Dialog } from '../../application/modals/modal';
 import { Input } from '../../base/input/input';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/base/separator/separator';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from "react-aria-components";
 import { VALIDATION_LIMITS } from '@/constants/validation-limits';
 

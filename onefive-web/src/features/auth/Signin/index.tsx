@@ -1,7 +1,7 @@
 'use client';
 import { startTransition, useCallback } from 'react';
 import { Input } from '@/components/base/input/input';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/base/separator/separator';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';

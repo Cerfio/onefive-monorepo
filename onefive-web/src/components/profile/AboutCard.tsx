@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '../base/buttons/button';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/base/separator/separator';
 import { Edit3, Briefcase, GraduationCap } from 'lucide-react';
 import { CompanyIcon } from './CompanyIcon';
 import { formatExperienceDate } from '@/utils/dateUtils';
