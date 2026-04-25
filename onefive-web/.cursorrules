@@ -22,13 +22,18 @@ Ce projet suit les conventions **Untitled UI React**. Référence complète : `d
 - `@/components/base/card/card` pour Card et sous-composants
 - `@/components/base/dialog/dialog` pour Dialog et sous-composants
 - `@/components/base/dialog/alert-dialog` pour AlertDialog
+- `@/components/base/tabs/tabs` pour Tabs/TabsList/TabsTrigger/TabsContent (wrapper compat shadcn)
+- `@/components/base/label/label` pour Label
+- `@/components/base/alert/alert` pour Alert/AlertTitle/AlertDescription
+- `@/components/base/dropdown/dropdown` pour Dropdown.Root/Trigger/Popover/Menu/Item/Separator (compound Untitled UI)
 
 🚫 **Interdit (bloqué par ESLint `no-restricted-imports`)** :
 - `@/components/ui/{skeleton,separator,tooltip,textarea,text-area,input,badge,button,avatar,checkbox,switch,radio-group,select,card,dialog,alert-dialog}`
+- `@/components/ui/{tabs,label,alert,dropdown-menu}` (Vague 6, avril 2026)
 
 ⚠️ **Encore tolérés** (composants pas encore migrés) :
-- `@/components/ui/{alert,button-group,command,dropdown-menu,form,hover-card,input-search,label,modal,pagination,placeholder,popover,progress,sheet,slider,spinner,tabs,textareaAutoresize}`
-- Customs OneFive : `@/components/ui/{flag,saas-selector,animated-number,searchbar-bar,social-button,social-logos}`
+- `@/components/ui/{button-group,command,hover-card,input-search,modal,placeholder,popover,sheet,slider,spinner,textareaAutoresize}`
+- Customs OneFive : `@/components/ui/{flag,saas-selector,animated-number,searchbar-bar,social-button,social-logos,avatar2}`
 
 ## 🚫 Interdictions Strictes
 

@@ -57,10 +57,12 @@ module.exports = {
     'prefer-const': 'warn',
     // Bloque les imports shadcn déjà migrés vers Untitled UI.
     // Whitelist customs OneFive (flag, saas-selector, animated-number,
-    // searchbar-bar, social-button, social-logos) et composants pas encore
-    // migrés (alert, button-group, command, dropdown-menu, form, hover-card,
-    // input-search, label, modal, pagination, placeholder, popover, progress,
-    // sheet, slider, spinner, tabs, textareaAutoresize) restent autorisés.
+    // social-button, social-logos, avatar2 placeholder) et composants pas
+    // encore migrés (button-group, command, hover-card, input-search, modal,
+    // placeholder, popover, sheet, slider, spinner, textareaAutoresize)
+    // restent autorisés.
+    // Vague 6 (avril 2026) : tabs, label, alert, dropdown-menu, progress,
+    // form (mort) → Untitled UI / wrapper local.
     'no-restricted-imports': [
       'error',
       {
