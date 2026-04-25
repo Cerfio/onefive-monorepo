@@ -90,6 +90,7 @@ interface DataroomMainProps {
     onUploadNewVersion: (file: File, documentId: string) => Promise<void>;
     onDownloadVersion: (versionId: string, version: number) => void;
     onViewVersion: (versionId: string, version: number) => void;
+    onDirectFilesDrop?: (files: File[]) => void;
 }
 
 const AccessGroupsSidebar: React.FC<{
@@ -266,9 +267,45 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
     onUploadNewVersion,
     onDownloadVersion,
     onViewVersion,
+    onDirectFilesDrop,
 }) => {
     const router = useRouter();
     const [logoError, setLogoError] = useState(false);
+    const [isDragActive, setIsDragActive] = useState(false);
+    const dragCounterRef = React.useRef(0);
+
+    const handleDragEnter = (e: React.DragEvent<HTMLElement>) => {
+        if (!onDirectFilesDrop) return;
+        if (!e.dataTransfer.types?.includes('Files')) return;
+        e.preventDefault();
+        dragCounterRef.current += 1;
+        setIsDragActive(true);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
+        if (!onDirectFilesDrop) return;
+        if (!e.dataTransfer.types?.includes('Files')) return;
+        e.preventDefault();
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
+        if (!onDirectFilesDrop) return;
+        e.preventDefault();
+        dragCounterRef.current -= 1;
+        if (dragCounterRef.current <= 0) {
+            dragCounterRef.current = 0;
+            setIsDragActive(false);
+        }
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLElement>) => {
+        if (!onDirectFilesDrop) return;
+        e.preventDefault();
+        dragCounterRef.current = 0;
+        setIsDragActive(false);
+        const files = Array.from(e.dataTransfer.files || []);
+        if (files.length > 0) onDirectFilesDrop(files);
+    };
 
     // Versioning state (owned by this component only)
     const [documentForVersioning, setDocumentForVersioning] = useState<DisplayedDocument | null>(null);
@@ -313,7 +350,27 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
     };
 
     return (
-        <main className="max-w-7xl mx-auto px-4 py-8">
+        <main
+            className="relative max-w-7xl mx-auto px-4 py-8"
+            onDragEnter={handleDragEnter}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+        >
+            {isDragActive && (
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-brand-solid/10 backdrop-blur-sm"
+                >
+                    <div className="rounded-2xl border-2 border-dashed border-brand-solid bg-primary px-8 py-6 shadow-xl">
+                        <div className="flex flex-col items-center gap-2">
+                            <Upload className="h-10 w-10 text-brand" data-icon />
+                            <p className="text-lg font-semibold text-primary">Déposez vos fichiers</p>
+                            <p className="text-sm text-tertiary">Ils seront ajoutés à votre dataroom</p>
+                        </div>
+                    </div>
+                </div>
+            )}
             {/* Header */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">

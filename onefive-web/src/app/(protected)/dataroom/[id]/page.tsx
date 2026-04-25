@@ -691,6 +691,10 @@ const DataroomPage = () => {
                 onUploadNewVersion={handleUploadNewVersion}
                 onDownloadVersion={handleDownloadVersion}
                 onViewVersion={handleViewVersion}
+                onDirectFilesDrop={(files) => {
+                    processNewFiles(files);
+                    modals.setIsUploadModalOpen(true);
+                }}
             />
 
             <UploadModal
