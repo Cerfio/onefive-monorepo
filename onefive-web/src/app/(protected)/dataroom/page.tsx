@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import NumberFlow from '@number-flow/react';
 import {
@@ -19,13 +20,25 @@ import { Input } from "@/components/base/input/input";
 import { Badge } from "@/components/base/badges/badges";
 import { Select } from "@/components/base/select/select";
 import { Dropdown } from "@/components/base/dropdown/dropdown";
-import { useQuery } from "@tanstack/react-query";
-import { getDatarooms } from "@/queries/dataroom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getDatarooms, leaveDataroom } from "@/queries/dataroom";
 import Navbar from "@/components/navbar";
 import DataroomPageSkeleton from "./components/DataroomPageSkeleton";
+import { toast } from "sonner";
 
 const DataroomListPage = () => {
     const router = useRouter();
+    const queryClient = useQueryClient();
+    const leaveDataroomMut = useMutation({
+        mutationFn: ({ dataroomId }: { dataroomId: string }) => leaveDataroom({ dataroomId }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["datarooms"] });
+            toast.success("Vous avez quitté la dataroom");
+        },
+        onError: (error: any) => {
+            toast.error(error?.response?.data?.message || "Erreur lors de la sortie de la dataroom");
+        },
+    });
     
     // États
     const [searchQuery, setSearchQuery] = useState("");
@@ -289,9 +302,11 @@ const DataroomListPage = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {ownedDatarooms.map((dataroom) => (
-                                <div
+                                <Link
                                     key={dataroom.id}
-                                    className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:border-[#5E6AD2] transition-all hover:shadow-md group relative"
+                                    href={`/dataroom/${dataroom.id}`}
+                                    data-testid="dataroom-card"
+                                    className="block bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:border-[#5E6AD2] transition-all hover:shadow-md group relative"
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3 max-w-[60%]">
@@ -321,7 +336,10 @@ const DataroomListPage = () => {
                                                 </h3>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div
+                                            className="flex items-center gap-2"
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                                        >
                                             <Badge type="pill-color" color="brand" size="sm">
                                                 Propriétaire
                                             </Badge>
@@ -387,7 +405,7 @@ const DataroomListPage = () => {
                                             <span>{formatDate(dataroom.lastActivity)}</span>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                             {ownedDatarooms.length === 0 && (
                                 <div className="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200">
@@ -413,9 +431,11 @@ const DataroomListPage = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {sharedDatarooms.map((dataroom) => (
-                                <div
+                                <Link
                                     key={dataroom.id}
-                                    className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:border-[#5E6AD2] transition-all hover:shadow-md group relative"
+                                    href={`/dataroom/${dataroom.id}`}
+                                    data-testid="dataroom-card"
+                                    className="block bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:border-[#5E6AD2] transition-all hover:shadow-md group relative"
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3 max-w-[60%]">
@@ -445,7 +465,10 @@ const DataroomListPage = () => {
                                                 </h3>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div
+                                            className="flex items-center gap-2"
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                                        >
                                             <Badge type="pill-color" color="gray" size="sm">
                                                 Invité
                                             </Badge>
@@ -456,7 +479,15 @@ const DataroomListPage = () => {
                                                         <Dropdown.Item icon={Eye} onAction={navigateTo(`/dataroom/${dataroom.id}`)}>
                                                             Voir la dataroom
                                                         </Dropdown.Item>
-                                                        <Dropdown.Item icon={LogOut} onAction={navigateTo(`/dataroom/${dataroom.id}/leave`)} className="text-red-600">
+                                                        <Dropdown.Item
+                                                            icon={LogOut}
+                                                            onAction={() => {
+                                                                if (window.confirm(`Quitter la dataroom "${dataroom.name}" ?`)) {
+                                                                    leaveDataroomMut.mutate({ dataroomId: dataroom.id });
+                                                                }
+                                                            }}
+                                                            className="text-red-600"
+                                                        >
                                                             Quitter la dataroom
                                                         </Dropdown.Item>
                                                     </Dropdown.Menu>
@@ -488,7 +519,7 @@ const DataroomListPage = () => {
                                             <span>{formatDate(dataroom.lastActivity)}</span>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                             {sharedDatarooms.length === 0 && (
                                 <div className="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200">

@@ -82,7 +82,7 @@ const DataroomPage = () => {
         queryKey: ["dataroom-files", dataroomId, selectedCategory],
         queryFn: () => getDataroomFiles({ dataroomId, categoryId: selectedCategory === "all" ? undefined : selectedCategory }),
         enabled: !!dataroomId,
-        keepPreviousData: true,
+        // keepPreviousData removed (deprecated react-query v5) — placeholderData below handles it
         staleTime: 30000,
         placeholderData: (prev: any) => prev,
         refetchOnWindowFocus: false,
