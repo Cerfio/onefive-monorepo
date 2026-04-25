@@ -14,6 +14,7 @@ import { formatStorageSize, formatDate, getFileIcon } from './utils';
 import { Group, InvitationStatus, DerivedCategory } from './types';
 import { useDataroomMutations } from './hooks/useDataroomMutations';
 import { useModalStates } from './hooks/useModalStates';
+import { useViewedFiles } from './hooks/useViewedFiles';
 import { DataroomMain } from './components/DataroomMain';
 import { UploadModal } from './components/modals/UploadModal';
 import { DeleteGroupModal } from './components/modals/DeleteGroupModal';
@@ -66,6 +67,9 @@ const DataroomPage = () => {
 
     const selfProfile = queryClient.getQueryData(['selfProfile']) as selfProfileType | undefined;
     const currentUserProfileId = selfProfile?.id || '';
+
+    // "Non vu" tracking via localStorage (soft, per-device).
+    const { isViewed, markAsViewed } = useViewedFiles(dataroomId, currentUserProfileId);
 
     // --- Queries ---
 
@@ -123,8 +127,9 @@ const DataroomPage = () => {
             views: file.viewCount,
             size: formatFileSize(file.size),
             mimetype: file.mimetype,
+            viewedByCurrentUser: isViewed(file.id),
         }));
-    }, [files]);
+    }, [files, isViewed]);
 
     const displayedDocuments = useMemo(() => {
         let filtered = formattedFiles;
@@ -644,6 +649,7 @@ const DataroomPage = () => {
 
             <DataroomMain
                 dataroom={adaptedDataroom as any}
+                isOwner={Boolean((dataroom as any)?.isOwner)}
                 categories={categories}
                 groups={adaptedGroups as any}
                 displayedDocuments={paginatedDocuments}
@@ -679,7 +685,10 @@ const DataroomPage = () => {
                 onSetNewFileName={modals.setNewFileName}
                 onSetFileToChangeCategory={modals.setFileToChangeCategory}
                 onSetNewFileCategoryId={modals.setNewFileCategoryId}
-                onHandleDocumentClick={(doc) => window.open(`/dataroom/${dataroomId}/file/${doc.id}`, '_blank')}
+                onHandleDocumentClick={(doc) => {
+                    markAsViewed(doc.id);
+                    window.open(`/dataroom/${dataroomId}/file/${doc.id}`, '_blank');
+                }}
                 onHandleDownload={handleDownload}
                 formatStorageSize={formatStorageSize}
                 DATAROOM_TOTAL_LIMIT={DATAROOM_TOTAL_LIMIT}

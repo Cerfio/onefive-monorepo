@@ -93,6 +93,7 @@ interface DataroomMainProps {
     onViewVersion: (versionId: string, version: number) => void;
     onDirectFilesDrop?: (files: File[]) => void;
     onBulkDelete?: (ids: string[]) => Promise<void>;
+    isOwner?: boolean;
 }
 
 const AccessGroupsSidebar: React.FC<{
@@ -271,6 +272,7 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
     onViewVersion,
     onDirectFilesDrop,
     onBulkDelete,
+    isOwner = false,
 }) => {
     const router = useRouter();
     const [logoError, setLogoError] = useState(false);
@@ -852,7 +854,22 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                                                         <Tooltip title={`${doc.name} - Version ${doc.version || 1}`}>
                                                             <TooltipTrigger>
                                                                 <div>
-                                                                    <p className="font-medium text-sm group-hover:text-[#5E6AD2] truncate">{doc.name}</p>
+                                                                    <div className="flex items-center gap-2 min-w-0">
+                                                                        <p className="font-medium text-sm group-hover:text-[#5E6AD2] truncate">{doc.name}</p>
+                                                                        {isOwner ? (
+                                                                            doc.views > 0 && (
+                                                                                <Badge type="pill-color" color="gray" size="sm" className="flex-shrink-0">
+                                                                                    {doc.views} vue{doc.views > 1 ? 's' : ''}
+                                                                                </Badge>
+                                                                            )
+                                                                        ) : (
+                                                                            !doc.viewedByCurrentUser && (
+                                                                                <Badge type="pill-color" color="brand" size="sm" className="flex-shrink-0">
+                                                                                    Nouveau
+                                                                                </Badge>
+                                                                            )
+                                                                        )}
+                                                                    </div>
                                                                     {doc.lastVersionUpdate && (
                                                                         <div className="mt-1">
                                                                             <Badge type="pill-color" color="success" size="sm">

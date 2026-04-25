@@ -113,6 +113,7 @@ export interface DisplayedDocument {
     hasNewVersion?: boolean;
     lastVersionUpdate?: string;
     versionHistory?: VersionEntry[];
+    viewedByCurrentUser?: boolean;
 }
 
 export interface DerivedCategory {
