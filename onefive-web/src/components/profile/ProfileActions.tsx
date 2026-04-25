@@ -60,6 +60,13 @@ const predefinedTags: ProfileTag[] = [
   { id: 'partner', label: 'Partenaire stratégique', icon: '🚀', color: 'orange' },
 ];
 
+const tagColorMap: Record<string, string> = {
+  blue: 'bg-blue-100 text-blue-800',
+  green: 'bg-green-100 text-green-800',
+  purple: 'bg-purple-100 text-purple-800',
+  orange: 'bg-orange-100 text-orange-800',
+};
+
 interface ProfileActionsProps {
   profileId: string;
   profileName: string;
@@ -212,7 +219,7 @@ export default function ProfileActions({
           className="bg-[#5E6AD2] hover:bg-[#4F58B8] text-white gap-2"
           iconLeading={<UsersPlus data-icon />}
           onClick={handleFollowToggle}
-          disabled={followProfile.isLoading}
+          isDisabled={followProfile.isLoading}
         >
           {followProfile.isLoading ? '...' : (following ? 'Suivi' : 'Follow')}
         </Button>
@@ -246,7 +253,7 @@ export default function ProfileActions({
                 className="bg-[#5E6AD2] hover:bg-[#4F58B8] text-white gap-2"
                 iconLeading={<CheckCircle data-icon />}
                 onClick={() => acceptConnectionRequest.mutate(profileId)}
-                disabled={acceptConnectionRequest.isPending}
+                isDisabled={acceptConnectionRequest.isPending}
               >
                 {acceptConnectionRequest.isPending ? '...' : 'Accepter'}
               </Button>
@@ -276,7 +283,7 @@ export default function ProfileActions({
               className="border-[#5E6AD2] text-[#5E6AD2] hover:bg-[#5E6AD2] hover:text-white gap-2"
               iconLeading={<UsersCheck data-icon />}
               onClick={() => sendConnectionRequest.mutate(profileId)}
-              disabled={sendConnectionRequest.isPending || isLoadingConnectionStatus}
+              isDisabled={sendConnectionRequest.isPending || isLoadingConnectionStatus}
             >
               {sendConnectionRequest.isPending ? '...' : 'Se connecter'}
             </Button>
@@ -290,7 +297,7 @@ export default function ProfileActions({
           className="border-gray-300 text-gray-700 hover:bg-gray-50 gap-2"
           iconLeading={<MessageChatSquare data-icon />}
           onClick={() => navigateToConversation(profileId)}
-          disabled={isNavigatingToConversation}
+          isDisabled={isNavigatingToConversation}
         >
           {isNavigatingToConversation ? 'Ouverture...' : 'Envoyer un message'}
         </Button>
@@ -336,7 +343,7 @@ export default function ProfileActions({
           {currentTags.map(tagId => {
             const tag = predefinedTags.find(t => t.id === tagId);
             return tag ? (
-              <Badge key={tagId} type="pill-color" color="brand" size="sm" className={`bg-${tag.color}-100 text-${tag.color}-800`}>
+              <Badge key={tagId} type="pill-color" color="brand" size="sm" className={tagColorMap[tag.color] ?? 'bg-gray-100 text-gray-800'}>
                 {tag.icon} {tag.label}
               </Badge>
             ) : null;
@@ -379,7 +386,7 @@ export default function ProfileActions({
                           value={customTag}
                           onChange={setCustomTag}
                         />
-                        <Button color="primary" size="md" onClick={handleAddCustomTag} disabled={!customTag.trim()}>
+                        <Button color="primary" size="md" onClick={handleAddCustomTag} isDisabled={!customTag.trim()}>
                           Ajouter
                         </Button>
                       </div>
@@ -438,7 +445,7 @@ export default function ProfileActions({
                       <Button color="secondary" size="md" onClick={() => setIsReminderModalOpen(false)}>
                         Annuler
                       </Button>
-                      <Button color="primary" size="md" onClick={handleCreateReminder} disabled={!reminderDate || !reminderTime || !reminderReason}>
+                      <Button color="primary" size="md" onClick={handleCreateReminder} isDisabled={!reminderDate || !reminderTime || !reminderReason}>
                         Créer le rappel
                       </Button>
                     </div>
@@ -477,7 +484,7 @@ export default function ProfileActions({
                       <Button color="secondary" size="md" onClick={() => setIsNoteModalOpen(false)}>
                         Annuler
                       </Button>
-                      <Button color="primary" size="md" onClick={handleSaveNote} disabled={!noteContent.trim()}>
+                      <Button color="primary" size="md" onClick={handleSaveNote} isDisabled={!noteContent.trim()}>
                         Sauvegarder
                       </Button>
                     </div>
@@ -511,7 +518,7 @@ export default function ProfileActions({
                         color="secondary" 
                         size="md" 
                         onClick={() => setIsRemoveConnectionModalOpen(false)}
-                        disabled={removeConnection.isPending}
+                        isDisabled={removeConnection.isPending}
                       >
                         Annuler
                       </Button>
@@ -519,7 +526,7 @@ export default function ProfileActions({
                         color="primary" 
                         size="md" 
                         onClick={handleRemoveConnection}
-                        disabled={removeConnection.isPending}
+                        isDisabled={removeConnection.isPending}
                         className="bg-red-600 hover:bg-red-700 text-white"
                         iconLeading={<Trash01 data-icon />}
                       >

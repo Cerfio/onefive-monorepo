@@ -100,7 +100,7 @@ export default function CommentReactionsModal({ open, onOpenChange, postId, comm
                 return (
                   <div key={r.id} className="flex items-center gap-2">
                     <Image src={iconSrc} alt="icon" width={16} height={16} />
-                    <img src={r.profile?.avatar || '/default-avatar.png'} alt="avatar" className="w-5 h-5 rounded-full" />
+                    <img src={r.profile?.avatar || '/default-avatar.svg'} alt="avatar" className="w-5 h-5 rounded-full" />
                     <span>{r.profile?.name || r.profileId}</span>
                   </div>
                 );

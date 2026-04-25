@@ -127,7 +127,7 @@ const EditAchievementsModal = ({ open, onOpenChange, achievements, onSave }: { o
                   <Button color="secondary" size="lg" onClick={() => onOpenChange(false)} disabled={isLoading}>
                     Annuler
                   </Button>
-                  <Button color="primary" size="lg" onClick={handleSave} disabled={isLoading}>
+                  <Button color="primary" size="lg" onClick={handleSave} isDisabled={isLoading}>
                     {isLoading ? 'Enregistrement...' : 'Enregistrer'}
                   </Button>
                 </div>

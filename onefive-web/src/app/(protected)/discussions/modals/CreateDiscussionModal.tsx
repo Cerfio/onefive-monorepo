@@ -337,7 +337,7 @@ export const CreateDiscussionModal = ({ isOpen, onOpenChange, onSubmit, isLoadin
                   <Button color="tertiary" onClick={close}>
                     Annuler
                   </Button>
-                  <Button onClick={handleSubmit} disabled={canPost()} isLoading={isLoading}>
+                  <Button onClick={handleSubmit} isDisabled={canPost()} isLoading={isLoading}>
                     Publier
                   </Button>
                 </div>

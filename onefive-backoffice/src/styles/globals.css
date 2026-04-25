@@ -7,7 +7,7 @@
 @import "@onefive/ui/styles/globals.css";
 
 /* Tailwind doit scanner les composants du package pour générer les classes */
-@source "../../packages/ui/src";
+@source "../../../packages/ui/src";
 
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 

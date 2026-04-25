@@ -43,3 +43,6 @@ yarn-error.log*
 .turbo
 .vscode
 styles/dist.css
+test-results/
+playwright-report/
+tests/e2e/.auth/

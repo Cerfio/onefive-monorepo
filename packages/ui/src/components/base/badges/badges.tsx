@@ -1,6 +1,6 @@
 "use client";
 
-import type { MouseEventHandler, ReactNode } from "react";
+import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import { X as CloseX } from "@untitledui/icons";
 import { Dot } from "../../../components/foundations/dot-icon";
 import { cx } from "../../../utils/cx";
@@ -119,6 +119,7 @@ interface BadgeProps<T extends BadgeTypes> {
     color?: BadgeColor<T>;
     children: ReactNode;
     className?: string;
+    style?: CSSProperties;
 }
 
 export const Badge = <T extends BadgeTypes>(props: BadgeProps<T>) => {
@@ -142,7 +143,7 @@ export const Badge = <T extends BadgeTypes>(props: BadgeProps<T>) => {
         [badgeTypes.badgeModern]: badgeSizes,
     };
 
-    return <span className={cx(colors.common, sizes[type][size], colors.styles[color].root, props.className)}>{children}</span>;
+    return <span style={props.style} className={cx(colors.common, sizes[type][size], colors.styles[color].root, props.className)}>{children}</span>;
 };
 
 interface BadgeWithDotProps<T extends BadgeTypes> {

@@ -7,7 +7,6 @@ import {
   HoverCardTrigger,
 } from '@/components/ui';
 import { Dropdown } from '@/components/base/dropdown/dropdown';
-import { Button as AriaButton } from 'react-aria-components';
 import Image from 'next/image';
 import { MessageCircle, Repeat2, SquarePen, Bookmark, Share, AlertTriangle } from 'lucide-react';
 import likeFalseEmoji from '@/icons/reactions/like-false.svg';
@@ -181,7 +180,7 @@ const PostControls: React.FC<PostControlsProps> = ({
         <span className="text-sm">Comment</span>
       </button>
       <Dropdown.Root>
-        <AriaButton
+        <Dropdown.Trigger
           className={cn(
             'flex-1 flex items-center justify-center py-1 text-gray-500 rounded',
             disabled 
@@ -193,7 +192,7 @@ const PostControls: React.FC<PostControlsProps> = ({
         >
           <Repeat2 className="h-5 w-5 mr-2" />
           <p className="text-sm">Repost</p>
-        </AriaButton>
+        </Dropdown.Trigger>
         
         <Dropdown.Popover className="w-80">
           <Dropdown.Menu>

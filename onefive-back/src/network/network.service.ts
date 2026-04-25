@@ -265,7 +265,7 @@ export class NetworkService {
                   person.avatar.id,
                   this.storageService,
                 )
-              : '/default-avatar.png',
+              : '/default-avatar.svg',
             title: person.highlight || this.getRoleDisplayName(role),
             location: `${person.city}, ${person.countryCode}`,
             countryCode: person.countryCode,
@@ -680,7 +680,7 @@ export class NetworkService {
                   otherPerson.avatar.id,
                   this.storageService,
                 )
-              : '/default-avatar.png',
+              : '/default-avatar.svg',
             title: otherPerson.highlight || 'Entrepreneur',
             location: `${otherPerson.city}, ${otherPerson.countryCode}`,
             countryCode: this.getCountryCode(otherPerson.countryCode),
@@ -709,7 +709,7 @@ export class NetworkService {
                   post.author.avatar.id,
                   this.storageService,
                 )
-              : '/default-avatar.png',
+              : '/default-avatar.svg',
             title: post.author.highlight || 'Entrepreneur',
             location: `${post.author.city}, ${post.author.countryCode}`,
             countryCode: this.getCountryCode(post.author.countryCode),
@@ -742,7 +742,7 @@ export class NetworkService {
                   follow.followedBy.avatar.id,
                   this.storageService,
                 )
-              : '/default-avatar.png',
+              : '/default-avatar.svg',
             title: follow.followedBy.highlight || 'Entrepreneur',
             location: `${follow.followedBy.city}, ${follow.followedBy.countryCode}`,
             countryCode: this.getCountryCode(follow.followedBy.countryCode),
@@ -775,7 +775,7 @@ export class NetworkService {
                   follow.profile.avatar.id,
                   this.storageService,
                 )
-              : '/default-avatar.png',
+              : '/default-avatar.svg',
             title: follow.profile.highlight || 'Entrepreneur',
             location: `${follow.profile.city}, ${follow.profile.countryCode}`,
             countryCode: this.getCountryCode(follow.profile.countryCode),

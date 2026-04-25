@@ -266,7 +266,7 @@ export const EditDiscussionModal = ({
                 </div>
 
                 <div className="p-6 border-t flex items-center justify-end gap-3 shrink-0">
-                  <Button color="secondary" onClick={close} disabled={isLoading}>
+                  <Button color="secondary" onClick={close} isDisabled={isLoading}>
                     Annuler
                   </Button>
                   <Button

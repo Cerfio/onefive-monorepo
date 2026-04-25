@@ -5,7 +5,7 @@ export const fallbackPeople: Person[] = [
   {
     id: 'fallback-1',
     name: 'Utilisateur OneFive',
-    avatar: '/default-avatar.png',
+    avatar: '/default-avatar.svg',
     title: 'Entrepreneur',
     location: 'Paris, France',
     countryCode: 'FR',

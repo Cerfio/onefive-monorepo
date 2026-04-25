@@ -267,8 +267,8 @@ export function StartupFullView({ startupId }: { startupId: string }) {
                   />
                   <AchievementsCard
                     achievements={startupData.achievements}
-                    currentUser={currentUser}
-                    onEdit={() => setIsEditAchievementsModalOpen(true)}
+                    currentUser={false}
+                    onEdit={() => {}}
                   />
                 </div>
               </motion.div>

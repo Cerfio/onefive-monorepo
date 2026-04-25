@@ -306,7 +306,7 @@ export function DiscussionFullView({ discussionId }: { discussionId: string }) {
                                         );
                                       })}
                                     </div>
-                                    <Button type="submit" disabled={(isMultiPoll ? selectedPollOptions.length === 0 : !selectedPollOption) || isVoting} className="w-full sm:w-auto">
+                                    <Button type="submit" isDisabled={(isMultiPoll ? selectedPollOptions.length === 0 : !selectedPollOption) || isVoting} className="w-full sm:w-auto">
                                       {isVoting ? 'Envoi...' : 'Voter'}
                                     </Button>
                                   </form>

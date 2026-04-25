@@ -12,10 +12,9 @@ import {
 } from '@untitledui/icons';
 import { Flame } from 'lucide-react';
 import { Discord as DiscordIconSvg } from '@/components/foundations/social-icons';
-import { Button as AriaButton } from 'react-aria-components';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { Dropdown } from '@/components/base/dropdown/dropdown';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { FeedbackModal } from './FeedbackModal';
 import { logout } from '@/queries/auth';
 import { deleteCookie } from 'cookies-next';
@@ -81,6 +80,7 @@ const StartupIcon = ({ className, src, name, size = 'md' }: { className?: string
 const UserDropdown: React.FC = () => {
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
   const { data: user, isLoading: _isLoading, refetch: _refetch } = useMe();
   const { data: meProfile } = useMeProfile();
@@ -102,8 +102,7 @@ const UserDropdown: React.FC = () => {
       toast.success('Déconnexion réussie');
       router.push('/signin');
     },
-    onError: error => {
-      console.error('Erreur lors de la déconnexion:', error);
+    onError: () => {
       deleteCookie('is_authenticated');
       localStorage.clear();
       posthog.reset();
@@ -118,8 +117,8 @@ const UserDropdown: React.FC = () => {
 
   return (
     <>
-      <Dropdown.Root>
-        <AriaButton
+      <Dropdown.Root isOpen={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+        <Dropdown.Trigger
           className={({ isPressed, isFocusVisible }) =>
             cx(
               'group relative inline-flex cursor-pointer rounded-full outline-focus-ring',
@@ -135,7 +134,7 @@ const UserDropdown: React.FC = () => {
             lastName={user?.lastName}
             className="ring-2 ring-gray-200 group-hover:ring-primary-300 transition-all duration-200"
           />
-        </AriaButton>
+        </Dropdown.Trigger>
 
         <Dropdown.Popover className="min-w-72">
           {/* Header style LinkedIn + Streak */}
@@ -174,8 +173,10 @@ const UserDropdown: React.FC = () => {
                       return (
                         <Badge 
                           key={role} 
-                          variant="secondary" 
-                          className="text-[10px] px-1.5 py-0 h-5 border-0"
+                          type="pill-color"
+                          color="gray"
+                          size="sm"
+                          className="text-[10px] px-1.5 py-0 h-5 ring-0"
                           style={{
                             backgroundColor: `${metadata.color}15`,
                             color: metadata.color,

@@ -10,7 +10,7 @@
 @import 'react-image-crop/dist/ReactCrop.css';
 
 /* Tailwind doit scanner les composants du package pour générer les classes */
-@source "../../packages/ui/src";
+@source "../../../packages/ui/src";
 
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @custom-variant label (& [data-label]);

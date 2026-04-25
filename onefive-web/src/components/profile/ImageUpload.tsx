@@ -133,7 +133,7 @@ export const ImageUpload = ({
       <div className={`relative ${className}`}>
         <div className="relative">
           <img
-            src={displayImage || '/default-avatar.png'}
+            src={displayImage || '/default-avatar.svg'}
             alt="Avatar"
             className="w-20 h-20 rounded-full object-cover ring-2 ring-gray-200"
           />
