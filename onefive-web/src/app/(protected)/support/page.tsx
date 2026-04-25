@@ -8,7 +8,7 @@ import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/base/card/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/base/tabs/tabs';
 import { Select } from '@/components/base/select/select';
 import {
   Dialog,

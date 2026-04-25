@@ -81,6 +81,7 @@ module.exports = {
           { name: '@/components/ui/card', message: 'Use @/components/base/card/card' },
           { name: '@/components/ui/dialog', message: 'Use @/components/base/dialog/dialog' },
           { name: '@/components/ui/alert-dialog', message: 'Use @/components/base/dialog/alert-dialog' },
+          { name: '@/components/ui/tabs', message: 'Use @/components/base/tabs/tabs' },
         ],
       },
     ],

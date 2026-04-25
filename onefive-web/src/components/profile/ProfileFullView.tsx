@@ -22,7 +22,7 @@ import { AllBadgesModal } from '@/components/profile/modals/AllBadgesModal';
 import { ProfilePosts } from '@/components/profile/ProfilePosts';
 import { ProfileDiscussions } from '@/components/profile/ProfileDiscussions';
 import { useMeProfile, useProfile, MeProfile, useBatchUpdateExperiences, useBatchUpdateEducations, useUpdateSkillsInterests, useBatchUpdateAchievements } from '@/queries/profile';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/base/tabs/tabs';
 import { toast } from 'sonner';
 
 const containerVariants = {

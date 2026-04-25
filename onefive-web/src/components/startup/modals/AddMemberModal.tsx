@@ -10,7 +10,7 @@ import { SmartProfileSearch } from '@/components/startup/SmartProfileSearch';
 import { ProfileSearchResult, useAddMember } from '@/queries/startup';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from 'react-aria-components';
 import { Users, Mail, UserPlus, Loader2 } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/base/tabs/tabs';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { resolveAvatarUrl } from '@/utils/avatar';
 import { Checkbox } from '@/components/base/checkbox/checkbox';

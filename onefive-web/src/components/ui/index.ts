@@ -46,6 +46,12 @@ export {
   AlertDialogCancel,
   AlertDialogTrigger,
 } from '@/components/base/dialog/alert-dialog';
+export {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '@/components/base/tabs/tabs';
 
 // Composants shadcn pas encore migrés
 export * from './alert';
@@ -58,7 +64,6 @@ export * from './label';
 export * from './placeholder';
 export * from './popover';
 export * from './spinner';
-export * from './tabs';
 export {
   TextareaAutoResize,
   type TextareaProps as AutoResizeTextareaProps,

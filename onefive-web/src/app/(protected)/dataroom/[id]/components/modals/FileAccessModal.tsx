@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/base/checkbox/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/base/tabs/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
