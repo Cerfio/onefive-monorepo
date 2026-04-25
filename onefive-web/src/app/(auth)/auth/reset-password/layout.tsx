@@ -1,5 +1,4 @@
 import WithoutAuth from '@/providers/withoutAuth';
-import { TooltipProvider } from '@/components/ui/tooltip';
 
 export const metadata = {
   title: 'Réinitialiser le mot de passe',
@@ -12,9 +11,7 @@ export default function ResetPasswordLayout({
 }) {
   return (
     <WithoutAuth>
-      <TooltipProvider>
-        {children}
-      </TooltipProvider>
+      {children}
     </WithoutAuth>
   );
-} 
+}

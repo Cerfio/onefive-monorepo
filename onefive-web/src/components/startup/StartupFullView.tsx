@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/navbar';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { useStartup, useUpdateStartup, useFunding, useFundingHistory, useCreateFundingHistory, useUpdateFundingHistory, useDeleteFundingHistory } from '@/queries/startup';
 import { resolveAvatarUrl } from '@/utils/avatar';
 import { getCountryName } from '@/lib/country';
@@ -191,8 +190,7 @@ export function StartupFullView({ startupId }: { startupId: string }) {
   }
 
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-[#FCFCFD]">
+    <div className="min-h-screen bg-[#FCFCFD]">
         <div className="w-full max-w-screen-xl mx-auto"><Navbar /></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
@@ -329,7 +327,6 @@ export function StartupFullView({ startupId }: { startupId: string }) {
           startupId={startupId}
           currentLinkedinUrl={startup?.linkedin}
         />
-      </div>
-    </TooltipProvider>
+    </div>
   );
 }

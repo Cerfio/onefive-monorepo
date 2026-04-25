@@ -4,7 +4,7 @@ import { Loader2, MapPin, Calendar, Users, ExternalLink, Navigation, Share2, Bui
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/base/tooltip/tooltip';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -185,28 +185,21 @@ export const SpotlightMap = ({
       </div>
       
       <div className="absolute top-4 right-16 z-20">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="h-10 w-10 p-0 bg-white/90 hover:bg-white shadow-lg"
-                onClick={getUserLocation}
-                disabled={isLocating}
-              >
-                {isLocating ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Navigation className="h-4 w-4" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Ma position</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip title="Ma position">
+          <Button
+            size="sm"
+            variant="secondary"
+            className="h-10 w-10 p-0 bg-white/90 hover:bg-white shadow-lg"
+            onClick={getUserLocation}
+            disabled={isLocating}
+          >
+            {isLocating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Navigation className="h-4 w-4" />
+            )}
+          </Button>
+        </Tooltip>
       </div>
       
       <GoogleMap

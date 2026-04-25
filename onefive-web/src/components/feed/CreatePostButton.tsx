@@ -5,12 +5,7 @@ import { useMe } from '@/hooks/useUser';
 import { useWaitlistStatus } from '@/hooks/useWaitlistStatus';
 import { cn } from '@/lib/utils';
 import { Clock } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/base/tooltip/tooltip';
 
 interface CreatePostButtonProps {
   onClick: () => void;
@@ -68,14 +63,9 @@ export const CreatePostButton: React.FC<CreatePostButtonProps> = ({
   // Wrap in tooltip if disabled
   if (isDisabled) {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>{button}</TooltipTrigger>
-          <TooltipContent>
-            <p>Vérifiez votre email pour activer votre compte</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip title="Vérifiez votre email pour activer votre compte">
+        {button}
+      </Tooltip>
     );
   }
 

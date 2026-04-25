@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
 import { Info, Crown, Wrench, Settings, User2 } from 'lucide-react';
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -88,8 +88,7 @@ export const FoundersTable = ({
   }
 
   return (
-    <TooltipProvider>
-      <div className="border-b border-gray-100 last:border-b-0">
+    <div className="border-b border-gray-100 last:border-b-0">
         <div className="flex items-center justify-between px-6 pt-4 pb-2">
           <h4 className="text-sm font-semibold text-gray-700">Fondateurs</h4>
         </div>
@@ -103,13 +102,10 @@ export const FoundersTable = ({
                 <th className={`py-2 px-4 text-left font-normal ${COL_WIDTHS.capital}`}>
                   <div className="flex items-center gap-1">
                     Capital
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="inline-flex cursor-pointer"><Info className="w-4 h-4" /></span>
+                    <Tooltip title="Pourcentage du capital détenu par le fondateur">
+                      <TooltipTrigger className="inline-flex cursor-pointer">
+                        <Info className="w-4 h-4" />
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <span>Pourcentage du capital détenu par le fondateur</span>
-                      </TooltipContent>
                     </Tooltip>
                   </div>
                 </th>
@@ -260,7 +256,6 @@ export const FoundersTable = ({
             );
           })}
         </div>
-      </div>
-    </TooltipProvider>
+    </div>
   );
 };

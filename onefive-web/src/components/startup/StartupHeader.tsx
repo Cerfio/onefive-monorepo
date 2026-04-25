@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { InvestmentProposalModal } from './modals/InvestmentProposalModal';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/base/tooltip/tooltip';
 import { Flag } from '@/components/ui/flag';
 
 interface StartupHeaderProps {
@@ -200,27 +200,22 @@ export const StartupHeader = ({
                         <>
                           <DropdownMenuSeparator />
                           {isMember && (
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div>
-                                    <DropdownMenuItem
-                                      disabled={isCreator}
-                                      onClick={!isCreator ? onLeaveStartup : undefined}
-                                      className="flex items-center gap-3 p-3 disabled:opacity-40 disabled:cursor-not-allowed"
-                                    >
-                                      <LogOut className="h-4 w-4 text-orange-500" />
-                                      <span className="text-sm font-medium text-orange-600">Quitter la startup</span>
-                                    </DropdownMenuItem>
-                                  </div>
-                                </TooltipTrigger>
-                                {isCreator && (
-                                  <TooltipContent side="left" className="max-w-56 text-center">
-                                    Vous êtes le créateur. Transférez la propriété à un autre membre avant de quitter.
-                                  </TooltipContent>
-                                )}
-                              </Tooltip>
-                            </TooltipProvider>
+                            <Tooltip
+                              isDisabled={!isCreator}
+                              placement="left"
+                              title="Vous êtes le créateur. Transférez la propriété à un autre membre avant de quitter."
+                            >
+                              <div>
+                                <DropdownMenuItem
+                                  disabled={isCreator}
+                                  onClick={!isCreator ? onLeaveStartup : undefined}
+                                  className="flex items-center gap-3 p-3 disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                  <LogOut className="h-4 w-4 text-orange-500" />
+                                  <span className="text-sm font-medium text-orange-600">Quitter la startup</span>
+                                </DropdownMenuItem>
+                              </div>
+                            </Tooltip>
                           )}
                           {isCreator && onDeleteStartup && (
                             <DropdownMenuItem

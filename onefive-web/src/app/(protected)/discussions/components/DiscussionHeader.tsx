@@ -5,12 +5,7 @@ import { Button } from '@/components/base/buttons/button';
 import { tags } from '@/constant';
 import { Tags } from '@/enums';
 import { useWaitlistStatus } from '@/hooks/useWaitlistStatus';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/base/tooltip/tooltip';
 
 interface DiscussionHeaderProps {
   topic?: Tags;
@@ -50,14 +45,9 @@ export const DiscussionHeader = ({ topic, onOpenCreateModal }: DiscussionHeaderP
           </div>
           <div>
             {isWaiting ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>{createButton}</TooltipTrigger>
-                  <TooltipContent>
-                    <p>Vérifiez votre email pour activer votre compte</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip title="Vérifiez votre email pour activer votre compte">
+                {createButton}
+              </Tooltip>
             ) : (
               createButton
             )}

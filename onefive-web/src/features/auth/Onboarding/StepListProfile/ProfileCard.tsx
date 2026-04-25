@@ -6,12 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { UserCheck, Users } from "lucide-react";
 import { Flag } from "@/components/ui/flag";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/base/tooltip/tooltip";
 import { Button } from "@/components/ui/button";
 
 const cardVariants = {
@@ -133,33 +128,26 @@ const ProfileCard = ({
           </div>
 
           <div className="w-full">
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant={isFollow ? "default" : "ghost"}
-                    className="text-xs gap-1 py-1 px-2 w-full"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      callback(profile.id, !isFollow);
-                    }}
-                    aria-label={`Suivre ${profile.firstname} ${profile.lastname}`}
-                    aria-pressed={isFollow}
-                  >
-                    <UserCheck className="h-3 w-3" />
-                    {isFollow ? "Suivi" : "Suivre"}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>
-                    Suivre pour voir les actualités de cette personne dans votre
-                    feed.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip
+              delay={200}
+              title="Suivre pour voir les actualités de cette personne dans votre feed."
+            >
+              <Button
+                size="sm"
+                variant={isFollow ? "default" : "ghost"}
+                className="text-xs gap-1 py-1 px-2 w-full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  callback(profile.id, !isFollow);
+                }}
+                aria-label={`Suivre ${profile.firstname} ${profile.lastname}`}
+                aria-pressed={isFollow}
+              >
+                <UserCheck className="h-3 w-3" />
+                {isFollow ? "Suivi" : "Suivre"}
+              </Button>
+            </Tooltip>
           </div>
         </CardContent>
       </Card>

@@ -3,7 +3,7 @@ import { Calendar, MapPin, Heart, Share2, ExternalLink, Trophy, DollarSign, Awar
 import Image from 'next/image';
 import Link from 'next/link';
 import { Credenza, CredenzaBody, CredenzaContent, CredenzaTrigger } from '@/components/ui/modal';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { ProviderType } from '@/sharing-enum/spotlight/spotlight.enum';
@@ -87,8 +87,7 @@ export const CardContest = ({
   };
 
   return (
-    <TooltipProvider>
-      <motion.div 
+    <motion.div
         className="flex gap-5 p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-[#5E6AD2]/20 transition-all duration-300 bg-white group"
         whileHover={{ y: -2 }}
         initial={{ opacity: 0, y: 20 }}
@@ -136,40 +135,30 @@ export const CardContest = ({
           
           {/* Actions */}
           <div className="absolute top-3 right-3 flex gap-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
-                  onClick={handleFavorite}
-                  aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                >
-                  <Heart 
-                    className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} 
-                  />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="bg-white text-gray-900 border border-gray-200 shadow-lg px-3 py-2">
-                <p>{isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}</p>
-              </TooltipContent>
+            <Tooltip title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                onClick={handleFavorite}
+                aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              >
+                <Heart
+                  className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                />
+              </Button>
             </Tooltip>
             
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
-                  onClick={handleShare}
-                  aria-label="Partager ce concours"
-                >
-                  <Share2 className="h-4 w-4 text-gray-600" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="bg-white text-gray-900 border border-gray-200 shadow-lg px-3 py-2">
-                <p>Partager ce concours</p>
-              </TooltipContent>
+            <Tooltip title="Partager ce concours">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                onClick={handleShare}
+                aria-label="Partager ce concours"
+              >
+                <Share2 className="h-4 w-4 text-gray-600" />
+              </Button>
             </Tooltip>
           </div>
         </div>
@@ -190,56 +179,28 @@ export const CardContest = ({
                 {/* Provider dans une div dédiée avec bordures */}
                 <div className="flex-shrink-0">
                   {providerImage && !imageError && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="w-8 h-8 border border-gray-200 rounded-sm bg-white p-1 flex items-center justify-center">
-                          <Image
-                            src={providerImage}
-                            alt="Provider"
-                            width={24}
-                            height={24}
-                            className="rounded-sm object-contain"
-                            onError={() => setImageError(true)}
-                            onLoad={() => setImageError(false)}
-                            loading="lazy"
-                          />
-                        </div>
+                    <Tooltip title={`Fourni par ${spot.provider}`}>
+                      <TooltipTrigger className="w-8 h-8 border border-gray-200 rounded-sm bg-white p-1 flex items-center justify-center">
+                        <Image
+                          src={providerImage}
+                          alt="Provider"
+                          width={24}
+                          height={24}
+                          className="rounded-sm object-contain"
+                          onError={() => setImageError(true)}
+                          onLoad={() => setImageError(false)}
+                          loading="lazy"
+                        />
                       </TooltipTrigger>
-                      <TooltipContent className="bg-white text-gray-900 border border-gray-200 shadow-lg px-3 py-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 border border-gray-300 rounded-sm bg-white p-0.5 flex items-center justify-center">
-                            <Image
-                              src={providerImage}
-                              alt="Provider"
-                              width={16}
-                              height={16}
-                              className="rounded-sm object-contain"
-                            />
-                          </div>
-                          <span className="text-sm font-medium text-gray-700">Fourni par {spot.provider}</span>
-                        </div>
-                      </TooltipContent>
                     </Tooltip>
                   )}
                   {(!providerImage || imageError) && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="w-8 h-8 border border-gray-200 rounded-sm bg-gray-50 flex items-center justify-center">
-                          <span className="text-sm text-gray-500 font-medium">
-                            {spot.provider.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
+                    <Tooltip title={`Fourni par ${spot.provider}`}>
+                      <TooltipTrigger className="w-8 h-8 border border-gray-200 rounded-sm bg-gray-50 flex items-center justify-center">
+                        <span className="text-sm text-gray-500 font-medium">
+                          {spot.provider.charAt(0).toUpperCase()}
+                        </span>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-white text-gray-900 border border-gray-200 shadow-lg px-3 py-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 border border-gray-300 rounded-sm bg-gray-100 flex items-center justify-center">
-                            <span className="text-xs text-gray-600 font-medium">
-                              {spot.provider.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <span className="text-sm font-medium text-gray-700">Fourni par {spot.provider}</span>
-                        </div>
-                      </TooltipContent>
                     </Tooltip>
                   )}
                 </div>
@@ -334,7 +295,6 @@ export const CardContest = ({
             </div>
           </div>
         </div>
-      </motion.div>
-    </TooltipProvider>
+    </motion.div>
   );
-}; 
+};

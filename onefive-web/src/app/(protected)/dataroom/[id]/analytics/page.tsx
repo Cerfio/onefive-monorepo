@@ -5,7 +5,6 @@ import { RefreshCw01 as RefreshCw } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Tabs } from "@/components/application/tabs/tabs";
 import { NativeSelect } from "@/components/base/select/select-native";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import * as Alerts from "@/components/application/alerts/alerts";
 import { UserAnalytics, FileAnalytics, SortField, SortDirection, FileSortField } from "./types";
 import { useDataroomAnalytics } from "./hooks/useDataroomAnalytics";
@@ -156,8 +155,7 @@ export default function DataroomAnalytics({ params }: { params: Promise<{ id: st
     return (
         <div className="bg-[#FCFCFD] min-h-screen">
             <Navbar />
-            <TooltipProvider>
-                <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+            <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
                     <AnalyticsHeader
                         dataroomId={resolvedParams.id}
                         dashboardStats={dashboardStats}
@@ -262,7 +260,6 @@ export default function DataroomAnalytics({ params }: { params: Promise<{ id: st
                     fileDetails={selectedFileDetails}
                     isLoadingFileDetails={isLoadingFileDetails}
                 />
-            </TooltipProvider>
         </div>
     );
 }

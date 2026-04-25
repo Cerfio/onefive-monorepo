@@ -9,12 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Share2, Filter, Loader2, Bookmark, Map, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/base/tooltip/tooltip';
 
 import { listSpotlight } from '@/queries/spotlight';
 import { ProviderType, SpotType } from '@/sharing-enum/spotlight/spotlight.enum';
@@ -702,61 +697,44 @@ const Spotlight = () => {
               transition={{ delay: 0.3, duration: 0.6 }} 
               className="flex items-center gap-4"
             >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={() => setShowFilters(!showFilters)}
-                      variant="outline" 
-                      className="gap-2"
-                      aria-label="Afficher les filtres"
-                    >
-                      <Filter className="h-4 w-4" />
-                      Filtres
-                      {hasActiveFilters && (
-                        <Badge variant="secondary" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
-                          !
-                        </Badge>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Afficher les filtres</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={handleSaveSearch}
-                      variant="outline" 
-                      className="gap-2"
-                      aria-label="Sauvegarder cette recherche"
-                    >
-                      <Bookmark className="h-4 w-4" />
-                      Sauvegarder
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Sauvegarder cette recherche</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={handleShareLocation}
-                      variant="outline" 
-                      className="gap-2"
-                      aria-label="Partager ma position"
-                    >
-                      <Share2 className="h-4 w-4" />
-                      Partager
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Partager ma position</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip title="Afficher les filtres">
+                <Button
+                  onClick={() => setShowFilters(!showFilters)}
+                  variant="outline"
+                  className="gap-2"
+                  aria-label="Afficher les filtres"
+                >
+                  <Filter className="h-4 w-4" />
+                  Filtres
+                  {hasActiveFilters && (
+                    <Badge variant="secondary" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
+                      !
+                    </Badge>
+                  )}
+                </Button>
+              </Tooltip>
+              <Tooltip title="Sauvegarder cette recherche">
+                <Button
+                  onClick={handleSaveSearch}
+                  variant="outline"
+                  className="gap-2"
+                  aria-label="Sauvegarder cette recherche"
+                >
+                  <Bookmark className="h-4 w-4" />
+                  Sauvegarder
+                </Button>
+              </Tooltip>
+              <Tooltip title="Partager ma position">
+                <Button
+                  onClick={handleShareLocation}
+                  variant="outline"
+                  className="gap-2"
+                  aria-label="Partager ma position"
+                >
+                  <Share2 className="h-4 w-4" />
+                  Partager
+                </Button>
+              </Tooltip>
             </motion.div>
           </div>
         </motion.div>

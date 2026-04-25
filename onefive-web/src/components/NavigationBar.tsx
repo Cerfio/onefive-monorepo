@@ -22,12 +22,7 @@ import {
     SkipBack,
     SkipForward,
 } from "lucide-react";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/base/tooltip/tooltip";
 import type { FileComment } from "@/queries/dataroom-comments";
 import type { FileMetadata } from "@/types/file-viewer";
 import { getFileTypeLabel } from "@/utils/file-utils";
@@ -328,50 +323,37 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
                 <MobileInfoSheet fileMetadata={fileMetadata} viewCount={viewCount} />
 
                 {(hasPrevFile || hasNextFile) && (
-                    <TooltipProvider delayDuration={300}>
-                        <div className="hidden sm:flex items-center space-x-1 border-r border-gray-200 pr-2 mr-1">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <button
-                                        onClick={onPrevFile}
-                                        disabled={!hasPrevFile}
-                                        className="p-1.5 text-gray-500 hover:text-[#5E6AD2] disabled:opacity-30 transition-colors"
-                                    >
-                                        <SkipBack className="h-4 w-4" />
-                                    </button>
-                                </TooltipTrigger>
-                                <TooltipContent>Fichier précédent (J)</TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <button
-                                        onClick={onNextFile}
-                                        disabled={!hasNextFile}
-                                        className="p-1.5 text-gray-500 hover:text-[#5E6AD2] disabled:opacity-30 transition-colors"
-                                    >
-                                        <SkipForward className="h-4 w-4" />
-                                    </button>
-                                </TooltipTrigger>
-                                <TooltipContent>Fichier suivant (K)</TooltipContent>
-                            </Tooltip>
-                        </div>
-                    </TooltipProvider>
+                    <div className="hidden sm:flex items-center space-x-1 border-r border-gray-200 pr-2 mr-1">
+                        <Tooltip delay={300} title="Fichier précédent (J)">
+                            <button
+                                onClick={onPrevFile}
+                                disabled={!hasPrevFile}
+                                className="p-1.5 text-gray-500 hover:text-[#5E6AD2] disabled:opacity-30 transition-colors"
+                            >
+                                <SkipBack className="h-4 w-4" />
+                            </button>
+                        </Tooltip>
+                        <Tooltip delay={300} title="Fichier suivant (K)">
+                            <button
+                                onClick={onNextFile}
+                                disabled={!hasNextFile}
+                                className="p-1.5 text-gray-500 hover:text-[#5E6AD2] disabled:opacity-30 transition-colors"
+                            >
+                                <SkipForward className="h-4 w-4" />
+                            </button>
+                        </Tooltip>
+                    </div>
                 )}
 
                 {onDownload && (
-                    <TooltipProvider delayDuration={300}>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <button
-                                    onClick={onDownload}
-                                    className="p-2 text-gray-600 hover:text-[#5E6AD2] transition-colors"
-                                >
-                                    <Download className="h-5 w-5" />
-                                </button>
-                            </TooltipTrigger>
-                            <TooltipContent>Télécharger (D)</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Tooltip delay={300} title="Télécharger (D)">
+                        <button
+                            onClick={onDownload}
+                            className="p-2 text-gray-600 hover:text-[#5E6AD2] transition-colors"
+                        >
+                            <Download className="h-5 w-5" />
+                        </button>
+                    </Tooltip>
                 )}
 
                 <Sheet open={isCommentsPanelOpen} onOpenChange={(open) => {

@@ -2,7 +2,6 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { User2, Settings, Crown, Wrench } from 'lucide-react';
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -105,8 +104,7 @@ export const MembersTable = ({
   }
 
   return (
-    <TooltipProvider>
-      <div className="border-b border-gray-100 last:border-b-0">
+    <div className="border-b border-gray-100 last:border-b-0">
         <div className="flex items-center justify-between px-6 pt-4 pb-2">
           <h4 className="text-sm font-semibold text-gray-700">Membres de l'équipe</h4>
         </div>
@@ -233,8 +231,7 @@ export const MembersTable = ({
           </>
         )}
 
-      </div>
-    </TooltipProvider>
+    </div>
   );
 };
 

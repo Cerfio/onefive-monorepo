@@ -1,6 +1,5 @@
 'use client';
 
-import { TooltipProvider } from '@/components/ui/tooltip';
 import WithoutAuth from '@/providers/withoutAuth';
 import Signin from '@/features/auth/Signin';
 import AuthLayout from '@/features/auth/AuthLayout';
@@ -12,11 +11,9 @@ export default function SigninClient() {
 
   return (
     <WithoutAuth>
-      <TooltipProvider>
-        <AuthLayout>
-          <Signin returnUrl={returnUrl} />
-        </AuthLayout>
-      </TooltipProvider>
+      <AuthLayout>
+        <Signin returnUrl={returnUrl} />
+      </AuthLayout>
     </WithoutAuth>
   );
 }
