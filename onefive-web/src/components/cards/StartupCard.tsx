@@ -1,5 +1,5 @@
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
+import { Badge } from "@/components/base/badges/badges";
+import { Button } from "@/components/base/buttons/button";
 import Image, { StaticImageData } from 'next/image'
 import { useTranslations } from "next-intl";
 

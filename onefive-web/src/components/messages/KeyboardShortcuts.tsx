@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
+} from '@/components/base/dialog/dialog';
 
 const KeyboardShortcuts = () => {
   const [isOpen, setIsOpen] = useState(false);

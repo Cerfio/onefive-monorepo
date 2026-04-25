@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import OnefiveLogo from '@/images/onefiveLogo.png';
 import React, { useState } from 'react';
-import { Button } from './ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { usePathname } from 'next/navigation';
 import {
   SearchBar,

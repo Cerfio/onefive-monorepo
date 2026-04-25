@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Bell, BellOff } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { toast } from 'sonner';
 
 interface NotificationManagerProps {

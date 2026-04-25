@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import Image from 'next/image'
 import profile2 from '@/images/profile-yannis-1.jpg';
-import { Button } from "../ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { DotComplete } from "../dots/dot-complete";
 
 export const ProfileCard = ({
