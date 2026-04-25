@@ -14,7 +14,7 @@ import { Label } from '@/components/base/input/label';
 import { parseDate } from '@internationalized/date';
 import type { DateValue } from 'react-aria-components';
 import { Select } from '@/components/base/select/select';
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/base/dialog/dialog';
 import InputSelect from '@/components/ui/input-search';
 import { Button } from '@/components/base/buttons/button';
 import { RadioGroup, RadioButton } from '@/components/base/radio-buttons/radio-buttons';

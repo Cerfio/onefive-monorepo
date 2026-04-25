@@ -23,7 +23,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@/components/base/dialog/alert-dialog';
 import { TextArea } from '@/components/base/textarea/textarea';
 
 type ReplyType = SpecificDiscussionInfer['answers'][0]['replies'][0];

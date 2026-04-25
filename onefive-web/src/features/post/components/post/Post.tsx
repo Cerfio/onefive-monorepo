@@ -18,7 +18,7 @@ import PostReactionsModal from './PostReactionsModal';
 import RepostWithThoughtsModal from './RepostWithThoughtsModal';
 import { selfProfile } from '@/queries/profile';
 import { useDeletePost } from '../../hooks/mutations/useDeletePost';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/base/dialog/alert-dialog';
 import { cn } from '@/lib/utils';
 import CommentSkeleton from '../comment/CommentSkeleton';
 import type { OptimisticPostType } from '../../types/optimistic';

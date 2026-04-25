@@ -17,7 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { selfProfile } from '@/queries/profile';
 import EditReplyForm from './EditReplyForm';
 import { useDeleteComment } from '../../hooks/mutations/useDeleteComment';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/base/dialog/alert-dialog';
 import { UserMiniProfile } from '@/components/base/avatar/user-mini-profile';
 import { ReportModal } from '@/components/modals/ReportModal';
 import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';

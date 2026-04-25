@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from '@/components/base/dialog/dialog';
 import { Input as ShadcnInput } from '@/components/ui/input';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';

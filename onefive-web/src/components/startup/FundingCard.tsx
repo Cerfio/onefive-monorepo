@@ -19,7 +19,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@/components/base/dialog/alert-dialog';
 import { UserMiniProfile } from '@/components/base/avatar/user-mini-profile';
 import { resolveAvatarUrl } from '@/utils/avatar';
 import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';

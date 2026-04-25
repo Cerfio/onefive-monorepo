@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/base/dialog/dialog';
 import { Button } from '@/components/base/buttons/button';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { useRepost } from '../../hooks/mutations/useRepost';

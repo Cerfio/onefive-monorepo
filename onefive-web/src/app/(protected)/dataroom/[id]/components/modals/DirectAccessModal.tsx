@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/base/dialog/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
 import { Plus, X } from "lucide-react";
 import { UserProfile } from "../../types";

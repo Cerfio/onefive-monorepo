@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/base/dialog/dialog';
 import { Button } from '@/components/base/buttons/button';
 import { X } from 'lucide-react';
 import { VALIDATION_LIMITS } from '@/constants/validation-limits';

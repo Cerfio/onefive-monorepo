@@ -11,7 +11,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogCancel,
-} from '@/components/ui/alert-dialog';
+} from '@/components/base/dialog/alert-dialog';
 import { Button } from '@/components/base/buttons/button';
 import { IconNotification } from '@/components/application/notifications/notifications';
 import { Check, Stars02 } from '@untitledui/icons';

@@ -21,7 +21,7 @@ import { smsRequest } from '@/queries/auth';
 import { uploadAvatar, GenderSalutationPreference, createProfile } from '@/queries/profile';
 import { api } from '@/utils/kyInstance';
 import { getCookie } from 'cookies-next';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/base/dialog/dialog';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/base/input/label';
 import posthog from 'posthog-js';

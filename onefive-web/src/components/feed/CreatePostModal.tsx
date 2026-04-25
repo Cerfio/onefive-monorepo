@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
-} from '@/components/ui/dialog';
+} from '@/components/base/dialog/dialog';
 import { useCreatePost } from '@/features/post/hooks/mutations';
 import { useMe } from '@/hooks/useUser';
 import { SubmitHandler, useForm } from 'react-hook-form';

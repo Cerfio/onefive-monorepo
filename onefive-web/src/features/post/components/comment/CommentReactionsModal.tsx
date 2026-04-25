@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/base/dialog/dialog';
 import Image from 'next/image';
 import likeTrueEmoji from '@/icons/reactions/like-true.svg';
 import celebrateEmoji from '@/icons/reactions/celebrate.svg';

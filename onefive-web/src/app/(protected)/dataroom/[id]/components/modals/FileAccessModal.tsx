@@ -7,7 +7,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/base/dialog/dialog";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/base/checkbox/checkbox";
