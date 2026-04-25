@@ -55,6 +55,35 @@ module.exports = {
     '@typescript-eslint/no-unnecessary-type-constraint': 'warn',
     '@typescript-eslint/ban-ts-comment': 'warn',
     'prefer-const': 'warn',
+    // Bloque les imports shadcn déjà migrés vers Untitled UI.
+    // Whitelist customs OneFive (flag, saas-selector, animated-number,
+    // searchbar-bar, social-button, social-logos) et composants pas encore
+    // migrés (alert, button-group, command, dropdown-menu, form, hover-card,
+    // input-search, label, modal, pagination, placeholder, popover, progress,
+    // sheet, slider, spinner, tabs, textareaAutoresize) restent autorisés.
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          { name: '@/components/ui/skeleton', message: 'Use @/components/base/skeleton/skeleton' },
+          { name: '@/components/ui/separator', message: 'Use @/components/base/separator/separator' },
+          { name: '@/components/ui/tooltip', message: 'Use @/components/base/tooltip/tooltip' },
+          { name: '@/components/ui/textarea', message: 'Use @/components/base/textarea/textarea' },
+          { name: '@/components/ui/text-area', message: 'Use @/components/base/textarea/textarea' },
+          { name: '@/components/ui/input', message: 'Use @/components/base/input/input (file inputs: <input type="file">)' },
+          { name: '@/components/ui/badge', message: 'Use @/components/base/badges/badges' },
+          { name: '@/components/ui/button', message: 'Use @/components/base/buttons/button' },
+          { name: '@/components/ui/avatar', message: 'Use @/components/base/avatar/avatar' },
+          { name: '@/components/ui/checkbox', message: 'Use @/components/base/checkbox/checkbox' },
+          { name: '@/components/ui/switch', message: 'Use Toggle from @/components/base/toggle/toggle' },
+          { name: '@/components/ui/radio-group', message: 'Use RadioGroup/RadioButton from @/components/base/radio-buttons/radio-buttons' },
+          { name: '@/components/ui/select', message: 'Use @/components/base/select/select' },
+          { name: '@/components/ui/card', message: 'Use @/components/base/card/card' },
+          { name: '@/components/ui/dialog', message: 'Use @/components/base/dialog/dialog' },
+          { name: '@/components/ui/alert-dialog', message: 'Use @/components/base/dialog/alert-dialog' },
+        ],
+      },
+    ],
   },
   overrides: [
     {
