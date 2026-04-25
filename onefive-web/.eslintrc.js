@@ -84,6 +84,7 @@ module.exports = {
           { name: '@/components/ui/tabs', message: 'Use @/components/base/tabs/tabs' },
           { name: '@/components/ui/label', message: 'Use @/components/base/label/label' },
           { name: '@/components/ui/alert', message: 'Use @/components/base/alert/alert' },
+          { name: '@/components/ui/dropdown-menu', message: 'Use Dropdown from @/components/base/dropdown/dropdown' },
         ],
       },
     ],

@@ -4,13 +4,7 @@ import funnyEmoji from '@/icons/reactions/funny.svg';
 import insightfulEmoji from '@/icons/reactions/insightful.svg';
 import loveEmoji from '@/icons/reactions/love.svg';
 import supportEmoji from '@/icons/reactions/support.svg';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui';
+import { Dropdown } from '@/components/base/dropdown/dropdown';
 import { Button } from '@/components/base/buttons/button';
 import { MoreHorizontal, Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
@@ -189,54 +183,54 @@ const Comment: React.FC<Props> = ({ comment }) => {
                 )}
               </p>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            <Dropdown.Root>
+              <Dropdown.Trigger>
                 <Button color="tertiary" size="sm" className="h-6 w-6">
                   <MoreHorizontal className="h-3 w-3" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Copy text</DropdownMenuItem>
-                {canEditWithinTime && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleEdit}>
-                      Edit comment
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-red-500"
-                      onClick={handleDelete}
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? 'Deleting...' : 'Delete comment'}
-                    </DropdownMenuItem>
-                  </>
-                )}
-                {canEdit && !canEditWithinTime && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem disabled className="text-gray-400">
-                      Edit comment (15 min expired)
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-red-500"
-                      onClick={handleDelete}
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? 'Deleting...' : 'Delete comment'}
-                    </DropdownMenuItem>
-                  </>
-                )}
-                {!canEdit && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-500" onClick={() => setIsReportOpen(true)}>
-                      Report comment
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </Dropdown.Trigger>
+              <Dropdown.Popover placement="bottom right">
+                <Dropdown.Menu>
+                  <Dropdown.Item>Copy text</Dropdown.Item>
+                  {canEditWithinTime && (
+                    <>
+                      <Dropdown.Separator />
+                      <Dropdown.Item onAction={handleEdit}>
+                        Edit comment
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onAction={handleDelete}
+                        isDisabled={isDeleting}
+                      >
+                        {isDeleting ? 'Deleting...' : 'Delete comment'}
+                      </Dropdown.Item>
+                    </>
+                  )}
+                  {canEdit && !canEditWithinTime && (
+                    <>
+                      <Dropdown.Separator />
+                      <Dropdown.Item isDisabled>
+                        Edit comment (15 min expired)
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onAction={handleDelete}
+                        isDisabled={isDeleting}
+                      >
+                        {isDeleting ? 'Deleting...' : 'Delete comment'}
+                      </Dropdown.Item>
+                    </>
+                  )}
+                  {!canEdit && (
+                    <>
+                      <Dropdown.Separator />
+                      <Dropdown.Item onAction={() => setIsReportOpen(true)}>
+                        Report comment
+                      </Dropdown.Item>
+                    </>
+                  )}
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
             <ReportModal
               isOpen={isReportOpen}
               onClose={() => setIsReportOpen(false)}

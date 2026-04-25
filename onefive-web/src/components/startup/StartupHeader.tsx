@@ -10,13 +10,7 @@ import { getSectorColor } from '@/shared/constants/sector-colors';
 import { Card } from '@/components/base/card/card';
 
 import { AnimatedNumber } from '@/components/ui/animated-number';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Dropdown } from '@/components/base/dropdown/dropdown';
 import { InvestmentProposalModal } from './modals/InvestmentProposalModal';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
 import { Flag } from '@/components/ui/flag';
@@ -157,80 +151,60 @@ export const StartupHeader = ({
                       <Edit3 className="h-4 w-4" />Modifier
                     </Button>
                   )}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                  <Dropdown.Root>
+                    <Dropdown.Trigger>
                       <Button color="secondary" size="sm">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-64">
-                      {!currentUser && (
-                        <DropdownMenuItem onClick={() => setIsInvestmentModalOpen(true)} className="flex items-center gap-3 p-3">
-                          <DollarSign className="h-4 w-4 text-green-600" />
-                          <span className="text-sm font-medium">Proposer un investissement</span>
-                        </DropdownMenuItem>
-                      )}
-                      {currentUser && onLinkedInSync && (
-                        <DropdownMenuItem onClick={onLinkedInSync} className="flex items-center gap-3 p-3">
-                          <LinkedInSquareIcon size={16} />
-                          <span className="text-sm font-medium">Synchroniser avec LinkedIn</span>
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="flex items-center gap-3 p-3">
-                        <Share2 className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm font-medium">Partager</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-3 p-3">
-                        <Bookmark className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm font-medium">
+                    </Dropdown.Trigger>
+                    <Dropdown.Popover placement="bottom right" className="w-64">
+                      <Dropdown.Menu>
+                        {!currentUser && (
+                          <Dropdown.Item icon={DollarSign} onAction={() => setIsInvestmentModalOpen(true)}>
+                            Proposer un investissement
+                          </Dropdown.Item>
+                        )}
+                        {currentUser && onLinkedInSync && (
+                          <Dropdown.Item icon={LinkedInSquareIcon} onAction={onLinkedInSync}>
+                            Synchroniser avec LinkedIn
+                          </Dropdown.Item>
+                        )}
+                        <Dropdown.Separator />
+                        <Dropdown.Item icon={Share2}>Partager</Dropdown.Item>
+                        <Dropdown.Item icon={Bookmark}>
                           {isBookmarked ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                        </span>
-                      </DropdownMenuItem>
-                      {isCreator && onTransferOwnership && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={onTransferOwnership} className="flex items-center gap-3 p-3">
-                            <ArrowRightLeft className="h-4 w-4 text-gray-600" />
-                            <span className="text-sm font-medium">Transférer la propriété</span>
-                          </DropdownMenuItem>
-                        </>
-                      )}
-                      {(isMember || (isCreator && onDeleteStartup)) && (
-                        <>
-                          <DropdownMenuSeparator />
-                          {isMember && (
-                            <Tooltip
-                              isDisabled={!isCreator}
-                              placement="left"
-                              title="Vous êtes le créateur. Transférez la propriété à un autre membre avant de quitter."
+                        </Dropdown.Item>
+                        {isCreator && onTransferOwnership && (
+                          <>
+                            <Dropdown.Separator />
+                            <Dropdown.Item icon={ArrowRightLeft} onAction={onTransferOwnership}>
+                              Transférer la propriété
+                            </Dropdown.Item>
+                          </>
+                        )}
+                        {isMember && (
+                          <>
+                            <Dropdown.Separator />
+                            <Dropdown.Item
+                              icon={LogOut}
+                              isDisabled={isCreator}
+                              onAction={!isCreator ? onLeaveStartup : undefined}
                             >
-                              <div>
-                                <DropdownMenuItem
-                                  disabled={isCreator}
-                                  onClick={!isCreator ? onLeaveStartup : undefined}
-                                  className="flex items-center gap-3 p-3 disabled:opacity-40 disabled:cursor-not-allowed"
-                                >
-                                  <LogOut className="h-4 w-4 text-orange-500" />
-                                  <span className="text-sm font-medium text-orange-600">Quitter la startup</span>
-                                </DropdownMenuItem>
-                              </div>
-                            </Tooltip>
-                          )}
-                          {isCreator && onDeleteStartup && (
-                            <DropdownMenuItem
-                              variant="destructive"
-                              onClick={onDeleteStartup}
-                              className="flex items-center gap-3 p-3"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              <span className="text-sm font-medium">Supprimer la startup</span>
-                            </DropdownMenuItem>
-                          )}
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                              Quitter la startup
+                            </Dropdown.Item>
+                          </>
+                        )}
+                        {isCreator && onDeleteStartup && (
+                          <>
+                            <Dropdown.Separator />
+                            <Dropdown.Item icon={Trash2} onAction={onDeleteStartup}>
+                              Supprimer la startup
+                            </Dropdown.Item>
+                          </>
+                        )}
+                      </Dropdown.Menu>
+                    </Dropdown.Popover>
+                  </Dropdown.Root>
                 </div>
               </div>
 

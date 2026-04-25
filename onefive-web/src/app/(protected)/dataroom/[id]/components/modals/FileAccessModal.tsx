@@ -15,12 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/base/tabs
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/base/label/label";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Dropdown } from "@/components/base/dropdown/dropdown";
 import { 
     Lock, 
     Users, 
@@ -713,8 +708,8 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                     </div>
                                                 ) : (
                                                     // Mode lecture - dropdown menu
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
+                                                    <Dropdown.Root>
+                                                        <Dropdown.Trigger>
                                                             <Button
                                                                 color="tertiary"
                                                                 size="sm"
@@ -722,26 +717,26 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                             >
                                                                 <MoreHorizontal className="h-4 w-4" />
                                                             </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            {access.status === 'accepted' && (
-                                                                <DropdownMenuItem
-                                                                    onClick={() => handleStartEdit(access)}
-                                                                    className="cursor-pointer"
+                                                        </Dropdown.Trigger>
+                                                        <Dropdown.Popover placement="bottom right">
+                                                            <Dropdown.Menu>
+                                                                {access.status === 'accepted' && (
+                                                                    <Dropdown.Item
+                                                                        icon={Edit3}
+                                                                        onAction={() => handleStartEdit(access)}
+                                                                    >
+                                                                        Modifier les permissions
+                                                                    </Dropdown.Item>
+                                                                )}
+                                                                <Dropdown.Item
+                                                                    icon={Trash2}
+                                                                    onAction={() => handleRemoveAccessClick(access)}
                                                                 >
-                                                                    <Edit3 className="h-4 w-4 mr-2" />
-                                                                    Modifier les permissions
-                                                                </DropdownMenuItem>
-                                                            )}
-                                                            <DropdownMenuItem
-                                                                onClick={() => handleRemoveAccessClick(access)}
-                                                                className="text-red-600 cursor-pointer"
-                                                            >
-                                                                <Trash2 className="h-4 w-4 mr-2" />
-                                                                Supprimer l'accès
-                                                            </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
+                                                                    Supprimer l'accès
+                                                                </Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown.Popover>
+                                                    </Dropdown.Root>
                                                 )}
                                             </div>
                                         </div>
