@@ -2,13 +2,13 @@ import { formatDistance } from 'date-fns';
 import { memo, useMemo, useState, useCallback } from 'react';
 import { ReplyType } from '../../definitions/comment.definition';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui';
+import { Button } from '@/components/base/buttons/button';
 import { MoreHorizontal, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CommentInteraction from '../comment/CommentInteraction';
@@ -126,7 +126,7 @@ const Reply: React.FC<CommentReplyProps> = ({ reply }) => {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-6 w-6">
+                <Button color="tertiary" size="sm" className="h-6 w-6">
                   <MoreHorizontal className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
@@ -181,7 +181,7 @@ const Reply: React.FC<CommentReplyProps> = ({ reply }) => {
         <div className="mt-1 flex items-center gap-2">
           {reply.reactionCount > 0 && (
             <Button
-              variant="ghost"
+              color="tertiary"
               size="sm"
               className="h-6 text-xs px-2"
               onClick={() => reply.postId && setOpenReactions(true)}

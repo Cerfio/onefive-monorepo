@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, X } from "lucide-react";
@@ -285,8 +285,8 @@ const PhoneNumberVerification = ({
                 ? "bg-green-500 hover:bg-green-600"
                 : "bg-[#5E6AD2] hover:bg-[#5E6AD2]/90"
             }`}
-            variant="default"
-            disabled={(!buttonDisabled && code.length === 0 ? false : code.length < 6) || isSubmitting}
+            color="primary"
+            isDisabled={(!buttonDisabled && code.length === 0 ? false : code.length < 6) || isSubmitting}
             onClick={handleSubmit}
           >
             {isSubmitting ? (

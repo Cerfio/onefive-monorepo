@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui';
+import { Button } from '@/components/base/buttons/button';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { memo, useCallback, useState } from 'react';
 import { useCreateComment } from '../../hooks/mutations/useCreateComment';
@@ -27,7 +27,7 @@ const ReplyForm: React.FC<Props> = ({ parentId, parentAuthor, postId }) => {
         onChange={setReply}
       />
       <div className="flex justify-end mt-2">
-        <Button size="sm" className="h-8" disabled={!reply.trim() || isPending}>
+        <Button size="sm" className="h-8" isDisabled={!reply.trim() || isPending}>
           {isPending ? 'Replying...' : 'Reply'}
         </Button>
       </div>

@@ -205,7 +205,7 @@ const NotificationItemComponent: React.FC<{
               size="sm"
               className="text-xs"
               onClick={handleAccept}
-              disabled={isProcessingInvitation}
+              isDisabled={isProcessingInvitation}
             >
               <Check className="w-3 h-3 mr-1" />
               Accepter
@@ -215,7 +215,7 @@ const NotificationItemComponent: React.FC<{
               size="sm"
               className="text-xs"
               onClick={handleDecline}
-              disabled={isProcessingInvitation}
+              isDisabled={isProcessingInvitation}
             >
               <XClose className="w-3 h-3 mr-1" />
               Refuser

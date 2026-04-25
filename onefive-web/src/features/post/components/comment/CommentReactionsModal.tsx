@@ -8,7 +8,7 @@ import funnyEmoji from '@/icons/reactions/funny.svg';
 import insightfulEmoji from '@/icons/reactions/insightful.svg';
 import loveEmoji from '@/icons/reactions/love.svg';
 import supportEmoji from '@/icons/reactions/support.svg';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/base/buttons/button';
 import type { tempReactionType } from '../../post.api';
 import { Reaction } from '@/enums';
 import { useQuery } from '@tanstack/react-query';
@@ -110,7 +110,7 @@ export default function CommentReactionsModal({ open, onOpenChange, postId, comm
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+          <Button color="tertiary" size="sm" onClick={() => onOpenChange(false)}>
             Close
           </Button>
         </DialogFooter>

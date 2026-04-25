@@ -161,7 +161,7 @@ const DiscussionSidebar = ({ data }: DiscussionSidebarProps) => {
                     className="flex-1" 
                     color={isFollowing ? "secondary" : "primary"}
                     onClick={handleFollow}
-                    disabled={followProfile.isLoading}
+                    isDisabled={followProfile.isLoading}
                     iconLeading={isFollowing ? <UserCheck className="w-4 h-4" data-icon /> : <UserPlus className="w-4 h-4" data-icon />}
                   >
                     {followProfile.isLoading ? '...' : (isFollowing ? 'Suivi' : 'Suivre')}

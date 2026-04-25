@@ -1,6 +1,6 @@
 'use client';
 import { Avatar } from '@/components/base/avatar/avatar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { useMe } from '@/hooks/useUser';
 import { useCreateComment } from '../../hooks/mutations';
@@ -62,7 +62,7 @@ const CommentForm = forwardRef<HTMLTextAreaElement, Props>(({
           <Button
             type="submit"
             size="sm"
-            disabled={!comment.trim() || createCommentMutation.isPending}
+            isDisabled={!comment.trim() || createCommentMutation.isPending}
           >
             {createCommentMutation.isPending ? 'Posting...' : 'Post'}
           </Button>

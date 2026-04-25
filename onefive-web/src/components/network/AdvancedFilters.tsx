@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -294,7 +294,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
           <CardTitle className="text-lg">Filtres avancés</CardTitle>
           {getActiveFiltersCount() > 0 && (
             <Button
-              variant="ghost"
+              color="tertiary"
               size="sm"
               onClick={onResetFilters}
               className="text-gray-500 hover:text-gray-700"

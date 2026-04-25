@@ -920,7 +920,7 @@ const SettingsPage = () => {
                       color="primary"
                       size="md"
                       onClick={handleSavePassword}
-                      disabled={
+                      isDisabled={
                         updatePasswordMutation.isPending ||
                         !passwordData.currentPassword ||
                         !passwordData.newPassword ||

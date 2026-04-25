@@ -251,7 +251,7 @@ const EmailToConfirm = () => {
                 <Button
                   className="h-11 w-[380px] mt-8 text-base font-semibold"
                   color="secondary"
-                  disabled={code.length < 4}
+                  isDisabled={code.length < 4}
                   onClick={() => confirmEmail({ code })}
                 >
                   Verify email

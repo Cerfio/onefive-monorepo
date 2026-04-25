@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -116,7 +116,7 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
 
                 <DialogFooter>
                     <Button
-                        variant="outline"
+                        color="secondary"
                         onClick={onClose}
                     >
                         Annuler

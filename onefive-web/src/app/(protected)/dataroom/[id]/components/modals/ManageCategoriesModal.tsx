@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
@@ -68,7 +68,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
                                 onChange={setNewCategoryName}
                                 placeholder="Entrez le nom de la catégorie"
                             />
-                            <Button type="submit" disabled={isCreating}>
+                            <Button type="submit" isDisabled={isCreating}>
                                 <Plus className="w-4 h-4 mr-2" />
                                 Ajouter
                             </Button>
@@ -91,8 +91,8 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
                                     )}
                                 </div>
                                 <Button
-                                    variant="ghost"
-                                    size="icon"
+                                    color="tertiary"
+                                    size="sm"
                                     onClick={() => onDeleteCategory(category.id)}
                                     disabled={isDeleting}
                                 >
@@ -104,7 +104,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose}>
+                    <Button color="secondary" onClick={onClose}>
                         Fermer
                     </Button>
                 </DialogFooter>

@@ -8,7 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Group } from "../types";
@@ -115,7 +115,7 @@ export const ManagePermissionsModal: React.FC<ManagePermissionsModalProps> = ({
                     {/* Quick Actions */}
                     <div className="flex gap-2">
                         <Button
-                            variant="outline"
+                            color="secondary"
                             size="sm"
                             onClick={handleSelectAll}
                             className="flex-1"
@@ -123,7 +123,7 @@ export const ManagePermissionsModal: React.FC<ManagePermissionsModalProps> = ({
                             Tout sélectionner
                         </Button>
                         <Button
-                            variant="outline"
+                            color="secondary"
                             size="sm"
                             onClick={handleDeselectAll}
                             className="flex-1"
@@ -165,7 +165,7 @@ export const ManagePermissionsModal: React.FC<ManagePermissionsModalProps> = ({
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose}>
+                    <Button color="secondary" onClick={onClose}>
                         Annuler
                     </Button>
                     <Button onClick={handleSave} className="bg-[#5E6AD2] hover:bg-[#4F58B8]">

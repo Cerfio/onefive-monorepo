@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, User, Mail } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/base/badges/badges';
 import { ProfileSearchResult } from '@/queries/startup';
@@ -153,7 +153,7 @@ export const ProfileSearch = ({
               ) : (
                 <div className="space-y-2">
                   <Button
-                    variant="outline"
+                    color="secondary"
                     size="sm"
                     onClick={() => setShowEmailForm(true)}
                     className="w-full"

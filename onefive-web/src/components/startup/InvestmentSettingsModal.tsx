@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/base/badges/badges';
@@ -263,7 +263,7 @@ export const InvestmentSettingsModal = ({
           {/* Actions */}
           <div className="flex gap-2 pt-4">
             <Button 
-              variant="outline" 
+              color="secondary" 
               onClick={() => onOpenChange(false)}
               className="flex-1"
             >

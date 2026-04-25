@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { ChevronLeft, ChevronRight, Rocket, Star, MapPin, Target, Briefcase } from 'lucide-react';
 import { formatLocationDisplay } from '@/lib/country';
@@ -88,7 +88,7 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                   <Button size="sm" className="flex-1">
                     Se connecter
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" color="secondary">
                     Suivre
                   </Button>
                 </div>
@@ -148,7 +148,7 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                   <Button size="sm" className="flex-1">
                     Suivre
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" color="secondary">
                     Voir jobs
                   </Button>
                 </div>
@@ -191,7 +191,7 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <Button
-            variant="outline"
+            color="secondary"
             size="sm"
             onClick={() => scroll('left')}
             className="h-8 w-8 p-0"
@@ -199,14 +199,14 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
-            variant="outline"
+            color="secondary"
             size="sm"
             onClick={() => scroll('right')}
             className="h-8 w-8 p-0"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={onSeeAll}>
+          <Button color="secondary" size="sm" onClick={onSeeAll}>
             Voir tout
           </Button>
         </div>

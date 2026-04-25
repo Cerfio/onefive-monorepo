@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui';
+import { Button } from '@/components/base/buttons/button';
 import { Fragment, memo } from 'react';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
@@ -72,7 +72,7 @@ const CommentsList: React.FC<Props> = ({
         {isPostPage && <div ref={triggerRef} style={{ height: '1px' }} />}
         {!isPostPage && commentCount > 0 && (
           <Link href={`/feed/${postId}`} className="w-full flex justify-center">
-            <Button variant="ghost" size="sm" className="text-xs w-fit px-16">
+            <Button color="tertiary" size="sm" className="text-xs w-fit px-16">
               View all {commentCount} comments
             </Button>
           </Link>

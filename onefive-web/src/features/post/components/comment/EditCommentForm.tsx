@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/base/buttons/button';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { useEditComment } from '../../hooks/mutations/useEditComment';
 
@@ -76,7 +76,7 @@ const EditCommentForm: React.FC<EditCommentFormProps> = ({
             variant="ghost"
             size="sm"
             onClick={onCancel}
-            disabled={isLoading}
+            isDisabled={isLoading}
             className="h-7 px-3 text-xs"
           >
             Annuler
@@ -85,7 +85,7 @@ const EditCommentForm: React.FC<EditCommentFormProps> = ({
             type="submit"
             color="primary"
             size="sm"
-            disabled={!content.trim() || content.trim() === initialContent.trim() || isLoading}
+            isDisabled={!content.trim() || content.trim() === initialContent.trim() || isLoading}
             className="h-7 px-3 text-xs"
           >
             {isLoading ? 'Sauvegarde...' : 'Sauvegarder'}

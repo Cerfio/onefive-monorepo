@@ -848,7 +848,7 @@ const MessagesPage = () => {
                     <Button
                       type="submit"
                       size="md"
-                      disabled={sendMessage.isPending}
+                      isDisabled={sendMessage.isPending}
                     >
                       {sendMessage.isPending
                         ? 'Envoi...'
@@ -908,7 +908,7 @@ const MessagesPage = () => {
                     <Button
                       type="submit"
                       iconLeading={Send01}
-                      disabled={sendMessage.isPending}
+                      isDisabled={sendMessage.isPending}
                     />
                   </div>
                 </Form>

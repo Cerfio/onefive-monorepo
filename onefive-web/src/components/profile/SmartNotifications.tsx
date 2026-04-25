@@ -9,7 +9,7 @@ import {
   DollarSign,
   Check
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -109,7 +109,7 @@ export default function SmartNotifications() {
         </div>
         
         {unreadCount > 0 && (
-          <Button variant="outline" size="sm" onClick={markAllAsRead}>
+          <Button color="secondary" size="sm" onClick={markAllAsRead}>
             Tout marquer comme lu
           </Button>
         )}
@@ -177,7 +177,7 @@ export default function SmartNotifications() {
                         {!notification.read && (
                           <Button 
                             size="sm" 
-                            variant="ghost" 
+                            color="tertiary" 
                             onClick={() => markAsRead(notification.id)}
                             className="h-6 px-2"
                           >
@@ -198,7 +198,7 @@ export default function SmartNotifications() {
       {notifications.length > 5 && (
         <div className="text-center">
           <Button 
-            variant="outline" 
+            color="secondary" 
             onClick={() => setShowAll(!showAll)}
             className="w-full"
           >

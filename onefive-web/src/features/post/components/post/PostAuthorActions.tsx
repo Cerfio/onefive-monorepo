@@ -32,7 +32,7 @@ export const PostAuthorActions = ({
         size="sm"
         color={following ? 'secondary' : 'primary'}
         className="flex-1"
-        disabled={followProfile.isLoading}
+        isDisabled={followProfile.isLoading}
         onClick={handleFollow}
         iconLeading={following ? <CheckCircle className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
       >

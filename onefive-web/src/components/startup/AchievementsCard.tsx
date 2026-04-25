@@ -2,8 +2,7 @@
 
 import { Star, Edit3, Plus } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Button as BaseButton } from '@/components/base/buttons/button';
+import { Button } from '@/components/base/buttons/button';
 
 export const AchievementsCard = ({ achievements, currentUser, onEdit }: {
   achievements: any[];
@@ -20,7 +19,7 @@ export const AchievementsCard = ({ achievements, currentUser, onEdit }: {
           <h3 className="text-lg font-semibold text-gray-900">Réalisations</h3>
         </div>
         {currentUser && hasAchievements && (
-          <Button variant="ghost" size="sm" onClick={onEdit}>
+          <Button color="tertiary" size="sm" onClick={onEdit}>
             <Edit3 className="w-4 h-4" />
           </Button>
         )}
@@ -45,9 +44,9 @@ export const AchievementsCard = ({ achievements, currentUser, onEdit }: {
             <Star className="w-8 h-8 text-gray-300 mx-auto mb-2" />
             <p className="text-sm text-gray-500 mb-3">Aucune réalisation</p>
             {currentUser && onEdit && (
-              <BaseButton color="primary" size="sm" onClick={onEdit} iconLeading={Plus}>
+              <Button color="primary" size="sm" onClick={onEdit} iconLeading={Plus}>
                 Ajouter votre première réalisation
-              </BaseButton>
+              </Button>
             )}
           </div>
         )}

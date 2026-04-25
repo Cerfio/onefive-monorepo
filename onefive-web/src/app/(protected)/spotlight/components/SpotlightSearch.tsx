@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Autocomplete } from '@react-google-maps/api';
 import { MutableRefObject } from 'react';
@@ -79,7 +79,7 @@ export const SpotlightSearch = ({
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
               >
                 <Button
-                  variant="ghost"
+                  color="tertiary"
                   size="sm"
                   onClick={() => setSearch('')}
                   className="h-6 w-6 p-0 hover:bg-gray-100"

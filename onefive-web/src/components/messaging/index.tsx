@@ -179,7 +179,7 @@ import { TextArea } from "../base/textarea/textarea";
             color="primary"
             onClick={handleSave}
             iconLeading={CheckIcon}
-            disabled={!editText.trim() || editText === message.text}
+            isDisabled={!editText.trim() || editText === message.text}
           >
             Sauvegarder
           </Button>

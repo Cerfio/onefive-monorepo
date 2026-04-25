@@ -7,11 +7,11 @@ import insightfulEmoji from '@/icons/reactions/insightful.svg';
 import loveEmoji from '@/icons/reactions/love.svg';
 import supportEmoji from '@/icons/reactions/support.svg';
 import {
-  Button,
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui';
+import { Button } from '@/components/base/buttons/button';
 import { Reaction } from '@/enums';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -128,7 +128,7 @@ const CommentInteraction: React.FC<Props> = ({ postId, commentId, currentComment
         )}
         onClick={() => handleReaction(Reaction.THUMBS_UP)}
       >
-        <Button variant="ghost" size="sm" className="h-6 text-xs px-2">
+        <Button color="tertiary" size="sm" className="h-6 text-xs px-2">
           {reaction !== null && (
             <Image
               width={14}

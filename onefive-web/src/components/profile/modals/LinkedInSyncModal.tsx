@@ -157,7 +157,7 @@ export const LinkedInSyncModal = ({ open, onOpenChange, onConfirm }: LinkedInSyn
                   <Button
                     color="primary"
                     onClick={handleConfirm}
-                    disabled={isLoading}
+                    isDisabled={isLoading}
                     className="flex-1"
                   >
                     {isLoading ? 'Redirection vers LinkedIn...' : 'Continuer avec LinkedIn'}

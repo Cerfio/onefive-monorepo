@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { useRepost } from '../../hooks/mutations/useRepost';
 
@@ -78,15 +78,15 @@ export default function RepostWithThoughtsModal({
 
         <DialogFooter>
           <Button
-            variant="outline"
+            color="secondary"
             onClick={handleClose}
-            disabled={isPending}
+            isDisabled={isPending}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!thoughts.trim() || isPending}
+            isDisabled={!thoughts.trim() || isPending}
           >
             {isPending ? 'Reposting...' : 'Repost'}
           </Button>

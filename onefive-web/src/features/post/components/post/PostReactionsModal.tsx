@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Loader2, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/base/badges/badges';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { cn } from '@/lib/utils';
 import likeTrueEmoji from '@/icons/reactions/like-true.svg';
@@ -270,7 +270,7 @@ export default function PostReactionsModal({
           {!isLoading && isError && (
             <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
               <p className="mb-3">{error instanceof Error ? error.message : 'Unable to load reactions.'}</p>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>
+              <Button color="secondary" size="sm" onClick={() => refetch()}>
                 Try again
               </Button>
             </div>
@@ -342,7 +342,7 @@ export default function PostReactionsModal({
 
           {hasNextPage && !isError && (
             <Button
-              variant="secondary"
+              color="secondary"
               size="sm"
               className="w-full"
               onClick={() => fetchNextPage()}
@@ -355,7 +355,7 @@ export default function PostReactionsModal({
         </div>
 
         <DialogFooter className="flex justify-end">
-          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+          <Button color="tertiary" size="sm" onClick={() => onOpenChange(false)}>
             Close
           </Button>
         </DialogFooter>

@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -152,10 +152,10 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                     </div>
 
                     <DialogFooter>
-                        <Button variant="outline" onClick={handleClose} type="button">
+                        <Button color="secondary" onClick={handleClose} type="button">
                             Annuler
                         </Button>
-                        <Button type="submit" disabled={isCreating}>
+                        <Button type="submit" isDisabled={isCreating}>
                             {isCreating ? "Création..." : "Créer le groupe"}
                         </Button>
                     </DialogFooter>

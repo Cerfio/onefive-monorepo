@@ -142,7 +142,7 @@ export const ImageUpload = ({
             color="secondary"
             className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0"
             onClick={handleButtonClick}
-            disabled={isUploading}
+            isDisabled={isUploading}
             isLoading={isUploading}
           >
             {!isUploading && <Camera className="h-4 w-4" />}
@@ -194,7 +194,7 @@ export const ImageUpload = ({
           color="secondary"
           className="absolute bottom-4 right-4 h-10 w-10 rounded-full p-0 bg-white/90 hover:bg-white text-gray-700 border border-gray-300 shadow-lg"
           onClick={handleButtonClick}
-          disabled={isUploading}
+          isDisabled={isUploading}
           isLoading={isUploading}
         >
           {!isUploading && <Camera className="h-5 w-5" />}

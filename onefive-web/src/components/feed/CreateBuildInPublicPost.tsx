@@ -302,7 +302,7 @@ export const CreateBuildInPublicPost: React.FC<CreateBuildInPublicPostProps> = (
                 color="secondary"
                 size="sm"
                 onClick={handleAddMetric}
-                disabled={!newMetric.label || !newMetric.before || !newMetric.after}
+                isDisabled={!newMetric.label || !newMetric.before || !newMetric.after}
                 className="w-full"
                 iconLeading={<Plus data-icon className="w-4 h-4" />}
               >

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import {
   Dialog,
   DialogContent,
@@ -356,12 +356,12 @@ export const InvestmentProposalModal = ({
         </form>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button color="secondary" onClick={() => onOpenChange(false)}>
             Annuler
           </Button>
           <Button 
             onClick={handleSubmit} 
-            disabled={!isFormValid()}
+            isDisabled={!isFormValid()}
             className={`${
               isFormValid() 
                 ? 'bg-violet-600 hover:bg-violet-700' 

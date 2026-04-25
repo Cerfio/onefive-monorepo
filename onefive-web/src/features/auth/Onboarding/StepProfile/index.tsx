@@ -16,7 +16,7 @@ import type { DateValue } from 'react-aria-components';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import InputSelect from '@/components/ui/input-search';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Plus, User } from 'lucide-react';
@@ -142,13 +142,13 @@ const ModalGender = () => {
       </div>
       <div className="flex justify-between gap-2">
         <DialogClose className="w-full">
-          <Button className="w-full" variant="outline">
+          <Button className="w-full" color="secondary">
             Annuler
           </Button>
         </DialogClose>
         <DialogClose className="w-full">
           <Button
-            variant="default"
+            color="primary"
             onClick={() => {
               setAnotherGender({
                 addressGender: addressGender,

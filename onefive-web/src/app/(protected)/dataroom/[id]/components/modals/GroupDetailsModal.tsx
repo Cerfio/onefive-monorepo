@@ -360,7 +360,7 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
                                                             <Button
                                                                 color="secondary"
                                                                 onClick={addByEmail}
-                                                                disabled={!canAddAsEmail}
+                                                                isDisabled={!canAddAsEmail}
                                                                 className="w-full justify-start"
                                                                 iconLeading={<Mail className="h-4 w-4" data-icon />}
                                                             >

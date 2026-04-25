@@ -9,7 +9,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { AuthGate } from '@/components/seo/AuthGate';
 
 interface ProfilePrivateSectionProps {
@@ -166,7 +166,7 @@ export function ProfilePrivateSection({ profileId: _profileId }: ProfilePrivateS
             <Sparkles className="mr-2 h-4 w-4" />
             Créer mon compte
           </Button>
-          <Button variant="outline" size="lg" onClick={handleRequestAuth}>
+          <Button color="secondary" size="lg" onClick={handleRequestAuth}>
             Se connecter
           </Button>
         </div>

@@ -10,7 +10,6 @@ import { DialogTrigger, ModalOverlay, Modal, Dialog } from '@/components/applica
 import { CloseButton } from '@/components/base/buttons/close-button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/base/badges/badges';
-import { Button as UIButton } from '@/components/ui/button';
 import { Button } from '@/components/base/buttons/button';
 import { FundingHistoryEntry, CreateFundingHistoryData, UpdateFundingHistoryData, FundingInvestor } from '@/queries/startup';
 import { Trash2, Edit2, Building2 } from 'lucide-react';

@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { X } from 'lucide-react';
 import { VALIDATION_LIMITS } from '@/constants/validation-limits';
 
@@ -84,7 +84,7 @@ export const EditAchievementsModal: React.FC<EditAchievementsModalProps> = ({
                 <h4 className="text-sm font-medium">Réalisation {index + 1}</h4>
                 <Button
                   type="button"
-                  variant="ghost"
+                  color="tertiary"
                   size="sm"
                   onClick={() => handleRemove(achievement.id)}
                   className="text-red-600 hover:text-red-700"
@@ -133,7 +133,7 @@ export const EditAchievementsModal: React.FC<EditAchievementsModalProps> = ({
 
           <Button
             type="button"
-            variant="outline"
+            color="secondary"
             onClick={handleAdd}
             className="w-full"
           >
@@ -143,7 +143,7 @@ export const EditAchievementsModal: React.FC<EditAchievementsModalProps> = ({
           <div className="flex justify-end gap-2 mt-6">
             <Button
               type="button"
-              variant="outline"
+              color="secondary"
               onClick={() => onOpenChange(false)}
             >
               Annuler

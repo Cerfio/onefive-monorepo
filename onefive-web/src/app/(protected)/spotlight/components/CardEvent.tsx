@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Calendar, Users, MapPin, Heart, Share2, ExternalLink, GripVertical, Scale, DollarSign } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -193,7 +193,7 @@ export const CardEvent = memo(({
             <Tooltip title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}>
               <Button
                 size="sm"
-                variant="ghost"
+                color="tertiary"
                 className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
                 onClick={handleFavorite}
                 aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
@@ -207,7 +207,7 @@ export const CardEvent = memo(({
             <Tooltip title="Partager cet événement">
               <Button
                 size="sm"
-                variant="ghost"
+                color="tertiary"
                 className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
                 onClick={handleShare}
                 aria-label="Partager cet événement"
@@ -335,13 +335,13 @@ export const CardEvent = memo(({
             
             <div className="flex items-center gap-2">
               <Link href={`/spotlight/${spot.id}`}>
-                <Button variant="default" size="sm" className="gap-2 bg-[#5E6AD2] hover:bg-[#4F5ABF]">
+                <Button color="primary" size="sm" className="gap-2 bg-[#5E6AD2] hover:bg-[#4F5ABF]">
                   Détails
                 </Button>
               </Link>
               {spot.url && (
                 <Link href={spot.url} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="sm" className="gap-2">
+                  <Button color="secondary" size="sm" className="gap-2">
                     <ExternalLink className="h-3 w-3" />
                     Voir l'événement
                   </Button>
@@ -354,7 +354,7 @@ export const CardEvent = memo(({
               <Tooltip title={isSelected ? 'Retirer de la comparaison' : 'Ajouter à la comparaison'}>
                 <Button
                   size="sm"
-                  variant="outline"
+                  color="secondary"
                   className="gap-2"
                   onClick={handleSelect}
                 >

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Edit3, MapPin, Calendar, Building, ExternalLink, Share2, Bookmark, MoreVertical, DollarSign, ArrowRightLeft, Trash2, LogOut } from 'lucide-react';
 import LinkedInSquareIcon from '@/components/shared/LinkedInSquareIcon';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { getSectorColor } from '@/shared/constants/sector-colors';
 import { Card } from '@/components/ui/card';
@@ -147,19 +147,19 @@ export const StartupHeader = ({
                       >
                         {isFollowing ? 'Suivi' : 'Suivre'}
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button color="secondary" size="sm">
                         Contacter
                       </Button>
                     </>
                   )}
                   {currentUser && (
-                    <Button variant="outline" className="gap-2" onClick={onEdit}>
+                    <Button color="secondary" className="gap-2" onClick={onEdit}>
                       <Edit3 className="h-4 w-4" />Modifier
                     </Button>
                   )}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="icon">
+                      <Button color="secondary" size="sm">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>

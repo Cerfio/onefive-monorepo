@@ -8,7 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -398,8 +398,8 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                 <div className="flex items-center justify-between">
                                     <h4 className="font-medium">Nouvel accès direct</h4>
                                     <Button 
-                                        variant="ghost" 
-                                        size="icon"
+                                        color="tertiary" 
+                                        size="sm"
                                         onClick={() => {
                                             setShowAddDirect(false);
                                             setSelectedPeople([]);
@@ -494,7 +494,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                 if (isEmailFormat) {
                                                     return (
                                                         <Button
-                                                            variant="outline"
+                                                            color="secondary"
                                                             onClick={() => {
                                                                 const name = searchValue.split('@')[0];
                                                                 setSelectedPeople(prev => [...prev, {
@@ -554,7 +554,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                         {person.type === 'profile' ? 'Profil' : 'Email'}
                                                     </Badge>
                                                     <Button
-                                                        variant="ghost"
+                                                        color="tertiary"
                                                         size="sm"
                                                         onClick={() => setSelectedPeople(prev => prev.filter(p => p.email !== person.email))}
                                                         className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
@@ -693,8 +693,8 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                     // Mode édition - boutons directs
                                                     <div className="flex items-center gap-1">
                                                         <Button
-                                                            variant="ghost"
-                                                            size="icon"
+                                                            color="tertiary"
+                                                            size="sm"
                                                             onClick={() => handleSaveEdit(access.id)}
                                                             className="hover:bg-green-50 hover:text-green-600 h-8 w-8"
                                                             title="Sauvegarder"
@@ -702,8 +702,8 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                             <Check className="h-4 w-4" />
                                                         </Button>
                                                         <Button
-                                                            variant="ghost"
-                                                            size="icon"
+                                                            color="tertiary"
+                                                            size="sm"
                                                             onClick={handleCancelEdit}
                                                             className="hover:bg-gray-50 hover:text-gray-600 h-8 w-8"
                                                             title="Annuler"
@@ -716,8 +716,8 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
                                                             <Button
-                                                                variant="ghost"
-                                                                size="icon"
+                                                                color="tertiary"
+                                                                size="sm"
                                                                 className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                                             >
                                                                 <MoreHorizontal className="h-4 w-4" />
@@ -800,7 +800,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                 </Tabs>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose}>
+                    <Button color="secondary" onClick={onClose}>
                         Fermer
                     </Button>
                 </DialogFooter>
@@ -838,16 +838,16 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                             <DialogFooter>
                                 <Button
                                     type="button"
-                                    variant="outline"
+                                    color="secondary"
                                     onClick={handleCloseRemoveConfirmation}
-                                    disabled={isRemoving}
+                                    isDisabled={isRemoving}
                                 >
                                     Annuler
                                 </Button>
                                 <Button
                                     type="submit"
-                                    variant="destructive"
-                                    disabled={!isRemoveFormValid}
+                                    color="primary-destructive"
+                                    isDisabled={!isRemoveFormValid}
                                     className="bg-red-600 hover:bg-red-700"
                                 >
                                     {isRemoving ? (

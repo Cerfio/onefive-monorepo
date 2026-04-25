@@ -8,7 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -357,7 +357,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                 <div className="flex justify-between items-center">
                                     <h4 className="font-medium">Nouvel accès direct</h4>
                                     <Button
-                                        variant="ghost"
+                                        color="tertiary"
                                         size="sm"
                                         onClick={() => setShowAddDirect(false)}
                                         className="text-gray-500 hover:text-red-600"
@@ -521,7 +521,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
 
                                     <div className="flex justify-end gap-2 pt-2 border-t">
                                         <Button
-                                            variant="outline"
+                                            color="secondary"
                                             size="sm"
                                             onClick={() => setShowAddDirect(false)}
                                         >
@@ -530,7 +530,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                         <Button
                                             size="sm"
                                             onClick={handleAddDirectAccess}
-                                            disabled={!newDirectAccess.email}
+                                            isDisabled={!newDirectAccess.email}
                                             className="bg-[#5E6AD2] hover:bg-[#4F58B8]"
                                         >
                                             Ajouter l'accès
@@ -584,8 +584,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                 {editingAccess === access.id ? (
                                                     <div className="flex items-center gap-1">
                                                         <Button
-                                                            variant="ghost"
-                                                            size="icon"
+                                                            color="tertiary"
+                                                            size="sm"
                                                             onClick={() => handleSaveEdit(access.id)}
                                                             className="hover:bg-green-50 hover:text-green-600 h-8 w-8"
                                                             title="Sauvegarder"
@@ -593,8 +593,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                             <Check className="h-4 w-4" />
                                                         </Button>
                                                         <Button
-                                                            variant="ghost"
-                                                            size="icon"
+                                                            color="tertiary"
+                                                            size="sm"
                                                             onClick={handleCancelEdit}
                                                             className="hover:bg-gray-50 hover:text-gray-600 h-8 w-8"
                                                             title="Annuler"
@@ -608,8 +608,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {access.status === 'accepted' && (
                                                                 <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
+                                                                    color="tertiary"
+                                                                    size="sm"
                                                                     onClick={() => handleStartEdit(access)}
                                                                     className="h-8 w-8"
                                                                     title="Modifier les permissions"
@@ -618,8 +618,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                                 </Button>
                                                             )}
                                                             <Button
-                                                                variant="ghost"
-                                                                size="icon"
+                                                                color="tertiary"
+                                                                size="sm"
                                                                 onClick={() => handleRemoveDirectAccess(access.id)}
                                                                 className="h-8 w-8 hover:bg-red-50 hover:text-red-600"
                                                                 title="Supprimer l'accès"
@@ -686,7 +686,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                 </Tabs>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose}>
+                    <Button color="secondary" onClick={onClose}>
                         Fermer
                     </Button>
                 </DialogFooter>

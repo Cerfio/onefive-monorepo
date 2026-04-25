@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { DollarSign, Users, FileText, Calendar, Plus, Trash2, Edit3 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
-import { Button } from '@/components/ui/button';
-import { Button as BaseButton } from '@/components/base/buttons/button';
+import { Button } from '@/components/base/buttons/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { FundingData, FundingHistoryEntry, parseInvestors } from '@/queries/startup';
 import { format } from 'date-fns';
@@ -166,7 +165,7 @@ export const FundingCard = ({
               Historique
             </h4>
             {currentUser && onAddHistory && (
-              <Button variant="ghost" size="sm" onClick={onAddHistory}>
+              <Button color="tertiary" size="sm" onClick={onAddHistory}>
                 <Plus className="w-4 h-4" />
               </Button>
             )}
@@ -208,7 +207,7 @@ export const FundingCard = ({
                       <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
                         {onEditHistory && (
                           <Button
-                            variant="ghost"
+                            color="tertiary"
                             size="sm"
                             onClick={() => onEditHistory(entry)}
                             className="h-7 w-7 p-0 hover:bg-gray-200"
@@ -219,7 +218,7 @@ export const FundingCard = ({
                         )}
                         {onDeleteHistory && (
                           <Button
-                            variant="ghost"
+                            color="tertiary"
                             size="sm"
                             onClick={() => handleDeleteClick(entry)}
                             className="h-7 w-7 p-0 hover:bg-red-50"
@@ -342,14 +341,14 @@ export const FundingCard = ({
               <Calendar className="w-8 h-8 text-gray-300 mx-auto mb-2" />
               <p className="text-sm text-gray-500 mb-3">Aucun financement enregistré</p>
               {currentUser && onAddHistory && (
-                <BaseButton 
+                <Button 
                   color="primary"
                   size="sm"
                   onClick={onAddHistory}
                   iconLeading={Plus}
                 >
                   Ajouter votre première levée
-                </BaseButton>
+                </Button>
               )}
             </div>
           )}
@@ -398,11 +397,15 @@ export const FundingCard = ({
 
                 <div className="flex gap-2 pt-2">
                   {funding.structuredRound.deckUrl && (
-                    <Button size="sm" variant="outline" asChild>
-                      <a href={funding.structuredRound.deckUrl} target="_blank" rel="noopener noreferrer">
-                        <FileText className="w-4 h-4 mr-1" />
-                        Voir le deck
-                      </a>
+                    <Button
+                      size="sm"
+                      color="secondary"
+                      href={funding.structuredRound.deckUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      iconLeading={<FileText data-icon />}
+                    >
+                      Voir le deck
                     </Button>
                   )}
                 </div>

@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Button as ShadcnButton } from '@/components/ui/button';
+import { Button as ShadcnButton } from '@/components/base/buttons/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Briefcase, GraduationCap, MapPin, Award, User } from 'lucide-react';

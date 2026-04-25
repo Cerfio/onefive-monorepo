@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, ChevronUp, ChevronDown, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Progress } from '@/components/ui/progress';
 import NumberFlow from '@number-flow/react';
 
@@ -25,7 +25,7 @@ const DiscussionAnalytics = ({ discussion }: { discussion: any }) => {
           <h3 className="font-semibold text-gray-900">Analytics en temps réel</h3>
         </div>
         <Button
-          variant="ghost"
+          color="tertiary"
           size="sm"
           onClick={() => setShowAnalytics(!showAnalytics)}
         >

@@ -1,6 +1,6 @@
 import type { FormEvent, HTMLAttributes } from "react";
 import { Paperclip, Smile, Mic, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { TextArea } from "@/components/base/textarea/textarea";
 import { cn } from "@/lib/utils";
 import { VALIDATION_LIMITS } from "@/constants/validation-limits";
@@ -40,13 +40,13 @@ export const MessageActionTextarea = ({
 
       <div className="absolute right-3.5 bottom-2 flex items-center gap-2">
         <div className="flex items-center gap-0.5">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button color="tertiary" size="sm" className="h-8 w-8 p-0">
             <Paperclip className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button color="tertiary" size="sm" className="h-8 w-8 p-0">
             <Smile className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button color="tertiary" size="sm" className="h-8 w-8 p-0">
             <Mic className="h-4 w-4" />
           </Button>
         </div>

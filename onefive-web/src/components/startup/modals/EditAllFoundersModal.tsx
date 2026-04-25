@@ -521,7 +521,7 @@ export const EditAllFoundersModal: React.FC<EditAllFoundersModalProps> = ({
                       <Button
                         color="primary"
                         type="submit"
-                        disabled={!isFormValid || isSaving}
+                        isDisabled={!isFormValid || isSaving}
                         className="flex-1"
                       >
                         {isSaving ? (

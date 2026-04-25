@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -223,8 +223,8 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                                                     </div>
                                                 </div>
                                                 <Button
-                                                    variant="ghost"
-                                                    size="icon"
+                                                    color="tertiary"
+                                                    size="sm"
                                                     onClick={() => {
                                                         setSelectedUser(null);
                                                         setSearchQuery('');
@@ -247,7 +247,7 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                                                 </p>
                                                 {!showEmailInput ? (
                                                     <Button
-                                                        variant="outline"
+                                                        color="secondary"
                                                         className="w-full"
                                                         onClick={() => setShowEmailInput(true)}
                                                     >
@@ -264,14 +264,14 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                                                         />
                                                         <div className="flex gap-2">
                                                             <Button
-                                                                variant="outline"
+                                                                color="secondary"
                                                                 onClick={() => setShowEmailInput(false)}
                                                             >
                                                                 Annuler
                                                             </Button>
                                                             <Button
                                                                 onClick={handleEmailInvite}
-                                                                disabled={!searchQuery.includes('@')}
+                                                                isDisabled={!searchQuery.includes('@')}
                                                             >
                                                                 Envoyer l'invitation
                                                             </Button>
@@ -300,12 +300,12 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                 </div>
 
                 <DialogFooter className="flex justify-between mt-6">
-                    <Button variant="outline" onClick={handleBack}>
+                    <Button color="secondary" onClick={handleBack}>
                         {currentStep === 1 ? 'Annuler' : 'Retour'}
                     </Button>
                     <Button
                         onClick={handleNext}
-                        disabled={!isStepValid()}
+                        isDisabled={!isStepValid()}
                     >
                         {currentStep < 3 ? 'Suivant' : 'Ajouter l\'accès'}
                     </Button>

@@ -5,13 +5,13 @@ import insightfulEmoji from '@/icons/reactions/insightful.svg';
 import loveEmoji from '@/icons/reactions/love.svg';
 import supportEmoji from '@/icons/reactions/support.svg';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui';
+import { Button } from '@/components/base/buttons/button';
 import { MoreHorizontal, Loader2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { CommentType } from '../../definitions/comment.definition';
@@ -191,7 +191,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-6 w-6">
+                <Button color="tertiary" size="sm" className="h-6 w-6">
                   <MoreHorizontal className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
@@ -306,7 +306,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
             </div> */}
           {reactionCount > 0 && (
             <Button
-              variant="ghost"
+              color="tertiary"
               size="sm"
               className="h-6 text-xs px-2"
               onClick={() => setOpenReactions(true)}
@@ -319,7 +319,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
           {isReplyOpen && (
             <Button
               onClick={toggleReply}
-              variant="ghost"
+              color="tertiary"
               size="sm"
               className="h-6 text-xs px-2"
             >
@@ -329,7 +329,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
           {!isReplyOpen && (
             <Button
               onClick={toggleReply}
-              variant="ghost"
+              color="tertiary"
               size="sm"
               className="h-6 text-xs px-2"
             >

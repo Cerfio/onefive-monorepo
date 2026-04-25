@@ -7,7 +7,7 @@ import Image from "next/image";
 import { UserCheck, Users } from "lucide-react";
 import { Flag } from "@/components/ui/flag";
 import { Tooltip } from "@/components/base/tooltip/tooltip";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { MapPin, Users, Rocket, Navigation } from 'lucide-react';
 import { getCountryName } from '@/lib/country';
@@ -185,14 +185,14 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
           <div className="absolute top-4 right-4 flex flex-col gap-2">
             <Button
               size="sm"
-              variant="outline"
+              color="secondary"
               className="bg-white bg-opacity-95 hover:bg-opacity-100"
             >
               <Navigation className="h-4 w-4" />
             </Button>
             <Button
               size="sm"
-              variant="outline"
+              color="secondary"
               className="bg-white bg-opacity-95 hover:bg-opacity-100"
               onClick={() => setSelectedLocation(null)}
             >
@@ -217,7 +217,7 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
                 )}
               </div>
               <Button
-                variant="ghost"
+                color="tertiary"
                 size="sm"
                 onClick={() => setSelectedLocation(null)}
               >
@@ -244,7 +244,7 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
               <Button size="sm" className="flex-1">
                 Explorer {selectedLocation.city}
               </Button>
-              <Button size="sm" variant="outline">
+              <Button size="sm" color="secondary">
                 Voir les événements
               </Button>
             </div>

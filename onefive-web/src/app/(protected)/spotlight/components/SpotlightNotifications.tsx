@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, Info, Heart, MessageSquare, UserPlus, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { useNotificationsList, useMarkAllNotificationsRead, useDeleteNotification, useNotificationCounts, type NotificationItem } from '@/hooks/useNotificationsApi';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -78,7 +78,7 @@ export const SpotlightNotifications = ({ onNotificationAction }: SpotlightNotifi
         whileTap={{ scale: 0.95 }}
       >
         <Button
-          variant="secondary"
+          color="secondary"
           size="lg"
           className="h-12 w-12 rounded-full shadow-lg bg-white hover:bg-gray-50"
           onClick={() => setIsExpanded(!isExpanded)}
@@ -110,7 +110,7 @@ export const SpotlightNotifications = ({ onNotificationAction }: SpotlightNotifi
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <h3 className="font-semibold text-gray-900">Notifications</h3>
               <Button
-                variant="ghost"
+                color="tertiary"
                 size="sm"
                 onClick={() => setIsExpanded(false)}
                 className="h-6 w-6 p-0"
@@ -158,7 +158,7 @@ export const SpotlightNotifications = ({ onNotificationAction }: SpotlightNotifi
                               {notification.title}
                             </h4>
                             <Button
-                              variant="ghost"
+                              color="tertiary"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -192,10 +192,10 @@ export const SpotlightNotifications = ({ onNotificationAction }: SpotlightNotifi
             {notifications.length > 0 && (
               <div className="p-3 border-t border-gray-100 bg-gray-50">
                 <Button
-                  variant="ghost"
+                  color="tertiary"
                   size="sm"
                   onClick={handleMarkAllRead}
-                  disabled={markAllReadMutation.isPending}
+                  isDisabled={markAllReadMutation.isPending}
                   className="w-full text-xs text-gray-600 hover:text-gray-900"
                 >
                   {markAllReadMutation.isPending ? 'En cours...' : 'Tout marquer comme lu'}

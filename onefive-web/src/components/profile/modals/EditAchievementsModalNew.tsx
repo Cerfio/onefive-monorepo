@@ -243,7 +243,7 @@ const EditAchievementsModalNew = ({
                   color="primary"
                   size="lg"
                   onClick={handleSave}
-                  disabled={isLoading}
+                  isDisabled={isLoading}
                 >
                   {isLoading ? "Enregistrement..." : "Enregistrer"}
                 </Button>

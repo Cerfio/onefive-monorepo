@@ -2,7 +2,7 @@
 
 import { Users, ExternalLink } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 
 export const FoundersCard = ({ founders }: {
   founders: any[];
@@ -26,11 +26,15 @@ export const FoundersCard = ({ founders }: {
               <h4 className="font-medium text-gray-900">{founder.name}</h4>
               <p className="text-sm text-gray-500">{founder.role}</p>
             </div>
-            <Button size="sm" variant="outline" asChild>
-              <a href={founder.linkedin} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </Button>
+            <Button
+              size="sm"
+              color="secondary"
+              href={founder.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              iconLeading={<ExternalLink data-icon />}
+            />
+
           </div>
         ))}
       </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Building2, UserPlus, Loader2, X } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
@@ -458,7 +458,7 @@ export const InvestorSearch = ({
                   />
                   <Button
                     onClick={handleManualAdd}
-                    disabled={!manualPerson.firstName.trim() || !manualPerson.lastName.trim()}
+                    isDisabled={!manualPerson.firstName.trim() || !manualPerson.lastName.trim()}
                     className="w-full"
                     size="lg"
                   >
@@ -495,7 +495,7 @@ export const InvestorSearch = ({
                   )}
                   <Button
                     onClick={handleManualAdd}
-                    disabled={!manualCompany.name.trim()}
+                    isDisabled={!manualCompany.name.trim()}
                     className="w-full"
                     size="lg"
                   >

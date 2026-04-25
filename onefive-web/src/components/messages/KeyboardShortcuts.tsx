@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Keyboard } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/base/buttons/button';
 import {
   Dialog,
   DialogContent,
@@ -24,7 +24,7 @@ const KeyboardShortcuts = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button color="tertiary" size="sm" className="gap-2">
           <Keyboard className="h-4 w-4" />
           Raccourcis
         </Button>

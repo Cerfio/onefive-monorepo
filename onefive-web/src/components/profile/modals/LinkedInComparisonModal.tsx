@@ -819,7 +819,7 @@ export const LinkedInComparisonModal = ({
                     <Button
                       color="primary"
                       onClick={handleApply}
-                      disabled={!hasAnySelection}
+                      isDisabled={!hasAnySelection}
                     >
                       Appliquer les changements
                     </Button>

@@ -478,7 +478,7 @@ const ReplyItem = ({ reply, discussionId, answerId, viewerId }: ReplyItemProps) 
                   color="tertiary"
                   size="sm"
                   onClick={handleCancelEdit}
-                  disabled={isUpdating}
+                  isDisabled={isUpdating}
                 >
                   Annuler
                 </Button>
@@ -486,7 +486,7 @@ const ReplyItem = ({ reply, discussionId, answerId, viewerId }: ReplyItemProps) 
                   color="primary"
                   size="sm"
                   onClick={handleSaveEdit}
-                  disabled={isUpdating || !editContent.trim()}
+                  isDisabled={isUpdating || !editContent.trim()}
                 >
                   {isUpdating ? 'Enregistrement...' : 'Enregistrer'}
                 </Button>

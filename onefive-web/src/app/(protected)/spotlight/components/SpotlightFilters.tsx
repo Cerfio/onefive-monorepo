@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { X, Filter } from 'lucide-react';
 import {
   Select,
@@ -149,7 +149,7 @@ export const SpotlightFilters = ({
             </div>
           </div>
           <Button
-            variant="ghost"
+            color="tertiary"
             size="sm"
             onClick={onClearFilters}
             className="text-red-600 hover:text-red-700 hover:bg-red-50"
