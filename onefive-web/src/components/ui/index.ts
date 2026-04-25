@@ -61,7 +61,6 @@ export {
 
 // Composants shadcn pas encore migrés
 export * from './button-group';
-export * from './form';
 export * from './hover-card';
 export * from './input-search';
 export * from './placeholder';
