@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Group } from "../types";
 import { Shield, FolderClosed, Users } from "lucide-react";
 
@@ -154,8 +154,8 @@ export const ManagePermissionsModal: React.FC<ManagePermissionsModalProps> = ({
                                     </div>
                                 </div>
                                 <Checkbox
-                                    checked={permissions[category.id] || false}
-                                    onCheckedChange={(checked: boolean) => 
+                                    isSelected={permissions[category.id] || false}
+                                    onChange={(checked: boolean) =>
                                         handlePermissionChange(category.id, checked)
                                     }
                                 />

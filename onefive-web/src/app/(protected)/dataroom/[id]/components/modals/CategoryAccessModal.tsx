@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
 import { Input } from "@/components/base/input/input";
@@ -297,8 +297,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                 </div>
                                             </div>
                                             <Checkbox
-                                                checked={groupAccess[group.id]?.canDownload || false}
-                                                onCheckedChange={(checked: boolean) => 
+                                                isSelected={groupAccess[group.id]?.canDownload || false}
+                                                onChange={(checked: boolean) =>
                                                     handleGroupAccessChange(group.id, 'canDownload', checked)
                                                 }
                                             />
@@ -316,8 +316,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                 </div>
                                             </div>
                                             <Checkbox
-                                                checked={groupAccess[group.id]?.canComment || false}
-                                                onCheckedChange={(checked: boolean) => 
+                                                isSelected={groupAccess[group.id]?.canComment || false}
+                                                onChange={(checked: boolean) =>
                                                     handleGroupAccessChange(group.id, 'canComment', checked)
                                                 }
                                             />
@@ -485,8 +485,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                     </div>
                                                 </div>
                                                 <Checkbox
-                                                    checked={newDirectAccess.access.canDownload}
-                                                    onCheckedChange={(checked: boolean) => 
+                                                    isSelected={newDirectAccess.access.canDownload}
+                                                    onChange={(checked: boolean) =>
                                                         setNewDirectAccess(prev => ({
                                                             ...prev,
                                                             access: { ...prev.access, canDownload: checked }
@@ -507,8 +507,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                     </div>
                                                 </div>
                                                 <Checkbox
-                                                    checked={newDirectAccess.access.canComment}
-                                                    onCheckedChange={(checked: boolean) => 
+                                                    isSelected={newDirectAccess.access.canComment}
+                                                    onChange={(checked: boolean) =>
                                                         setNewDirectAccess(prev => ({
                                                             ...prev,
                                                             access: { ...prev.access, canComment: checked }
@@ -659,8 +659,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                             <span className="text-sm font-medium">Télécharger les fichiers</span>
                                                         </div>
                                                         <Checkbox
-                                                            checked={editAccessData.canDownload}
-                                                            onCheckedChange={(checked: boolean) => handleEditAccessChange('canDownload', checked)}
+                                                            isSelected={editAccessData.canDownload}
+                                                            onChange={(checked: boolean) => handleEditAccessChange('canDownload', checked)}
                                                         />
                                                     </div>
 
@@ -671,8 +671,8 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                             <span className="text-sm font-medium">Commenter les fichiers</span>
                                                         </div>
                                                         <Checkbox
-                                                            checked={editAccessData.canComment}
-                                                            onCheckedChange={(checked: boolean) => handleEditAccessChange('canComment', checked)}
+                                                            isSelected={editAccessData.canComment}
+                                                            onChange={(checked: boolean) => handleEditAccessChange('canComment', checked)}
                                                         />
                                                     </div>
                                                 </div>

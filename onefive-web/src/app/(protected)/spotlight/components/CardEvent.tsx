@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Credenza, CredenzaBody, CredenzaContent, CredenzaTrigger } from '@/components/ui/modal';
 import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
 import { Badge } from '@/components/base/badges/badges';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from '@/components/base/checkbox/checkbox';
 import { motion } from 'framer-motion';
 import { ProviderType } from '@/sharing-enum/spotlight/spotlight.enum';
 import { useState, memo } from 'react';
@@ -142,8 +142,8 @@ export const CardEvent = memo(({
             animate={{ opacity: 1, scale: 1 }}
           >
             <Checkbox
-              checked={isSelected}
-              onCheckedChange={() => onSelect?.(spot.id, !isSelected)}
+              isSelected={isSelected}
+              onChange={() => onSelect?.(spot.id, !isSelected)}
               className="bg-white/90"
             />
           </motion.div>

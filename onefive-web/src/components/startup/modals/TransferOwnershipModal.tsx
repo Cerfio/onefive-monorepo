@@ -5,7 +5,7 @@ import { Button } from '@/components/base/buttons/button';
 import { CloseButton } from '@/components/base/buttons/close-button';
 import { Modal, ModalOverlay, Dialog } from '@/components/application/modals/modal';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from 'react-aria-components';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { ArrowRightLeft, Loader2, Check } from 'lucide-react';
 import { resolveAvatarUrl } from '@/utils/avatar';
 import { useTransferOwnership } from '@/queries/startup';
@@ -101,12 +101,13 @@ export const TransferOwnershipModal: React.FC<TransferOwnershipModalProps> = ({
                             isSelected ? 'bg-violet-50 ring-2 ring-violet-300' : 'hover:bg-gray-50'
                           }`}
                         >
-                          <Avatar className="h-8 w-8 shrink-0">
-                            <AvatarImage src={avatarUrl} alt={c.name} />
-                            <AvatarFallback className="bg-violet-100 text-violet-600 text-xs font-medium">
-                              {getInitials(c.name)}
-                            </AvatarFallback>
-                          </Avatar>
+                          <Avatar
+                            size="sm"
+                            src={avatarUrl}
+                            alt={c.name}
+                            initials={getInitials(c.name)}
+                            className="shrink-0"
+                          />
                           <div className="flex-1 min-w-0">
                             <span className="text-sm font-medium text-primary truncate block">{c.name}</span>
                             {c.position && <span className="text-xs text-tertiary">{c.position}</span>}

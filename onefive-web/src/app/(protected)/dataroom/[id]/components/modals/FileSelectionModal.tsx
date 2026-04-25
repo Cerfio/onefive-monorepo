@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Group } from "../../types";
 
 interface FileSelectionModalProps {
@@ -106,8 +106,8 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
                                     </div>
                                 </div>
                                 <Checkbox
-                                    checked={selectedFiles.includes(doc.id)}
-                                    onCheckedChange={() => onFileSelection(doc.id)}
+                                    isSelected={selectedFiles.includes(doc.id)}
+                                    onChange={() => onFileSelection(doc.id)}
                                 />
                             </div>
                         ))}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { InvestorSearch, InvestorEntity } from '@/components/startup/InvestorSearch';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Button } from '@/components/base/buttons/button';
 import { Toggle } from '@/components/base/toggle/toggle';
 import { Building2, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -88,10 +88,12 @@ export const InvestorsStep = ({ onNext, onBack, data, onDataChange }: InvestorsS
                 className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
               >
                 {investor.type === 'person' ? (
-                  <Avatar className="h-10 w-10 flex-shrink-0">
-                    <AvatarImage src={resolveAvatarUrl(investor.avatar)} />
-                    <AvatarFallback>{investor.name[0]}</AvatarFallback>
-                  </Avatar>
+                  <Avatar
+                    size="md"
+                    src={resolveAvatarUrl(investor.avatar)}
+                    initials={investor.name[0]}
+                    className="flex-shrink-0"
+                  />
                 ) : (
                   <div className="h-10 w-10 flex-shrink-0 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
                     {investor.logo ? (

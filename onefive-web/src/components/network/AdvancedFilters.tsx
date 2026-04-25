@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/base/buttons/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from '@/components/base/checkbox/checkbox';
 import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
@@ -267,9 +267,9 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                 <div key={option} className="flex items-center space-x-2">
                   <Checkbox
                     id={`${section.key}-${option}`}
-                    checked={(filters[section.key] as string[])?.includes(option) || false}
-                    onCheckedChange={(checked) => 
-                      onFilterChange(section.key, option, checked as boolean)
+                    isSelected={(filters[section.key] as string[])?.includes(option) || false}
+                    onChange={(checked) =>
+                      onFilterChange(section.key, option, checked)
                     }
                   />
                   <label 
@@ -367,9 +367,9 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                 <div key={filter.key} className="flex items-center space-x-2">
                   <Checkbox
                     id={filter.key}
-                    checked={filters[filter.key] as boolean}
-                    onCheckedChange={(checked) => 
-                      onFilterChange(filter.key, checked as boolean)
+                    isSelected={filters[filter.key] as boolean}
+                    onChange={(checked) =>
+                      onFilterChange(filter.key, checked)
                     }
                   />
                   <label 

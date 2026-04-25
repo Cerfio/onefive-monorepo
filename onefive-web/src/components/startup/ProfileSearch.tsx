@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, User, Mail } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
 import { Button } from '@/components/base/buttons/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Badge } from '@/components/base/badges/badges';
 import { ProfileSearchResult } from '@/queries/startup';
 import { InviteByEmailForm } from './InviteByEmailForm';
@@ -108,12 +108,12 @@ export const ProfileSearch = ({
                   disabled={selectedProfiles.includes(profile.id)}
                   className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={profile.avatar} alt={`${profile.firstName} ${profile.lastName}`} />
-                    <AvatarFallback>
-                      {`${profile.firstName[0]}${profile.lastName[0]}`}
-                    </AvatarFallback>
-                  </Avatar>
+                  <Avatar
+                    size="sm"
+                    src={profile.avatar}
+                    alt={`${profile.firstName} ${profile.lastName}`}
+                    initials={`${profile.firstName[0]}${profile.lastName[0]}`}
+                  />
                   <div className="flex-1 text-left">
                     <div className="font-medium text-sm">
                       {profile.firstName} {profile.lastName}

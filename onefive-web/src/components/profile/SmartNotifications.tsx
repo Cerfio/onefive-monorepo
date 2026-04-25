@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { toast } from 'sonner';
 
 // Types pour les notifications intelligentes
@@ -127,10 +127,10 @@ export default function SmartNotifications() {
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 {/* Avatar principal */}
-                <Avatar>
-                  <AvatarImage src={notification.profileAvatar} />
-                  <AvatarFallback>{notification.profileName?.[0]}</AvatarFallback>
-                </Avatar>
+                <Avatar
+                  src={notification.profileAvatar}
+                  initials={notification.profileName?.[0]}
+                />
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
@@ -150,10 +150,10 @@ export default function SmartNotifications() {
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xs text-gray-500">avec</span>
                                                      <div className="flex items-center gap-1">
-                             <Avatar>
-                               <AvatarImage src={notification.relatedProfileAvatar!} />
-                               <AvatarFallback>{notification.relatedProfileName?.[0]}</AvatarFallback>
-                             </Avatar>
+                             <Avatar
+                               src={notification.relatedProfileAvatar!}
+                               initials={notification.relatedProfileName?.[0]}
+                             />
                              <span className="text-xs font-medium">{notification.relatedProfileName}</span>
                            </div>
                         </div>

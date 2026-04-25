@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Separator } from "@/components/base/separator/separator";
 
 interface CreateGroupModalProps {
@@ -97,8 +97,8 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="hasAllAccess"
-                                    checked={hasAllAccess}
-                                    onCheckedChange={(checked) => setHasAllAccess(checked as boolean)}
+                                    isSelected={hasAllAccess}
+                                    onChange={(checked) => setHasAllAccess(checked)}
                                 />
                                 <Label htmlFor="hasAllAccess" className="text-sm font-normal">
                                     Accès à tous les fichiers
@@ -108,8 +108,8 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="canUpload"
-                                    checked={canUpload}
-                                    onCheckedChange={(checked) => setCanUpload(checked as boolean)}
+                                    isSelected={canUpload}
+                                    onChange={(checked) => setCanUpload(checked)}
                                 />
                                 <Label htmlFor="canUpload" className="text-sm font-normal">
                                     Peut télécharger des fichiers
@@ -119,8 +119,8 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="canShare"
-                                    checked={canShare}
-                                    onCheckedChange={(checked) => setCanShare(checked as boolean)}
+                                    isSelected={canShare}
+                                    onChange={(checked) => setCanShare(checked)}
                                 />
                                 <Label htmlFor="canShare" className="text-sm font-normal">
                                     Peut partager des fichiers
@@ -130,8 +130,8 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="canManageUsers"
-                                    checked={canManageUsers}
-                                    onCheckedChange={(checked) => setCanManageUsers(checked as boolean)}
+                                    isSelected={canManageUsers}
+                                    onChange={(checked) => setCanManageUsers(checked)}
                                 />
                                 <Label htmlFor="canManageUsers" className="text-sm font-normal">
                                     Peut gérer les utilisateurs
@@ -141,8 +141,8 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="canManageGroups"
-                                    checked={canManageGroups}
-                                    onCheckedChange={(checked) => setCanManageGroups(checked as boolean)}
+                                    isSelected={canManageGroups}
+                                    onChange={(checked) => setCanManageGroups(checked)}
                                 />
                                 <Label htmlFor="canManageGroups" className="text-sm font-normal">
                                     Peut gérer les groupes

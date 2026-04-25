@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/base/buttons/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { 
   Building2, 
   MapPin, 
@@ -244,14 +244,14 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={member.avatar} alt={getMemberDisplayName(member)} />
-                      <AvatarFallback>
-                        {member.firstName && member.lastName
-                          ? `${member.firstName[0]}${member.lastName[0]}`
-                            : 'M'}
-                      </AvatarFallback>
-                    </Avatar>
+                    <Avatar
+                      size="md"
+                      src={member.avatar}
+                      alt={getMemberDisplayName(member)}
+                      initials={member.firstName && member.lastName
+                        ? `${member.firstName[0]}${member.lastName[0]}`
+                        : 'M'}
+                    />
                     <div>
                         <div className="font-medium text-sm">{getMemberDisplayName(member)}</div>
                       <div className="text-xs text-gray-600">{member.position}</div>

@@ -18,7 +18,7 @@ import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/
 import InputSelect from '@/components/ui/input-search';
 import { Button } from '@/components/base/buttons/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Plus, User } from 'lucide-react';
 import { AvatarCropModal } from '@/components/profile/modals/AvatarCropModal';
 import { LinkedInOnboardingModal } from '@/components/profile/modals/LinkedInOnboardingModal';
@@ -605,9 +605,11 @@ const StepProfile = () => {
             onClick={handleAvatarUpload}
           >
             {profilePicture ? (
-              <Avatar className="w-full h-full rounded-full overflow-hidden">
-                <AvatarImage src={profilePicture} className="w-full h-full object-cover rounded-full" />
-              </Avatar>
+              <Avatar
+                size="2xl"
+                src={profilePicture}
+                className="w-full h-full overflow-hidden"
+              />
             ) : (
               <User className="w-12 h-12 text-gray-600 group-hover:text-[#5E6AD2] transition-colors" />
             )}

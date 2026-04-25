@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '@/components/base/input/input';
 import { Button } from '@/components/base/buttons/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Select } from '@/components/base/select/select';
 import { Badge } from '@/components/base/badges/badges';
 import { Trash2, SkipForward, X } from 'lucide-react';
@@ -256,15 +256,14 @@ export const TeamStep = ({ onNext, onBack, data, onDataChange }: TeamStepProps) 
               <tr key={field.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={resolveAvatarUrl(field.avatar)} alt={field.firstName && field.lastName ? `${field.firstName} ${field.lastName}` : field.email} />
-                      <AvatarFallback>
-                        {field.status === 'existing' && field.firstName && field.lastName
-                          ? `${field.firstName[0]}${field.lastName[0]}`
-                          : '?'
-                        }
-                      </AvatarFallback>
-                    </Avatar>
+                    <Avatar
+                      size="md"
+                      src={resolveAvatarUrl(field.avatar)}
+                      alt={field.firstName && field.lastName ? `${field.firstName} ${field.lastName}` : field.email}
+                      initials={field.status === 'existing' && field.firstName && field.lastName
+                        ? `${field.firstName[0]}${field.lastName[0]}`
+                        : '?'}
+                    />
                     <div>
                       <div className="font-medium text-sm">
                         {field.status === 'existing' && field.firstName && field.lastName

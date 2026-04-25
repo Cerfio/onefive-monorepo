@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Building2, UserPlus, Loader2, X } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
 import { Button } from '@/components/base/buttons/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
 import { searchInvestors, InvestorSearchPersonResult, InvestorSearchCompanyResult } from '@/queries/startup';
@@ -306,12 +306,13 @@ export const InvestorSearch = ({
                           disabled={selectedInvestorIds.includes(profile.id)}
                           className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg border border-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left"
                         >
-                          <Avatar className="h-12 w-12 flex-shrink-0">
-                            <AvatarImage src={getAvatarUrl(profile.avatar)} alt={profile.name} />
-                            <AvatarFallback>
-                              {`${profile.firstName[0]}${profile.lastName[0]}`}
-                            </AvatarFallback>
-                          </Avatar>
+                          <Avatar
+                            size="lg"
+                            src={getAvatarUrl(profile.avatar)}
+                            alt={profile.name}
+                            initials={`${profile.firstName[0]}${profile.lastName[0]}`}
+                            className="flex-shrink-0"
+                          />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-sm text-gray-900">
                               {profile.firstName} {profile.lastName}

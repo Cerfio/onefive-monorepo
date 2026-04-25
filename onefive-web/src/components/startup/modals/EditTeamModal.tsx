@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { Input } from '@/components/base/input/input';
 import { PositionSelect } from '@/components/startup/PositionSelect';
 import { Button } from '@/components/base/buttons/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Select } from '@/components/base/select/select';
 import { Checkbox } from '@/components/base/checkbox/checkbox';
 import { Trash2, Users, X, Pencil, Loader2, Shield, ShieldCheck } from 'lucide-react';
@@ -300,12 +300,13 @@ export const EditTeamModal: React.FC<EditTeamModalProps> = ({
                         return (
                           <div key={member.id}>
                             <div className={`flex items-center gap-3 px-4 py-3.5 sm:px-6 group transition-colors ${isEditing ? 'bg-violet-50/40' : 'hover:bg-gray-50/50'}`}>
-                              <Avatar className="h-9 w-9 shrink-0 ring-2 ring-white shadow-sm">
-                                <AvatarImage src={avatarUrl} alt={member.name} />
-                                <AvatarFallback className="bg-violet-100 text-violet-600 text-sm font-medium">
-                                  {getInitials(member.name)}
-                                </AvatarFallback>
-                              </Avatar>
+                              <Avatar
+                                size="md"
+                                src={avatarUrl}
+                                alt={member.name}
+                                initials={getInitials(member.name)}
+                                className="shrink-0 ring-2 ring-white shadow-sm"
+                              />
 
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">

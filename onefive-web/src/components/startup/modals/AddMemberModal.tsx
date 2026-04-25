@@ -11,7 +11,7 @@ import { ProfileSearchResult, useAddMember } from '@/queries/startup';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from 'react-aria-components';
 import { Users, Mail, UserPlus, Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { resolveAvatarUrl } from '@/utils/avatar';
 import { Checkbox } from '@/components/base/checkbox/checkbox';
 import { PositionSelect } from '@/components/startup/PositionSelect';
@@ -191,12 +191,11 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({
                   <TabsContent value="search" className="mt-4">
                     {selectedProfile ? (
                       <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage src={resolveAvatarUrl(selectedProfile.avatar)} />
-                          <AvatarFallback>
-                            {selectedProfile.firstName?.[0]}{selectedProfile.lastName?.[0]}
-                          </AvatarFallback>
-                        </Avatar>
+                        <Avatar
+                          size="md"
+                          src={resolveAvatarUrl(selectedProfile.avatar)}
+                          initials={`${selectedProfile.firstName?.[0] ?? ''}${selectedProfile.lastName?.[0] ?? ''}`}
+                        />
                         <div className="flex-1">
                           <p className="font-medium text-gray-900">{selectedProfile.name}</p>
                           {selectedProfile.highlight && (

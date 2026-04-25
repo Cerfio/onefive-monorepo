@@ -8,7 +8,7 @@ import { Progress } from '@/components/application/progress-steps/progress-steps
 import type { ProgressFeaturedIconType } from '@/components/application/progress-steps/progress-types';
 import { DialogTrigger, ModalOverlay, Modal, Dialog } from '@/components/application/modals/modal';
 import { CloseButton } from '@/components/base/buttons/close-button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
 import { FundingHistoryEntry, CreateFundingHistoryData, UpdateFundingHistoryData, FundingInvestor } from '@/queries/startup';
@@ -388,10 +388,12 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
                   >
                     {investor.type === 'person' ? (
-                      <Avatar className="h-10 w-10 flex-shrink-0">
-                        <AvatarImage src={resolveAvatarUrl(investor.avatar)} />
-                        <AvatarFallback>{investor.name[0]}</AvatarFallback>
-                      </Avatar>
+                      <Avatar
+                        size="md"
+                        src={resolveAvatarUrl(investor.avatar)}
+                        initials={investor.name[0]}
+                        className="flex-shrink-0"
+                      />
                     ) : (
                       <div className="h-10 w-10 flex-shrink-0 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
                         {investor.logo ? (
@@ -693,10 +695,13 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
                         <div className="flex -space-x-2">
                           {entry.investors.slice(0, 3).map((inv) => (
                             inv.type === 'person' && inv.avatar ? (
-                              <Avatar key={inv.id} className="h-6 w-6 border-2 border-white">
-                                <AvatarImage src={resolveAvatarUrl(inv.avatar)} />
-                                <AvatarFallback className="text-xs">{inv.name[0]}</AvatarFallback>
-                              </Avatar>
+                              <Avatar
+                                key={inv.id}
+                                size="xs"
+                                src={resolveAvatarUrl(inv.avatar)}
+                                initials={inv.name[0]}
+                                className="border-2 border-white"
+                              />
                             ) : (
                               <div 
                                 key={inv.id}

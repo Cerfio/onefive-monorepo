@@ -5,7 +5,7 @@ import { DollarSign, Users, FileText, Calendar, Plus, Trash2, Edit3 } from 'luci
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { FundingData, FundingHistoryEntry, parseInvestors } from '@/queries/startup';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -130,10 +130,11 @@ export const FundingCard = ({
                 <div key={investor.id} className="flex items-center gap-2">
                   {investor.type === 'profile' ? (
                     <>
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={resolveAvatarUrl(investor.avatar)} />
-                        <AvatarFallback>{investor.name[0]}</AvatarFallback>
-                      </Avatar>
+                      <Avatar
+                        size="xs"
+                        src={resolveAvatarUrl(investor.avatar)}
+                        initials={investor.name[0]}
+                      />
                       <Link 
                         href={`/profile/${investor.id}`}
                         className="text-sm font-medium text-blue-600 hover:underline cursor-pointer flex-1"

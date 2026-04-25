@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { Input } from '@/components/base/input/input';
 import { PositionSelect } from '@/components/startup/PositionSelect';
 import { Button } from '@/components/base/buttons/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Badge } from '@/components/base/badges/badges';
 import { Trash2, Plus, CheckCircle2, Users, Loader2 } from 'lucide-react';
 import { SmartProfileSearch } from '@/components/startup/SmartProfileSearch';
@@ -411,16 +411,17 @@ export const EditAllFoundersModal: React.FC<EditAllFoundersModalProps> = ({
                               <tr key={field.id} className="transition-colors hover:bg-gray-50">
                                 <td className="px-4 py-4">
                                   <div className="flex items-center gap-3">
-                                    <Avatar className="h-10 w-10 shrink-0 ring-2 ring-white shadow-sm">
-                                      <AvatarImage src={avatarUrl} alt={field.name} />
-                                      <AvatarFallback className="bg-violet-100 text-violet-600 font-medium">
-                                        {field.firstName && field.lastName
-                                          ? `${field.firstName[0]}${field.lastName[0]}`
-                                          : field.name
-                                            ? getInitials(field.name)
-                                            : '?'}
-                                      </AvatarFallback>
-                                    </Avatar>
+                                    <Avatar
+                                      size="md"
+                                      src={avatarUrl}
+                                      alt={field.name}
+                                      initials={field.firstName && field.lastName
+                                        ? `${field.firstName[0]}${field.lastName[0]}`
+                                        : field.name
+                                          ? getInitials(field.name)
+                                          : '?'}
+                                      className="shrink-0 ring-2 ring-white shadow-sm"
+                                    />
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-2">
                                         <div className="truncate text-sm font-medium text-gray-900">

@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/base/buttons/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
-import { Switch } from '@/components/ui/switch';
+import { Toggle } from '@/components/base/toggle/toggle';
 import {
   useMyInvestments,
   useToggleInvestorVisibility,
@@ -189,10 +189,10 @@ function InvestmentCard({ investment }: { investment: MyInvestment }) {
             {/* Visibility toggle */}
             {isAccepted && (
               <div className="flex items-center gap-2 mt-3">
-                <Switch
-                  checked={optimisticVisible}
-                  onCheckedChange={handleToggleVisibility}
-                  disabled={toggleVisibility.isPending}
+                <Toggle
+                  isSelected={optimisticVisible}
+                  onChange={handleToggleVisibility}
+                  isDisabled={toggleVisibility.isPending}
                 />
                 <span className="text-sm text-gray-600 flex items-center gap-1">
                   {optimisticVisible ? (

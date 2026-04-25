@@ -6,7 +6,7 @@ import { CloseButton } from '../../base/buttons/close-button';
 import { Modal, ModalOverlay, Dialog } from '../../application/modals/modal';
 import { Input } from '../../base/input/input';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from "react-aria-components";
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Badge } from '@/components/base/badges/badges';
 import { FundingData, Investor, parseInvestors, serializeInvestors } from '@/queries/startup';
 import { InvestorSearch, InvestorEntity } from '@/components/startup/InvestorSearch';
@@ -126,10 +126,12 @@ export const EditFundingModal: React.FC<EditFundingModalProps> = ({
                             <div key={investor.id} className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
                               {investor.type === 'profile' ? (
                                 <>
-                                  <Avatar className="h-10 w-10 flex-shrink-0">
-                                    <AvatarImage src={resolveAvatarUrl(investor.avatar)} />
-                                    <AvatarFallback>{investor.name[0]}</AvatarFallback>
-                                  </Avatar>
+                                  <Avatar
+                                    size="md"
+                                    src={resolveAvatarUrl(investor.avatar)}
+                                    initials={investor.name[0]}
+                                    className="flex-shrink-0"
+                                  />
                                   <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-gray-900">{investor.name}</p>
                                     <p className="text-xs text-gray-500">Profil OneFive</p>

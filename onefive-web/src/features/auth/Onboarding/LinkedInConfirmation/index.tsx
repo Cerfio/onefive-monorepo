@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { Button as ShadcnButton } from '@/components/base/buttons/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Checkbox } from '@/components/base/checkbox/checkbox';
+import { Avatar } from '@/components/base/avatar/avatar';
 import { Briefcase, GraduationCap, MapPin, Award, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LinkedInOnboardingData } from '../OnboardingContext';
@@ -59,15 +59,12 @@ export const LinkedInConfirmation = ({ data, onConfirm, onCancel }: LinkedInConf
         {/* Header */}
         <div className="bg-gradient-to-r from-[#0A66C2] to-[#004182] px-6 py-8 text-white">
           <div className="flex items-center gap-4">
-            <Avatar className="w-20 h-20 border-4 border-white shadow-lg">
-              {data.profile.profilePictureUrl ? (
-                <AvatarImage src={data.profile.profilePictureUrl} />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                  <User className="w-10 h-10 text-gray-500" />
-                </div>
-              )}
-            </Avatar>
+            <Avatar
+              size="2xl"
+              src={data.profile.profilePictureUrl}
+              placeholder={<User className="w-10 h-10 text-gray-500" />}
+              className="w-20 h-20 border-4 border-white shadow-lg"
+            />
             <div>
               <h2 className="text-2xl font-bold">
                 {data.profile.firstName} {data.profile.lastName}
@@ -116,8 +113,8 @@ export const LinkedInConfirmation = ({ data, onConfirm, onCancel }: LinkedInConf
                   >
                     <div className="flex items-start gap-3">
                       <Checkbox
-                        checked={selectedExperiences.includes(index)}
-                        onCheckedChange={() => toggleExperience(index)}
+                        isSelected={selectedExperiences.includes(index)}
+                        onChange={() => toggleExperience(index)}
                       />
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">{exp.title}</h4>
@@ -163,8 +160,8 @@ export const LinkedInConfirmation = ({ data, onConfirm, onCancel }: LinkedInConf
                   >
                     <div className="flex items-start gap-3">
                       <Checkbox
-                        checked={selectedEducations.includes(index)}
-                        onCheckedChange={() => toggleEducation(index)}
+                        isSelected={selectedEducations.includes(index)}
+                        onChange={() => toggleEducation(index)}
                       />
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">{edu.school}</h4>

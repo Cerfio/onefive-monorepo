@@ -14,7 +14,7 @@ import { Input as ShadcnInput } from '@/components/ui/input';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { TextArea } from '@/components/base/textarea/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from '@/components/base/checkbox/checkbox';
 import {
   Select,
   SelectContent,
@@ -289,8 +289,8 @@ export const InvestmentProposalModal = ({
                 <div key={objective.value} className="flex items-center space-x-2">
                   <Checkbox
                     id={objective.value}
-                    checked={formData.objectives.includes(objective.value)}
-                    onCheckedChange={(checked) => handleObjectiveChange(objective.value, checked as boolean)}
+                    isSelected={formData.objectives.includes(objective.value)}
+                    onChange={(checked) => handleObjectiveChange(objective.value, checked)}
                   />
                   <Label htmlFor={objective.value} className="text-sm font-normal">
                     {objective.label}
@@ -335,8 +335,8 @@ export const InvestmentProposalModal = ({
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="confidential"
-                checked={formData.isConfidential}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isConfidential: checked as boolean }))}
+                isSelected={formData.isConfidential}
+                onChange={(checked) => setFormData(prev => ({ ...prev, isConfidential: checked }))}
               />
               <Label htmlFor="confidential" className="text-sm font-normal">
                 Cette proposition est visible uniquement par les fondateurs de la startup
@@ -345,8 +345,8 @@ export const InvestmentProposalModal = ({
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="recommendations"
-                checked={formData.allowRecommendations}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, allowRecommendations: checked as boolean }))}
+                isSelected={formData.allowRecommendations}
+                onChange={(checked) => setFormData(prev => ({ ...prev, allowRecommendations: checked }))}
               />
               <Label htmlFor="recommendations" className="text-sm font-normal">
                 J'autorise Onefive à me recommander d'autres startups similaires
