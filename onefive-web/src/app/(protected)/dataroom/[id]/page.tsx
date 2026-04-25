@@ -5,7 +5,7 @@ import OnefiveLogo from '@/images/onefiveLogo.png';
 import { Button } from "@/components/base/buttons/button";
 import Navbar from '@/components/navbar';
 import { Skeleton } from "@/components/base/skeleton/skeleton";
-import { getDataroom, getDataroomFiles, getSignedUrl } from "@/queries/dataroom";
+import { getDataroom, getDataroomFiles, getSignedUrl, deleteFile as deleteFileApi } from "@/queries/dataroom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import "@cyntler/react-doc-viewer/dist/index.css";
@@ -694,6 +694,22 @@ const DataroomPage = () => {
                 onDirectFilesDrop={(files) => {
                     processNewFiles(files);
                     modals.setIsUploadModalOpen(true);
+                }}
+                onBulkDelete={async (ids) => {
+                    // Bypass per-file mutation toasts; use raw API + a single aggregate toast.
+                    const results = await Promise.allSettled(
+                        ids.map(id => deleteFileApi({ dataroomId, fileId: id }))
+                    );
+                    const failures = results.filter(r => r.status === 'rejected').length;
+                    const successes = ids.length - failures;
+                    queryClient.invalidateQueries({ queryKey: ["dataroom-files", dataroomId] });
+                    queryClient.invalidateQueries({ queryKey: ["dataroom", dataroomId] });
+                    if (successes > 0) {
+                        toast.success(`${successes} fichier(s) supprimé(s)`);
+                    }
+                    if (failures > 0) {
+                        toast.error(`${failures} suppression(s) en échec`);
+                    }
                 }}
             />
 

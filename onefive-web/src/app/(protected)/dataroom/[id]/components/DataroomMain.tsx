@@ -15,6 +15,7 @@ import { InfoIcon, BarChart3, Download, Trash2, Search, Lock, Upload, Users, Set
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Badge } from "@/components/base/badges/badges";
+import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { ProgressBar } from "@/components/base/progress-indicators/progress-indicators";
 import { Dropdown } from "@/components/base/dropdown/dropdown";
 import { Tooltip, TooltipTrigger } from "@/components/base/tooltip/tooltip";
@@ -91,6 +92,7 @@ interface DataroomMainProps {
     onDownloadVersion: (versionId: string, version: number) => void;
     onViewVersion: (versionId: string, version: number) => void;
     onDirectFilesDrop?: (files: File[]) => void;
+    onBulkDelete?: (ids: string[]) => Promise<void>;
 }
 
 const AccessGroupsSidebar: React.FC<{
@@ -268,6 +270,7 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
     onDownloadVersion,
     onViewVersion,
     onDirectFilesDrop,
+    onBulkDelete,
 }) => {
     const router = useRouter();
     const [logoError, setLogoError] = useState(false);
@@ -311,6 +314,50 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
     const [documentForVersioning, setDocumentForVersioning] = useState<DisplayedDocument | null>(null);
     const [isUploadNewVersionModalOpen, setIsUploadNewVersionModalOpen] = useState(false);
     const [isVersionHistoryModalOpen, setIsVersionHistoryModalOpen] = useState(false);
+
+    // Bulk selection state
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+    // Reset selection when category or search changes
+    useEffect(() => {
+        setSelectedIds(new Set());
+    }, [selectedCategory, searchQuery]);
+
+    // Prune selections that no longer exist in displayedDocuments (e.g. after delete or pagination)
+    useEffect(() => {
+        setSelectedIds(prev => {
+            if (prev.size === 0) return prev;
+            const visibleIds = new Set(displayedDocuments.map(d => d.id));
+            const next = new Set<string>();
+            prev.forEach(id => { if (visibleIds.has(id)) next.add(id); });
+            return next.size === prev.size ? prev : next;
+        });
+    }, [displayedDocuments]);
+
+    const toggleSelected = (id: string, checked: boolean) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (checked) next.add(id);
+            else next.delete(id);
+            return next;
+        });
+    };
+
+    const handleBulkDelete = async () => {
+        if (!onBulkDelete || selectedIds.size === 0) return;
+        const ids = Array.from(selectedIds);
+        try {
+            setIsBulkDeleting(true);
+            await onBulkDelete(ids);
+            setSelectedIds(new Set());
+        } finally {
+            setIsBulkDeleting(false);
+        }
+    };
+
+    const allSelected = selectedIds.size > 0 && selectedIds.size === displayedDocuments.length;
+    const isIndeterminate = selectedIds.size > 0 && selectedIds.size < displayedDocuments.length;
 
     // Stats animation with cascade effect
     const [animatedStats, setAnimatedStats] = useState(
@@ -672,6 +719,34 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                         </div>
                     </div>
 
+                    {/* Bulk action bar */}
+                    {selectedIds.size > 0 && (
+                        <div className="sticky top-2 z-10 flex items-center justify-between gap-3 rounded-xl bg-primary p-3 shadow-md ring-1 ring-secondary mb-3">
+                            <span className="text-sm font-medium text-primary">
+                                {selectedIds.size} sélectionné(s)
+                            </span>
+                            <div className="flex gap-2">
+                                <Button
+                                    color="secondary"
+                                    size="sm"
+                                    onClick={() => setSelectedIds(new Set())}
+                                    isDisabled={isBulkDeleting}
+                                >
+                                    Annuler
+                                </Button>
+                                <Button
+                                    color="primary-destructive"
+                                    size="sm"
+                                    iconLeading={<Trash2 data-icon />}
+                                    onClick={handleBulkDelete}
+                                    isLoading={isBulkDeleting}
+                                >
+                                    Supprimer
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Document Table */}
                     <TableCard.Root>
                         <TableCard.Header
@@ -737,6 +812,20 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                         ) : (
                             <Table aria-label="Documents" className="bg-primary">
                                 <Table.Header>
+                                    <Table.Head id="select" className="w-11">
+                                        <Checkbox
+                                            aria-label="Tout sélectionner"
+                                            isSelected={allSelected}
+                                            isIndeterminate={isIndeterminate}
+                                            onChange={(checked) =>
+                                                setSelectedIds(
+                                                    checked
+                                                        ? new Set(displayedDocuments.map(d => d.id))
+                                                        : new Set()
+                                                )
+                                            }
+                                        />
+                                    </Table.Head>
                                     <Table.Head id="name" label="Nom" isRowHeader allowsSorting className="w-full max-lg:min-w-80" />
                                     <Table.Head id="category" label="Catégorie" allowsSorting />
                                     <Table.Head id="uploaded" label="Ajouté" allowsSorting />
@@ -747,6 +836,13 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                                 <Table.Body items={displayedDocuments}>
                                     {(doc) => (
                                         <Table.Row id={doc.id}>
+                                            <Table.Cell className="w-11">
+                                                <Checkbox
+                                                    aria-label={`Sélectionner ${doc.name}`}
+                                                    isSelected={selectedIds.has(doc.id)}
+                                                    onChange={(checked) => toggleSelected(doc.id, checked)}
+                                                />
+                                            </Table.Cell>
                                             <Table.Cell>
                                                 <div className="flex items-center gap-3">
                                                     <div className="group-hover:scale-110 transition-transform flex-shrink-0">
