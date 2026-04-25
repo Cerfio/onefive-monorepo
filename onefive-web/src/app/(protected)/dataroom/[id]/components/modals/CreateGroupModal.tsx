@@ -8,7 +8,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/base/separator/separator";
@@ -82,7 +82,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                         <Input
                             id="name"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={setName}
                             placeholder="Entrez le nom du groupe"
                             required
                         />

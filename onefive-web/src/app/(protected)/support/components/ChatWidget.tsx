@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/base/input/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MessageCircle, X, Send, User, Bot, Minimize2, Maximize2 } from 'lucide-react';
 
@@ -229,7 +229,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
                           <Input
                             placeholder="Tapez votre message..."
                             value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
+                            onChange={setInputMessage}
                             onKeyPress={handleKeyPress}
                             className="flex-1"
                           />

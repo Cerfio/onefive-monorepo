@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
@@ -165,7 +165,7 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                                                 type="text"
                                                 placeholder="Rechercher par email ou nom..."
                                                 value={searchQuery}
-                                                onChange={(e) => handleSearchChange(e.target.value)}
+                                                onChange={handleSearchChange}
                                                 className="pr-8"
                                             />
                                             {isSearching && (
@@ -260,7 +260,7 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                                                             type="email"
                                                             placeholder="Adresse email"
                                                             value={searchQuery}
-                                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                                            onChange={setSearchQuery}
                                                         />
                                                         <div className="flex gap-2">
                                                             <Button

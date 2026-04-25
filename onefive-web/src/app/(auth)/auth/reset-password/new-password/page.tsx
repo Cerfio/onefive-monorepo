@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -143,7 +143,7 @@ const NewPasswordPage = () => {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Entrez votre nouveau mot de passe"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={setPassword}
                     className="h-11 pr-10"
                     required
                   />
@@ -186,7 +186,7 @@ const NewPasswordPage = () => {
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirmez votre nouveau mot de passe"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={setConfirmPassword}
                     className="h-11 pr-10"
                     required
                   />

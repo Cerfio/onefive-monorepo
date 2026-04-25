@@ -8,7 +8,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -65,7 +65,7 @@ export const ManageCategoriesModal: React.FC<ManageCategoriesModalProps> = ({
                             <Input
                                 id="new-category"
                                 value={newCategoryName}
-                                onChange={(e) => setNewCategoryName(e.target.value)}
+                                onChange={setNewCategoryName}
                                 placeholder="Entrez le nom de la catégorie"
                             />
                             <Button type="submit" disabled={isCreating}>

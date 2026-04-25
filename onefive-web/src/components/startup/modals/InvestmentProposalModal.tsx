@@ -10,7 +10,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+import { Input as ShadcnInput } from '@/components/ui/input';
+import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -206,7 +207,7 @@ export const InvestmentProposalModal = ({
                 type="number"
                 placeholder="25 000"
                 value={formData.amount}
-                onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
+                onChange={(value) => setFormData(prev => ({ ...prev, amount: value }))}
                 className="flex-1"
               />
             </div>
@@ -232,7 +233,7 @@ export const InvestmentProposalModal = ({
               <Input
                 placeholder="Précisez le type d'investissement"
                 value={formData.otherInvestmentType}
-                onChange={(e) => setFormData(prev => ({ ...prev, otherInvestmentType: e.target.value }))}
+                onChange={(value) => setFormData(prev => ({ ...prev, otherInvestmentType: value }))}
                 className="mt-2"
               />
             )}
@@ -245,7 +246,7 @@ export const InvestmentProposalModal = ({
               id="valuation"
               placeholder="Ex: Pré-money : 1M€"
               value={formData.valuation}
-              onChange={(e) => setFormData(prev => ({ ...prev, valuation: e.target.value }))}
+              onChange={(value) => setFormData(prev => ({ ...prev, valuation: value }))}
             />
           </div>
 
@@ -256,7 +257,7 @@ export const InvestmentProposalModal = ({
               id="equityPercentage"
               placeholder="Ex: 2.5%"
               value={formData.equityPercentage}
-              onChange={(e) => setFormData(prev => ({ ...prev, equityPercentage: e.target.value }))}
+              onChange={(value) => setFormData(prev => ({ ...prev, equityPercentage: value }))}
             />
           </div>
 
@@ -315,7 +316,7 @@ export const InvestmentProposalModal = ({
           <div className="space-y-2">
             <Label htmlFor="document">Joindre un document (optionnel)</Label>
             <div className="flex items-center gap-2">
-              <Input
+              <ShadcnInput
                 id="document"
                 type="file"
                 accept=".pdf,.doc,.docx,.ppt,.pptx"

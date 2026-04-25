@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
@@ -164,7 +164,7 @@ export const InvestmentSettingsModal = ({
                   <Input
                     placeholder="2M€"
                     value={currentSettings.rollingInvestment?.cap || ''}
-                    onChange={(e) => updateRollingInvestment('cap', e.target.value)}
+                    onChange={(value) => updateRollingInvestment('cap', value)}
                   />
                 </div>
                 
@@ -173,7 +173,7 @@ export const InvestmentSettingsModal = ({
                   <Input
                     placeholder="20%"
                     value={currentSettings.rollingInvestment?.discount || ''}
-                    onChange={(e) => updateRollingInvestment('discount', e.target.value)}
+                    onChange={(value) => updateRollingInvestment('discount', value)}
                   />
                 </div>
               </div>
@@ -195,7 +195,7 @@ export const InvestmentSettingsModal = ({
                   <Input
                     placeholder="200k€"
                     value={currentSettings.structuredRound?.targetAmount || ''}
-                    onChange={(e) => updateStructuredRound('targetAmount', e.target.value)}
+                    onChange={(value) => updateStructuredRound('targetAmount', value)}
                   />
                 </div>
                 
@@ -204,7 +204,7 @@ export const InvestmentSettingsModal = ({
                   <Input
                     placeholder="10k€"
                     value={currentSettings.structuredRound?.minTicket || ''}
-                    onChange={(e) => updateStructuredRound('minTicket', e.target.value)}
+                    onChange={(value) => updateStructuredRound('minTicket', value)}
                   />
                 </div>
                 
@@ -226,7 +226,7 @@ export const InvestmentSettingsModal = ({
                   <Input
                     placeholder="31 décembre 2024"
                     value={currentSettings.structuredRound?.deadline || ''}
-                    onChange={(e) => updateStructuredRound('deadline', e.target.value)}
+                    onChange={(value) => updateStructuredRound('deadline', value)}
                   />
                 </div>
                 
@@ -235,7 +235,7 @@ export const InvestmentSettingsModal = ({
                   <Input
                     placeholder="2M€"
                     value={currentSettings.structuredRound?.cap || ''}
-                    onChange={(e) => updateStructuredRound('cap', e.target.value)}
+                    onChange={(value) => updateStructuredRound('cap', value)}
                   />
                 </div>
                 
@@ -244,7 +244,7 @@ export const InvestmentSettingsModal = ({
                   <Input
                     placeholder="20%"
                     value={currentSettings.structuredRound?.discount || ''}
-                    onChange={(e) => updateStructuredRound('discount', e.target.value)}
+                    onChange={(value) => updateStructuredRound('discount', value)}
                   />
                 </div>
               </div>
@@ -254,7 +254,7 @@ export const InvestmentSettingsModal = ({
                 <Input
                   placeholder="https://example.com/deck.pdf"
                   value={currentSettings.structuredRound?.deckUrl || ''}
-                  onChange={(e) => updateStructuredRound('deckUrl', e.target.value)}
+                  onChange={(value) => updateStructuredRound('deckUrl', value)}
                 />
               </div>
             </div>

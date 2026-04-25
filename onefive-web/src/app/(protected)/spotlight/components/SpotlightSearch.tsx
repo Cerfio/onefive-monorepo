@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/base/input/input';
 import { Autocomplete } from '@react-google-maps/api';
 import { MutableRefObject } from 'react';
 import { Search, X, Loader2, Clock } from 'lucide-react';
@@ -65,7 +65,7 @@ export const SpotlightSearch = ({
             value={search}
             type="search"
             placeholder="Rechercher un lieu, un événement..."
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={setSearch}
             className="pl-10 pr-10 rounded-lg"
             aria-label="Rechercher des événements et incubateurs"
           />

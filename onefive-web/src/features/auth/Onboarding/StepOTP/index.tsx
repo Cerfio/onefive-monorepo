@@ -8,7 +8,7 @@ import dialCodeEmoji from "@/assets/dial-code-emoji.json";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import InputSelect from "@/components/ui/input-search";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/base/input/input";
 import { Check, X } from "lucide-react";
 
 const StepOTP = () => {
@@ -41,8 +41,7 @@ const StepOTP = () => {
     }
   }, [phoneNumber, buttonDisabled, setButtonDisabled]);
 
-  const handlePhoneNumberChange = (e: any) => {
-    const inputValue = e.target.value;
+  const handlePhoneNumberChange = (inputValue: string) => {
     const splitValue = inputValue.split(" ");
 
     if (/^[0-9]*$/.test(splitValue[1] || "")) {

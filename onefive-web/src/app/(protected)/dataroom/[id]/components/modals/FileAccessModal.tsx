@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import {
     DropdownMenu,
@@ -417,7 +417,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                         <Input
                                             placeholder="Rechercher un nom ou saisir un email..."
                                             value={searchValue}
-                                            onChange={(e) => setSearchValue(e.target.value)}
+                                            onChange={setSearchValue}
                                             className="pl-10"
                                         />
                                     </div>
@@ -829,7 +829,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                 <Input
                                     id="remove-confirm-name"
                                     value={confirmationName}
-                                    onChange={(e) => setConfirmationName(e.target.value)}
+                                    onChange={setConfirmationName}
                                     placeholder={`Tapez "${accessToRemove?.userName}"`}
                                     className="mt-2"
                                     autoComplete="off"

@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -128,7 +128,7 @@ const ResetPasswordPage = () => {
                   type="email"
                   placeholder="votre@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={setEmail}
                   className="h-11"
                   required
                 />

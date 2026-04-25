@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/ui/label";
 import { 
     Users, 
@@ -376,7 +376,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                             placeholder="Nom ou email..."
                                             className="pl-10"
                                             value={searchValue}
-                                            onChange={(e) => setSearchValue(e.target.value)}
+                                            onChange={setSearchValue}
                                         />
                                     </div>
                                 </div>
@@ -441,9 +441,9 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                 type="email"
                                                 placeholder="user@example.com"
                                                 value={newDirectAccess.email}
-                                                onChange={(e) => setNewDirectAccess(prev => ({
+                                                onChange={(value) => setNewDirectAccess(prev => ({
                                                     ...prev,
-                                                    email: e.target.value
+                                                    email: value
                                                 }))}
                                             />
                                         </div>
@@ -453,9 +453,9 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                 type="text"
                                                 placeholder="Nom d'affichage"
                                                 value={newDirectAccess.name}
-                                                onChange={(e) => setNewDirectAccess(prev => ({
+                                                onChange={(value) => setNewDirectAccess(prev => ({
                                                     ...prev,
-                                                    name: e.target.value
+                                                    name: value
                                                 }))}
                                             />
                                         </div>

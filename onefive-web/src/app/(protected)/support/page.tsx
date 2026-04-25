@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/base/input/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -254,7 +254,7 @@ const SupportPage = () => {
                         <Input
                           placeholder="Rechercher dans les FAQ..."
                           value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onChange={setSearchQuery}
                           className="pl-10"
                         />
                       </div>
@@ -314,7 +314,7 @@ const SupportPage = () => {
                         <Input
                           placeholder="Rechercher dans les guides..."
                           value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onChange={setSearchQuery}
                           className="pl-10"
                         />
                       </div>
