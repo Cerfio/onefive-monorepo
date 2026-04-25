@@ -10,7 +10,7 @@ import { Dialog, DialogTrigger, Modal, ModalOverlay } from '@/components/applica
 import { DiscussionType } from '@/enums';
 import { tags as tagsConst } from '@/constant';
 import { Select } from '@/components/base/select/select';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { SaaSSelector } from '@/components/ui/saas-selector';
 import { SaaS } from '../../../../config/saas';
 
@@ -245,7 +245,10 @@ export const EditDiscussionModal = ({
                           return (
                             <Badge
                               key={tagValue}
-                              className={`pl-2 pr-1 py-1 flex items-center gap-1.5 border-0 ${tag.bgColor} ${tag.textColor} ${tag.hoverBgColor}`}
+                              type="pill-color"
+                              color="gray"
+                              size="sm"
+                              className={`pl-2 pr-1 py-1 flex items-center gap-1.5 ring-0 ${tag.bgColor} ${tag.textColor} ${tag.hoverBgColor}`}
                             >
                               <span className="text-sm">{tag.icon}</span>
                               <span className="font-medium">{tag.title}</span>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { MapPin, Users, Rocket, Navigation } from 'lucide-react';
 import { getCountryName } from '@/lib/country';
 
@@ -147,7 +147,7 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
                         </div>
                       </div>
                       {location.isHotspot && (
-                        <Badge className="mt-1 text-xs bg-red-500">
+                        <Badge type="pill-color" color="error" size="sm" className="mt-1">
                           Hotspot
                         </Badge>
                       )}
@@ -213,7 +213,7 @@ const NetworkMap: React.FC<NetworkMapProps> = ({
                   {selectedLocation.city}, {getCountryName(selectedLocation.countryCode)}
                 </h3>
                 {selectedLocation.isHotspot && (
-                  <Badge className="bg-red-500">Hotspot</Badge>
+                  <Badge type="pill-color" color="error" size="sm">Hotspot</Badge>
                 )}
               </div>
               <Button

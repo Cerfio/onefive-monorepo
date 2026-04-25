@@ -9,7 +9,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Group } from "../types";
 import { Shield, FolderClosed, Users } from "lucide-react";
@@ -107,7 +107,7 @@ export const ManagePermissionsModal: React.FC<ManagePermissionsModalProps> = ({
                                 {group.members.length} membre{group.members.length > 1 ? 's' : ''}
                             </p>
                         </div>
-                        <Badge variant="outline" className="ml-auto">
+                        <Badge type="badge-modern" color="gray" size="sm" className="ml-auto">
                             {enabledCount}/{totalCategories} catégories
                         </Badge>
                     </div>

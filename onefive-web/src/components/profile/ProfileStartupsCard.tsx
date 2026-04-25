@@ -1,7 +1,7 @@
 'use client';
 
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Building2, MapPin, Users, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { useUserStartups, useProfileStartups, UserStartup } from '@/queries/startup';
@@ -45,7 +45,7 @@ export const ProfileStartupsCard = ({ profileId, currentUser }: ProfileStartupsC
           <Building2 className="w-5 h-5 text-gray-600" />
           Startups
         </h3>
-        <Badge variant="secondary" className="text-xs">
+        <Badge type="pill-color" color="gray" size="sm">
           {startups?.length}
         </Badge>
       </div>
@@ -109,8 +109,9 @@ export const ProfileStartupsCard = ({ profileId, currentUser }: ProfileStartupsC
                 {startup.role && (
                   <div className="mt-2">
                     <Badge
-                      variant="secondary"
-                      className="text-xs bg-violet-50 text-violet-700 border-violet-200"
+                      type="pill-color"
+                      color="purple"
+                      size="sm"
                     >
                       {startup.position || startup.role}
                       {startup.equity > 0 && ` • ${startup.equity}%`}

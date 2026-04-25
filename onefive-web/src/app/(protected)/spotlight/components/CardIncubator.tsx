@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Heart, Share2, ExternalLink, Building, Users, Clock, Landmark, Percent } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { ProviderType } from '@/sharing-enum/spotlight/spotlight.enum';
 import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
 import { motion } from 'framer-motion';
@@ -107,7 +107,7 @@ export const CardIncubator = ({
           {/* Badge de stage */}
           {spot.incubator?.stage && (
             <div className="absolute top-3 left-3">
-              <Badge variant="secondary" className="bg-white/90 text-gray-900 font-medium">
+              <Badge type="pill-color" color="gray" size="sm" className="bg-white/90 text-gray-900 font-medium">
                 {spot.incubator.stage}
               </Badge>
             </div>
@@ -232,17 +232,17 @@ export const CardIncubator = ({
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
+              <Badge type="badge-modern" color="gray" size="sm">
                 <Building className="h-3 w-3 mr-1" />
                 Incubateur
               </Badge>
               {spot.incubator?.stage && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge type="pill-color" color="gray" size="sm">
                   {STAGE_LABELS[spot.incubator.stage] ?? spot.incubator.stage}
                 </Badge>
               )}
               {spot.incubator?.equityPercentage && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge type="pill-color" color="gray" size="sm">
                   <Percent className="h-3 w-3 mr-1" />
                   {spot.incubator.equityPercentage}%
                 </Badge>

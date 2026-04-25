@@ -15,7 +15,7 @@ import Image, { StaticImageData } from "next/image";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserCheck, Users } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/base/badges/badges';
 import { Flag } from "@/components/ui/flag";
 import { Tooltip } from "@/components/base/tooltip/tooltip";
 import { Button } from "@/components/ui/button";
@@ -317,14 +317,18 @@ const StartupCard = ({
 
           <div className="flex gap-2 mb-4">
             <Badge
-              variant="outline"
-              className="text-xs group-hover:border-green-500/50 transition-colors"
+              type="badge-modern"
+              color="gray"
+              size="sm"
+              className="group-hover:border-green-500/50 transition-colors"
             >
               {startup.stage}
             </Badge>
             <Badge
-              variant="outline"
-              className="text-xs group-hover:border-green-500/50 transition-colors"
+              type="badge-modern"
+              color="gray"
+              size="sm"
+              className="group-hover:border-green-500/50 transition-colors"
             >
               {startup.industry}
             </Badge>

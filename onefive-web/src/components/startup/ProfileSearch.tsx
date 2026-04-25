@@ -3,7 +3,7 @@ import { Search, User, Mail } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { ProfileSearchResult } from '@/queries/startup';
 import { InviteByEmailForm } from './InviteByEmailForm';
 import { useSearchProfiles } from '@/hooks/useSearchProfiles';
@@ -125,7 +125,7 @@ export const ProfileSearch = ({
                     )}
                   </div>
                   {selectedProfiles.includes(profile.id) && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge type="pill-color" color="gray" size="sm">
                       Ajouté
                     </Badge>
                   )}

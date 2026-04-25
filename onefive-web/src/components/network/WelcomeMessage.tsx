@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Sparkles, Target, Users, Rocket, TrendingUp, Heart } from 'lucide-react';
 
 interface UserProfile {
@@ -136,8 +136,9 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
               {getObjectifMessages().map((objectif, index) => (
                 <Badge
                   key={index}
-                  variant="secondary"
-                  className="px-3 py-1 text-sm bg-white/80 text-gray-700 border border-gray-200"
+                  type="pill-color"
+                  color="gray"
+                  size="md"
                 >
                   <Target className="h-3 w-3 mr-1" />
                   {objectif}

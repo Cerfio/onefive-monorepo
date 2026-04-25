@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/base/badges/badges';
 import { useOnboardingContext } from "../OnboardingContext";
 import { tags } from "@/shared/constants/tags";
 import { motion } from "framer-motion";
@@ -220,6 +220,9 @@ const Tag = ({
       whileTap={{ scale: 0.95 }}
     >
       <Badge
+        type="pill-color"
+        color="gray"
+        size="sm"
         className={`text-sm font-normal flex gap-2 items-center cursor-pointer whitespace-nowrap transition-all duration-200 border-0 ${
           isSelect ? "ring-2 shadow-lg" : "hover:shadow-md"
         } ${tag.bgColor} ${tag.textColor} ${tag.hoverBgColor}`}

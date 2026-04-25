@@ -9,7 +9,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
@@ -550,7 +550,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                         <p className="text-sm font-medium">{person.name}</p>
                                                         <p className="text-xs text-gray-500">{person.email}</p>
                                                     </div>
-                                                    <Badge variant={person.type === 'profile' ? "default" : "secondary"} className="text-xs">
+                                                    <Badge type="pill-color" color={person.type === 'profile' ? 'brand' : 'gray'} size="sm">
                                                         {person.type === 'profile' ? 'Profil' : 'Email'}
                                                     </Badge>
                                                     <Button
@@ -684,7 +684,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                     {access.status === 'accepted' ? (
                                                         getAccessDescription(editingAccess === access.id ? editAccessData : access.access)
                                                     ) : (
-                                                        <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">
+                                                        <Badge type="pill-color" color="warning" size="sm">
                                                             En attente
                                                         </Badge>
                                                     )}

@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import {
   Briefcase, Code, Megaphone, Brain, Landmark, HeartPulse,
   GraduationCap, Leaf, ShoppingCart, HandHeart, Scale, Building2,
@@ -54,9 +54,11 @@ export const DomainBadge = ({ domain, size = 'sm' }: DomainBadgeProps) => {
   const Icon = config.icon;
 
   return (
-    <Badge 
-      variant="outline" 
-      className={`${config.color} ${size === 'sm' ? 'text-xs' : 'text-sm'} border font-medium`}
+    <Badge
+      type="pill-color"
+      color="gray"
+      size={size === 'sm' ? 'sm' : 'md'}
+      className={`${config.color} border font-medium`}
     >
       <Icon className={`${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'} mr-1`} />
       {config.label}

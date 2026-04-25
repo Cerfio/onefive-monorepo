@@ -7,7 +7,7 @@ import { Modal, ModalOverlay, Dialog } from '../../application/modals/modal';
 import { Input } from '../../base/input/input';
 import { DialogTrigger as AriaDialogTrigger, Heading as AriaHeading } from "react-aria-components";
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { FundingData, Investor, parseInvestors, serializeInvestors } from '@/queries/startup';
 import { InvestorSearch, InvestorEntity } from '@/components/startup/InvestorSearch';
 import { X, Building2 } from 'lucide-react';
@@ -134,7 +134,7 @@ export const EditFundingModal: React.FC<EditFundingModalProps> = ({
                                     <p className="text-sm font-medium text-gray-900">{investor.name}</p>
                                     <p className="text-xs text-gray-500">Profil OneFive</p>
                                   </div>
-                                  <Badge variant="secondary" className="text-xs">
+                                  <Badge type="pill-color" color="gray" size="sm">
                                     OneFive
                                   </Badge>
                                 </>
@@ -162,7 +162,7 @@ export const EditFundingModal: React.FC<EditFundingModalProps> = ({
                                       <p className="text-xs text-gray-500">Entreprise / Fonds</p>
                                     )}
                                   </div>
-                                  <Badge variant="outline" className="text-xs">
+                                  <Badge type="badge-modern" color="gray" size="sm">
                                     Entreprise
                                   </Badge>
                                 </>

@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/base/input/input';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {
@@ -82,7 +82,7 @@ const FAQCard = ({ faq, onRate }: { faq: FAQ; onRate: (id: string, helpful: bool
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
           {faq.tags.map(tag => (
-            <Badge key={tag} variant="outline" className="text-xs">
+            <Badge key={tag} type="badge-modern" color="gray" size="sm">
               {tag}
             </Badge>
           ))}
@@ -115,10 +115,10 @@ const FAQCard = ({ faq, onRate }: { faq: FAQ; onRate: (id: string, helpful: bool
 
 const GuideCard = ({ guide, onClick }: { guide: Guide; onClick: () => void }) => {
   const Icon = guideCategoryIcons[guide.category] ?? BookOpen;
-  const difficultyColors = {
-    facile: 'bg-green-100 text-green-800',
-    moyen: 'bg-yellow-100 text-yellow-800',
-    avancé: 'bg-red-100 text-red-800'
+  const difficultyColors: Record<'facile' | 'moyen' | 'avancé', 'success' | 'warning' | 'error'> = {
+    facile: 'success',
+    moyen: 'warning',
+    avancé: 'error',
   };
 
   return (
@@ -132,10 +132,10 @@ const GuideCard = ({ guide, onClick }: { guide: Guide; onClick: () => void }) =>
             <Icon className="h-5 w-5 text-[#5E6AD2]" />
           </div>
           <div className="flex gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge type="badge-modern" color="gray" size="sm">
               {guide.duration}
             </Badge>
-            <Badge className={`text-xs ${difficultyColors[guide.difficulty]}`}>
+            <Badge type="pill-color" color={difficultyColors[guide.difficulty]} size="sm">
               {guide.difficulty}
             </Badge>
           </div>
@@ -149,7 +149,7 @@ const GuideCard = ({ guide, onClick }: { guide: Guide; onClick: () => void }) =>
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
             {guide.tags.slice(0, 2).map(tag => (
-              <Badge key={tag} variant="outline" className="text-xs">
+              <Badge key={tag} type="badge-modern" color="gray" size="sm">
                 {tag}
               </Badge>
             ))}
@@ -432,17 +432,19 @@ const SupportPage = () => {
                     );
                   })()}
                   <div className="flex gap-2">
-                    <Badge variant="outline" className="text-xs">
+                    <Badge type="badge-modern" color="gray" size="sm">
                       {selectedGuide.duration}
                     </Badge>
                     <Badge
-                      className={`text-xs ${
+                      type="pill-color"
+                      size="sm"
+                      color={
                         selectedGuide.difficulty === 'facile'
-                          ? 'bg-green-100 text-green-800'
+                          ? 'success'
                           : selectedGuide.difficulty === 'moyen'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
-                      }`}
+                            ? 'warning'
+                            : 'error'
+                      }
                     >
                       {selectedGuide.difficulty}
                     </Badge>
@@ -454,7 +456,7 @@ const SupportPage = () => {
                 </DialogDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
                   {selectedGuide.tags.map((tag) => (
-                    <Badge key={tag} variant="outline" className="text-xs">
+                    <Badge key={tag} type="badge-modern" color="gray" size="sm">
                       {tag}
                     </Badge>
                   ))}

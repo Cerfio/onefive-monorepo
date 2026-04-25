@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import linkedin from '@/images/linkedin.png';
 import FlagAUIcon from '@/flags/AU.svg';
 
@@ -26,16 +26,16 @@ export const CardExperience = () => (
         {/* Badges */}
         <div className="row-start-2 lg:row-start-1 col-start-1 col-end-13 lg:col-start-13 flex justify-evenly md:space-x-4">
           <div className="h-7 ">
-            <Badge>Network</Badge>
+            <Badge type="pill-color" color="brand" size="sm">Network</Badge>
           </div>
           <div className="h-7">
-            <Badge>Fintech</Badge>
+            <Badge type="pill-color" color="brand" size="sm">Fintech</Badge>
           </div>
           <div className="h-7">
-            <Badge>Rhtech</Badge>
+            <Badge type="pill-color" color="brand" size="sm">Rhtech</Badge>
           </div>
           <div className="h-7">
-            <Badge>Edutech</Badge>
+            <Badge type="pill-color" color="brand" size="sm">Edutech</Badge>
           </div>
         </div>
       </div>

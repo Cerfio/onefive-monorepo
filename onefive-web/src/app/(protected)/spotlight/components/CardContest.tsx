@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Credenza, CredenzaBody, CredenzaContent, CredenzaTrigger } from '@/components/ui/modal';
 import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { motion } from 'framer-motion';
 import { ProviderType } from '@/sharing-enum/spotlight/spotlight.enum';
 import { useState } from 'react';
@@ -127,7 +127,7 @@ export const CardContest = ({
           {/* Badge de prix */}
           {getLowestPrice() && (
             <div className="absolute top-3 left-3">
-              <Badge variant="secondary" className="bg-white/90 text-gray-900 font-medium">
+              <Badge type="pill-color" color="gray" size="sm" className="bg-white/90 text-gray-900 font-medium">
                 À partir de {getLowestPrice()?.price}€
               </Badge>
             </div>
@@ -261,18 +261,18 @@ export const CardContest = ({
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
+              <Badge type="badge-modern" color="gray" size="sm">
                 <Trophy className="h-3 w-3 mr-1" />
                 Concours
               </Badge>
               {spot.contest?.prizeType && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge type="pill-color" color="gray" size="sm">
                   <Award className="h-3 w-3 mr-1" />
                   {PRIZE_LABELS[spot.contest.prizeType] ?? spot.contest.prizeType}
                 </Badge>
               )}
               {getLowestPrice() && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge type="pill-color" color="gray" size="sm">
                   {getLowestPrice()?.price}€
                 </Badge>
               )}

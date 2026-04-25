@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Loader2, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/base/skeleton/skeleton';
 import { cn } from '@/lib/utils';
@@ -328,7 +328,7 @@ export default function PostReactionsModal({
                             {formatRelativeTime(reaction.createdAt)}
                           </p>
                         </div>
-                        <Badge variant="outline" className={cn('gap-1 capitalize', meta.accent)}>
+                        <Badge type="badge-modern" color="gray" size="sm" className={cn('gap-1 capitalize', meta.accent)}>
                           <Image src={meta.icon} alt={`${meta.label} icon`} width={16} height={16} />
                           {meta.label}
                         </Badge>

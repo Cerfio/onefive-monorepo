@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { toast } from 'sonner';
 
 interface InvestmentSettings {
@@ -141,7 +141,7 @@ export const InvestmentSettingsModal = ({
           {activeTab === 'rolling' && (
             <div className="space-y-4 p-4 bg-green-50 rounded-lg">
               <div className="flex items-center gap-2">
-                <Badge className="bg-green-100 text-green-800">
+                <Badge type="pill-color" color="success" size="sm">
                   🟢 Accepte les investissements spontanés
                 </Badge>
               </div>
@@ -184,7 +184,7 @@ export const InvestmentSettingsModal = ({
           {activeTab === 'structured' && (
             <div className="space-y-4 p-4 bg-orange-50 rounded-lg">
               <div className="flex items-center gap-2">
-                <Badge className="bg-orange-100 text-orange-800">
+                <Badge type="pill-color" color="warning" size="sm">
                   💸 Levée en cours
                 </Badge>
               </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/ui/button';
 import { User2, Settings, Crown, Wrench } from 'lucide-react';
 import React from 'react';
@@ -158,7 +158,10 @@ export const MembersTable = ({
                       </td>
                       <td className="py-4 px-4 align-middle">
                         <Badge
-                          className={`font-normal px-2 py-0.5 rounded-full text-xs border flex items-center gap-1 whitespace-nowrap ${POSITION_COLORS[member.position] || 'bg-gray-50 text-gray-500 border-gray-200'}`}
+                          type="pill-color"
+                          color="gray"
+                          size="sm"
+                          className={`font-normal px-2 py-0.5 rounded-full border flex items-center gap-1 whitespace-nowrap ${POSITION_COLORS[member.position] || 'bg-gray-50 text-gray-500 border-gray-200'}`}
                         >
                           {POSITION_ICONS[member.position]}
                           {member.position || '—'}
@@ -167,7 +170,10 @@ export const MembersTable = ({
                       <td className="py-4 px-4 align-middle">
                         {showRoles && member.role ? (
                           <Badge
-                            className={`${ROLE_COLORS[member.role] || 'bg-gray-50 text-gray-700 border-gray-200'} border text-xs px-2 py-0.5`}
+                            type="pill-color"
+                            color="gray"
+                            size="sm"
+                            className={`${ROLE_COLORS[member.role] || 'bg-gray-50 text-gray-700 border-gray-200'} border px-2 py-0.5`}
                           >
                             {ROLE_ICONS[member.role]}
                             {ROLE_LABELS[member.role] || member.role}
@@ -218,7 +224,10 @@ export const MembersTable = ({
                   {showRoles && member.role && (
                     <div className="flex items-center justify-between">
                       <Badge
-                        className={`${ROLE_COLORS[member.role] || 'bg-gray-50 text-gray-700 border-gray-200'} border text-xs px-2 py-0.5`}
+                        type="pill-color"
+                        color="gray"
+                        size="sm"
+                        className={`${ROLE_COLORS[member.role] || 'bg-gray-50 text-gray-700 border-gray-200'} border px-2 py-0.5`}
                       >
                         {ROLE_ICONS[member.role]}
                         {ROLE_LABELS[member.role] || member.role}

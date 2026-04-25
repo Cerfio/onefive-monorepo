@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Credenza, CredenzaBody, CredenzaContent, CredenzaTrigger } from '@/components/ui/modal';
 import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion } from 'framer-motion';
 import { ProviderType } from '@/sharing-enum/spotlight/spotlight.enum';
@@ -182,7 +182,7 @@ export const CardEvent = memo(({
           {/* Badge de prix */}
           {spot.event?.prices && spot.event.prices.length > 0 && (
             <div className="absolute top-3 left-3">
-              <Badge variant="secondary" className="bg-white/90 text-gray-900 font-medium">
+              <Badge type="pill-color" color="gray" size="sm" className="bg-white/90 text-gray-900 font-medium">
                 À partir de {spot.event.prices[0].price}€
               </Badge>
             </div>
@@ -317,17 +317,17 @@ export const CardEvent = memo(({
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
+              <Badge type="badge-modern" color="gray" size="sm">
                 <Calendar className="h-3 w-3 mr-1" />
                 Événement
               </Badge>
               {spot.event?.format && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge type="pill-color" color="gray" size="sm">
                   {FORMAT_LABELS[spot.event.format] ?? spot.event.format}
                 </Badge>
               )}
               {spot.event?.prices && spot.event.prices.length > 0 && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge type="pill-color" color="gray" size="sm">
                   {spot.event.prices[0].price}€
                 </Badge>
               )}

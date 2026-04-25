@@ -10,7 +10,7 @@ import {
   Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
@@ -55,9 +55,9 @@ const _getPriorityColor = (priority: string) => {
 
 const getPriorityBadge = (priority: string) => {
   switch (priority) {
-    case 'high': return <Badge variant="destructive" className="text-xs">Urgent</Badge>;
-    case 'medium': return <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">Important</Badge>;
-    case 'low': return <Badge variant="outline" className="text-xs">Info</Badge>;
+    case 'high': return <Badge type="pill-color" color="error" size="sm">Urgent</Badge>;
+    case 'medium': return <Badge type="pill-color" color="warning" size="sm">Important</Badge>;
+    case 'low': return <Badge type="badge-modern" color="gray" size="sm">Info</Badge>;
     default: return null;
   }
 };
@@ -102,7 +102,7 @@ export default function SmartNotifications() {
           <Bell className="h-5 w-5 text-blue-600" />
           <h3 className="text-lg font-semibold">Notifications intelligentes</h3>
           {unreadCount > 0 && (
-            <Badge variant="destructive" className="text-xs">
+            <Badge type="pill-color" color="error" size="sm">
               {unreadCount}
             </Badge>
           )}
@@ -163,7 +163,7 @@ export default function SmartNotifications() {
                       {notification.activity && (
                         <div className="flex items-center gap-1 mb-2">
                           <span className="text-xs text-gray-500">Activité:</span>
-                          <Badge variant="outline" className="text-xs">
+                          <Badge type="badge-modern" color="gray" size="sm">
                             {notification.activity}
                           </Badge>
                         </div>

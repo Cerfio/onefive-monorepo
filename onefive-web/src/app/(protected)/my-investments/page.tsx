@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Switch } from '@/components/ui/switch';
 import {
   useMyInvestments,
@@ -41,15 +41,15 @@ const ROUND_LABELS: Record<string, string> = {
 const STATUS_CONFIG = {
   PENDING: {
     label: 'En attente',
-    className: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+    color: 'warning' as const,
   },
   ACCEPTED: {
     label: 'Accepté',
-    className: 'bg-green-50 text-green-700 border-green-200',
+    color: 'success' as const,
   },
   DECLINED: {
     label: 'Refusé',
-    className: 'bg-red-50 text-red-700 border-red-200',
+    color: 'error' as const,
   },
 };
 
@@ -122,14 +122,11 @@ function InvestmentCard({ investment }: { investment: MyInvestment }) {
               >
                 {investment.startup.name}
               </h3>
-              <Badge variant="outline" className={status.className}>
+              <Badge type="pill-color" color={status.color} size="sm">
                 {status.label}
               </Badge>
               {investment.isLead && (
-                <Badge
-                  variant="outline"
-                  className="bg-violet-50 text-violet-700 border-violet-200"
-                >
+                <Badge type="pill-color" color="purple" size="sm">
                   Lead
                 </Badge>
               )}

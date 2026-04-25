@@ -9,7 +9,7 @@ import type { ProgressFeaturedIconType } from '@/components/application/progress
 import { DialogTrigger, ModalOverlay, Modal, Dialog } from '@/components/application/modals/modal';
 import { CloseButton } from '@/components/base/buttons/close-button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Button as UIButton } from '@/components/ui/button';
 import { Button } from '@/components/base/buttons/button';
 import { FundingHistoryEntry, CreateFundingHistoryData, UpdateFundingHistoryData, FundingInvestor } from '@/queries/startup';
@@ -661,7 +661,7 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge type="badge-modern" color="gray" size="sm">
                           {ROUND_OPTIONS.find(o => o.id === entry.round)?.label || entry.round}
                       </Badge>
                       <span className="text-sm text-gray-500">

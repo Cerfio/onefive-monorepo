@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { UserPlus, Settings, LogOut, Clock, Mail, User2, X, Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -222,7 +222,7 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
                     </span>
                     <span className="text-xs text-gray-500">{inv.position}</span>
                   </div>
-                  <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-xs">
+                  <Badge type="pill-color" color="warning" size="sm">
                     En attente
                   </Badge>
                   <button

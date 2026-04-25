@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { motion } from 'framer-motion';
 
 interface SpotlightFiltersProps {
@@ -139,8 +139,9 @@ export const SpotlightFilters = ({
               {activeFilters.map((filter) => (
                 <Badge
                   key={filter.key}
-                  variant="secondary"
-                  className="text-xs px-2 py-1 bg-blue-50 text-blue-700 border-blue-200"
+                  type="pill-color"
+                  color="blue"
+                  size="sm"
                 >
                   {filter.label}
                 </Badge>

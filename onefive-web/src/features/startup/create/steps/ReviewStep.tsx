@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Building2, 
@@ -194,7 +194,7 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
                 <div className="text-xs text-gray-500 mb-2">Secteurs d'activité</div>
                 <div className="flex flex-wrap gap-2">
                   {data.categories.map((category: string, index: number) => (
-                    <Badge key={index} variant="secondary">
+                    <Badge key={index} type="pill-color" color="gray" size="sm">
                       {category}
                     </Badge>
                   ))}
@@ -262,7 +262,7 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
                       {member.equity}%
                     </div>
                     {member.status === 'invited' && (
-                      <Badge variant="outline" className="text-xs mt-1">
+                      <Badge type="badge-modern" color="gray" size="sm" className="mt-1">
                         Invité
                       </Badge>
                     )}

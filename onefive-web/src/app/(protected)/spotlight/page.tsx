@@ -8,7 +8,7 @@ import { LoadScript } from '@react-google-maps/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Share2, Filter, Loader2, Bookmark, Map, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
 
 import { listSpotlight } from '@/queries/spotlight';
@@ -707,7 +707,7 @@ const Spotlight = () => {
                   <Filter className="h-4 w-4" />
                   Filtres
                   {hasActiveFilters && (
-                    <Badge variant="secondary" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
+                    <Badge type="pill-color" color="gray" size="sm" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
                       !
                     </Badge>
                   )}

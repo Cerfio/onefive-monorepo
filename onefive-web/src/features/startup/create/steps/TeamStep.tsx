@@ -6,7 +6,7 @@ import { Input } from '@/components/base/input/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Select } from '@/components/base/select/select';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Trash2, SkipForward, X } from 'lucide-react';
 import { SmartProfileSearch } from '@/components/startup/SmartProfileSearch';
 import { ProfileSearchResult, useManageStartupInvitation } from '@/queries/startup';
@@ -276,10 +276,10 @@ export const TeamStep = ({ onNext, onBack, data, onDataChange }: TeamStepProps) 
                       </div>
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
                         {field.profileId === currentUser?.id && (
-                          <Badge variant="secondary" className="text-xs">Vous</Badge>
+                          <Badge type="pill-color" color="gray" size="sm">Vous</Badge>
                         )}
                         {field.status === 'invited' && (
-                          <Badge variant="outline" className="text-xs">Invitation envoyée</Badge>
+                          <Badge type="badge-modern" color="gray" size="sm">Invitation envoyée</Badge>
                         )}
                       </div>
                     </div>

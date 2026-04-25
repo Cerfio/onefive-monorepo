@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { ChevronLeft, ChevronRight, Rocket, Star, MapPin, Target, Briefcase } from 'lucide-react';
 import { formatLocationDisplay } from '@/lib/country';
 
@@ -60,7 +60,7 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                   <p className="text-sm text-gray-600 truncate">{item.highlight}</p>
                 </div>
                 {item.badges && item.badges.map((badge: string, i: number) => (
-                  <Badge key={i} variant="secondary" className="text-xs">
+                  <Badge key={i} type="pill-color" color="gray" size="sm">
                     {badge}
                   </Badge>
                 ))}
@@ -119,7 +119,7 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                   <p className="text-sm text-gray-600 truncate">{item.tagline || item.tags?.join(', ')}</p>
                 </div>
                 {item.isHiring && (
-                  <Badge className="bg-green-500 hover:bg-green-600">
+                  <Badge type="pill-color" color="success" size="sm">
                     Recrute
                   </Badge>
                 )}
@@ -131,7 +131,7 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                   <span className="truncate">{formatLocationDisplay(item.location)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">
+                  <Badge type="badge-modern" color="gray" size="sm">
                     {item.stage}
                   </Badge>
                   <span className="text-xs text-gray-500">{item.employees} employés</span>

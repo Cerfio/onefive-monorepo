@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Lightbulb, Target, Crown, Zap, ChevronRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 
 const SmartRecommendations = ({ discussion: _discussion }: { discussion: any }) => {
   const recommendations = [
@@ -35,7 +35,7 @@ const SmartRecommendations = ({ discussion: _discussion }: { discussion: any }) 
       <div className="flex items-center gap-2 mb-4">
         <Lightbulb className="h-5 w-5 text-orange-500" />
         <h3 className="font-semibold text-gray-900">Recommandations IA</h3>
-        <Badge variant="secondary" className="text-xs">BETA</Badge>
+        <Badge type="pill-color" color="gray" size="sm">BETA</Badge>
       </div>
       <div className="space-y-4">
         {recommendations.map((rec, index) => (

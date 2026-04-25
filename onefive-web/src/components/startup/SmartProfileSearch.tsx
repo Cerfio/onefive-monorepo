@@ -4,7 +4,7 @@ import { Input } from '@/components/base/input/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { ProfileSearchResult } from '@/queries/startup';
 import { useSearchProfiles } from '@/hooks/useSearchProfiles';
 
@@ -225,7 +225,7 @@ export const SmartProfileSearch = ({
                         )}
                       </div>
                       {selectedProfiles.includes(profile.id) && (
-                        <Badge variant="secondary" className="text-xs flex-shrink-0">
+                        <Badge type="pill-color" color="gray" size="sm" className="flex-shrink-0">
                           Ajouté
                         </Badge>
                       )}

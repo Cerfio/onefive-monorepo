@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
 import { Info, Crown, Wrench, Settings, User2 } from 'lucide-react';
 import React from 'react';
@@ -160,9 +160,12 @@ export const FoundersTable = ({
                       </div>
                     </td>
                     <td className="py-4 px-4 align-middle">
-                      <Badge className={
-                        `font-normal px-2 py-0.5 rounded-full text-xs border flex items-center gap-1 whitespace-nowrap ${POSITION_COLORS[position] || 'bg-gray-50 text-gray-500 border-gray-200'}`
-                      }>
+                      <Badge
+                        type="pill-color"
+                        color="gray"
+                        size="sm"
+                        className={`font-normal px-2 py-0.5 rounded-full border flex items-center gap-1 whitespace-nowrap ${POSITION_COLORS[position] || 'bg-gray-50 text-gray-500 border-gray-200'}`}
+                      >
                         {POSITION_ICONS[position]}
                         {position}
                       </Badge>
@@ -170,7 +173,10 @@ export const FoundersTable = ({
                     <td className="py-4 px-4 align-middle">
                       {founder.role ? (
                         <Badge
-                          className={`font-normal px-2 py-0.5 rounded-full text-xs border flex items-center gap-1 whitespace-nowrap ${ROLE_COLORS[founder.role] || 'bg-gray-50 text-gray-700 border-gray-200'}`}
+                          type="pill-color"
+                          color="gray"
+                          size="sm"
+                          className={`font-normal px-2 py-0.5 rounded-full border flex items-center gap-1 whitespace-nowrap ${ROLE_COLORS[founder.role] || 'bg-gray-50 text-gray-700 border-gray-200'}`}
                         >
                           {ROLE_ICONS[founder.role]}
                           {ROLE_LABELS[founder.role] || founder.role}
@@ -242,7 +248,12 @@ export const FoundersTable = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge className={`font-normal px-2 py-0.5 rounded-full text-xs border flex items-center gap-1 whitespace-nowrap ${POSITION_COLORS[position] || 'bg-gray-50 text-gray-500 border-gray-200'}`}>
+                  <Badge
+                    type="pill-color"
+                    color="gray"
+                    size="sm"
+                    className={`font-normal px-2 py-0.5 rounded-full border flex items-center gap-1 whitespace-nowrap ${POSITION_COLORS[position] || 'bg-gray-50 text-gray-500 border-gray-200'}`}
+                  >
                     {POSITION_ICONS[position]}
                     {position}
                   </Badge>

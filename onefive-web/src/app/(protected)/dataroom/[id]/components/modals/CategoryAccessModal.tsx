@@ -9,7 +9,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
@@ -235,7 +235,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                             <DialogDescription className="flex items-center gap-2 mt-1">
                                 <span className="truncate">{category.name}</span>
                                 {category.count !== undefined && (
-                                    <Badge variant="outline" className="ml-2">
+                                    <Badge type="badge-modern" color="gray" size="sm" className="ml-2">
                                         {category.count} fichiers
                                     </Badge>
                                 )}
@@ -568,10 +568,11 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                     <p className="font-medium text-sm">{access.userName}</p>
                                                     <p className="text-xs text-gray-500">{access.userEmail}</p>
                                                     <div className="flex items-center gap-1 mt-1">
-                                                        <Badge 
-                                                            variant={access.status === 'accepted' ? 'default' : 
-                                                                    access.status === 'pending' ? 'outline' : 'destructive'}
-                                                            className="text-xs"
+                                                        <Badge
+                                                            type={access.status === 'pending' ? 'badge-modern' : 'pill-color'}
+                                                            color={access.status === 'accepted' ? 'brand' :
+                                                                    access.status === 'pending' ? 'gray' : 'error'}
+                                                            size="sm"
                                                         >
                                                             {access.status === 'accepted' ? 'Accepté' :
                                                              access.status === 'pending' ? 'En attente' : 'Refusé'}

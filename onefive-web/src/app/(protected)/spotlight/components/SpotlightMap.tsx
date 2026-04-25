@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, MapPin, Calendar, Users, ExternalLink, Navigation, Share2, Building } from 'lucide-react';
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -287,7 +287,7 @@ export const SpotlightMap = ({
 
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                      <Badge type="pill-color" color="gray" size="sm" className="text-[10px] px-1.5 py-0">
                         {SPOT_TYPE_LABELS[selectedSpot.spot] ?? selectedSpot.spot}
                       </Badge>
                     </div>

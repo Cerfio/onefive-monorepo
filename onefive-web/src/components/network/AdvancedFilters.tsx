@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 
@@ -249,7 +249,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
           <div className="flex items-center gap-2">
             <span className="font-medium text-gray-900">{section.title}</span>
             {activeCount > 0 && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge type="pill-color" color="gray" size="sm">
                 {activeCount}
               </Badge>
             )}
@@ -309,30 +309,44 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
             {Object.entries(filters).map(([key, value]) => {
               if (Array.isArray(value) && value.length > 0) {
                 return value.map(item => (
-                  <Badge
+                  <button
                     key={`${key}-${item}`}
-                    variant="secondary"
-                    className="text-xs cursor-pointer hover:bg-gray-200"
+                    type="button"
                     onClick={() => onFilterChange(key as keyof AdvancedFilterState, item, false)}
+                    className="cursor-pointer"
                   >
-                    {item}
-                    <X className="h-3 w-3 ml-1" />
-                  </Badge>
+                    <Badge
+                      type="pill-color"
+                      color="gray"
+                      size="sm"
+                      className="hover:bg-gray-200"
+                    >
+                      {item}
+                      <X className="h-3 w-3 ml-1" />
+                    </Badge>
+                  </button>
                 ));
               }
               if (typeof value === 'boolean' && value) {
                 const booleanFilter = booleanFilters.find(f => f.key === key);
                 if (booleanFilter) {
                   return (
-                    <Badge
+                    <button
                       key={key}
-                      variant="secondary"
-                      className="text-xs cursor-pointer hover:bg-gray-200"
+                      type="button"
                       onClick={() => onFilterChange(key as keyof AdvancedFilterState, false)}
+                      className="cursor-pointer"
                     >
-                      {booleanFilter.label}
-                      <X className="h-3 w-3 ml-1" />
-                    </Badge>
+                      <Badge
+                        type="pill-color"
+                        color="gray"
+                        size="sm"
+                        className="hover:bg-gray-200"
+                      >
+                        {booleanFilter.label}
+                        <X className="h-3 w-3 ml-1" />
+                      </Badge>
+                    </button>
                   );
                 }
               }

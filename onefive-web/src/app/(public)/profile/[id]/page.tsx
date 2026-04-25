@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Calendar, Users, Briefcase } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/base/badges/badges';
 import { ProfilePrivateSection } from './ProfilePrivateSection';
 import { ProfileAuthSwitch } from './ProfileAuthSwitch';
 import { BioWithExpand } from '@/components/profile/BioWithExpand';
@@ -219,8 +219,9 @@ export default async function PublicProfilePage({
                           {profile.ecosystemRoles.map((role) => (
                             <Badge
                               key={role}
-                              variant="secondary"
-                              className="border-violet-200 bg-violet-50 text-violet-700"
+                              type="pill-color"
+                              color="purple"
+                              size="sm"
                             >
                               {role}
                             </Badge>
@@ -263,8 +264,9 @@ export default async function PublicProfilePage({
                     {profile.skills.map((skill) => (
                       <Badge
                         key={skill}
-                        variant="outline"
-                        className="border-violet-200 bg-violet-50/50 text-violet-700"
+                        type="pill-color"
+                        color="purple"
+                        size="sm"
                       >
                         {skill}
                       </Badge>
