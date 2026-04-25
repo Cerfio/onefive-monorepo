@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MessageCircle, X, Send, User, Bot, Minimize2, Maximize2 } from 'lucide-react';
@@ -100,6 +100,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
             className="fixed bottom-6 right-6 z-50"
           >
             <Button
+              color="primary"
               onClick={() => setIsOpen(true)}
               className="h-14 w-14 rounded-full bg-[#5E6AD2] hover:bg-[#5E6AD2]/90 shadow-lg relative"
             >
@@ -140,21 +141,19 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
-                      variant="ghost"
-                      size="icon"
+                      color="tertiary"
+                      size="sm"
                       onClick={() => setIsMinimized(!isMinimized)}
                       className="h-8 w-8 text-white hover:bg-white/20"
-                    >
-                      {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
-                    </Button>
+                      iconLeading={isMinimized ? <Maximize2 data-icon /> : <Minimize2 data-icon />}
+                    />
                     <Button
-                      variant="ghost"
-                      size="icon"
+                      color="tertiary"
+                      size="sm"
                       onClick={() => setIsOpen(false)}
                       className="h-8 w-8 text-white hover:bg-white/20"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                      iconLeading={<X data-icon />}
+                    />
                   </div>
                 </div>
               </CardHeader>
@@ -234,12 +233,12 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
                             className="flex-1"
                           />
                           <Button
+                            color="primary"
                             onClick={handleSendMessage}
-                            disabled={!inputMessage.trim()}
+                            isDisabled={!inputMessage.trim()}
                             className="bg-[#5E6AD2] hover:bg-[#5E6AD2]/90"
-                          >
-                            <Send className="h-4 w-4" />
-                          </Button>
+                            iconLeading={<Send data-icon />}
+                          />
                         </div>
                       </div>
                     </CardContent>

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Star } from 'lucide-react';
 
 interface SpotlightHeaderProps {
@@ -20,11 +20,10 @@ export const SpotlightHeader = ({ data, search, onShare }: SpotlightHeaderProps)
           </div>
         </div>
         <div className="flex gap-3">
-          <Button onClick={onShare} variant="outline">
+          <Button onClick={onShare} color="secondary">
             Share
           </Button>
-          <Button className="flex gap-2 items-center">
-            <Star width={20} height={20} />
+          <Button color="primary" iconLeading={<Star width={20} height={20} data-icon />}>
             Save search
           </Button>
         </div>

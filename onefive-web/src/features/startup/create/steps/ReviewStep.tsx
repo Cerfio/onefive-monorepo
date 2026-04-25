@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -46,11 +46,11 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
             </div>
             <Button
               size="sm"
-              variant="ghost"
+              color="tertiary"
               onClick={() => onEdit(1)}
               className="text-[#5E6AD2] hover:text-[#5E6AD2]/80"
+              iconLeading={<Edit3 data-icon />}
             >
-              <Edit3 className="h-3 w-3 mr-1" />
               Modifier
             </Button>
           </div>
@@ -97,11 +97,11 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
             </div>
             <Button
               size="sm"
-              variant="ghost"
+              color="tertiary"
               onClick={() => onEdit(2)}
               className="text-[#5E6AD2] hover:text-[#5E6AD2]/80"
+              iconLeading={<Edit3 data-icon />}
             >
-              <Edit3 className="h-3 w-3 mr-1" />
               Modifier
             </Button>
           </div>
@@ -178,11 +178,11 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
             </div>
             <Button
               size="sm"
-              variant="ghost"
+              color="tertiary"
               onClick={() => onEdit(3)}
               className="text-[#5E6AD2] hover:text-[#5E6AD2]/80"
+              iconLeading={<Edit3 data-icon />}
             >
-              <Edit3 className="h-3 w-3 mr-1" />
               Modifier
             </Button>
           </div>
@@ -227,11 +227,11 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
             </div>
             <Button
               size="sm"
-              variant="ghost"
+              color="tertiary"
               onClick={() => onEdit(4)}
               className="text-[#5E6AD2] hover:text-[#5E6AD2]/80"
+              iconLeading={<Edit3 data-icon />}
             >
-              <Edit3 className="h-3 w-3 mr-1" />
               Modifier
             </Button>
           </div>
@@ -296,17 +296,19 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
       <div className="flex justify-between pt-6 gap-3">
         <Button
           type="button"
-          variant="outline"
+          color="secondary"
           onClick={onBack}
-          disabled={isSubmitting}
+          isDisabled={isSubmitting}
         >
           Retour
         </Button>
         <Button
           type="button"
+          color="primary"
           onClick={handleSubmit}
-          disabled={isSubmitting}
+          isDisabled={isSubmitting}
           className="bg-[#5E6AD2] hover:bg-[#5E6AD2]/90"
+          iconLeading={isSubmitting ? undefined : <CheckCircle2 data-icon />}
         >
           {isSubmitting ? (
             <>
@@ -314,10 +316,7 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
               Création...
             </>
           ) : (
-            <>
-              <CheckCircle2 className="h-4 w-4 mr-2" />
-              Créer ma startup
-            </>
+            'Créer ma startup'
           )}
         </Button>
       </div>

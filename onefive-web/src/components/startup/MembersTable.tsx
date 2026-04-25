@@ -1,7 +1,6 @@
 'use client';
 
 import { Badge } from '@/components/base/badges/badges';
-import { Button } from '@/components/ui/button';
 import { User2, Settings, Crown, Wrench } from 'lucide-react';
 import React from 'react';
 import { motion } from 'framer-motion';

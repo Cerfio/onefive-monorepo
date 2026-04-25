@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { Input } from '@/components/base/input/input';
 import { TextArea } from '@/components/base/textarea/textarea';
 import { Button } from '@/components/base/buttons/button';
-import { Button as ShadcnButton } from '@/components/ui/button';
 import { ImageUpload } from '@/components/startup';
 import { toast } from 'sonner';
 import { api } from '@/utils/kyInstance';
@@ -144,19 +143,16 @@ export const IdentityStep = ({ onNext, data, onDataChange, onImport }: IdentityS
             hint="Collez l'URL de votre page entreprise pour pré-remplir les informations"
           />
         </div>
-        <ShadcnButton 
-          type="button" 
+        <Button
+          type="button"
           onClick={handleLinkedinImport}
-          disabled={!linkedinUrl || isImporting}
-          variant="secondary"
+          isDisabled={!linkedinUrl || isImporting}
+          color="secondary"
           className="mb-[22px]"
+          iconLeading={isImporting ? <Loader2 data-icon className="animate-spin" /> : undefined}
         >
-          {isImporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            'Importer'
-          )}
-        </ShadcnButton>
+          {isImporting ? null : 'Importer'}
+        </Button>
       </div>
 
       {/* Résumé des erreurs */}

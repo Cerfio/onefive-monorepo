@@ -13,7 +13,7 @@ import {
   TrendingUp,
   Calendar,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Switch } from '@/components/ui/switch';
@@ -162,32 +162,25 @@ function InvestmentCard({ investment }: { investment: MyInvestment }) {
             {isPending && (
               <div className="flex gap-2 mt-3">
                 <Button
+                  color="primary"
                   size="sm"
                   onClick={handleAccept}
-                  disabled={
+                  isDisabled={
                     acceptMutation.isPending || declineMutation.isPending
                   }
+                  iconLeading={acceptMutation.isPending ? <Loader2 data-icon className="animate-spin" /> : <Check data-icon />}
                 >
-                  {acceptMutation.isPending ? (
-                    <Loader2 className="animate-spin mr-1" size={14} />
-                  ) : (
-                    <Check className="mr-1" size={14} />
-                  )}
                   Accepter
                 </Button>
                 <Button
                   size="sm"
-                  variant="outline"
+                  color="secondary"
                   onClick={handleDecline}
-                  disabled={
+                  isDisabled={
                     acceptMutation.isPending || declineMutation.isPending
                   }
+                  iconLeading={declineMutation.isPending ? <Loader2 data-icon className="animate-spin" /> : <X data-icon />}
                 >
-                  {declineMutation.isPending ? (
-                    <Loader2 className="animate-spin mr-1" size={14} />
-                  ) : (
-                    <X className="mr-1" size={14} />
-                  )}
                   Refuser
                 </Button>
               </div>
@@ -235,12 +228,11 @@ export default function MyInvestmentsPage() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex items-center gap-3 mb-6">
         <Button
-          variant="ghost"
+          color="tertiary"
           size="sm"
           onClick={() => router.back()}
-        >
-          <ArrowLeft size={16} />
-        </Button>
+          iconLeading={<ArrowLeft data-icon />}
+        />
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
             Mes investissements

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { TextArea } from '@/components/base/textarea/textarea';
 
@@ -99,7 +99,7 @@ export const InviteByEmailForm = ({ searchQuery, onInvite, onCancel }: InviteByE
         {onCancel && (
           <Button
             type="button"
-            variant="ghost"
+            color="tertiary"
             size="sm"
             onClick={onCancel}
             className="flex-1"
@@ -109,10 +109,11 @@ export const InviteByEmailForm = ({ searchQuery, onInvite, onCancel }: InviteByE
         )}
         <Button
           type="submit"
+          color="primary"
           size="sm"
           className="flex-1"
+          iconLeading={<Mail data-icon />}
         >
-          <Mail className="mr-2" size={16} />
           Envoyer l'invitation
         </Button>
       </div>

@@ -2,7 +2,7 @@ import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, MapPin, Calendar, Users, ExternalLink, Navigation, Share2, Building } from 'lucide-react';
 import { useState, useCallback, useMemo, useRef } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
 import Image from 'next/image';
@@ -188,10 +188,10 @@ export const SpotlightMap = ({
         <Tooltip title="Ma position">
           <Button
             size="sm"
-            variant="secondary"
+            color="secondary"
             className="h-10 w-10 p-0 bg-white/90 hover:bg-white shadow-lg"
             onClick={getUserLocation}
-            disabled={isLocating}
+            isDisabled={isLocating}
           >
             {isLocating ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -329,8 +329,8 @@ export const SpotlightMap = ({
                       <Link href={`/spotlight/${selectedSpot.id}`}>
                         <Button
                           size="sm"
-                          variant="default"
-                          className="h-7 text-xs bg-[#5E6AD2] hover:bg-[#4F5ABF]"
+                          color="primary"
+                          className="h-7 text-xs"
                         >
                           Détails
                         </Button>
@@ -338,32 +338,32 @@ export const SpotlightMap = ({
                       {selectedSpot.url && (
                         <Button
                           size="sm"
-                          variant="outline"
+                          color="secondary"
                           className="h-7 text-xs"
                           onClick={() => window.open(selectedSpot.url, '_blank')}
+                          iconLeading={<ExternalLink className="h-3 w-3" data-icon />}
                         >
-                          <ExternalLink className="h-3 w-3 mr-1" />
                           Voir
                         </Button>
                       )}
-                      
+
                       <Button
                         size="sm"
-                        variant="outline"
+                        color="secondary"
                         className="h-7 text-xs"
                         onClick={() => handleNavigateToSpot(selectedSpot)}
+                        iconLeading={<Navigation className="h-3 w-3" data-icon />}
                       >
-                        <Navigation className="h-3 w-3 mr-1" />
                         Itinéraire
                       </Button>
-                      
+
                       <Button
                         size="sm"
-                        variant="outline"
+                        color="secondary"
                         className="h-7 text-xs"
                         onClick={() => handleShareSpot(selectedSpot)}
+                        iconLeading={<Share2 className="h-3 w-3" data-icon />}
                       >
-                        <Share2 className="h-3 w-3 mr-1" />
                         Partager
                       </Button>
                     </div>

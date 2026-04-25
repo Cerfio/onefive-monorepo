@@ -5,7 +5,7 @@ import { Meteors } from '@/components/meteors';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import LetterCercle from '@/icons/LetterCercle.svg';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 
 const VerifyLinkPage = () => {
   const router = useRouter();
@@ -42,6 +42,7 @@ const VerifyLinkPage = () => {
             Nous vous redirigeons vers la page de vérification.
           </div>
           <Button
+            color="primary"
             className="h-11 w-[380px] mt-8 text-base font-semibold"
             onClick={() => router.push('/auth/reset-password')}
           >

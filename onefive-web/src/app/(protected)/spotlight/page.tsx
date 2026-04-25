@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { LoadScript } from '@react-google-maps/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Share2, Filter, Loader2, Bookmark, Map, List } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
 
@@ -700,11 +700,11 @@ const Spotlight = () => {
               <Tooltip title="Afficher les filtres">
                 <Button
                   onClick={() => setShowFilters(!showFilters)}
-                  variant="outline"
+                  color="secondary"
                   className="gap-2"
                   aria-label="Afficher les filtres"
+                  iconLeading={<Filter className="h-4 w-4" data-icon />}
                 >
-                  <Filter className="h-4 w-4" />
                   Filtres
                   {hasActiveFilters && (
                     <Badge type="pill-color" color="gray" size="sm" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
@@ -716,22 +716,22 @@ const Spotlight = () => {
               <Tooltip title="Sauvegarder cette recherche">
                 <Button
                   onClick={handleSaveSearch}
-                  variant="outline"
+                  color="secondary"
                   className="gap-2"
                   aria-label="Sauvegarder cette recherche"
+                  iconLeading={<Bookmark className="h-4 w-4" data-icon />}
                 >
-                  <Bookmark className="h-4 w-4" />
                   Sauvegarder
                 </Button>
               </Tooltip>
               <Tooltip title="Partager ma position">
                 <Button
                   onClick={handleShareLocation}
-                  variant="outline"
+                  color="secondary"
                   className="gap-2"
                   aria-label="Partager ma position"
+                  iconLeading={<Share2 className="h-4 w-4" data-icon />}
                 >
-                  <Share2 className="h-4 w-4" />
                   Partager
                 </Button>
               </Tooltip>
@@ -790,19 +790,19 @@ const Spotlight = () => {
                 {/* Mobile toggle: Liste / Carte */}
         <div className="flex lg:hidden mb-4 gap-2">
           <Button
-            variant={!showMap ? 'default' : 'outline'}
+            color={!showMap ? 'primary' : 'secondary'}
             className="flex-1 gap-2"
             onClick={() => setShowMap(false)}
+            iconLeading={<List className="h-4 w-4" data-icon />}
           >
-            <List className="h-4 w-4" />
             Liste ({filteredData.length})
           </Button>
           <Button
-            variant={showMap ? 'default' : 'outline'}
+            color={showMap ? 'primary' : 'secondary'}
             className="flex-1 gap-2"
             onClick={() => setShowMap(true)}
+            iconLeading={<Map className="h-4 w-4" data-icon />}
           >
-            <Map className="h-4 w-4" />
             Carte ({spotsOnMap})
           </Button>
         </div>

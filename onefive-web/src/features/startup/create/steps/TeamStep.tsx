@@ -3,7 +3,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '@/components/base/input/input';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Select } from '@/components/base/select/select';
 import { Badge } from '@/components/base/badges/badges';
@@ -332,7 +332,7 @@ export const TeamStep = ({ onNext, onBack, data, onDataChange }: TeamStepProps) 
                     {field.status === 'invited' && (
                       <Button
                         type="button"
-                        variant="ghost"
+                        color="tertiary"
                         size="sm"
                         onClick={() => {
                           if (field.invitationId) {
@@ -341,22 +341,20 @@ export const TeamStep = ({ onNext, onBack, data, onDataChange }: TeamStepProps) 
                           remove(index);
                         }}
                         className="text-red-500 hover:text-red-700 p-1"
-                        title="Annuler l'invitation"
-                      >
-                        <X size={14} />
-                      </Button>
+                        aria-label="Annuler l'invitation"
+                        iconLeading={<X data-icon />}
+                      />
                     )}
                     <Button
                       type="button"
-                      variant="ghost"
+                      color="tertiary"
                       size="sm"
                       onClick={() => remove(index)}
                       className="text-red-500 hover:text-red-700 p-1"
-                      disabled={fields.length === 1 || field.profileId === currentUser?.id}
-                      title={field.profileId === currentUser?.id ? "Vous ne pouvez pas vous supprimer" : "Supprimer"}
-                    >
-                      <Trash2 size={14} />
-                    </Button>
+                      isDisabled={fields.length === 1 || field.profileId === currentUser?.id}
+                      aria-label={field.profileId === currentUser?.id ? "Vous ne pouvez pas vous supprimer" : "Supprimer"}
+                      iconLeading={<Trash2 data-icon />}
+                    />
                   </div>
                 </td>
               </tr>
@@ -367,24 +365,25 @@ export const TeamStep = ({ onNext, onBack, data, onDataChange }: TeamStepProps) 
 
       {/* Navigation */}
       <div className="flex justify-between pt-6 gap-3">
-        <Button type="button" variant="outline" onClick={onBack}>
+        <Button type="button" color="secondary" onClick={onBack}>
           Retour
         </Button>
 
         <div className="flex gap-3">
           <Button
             type="button"
-            variant="ghost"
+            color="tertiary"
             onClick={handleSkip}
             className="text-gray-600"
+            iconLeading={<SkipForward data-icon />}
           >
-            <SkipForward size={16} className="mr-2" />
             Plus tard
           </Button>
           <Button
             type="submit"
+            color="primary"
             onClick={form.handleSubmit(onNext)}
-            disabled={!isFormValid}
+            isDisabled={!isFormValid}
             className="bg-[#5E6AD2] hover:bg-[#5E6AD2]/90"
           >
             Créer la startup

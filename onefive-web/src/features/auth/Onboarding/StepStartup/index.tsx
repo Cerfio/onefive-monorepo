@@ -18,7 +18,7 @@ import { UserCheck, Users } from "lucide-react";
 import { Badge } from '@/components/base/badges/badges';
 import { Flag } from "@/components/ui/flag";
 import { Tooltip } from "@/components/base/tooltip/tooltip";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/buttons/button";
 
 const StepStartupList = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -348,7 +348,7 @@ const StartupCard = ({
             >
               <Button
                 size="sm"
-                variant={isFollow ? "default" : "ghost"}
+                color={isFollow ? "primary" : "tertiary"}
                 className="text-xs gap-1 py-1 px-2 w-full"
                 onClick={(e) => {
                   e.preventDefault();
@@ -357,8 +357,8 @@ const StartupCard = ({
                 }}
                 aria-label={`Suivre ${startup.name}`}
                 aria-pressed={isFollow}
+                iconLeading={<UserCheck data-icon />}
               >
-                <UserCheck className="h-3 w-3" />
                 {isFollow ? "Suivi" : "Suivre"}
               </Button>
             </Tooltip>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import Navbar from '@/components/navbar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Badge } from '@/components/base/badges/badges';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -91,21 +91,19 @@ const FAQCard = ({ faq, onRate }: { faq: FAQ; onRate: (id: string, helpful: bool
           <span className="text-sm text-gray-500">Cette réponse était-elle utile ?</span>
           <div className="flex gap-2">
             <Button
-              variant="ghost"
+              color="tertiary"
               size="sm"
               onClick={() => onRate(faq.id, true)}
               className="gap-1 hover:bg-green-50 hover:text-green-600"
-            >
-              <ThumbsUp className="h-4 w-4" />
-            </Button>
+              iconLeading={<ThumbsUp data-icon />}
+            />
             <Button
-              variant="ghost"
+              color="tertiary"
               size="sm"
               onClick={() => onRate(faq.id, false)}
               className="gap-1 hover:bg-red-50 hover:text-red-600"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+              iconLeading={<X data-icon />}
+            />
           </div>
         </div>
       </div>

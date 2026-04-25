@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { UserPlus, Settings, LogOut, Clock, Mail, User2, X, Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
@@ -143,33 +143,33 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
           {hasEditPermissions && (
             <>
               <Button
-                variant="outline"
+                color="secondary"
                 size="sm"
                 onClick={() => setIsAddModalOpen(true)}
                 className="text-xs"
+                iconLeading={<UserPlus data-icon />}
               >
-                <UserPlus className="w-4 h-4 mr-2" />
                 Ajouter
               </Button>
               <Button
-                variant="outline"
+                color="secondary"
                 size="sm"
                 onClick={() => setIsEditModalOpen(true)}
                 className="text-xs"
+                iconLeading={<Settings data-icon />}
               >
-                <Settings className="w-4 h-4 mr-2" />
                 Gérer
               </Button>
             </>
           )}
           {isMember && !isCreator && (
             <Button
-              variant="outline"
+              color="secondary-destructive"
               size="sm"
               onClick={() => setIsLeaveModalOpen(true)}
-              className="text-xs text-red-600 border-red-200 hover:bg-red-50"
+              className="text-xs"
+              iconLeading={<LogOut data-icon />}
             >
-              <LogOut className="w-4 h-4 mr-2" />
               Quitter
             </Button>
           )}

@@ -2,7 +2,7 @@
 
 import { Edit3, Building, GraduationCap, MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { getSectorColor } from '@/shared/constants/sector-colors';
 
@@ -16,9 +16,7 @@ export const StartupAbout = ({ startupData, currentUser, onEdit }: {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">À propos</h3>
         {currentUser && (
-          <Button variant="ghost" size="sm" onClick={onEdit}>
-            <Edit3 className="w-4 h-4" />
-          </Button>
+          <Button color="tertiary" size="sm" onClick={onEdit} iconLeading={<Edit3 data-icon />} />
         )}
       </div>
 

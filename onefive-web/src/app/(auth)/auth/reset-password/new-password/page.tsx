@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
@@ -100,6 +100,7 @@ const NewPasswordPage = () => {
               Votre mot de passe a été réinitialisé avec succès.
             </div>
             <Button
+              color="primary"
               className="h-11 w-[380px] mt-8 text-base font-semibold"
               onClick={() => router.push('/signin')}
             >
@@ -216,8 +217,9 @@ const NewPasswordPage = () => {
               
               <Button
                 type="submit"
+                color="primary"
                 className="h-11 w-full text-base font-semibold"
-                disabled={!isPasswordValid || !passwordsMatch || isLoading}
+                isDisabled={!isPasswordValid || !passwordsMatch || isLoading}
               >
                 {isLoading ? 'Mise à jour...' : 'Mettre à jour le mot de passe'}
               </Button>

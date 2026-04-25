@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Mail, UserPlus, Loader2 } from 'lucide-react';
 import { Input } from '@/components/base/input/input';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/base/badges/badges';
@@ -166,11 +166,12 @@ export const SmartProfileSearch = ({
               
               <Button
                 onClick={handleEmailInvite}
-                disabled={!canInvite}
+                isDisabled={!canInvite}
                 className="w-full"
                 size="lg"
+                color="primary"
+                iconLeading={<Mail data-icon />}
               >
-                <Mail className="mr-2" size={16} />
                 Inviter {query}
               </Button>
               
@@ -284,11 +285,12 @@ export const SmartProfileSearch = ({
                   
                   <Button
                     onClick={handleEmailInvite}
-                    disabled={!canInvite}
+                    isDisabled={!canInvite}
                     className="w-full"
                     size="lg"
+                    color="primary"
+                    iconLeading={<Mail data-icon />}
                   >
-                    <Mail className="mr-2" size={16} />
                     Inviter par email
                   </Button>
                   

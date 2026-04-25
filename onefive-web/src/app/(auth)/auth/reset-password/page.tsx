@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft } from 'lucide-react';
@@ -77,7 +77,7 @@ const ResetPasswordPage = () => {
             </div>
             <Button
               className="h-11 w-[380px] mt-8 text-base font-semibold"
-              variant="outline"
+              color="secondary"
               onClick={() => router.push('/signin')}
             >
               Retour à la connexion
@@ -144,8 +144,9 @@ const ResetPasswordPage = () => {
               
               <Button
                 type="submit"
+                color="primary"
                 className="h-11 w-full text-base font-semibold"
-                disabled={isLoading || !email.trim()}
+                isDisabled={isLoading || !email.trim()}
               >
                 {isLoading ? 'Envoi en cours...' : 'Envoyer le lien'}
               </Button>

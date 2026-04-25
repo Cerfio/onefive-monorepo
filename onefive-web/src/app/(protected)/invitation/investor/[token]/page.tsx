@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Building2, Check, X, Loader2, AlertCircle, Clock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   useInvestorInvitationByToken,
@@ -65,6 +65,7 @@ export default function InvestorInvitationPage() {
               Cette invitation n&apos;existe pas ou a été supprimée.
             </p>
             <Button
+              color="primary"
               className="mt-6"
               onClick={() => router.push('/feed')}
             >
@@ -89,6 +90,7 @@ export default function InvestorInvitationPage() {
               Cette invitation a expiré. Contactez la startup pour obtenir une nouvelle invitation.
             </p>
             <Button
+              color="primary"
               className="mt-6"
               onClick={() => router.push('/feed')}
             >
@@ -138,6 +140,7 @@ export default function InvestorInvitationPage() {
               </>
             )}
             <Button
+              color="primary"
               className="mt-6"
               onClick={() => router.push('/feed')}
             >
@@ -195,27 +198,20 @@ export default function InvestorInvitationPage() {
           <div className="flex gap-3">
             <Button
               className="flex-1"
-              variant="outline"
+              color="secondary"
               onClick={handleDecline}
-              disabled={declineMutation.isPending || acceptMutation.isPending}
+              isDisabled={declineMutation.isPending || acceptMutation.isPending}
+              iconLeading={declineMutation.isPending ? <Loader2 data-icon className="animate-spin" /> : <X data-icon />}
             >
-              {declineMutation.isPending ? (
-                <Loader2 className="animate-spin mr-2" size={16} />
-              ) : (
-                <X className="mr-2" size={16} />
-              )}
               Refuser
             </Button>
             <Button
+              color="primary"
               className="flex-1"
               onClick={handleAccept}
-              disabled={acceptMutation.isPending || declineMutation.isPending}
+              isDisabled={acceptMutation.isPending || declineMutation.isPending}
+              iconLeading={acceptMutation.isPending ? <Loader2 data-icon className="animate-spin" /> : <Check data-icon />}
             >
-              {acceptMutation.isPending ? (
-                <Loader2 className="animate-spin mr-2" size={16} />
-              ) : (
-                <Check className="mr-2" size={16} />
-              )}
               Accepter
             </Button>
           </div>

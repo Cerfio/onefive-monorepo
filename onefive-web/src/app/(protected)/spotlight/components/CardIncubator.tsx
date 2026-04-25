@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { MapPin, Heart, Share2, ExternalLink, Building, Users, Clock, Landmark, Percent } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -118,25 +118,26 @@ export const CardIncubator = ({
             <Tooltip title={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}>
               <Button
                 size="sm"
-                variant="ghost"
+                color="tertiary"
                 className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
                 onClick={handleFavorite}
-              >
-                <Heart
-                  className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
-                />
-              </Button>
+                iconLeading={
+                  <Heart
+                    className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                    data-icon
+                  />
+                }
+              />
             </Tooltip>
 
             <Tooltip title="Partager cet incubateur">
               <Button
                 size="sm"
-                variant="ghost"
+                color="tertiary"
                 className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
                 onClick={handleShare}
-              >
-                <Share2 className="h-4 w-4 text-gray-600" />
-              </Button>
+                iconLeading={<Share2 className="h-4 w-4 text-gray-600" data-icon />}
+              />
             </Tooltip>
           </div>
         </div>
@@ -251,14 +252,13 @@ export const CardIncubator = ({
             
             <div className="flex items-center gap-2">
               <Link href={`/spotlight/${spot.id}`}>
-                <Button variant="default" size="sm" className="gap-2 bg-[#5E6AD2] hover:bg-[#4F5ABF]">
+                <Button color="primary" size="sm" className="gap-2">
                   Détails
                 </Button>
               </Link>
               {spot.url && (
                 <Link href={spot.url} target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" variant="outline" className="gap-2">
-                    <ExternalLink className="h-3 w-3" />
+                  <Button size="sm" color="secondary" className="gap-2" iconLeading={<ExternalLink className="h-3 w-3" data-icon />}>
                     Voir détails
                   </Button>
                 </Link>

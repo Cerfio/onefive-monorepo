@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import Image from 'next/image';
 import profile2 from '@/images/profile-yannis-1.jpg';
 import linkedin from '@/images/linkedin.png';
@@ -16,24 +16,24 @@ export const SectionHeader = ({ currentUser }: { currentUser?: boolean }) => {
             <div>
               <div className="flex flex-col gap-4">
                 {/* <Button label="Edit Profile" size="medium" /> */}
-                <Button>Edit profile</Button>
+                <Button color="primary">Edit profile</Button>
               </div>
             </div>
           ) : (
             <div className="flex md:flex-row gap-3">
               <div className="hidden md:block">
-                <Button variant="outline">...</Button>
+                <Button color="secondary">...</Button>
               </div>
               <div>
-                <Button className="w-max" variant="outline">
+                <Button className="w-max" color="secondary">
                   Send message
                 </Button>
               </div>
               <div>
-                <Button variant="default">Connect</Button>
+                <Button color="primary">Connect</Button>
               </div>
               <div className="md:hidden">
-                <Button variant="outline">...</Button>
+                <Button color="secondary">...</Button>
               </div>
             </div>
           )}
@@ -98,7 +98,7 @@ export const SectionHeader = ({ currentUser }: { currentUser?: boolean }) => {
         <div className="flex flex-row gap-3 flex-wrap justify-center">
           {roles.map((role, index) => (
             <div key={index} className="h-10">
-              <Button variant="outline" className="line-clamp-1">
+              <Button color="secondary" className="line-clamp-1">
                 {role}
               </Button>
             </div>

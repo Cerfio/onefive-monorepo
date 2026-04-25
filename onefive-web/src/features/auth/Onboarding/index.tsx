@@ -22,7 +22,6 @@ import { uploadAvatar, GenderSalutationPreference, createProfile } from '@/queri
 import { api } from '@/utils/kyInstance';
 import { getCookie } from 'cookies-next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Button as ShadcnButton } from '@/components/ui/button';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/base/input/label';
 import posthog from 'posthog-js';
@@ -298,7 +297,7 @@ const Onboarding = () => {
         {currentStep !== 6 && (
           <div className="flex justify-center mt-4 sm:mt-6 px-4">
             <Button
-              disabled={buttonDisabled || isSubmitting}
+              isDisabled={buttonDisabled || isSubmitting}
               size="lg"
               onClick={(e: React.MouseEvent) => {
                 e.preventDefault();
@@ -338,19 +337,20 @@ const Onboarding = () => {
             </div>
           </div>
           <DialogFooter>
-            <ShadcnButton
-              variant="outline"
+            <Button
+              color="secondary"
               onClick={() => setShowManualUrlModal(false)}
-              disabled={isCompletingSync}
+              isDisabled={isCompletingSync}
             >
               Annuler
-            </ShadcnButton>
-            <ShadcnButton 
+            </Button>
+            <Button
+              color="primary"
               onClick={handleManualUrlSubmit}
-              disabled={!manualUrl || isCompletingSync}
+              isDisabled={!manualUrl || isCompletingSync}
             >
               {isCompletingSync ? 'Récupération...' : 'Terminer l\'import'}
-            </ShadcnButton>
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

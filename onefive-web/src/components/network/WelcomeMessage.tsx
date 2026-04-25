@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { Sparkles, Target, Users, Rocket, TrendingUp, Heart } from 'lucide-react';
 
@@ -171,7 +171,7 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
           >
             {message.cta}
           </Button>
-          <Button variant="outline" size="lg">
+          <Button color="secondary" size="lg">
             Personnaliser mon profil
           </Button>
         </div>

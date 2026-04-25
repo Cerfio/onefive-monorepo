@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 
 export default function Error({
   error,
@@ -47,18 +47,18 @@ export default function Error({
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={reset}
-            className="flex-1 inline-flex items-center justify-center gap-2"
-            variant="default"
+            className="flex-1"
+            color="primary"
+            iconLeading={<RefreshCw data-icon />}
           >
-            <RefreshCw className="w-4 h-4" />
             Réessayer
           </Button>
           <Button
             onClick={() => (window.location.href = '/')}
-            variant="outline"
-            className="flex-1 inline-flex items-center justify-center gap-2"
+            color="secondary"
+            className="flex-1"
+            iconLeading={<Home data-icon />}
           >
-            <Home className="w-4 h-4" />
             Retour à l'accueil
           </Button>
         </div>

@@ -14,7 +14,6 @@ import Image from 'next/image';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
-import { Button as ShadcnButton } from '@/components/ui/button';
 import { ImageIcon, Plus, X } from 'lucide-react';
 import { PostType } from '../post.api';
 
@@ -174,9 +173,8 @@ export const EditPost: React.FC<EditPostProps> = ({ post, onCancel, onSave }) =>
                       color="secondary"
                       className="absolute top-1 right-1 h-6 w-6 p-0"
                       onClick={() => removeFile(index)}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
+                      iconLeading={<X data-icon />}
+                    />
                   </div>
                 ))}
               </div>
@@ -243,15 +241,14 @@ export const EditPost: React.FC<EditPostProps> = ({ post, onCancel, onSave }) =>
             {/* Action Buttons */}
             <div className="flex justify-between items-center pt-3 border-t">
               <div className="flex items-center space-x-2">
-                <ShadcnButton
+                <Button
                   type="button"
-                  variant="ghost"
+                  color="tertiary"
                   size="sm"
                   onClick={() => fileInputRef.current?.click()}
                   className="text-gray-500"
-                >
-                  <ImageIcon className="h-4 w-4" />
-                </ShadcnButton>
+                  iconLeading={<ImageIcon data-icon />}
+                />
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -263,19 +260,19 @@ export const EditPost: React.FC<EditPostProps> = ({ post, onCancel, onSave }) =>
               </div>
 
               <div className="flex space-x-2">
-                <ShadcnButton
+                <Button
                   type="button"
-                  variant="ghost"
+                  color="tertiary"
                   size="sm"
                   onClick={onCancel}
-                  disabled={isEditingPost}
+                  isDisabled={isEditingPost}
                 >
                   Cancel
-                </ShadcnButton>
+                </Button>
                 <Button
                   type="submit"
                   size="sm"
-                  disabled={isSubmitDisabled}
+                  isDisabled={isSubmitDisabled}
                 >
                   {isEditingPost ? 'Saving...' : 'Save'}
                 </Button>

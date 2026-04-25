@@ -1,7 +1,7 @@
 'use client';
 
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/base/buttons/button';
 import { Clock, Copy, CheckCircle2 } from 'lucide-react';
 import { useWaitlistStatus } from '@/hooks/useWaitlistStatus';
 import { useState } from 'react';
@@ -82,17 +82,12 @@ export function WaitlistBanner({
                   <strong>Code parrainage :</strong> {referralCode}
                 </span>
                 <Button
-                  variant="outline"
+                  color="secondary"
                   size="sm"
                   onClick={copyReferralLink}
                   className="h-7 px-2 text-xs"
-                >
-                  {copied ? (
-                    <CheckCircle2 className="h-3 w-3 text-green-500" />
-                  ) : (
-                    <Copy className="h-3 w-3" />
-                  )}
-                </Button>
+                  iconLeading={copied ? <CheckCircle2 data-icon className="text-green-500" /> : <Copy data-icon />}
+                />
               </div>
             )}
 
@@ -106,7 +101,7 @@ export function WaitlistBanner({
         <div className="mt-3">
           <Link href="/waitlist">
             <Button
-              variant="outline"
+              color="secondary"
               size="sm"
               className="border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-900/30"
             >
