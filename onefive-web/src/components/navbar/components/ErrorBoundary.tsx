@@ -48,7 +48,7 @@ export class NavbarErrorBoundary extends Component<Props, State> {
           </div>
           <Button
             size="sm"
-            variant="outline"
+            color="secondary"
             className="h-7 text-xs"
             onClick={() => this.setState({ hasError: false, error: undefined })}
           >

@@ -69,8 +69,8 @@ const Navbar = () => {
 
               {/* Menu mobile */}
               <Button
-                variant="ghost"
-                size="icon"
+                color="tertiary"
+                size="sm"
                 className="lg:hidden"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >

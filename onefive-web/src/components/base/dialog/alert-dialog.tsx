@@ -112,8 +112,8 @@ export const AlertDialogAction = ({
       color="primary"
       size="sm"
       className={className}
-      onClick={(e) => {
-        onClick?.(e);
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+        onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement, MouseEvent>);
         onOpenChange?.(false);
       }}
       {...(props as any)}
@@ -136,8 +136,8 @@ export const AlertDialogCancel = ({
       color="secondary"
       size="sm"
       className={className}
-      onClick={(e) => {
-        onClick?.(e);
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+        onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement, MouseEvent>);
         onOpenChange?.(false);
       }}
       {...(props as any)}

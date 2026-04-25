@@ -108,10 +108,22 @@ export const DialogFooter = ({ className, ...props }: ComponentProps<"div">) => 
   />
 );
 
-export const DialogTrigger = ({ children }: { children: ReactNode }) => (
-  <>{children}</>
-);
+interface DialogTriggerProps {
+  children: ReactNode;
+  asChild?: boolean;
+  className?: string;
+}
 
-export const DialogClose = ({ children }: { children?: ReactNode }) => (
-  <>{children}</>
-);
+export const DialogTrigger = ({ children, className }: DialogTriggerProps) => {
+  if (className) {
+    return <span className={className}>{children}</span>;
+  }
+  return <>{children}</>;
+};
+
+export const DialogClose = ({ children, className }: DialogTriggerProps) => {
+  if (className) {
+    return <span className={className}>{children}</span>;
+  }
+  return <>{children}</>;
+};

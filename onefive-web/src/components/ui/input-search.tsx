@@ -12,7 +12,7 @@ import {
   CommandItem,
   CommandList,
 } from './command';
-import { Button } from './button';
+import { Button } from '@/components/base/buttons/button';
 import { ChevronsUpDown } from 'lucide-react';
 import isEmptyObject from '@/utils/isEmptyObject';
 import capitalizeFirstLetter from '@/utils/capitalizeFirstLetter';
@@ -154,8 +154,8 @@ const InputSelect = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          disabled={isDisabled}
-          variant="outline"
+          isDisabled={isDisabled}
+          color="secondary"
           role="combobox"
           className="w-full h-11 justify-between font-normal text-sm truncate"
         >

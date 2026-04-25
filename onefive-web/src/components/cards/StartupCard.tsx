@@ -39,7 +39,7 @@ export const StartupCard = ({
             {startup.tags.map((tag, index) => (
               <Badge
                 key={index}
-                variant="default"
+                type="pill-color" color="brand"
                 className="text-xs font-normal flex gap-1 items-center w-fit bg-error-50 text-error-700"
               >
                 {tag}

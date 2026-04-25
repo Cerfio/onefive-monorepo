@@ -122,8 +122,10 @@ const PostDisplayBadge: React.FC<PostDisplayBadgeProps> = ({
   return (
     <Tooltip title={config.tooltip}>
       <TooltipTrigger>
-        <Badge 
-          variant={config.variant}
+        <Badge
+          type="pill-color"
+          color="gray"
+          size="sm"
           className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full border cursor-help ${config.color} ${className}`}
         >
           {config.icon}

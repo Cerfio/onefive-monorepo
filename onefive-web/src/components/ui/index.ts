@@ -50,13 +50,11 @@ export {
 // Composants shadcn pas encore migrés
 export * from './alert';
 export * from './button-group';
-export * from './command';
 export * from './dropdown-menu';
 export * from './form';
 export * from './hover-card';
 export * from './input-search';
 export * from './label';
-export * from './pagination';
 export * from './placeholder';
 export * from './popover';
 export * from './spinner';

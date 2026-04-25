@@ -50,7 +50,7 @@ const PostTypeBadge: React.FC<PostTypeBadgeProps> = ({
     <Tooltip title={config.tooltip}>
       <TooltipTrigger>
         <Badge 
-          variant="secondary"
+          type="pill-color" color="gray"
           className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full border cursor-help ${config.color} ${className}`}
         >
           {config.icon}

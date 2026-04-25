@@ -61,7 +61,7 @@ const NotificationManager = ({ onNotificationPermission }: NotificationManagerPr
       {permission === 'granted' ? (
         <>
           <Button
-            variant="ghost"
+            color="tertiary"
             size="sm"
             onClick={sendTestNotification}
             className="gap-2"
@@ -70,7 +70,7 @@ const NotificationManager = ({ onNotificationPermission }: NotificationManagerPr
             Test
           </Button>
           <Button
-            variant="ghost"
+            color="tertiary"
             size="sm"
             onClick={() => setPermission('denied')}
             className="gap-2"
@@ -81,7 +81,7 @@ const NotificationManager = ({ onNotificationPermission }: NotificationManagerPr
         </>
       ) : (
         <Button
-          variant="outline"
+          color="secondary"
           size="sm"
           onClick={requestPermission}
           className="gap-2"

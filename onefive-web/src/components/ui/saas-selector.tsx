@@ -6,7 +6,7 @@ import { X, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils/core/cn';
 import { SaaS, saasList } from '../../config/saas';
 import Image from 'next/image';
-import { Input } from './input';
+import { Input } from '@/components/base/input/input';
 
 interface SaaSSelectorProps {
   value: SaaS | null;
@@ -41,8 +41,7 @@ export function SaaSSelector({ value, onValueChange }: SaaSSelectorProps) {
     }
   }, [value]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const domain = e.target.value;
+  const handleInputChange = (domain: string) => {
     setInputValue(domain);
     setError(null); // Réinitialiser l'erreur pendant la saisie
 
