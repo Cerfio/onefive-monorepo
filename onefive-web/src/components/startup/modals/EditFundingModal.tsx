@@ -162,7 +162,7 @@ export const EditFundingModal: React.FC<EditFundingModalProps> = ({
                                       <p className="text-xs text-gray-500">Entreprise / Fonds</p>
                                     )}
                                   </div>
-                                  <Badge type="badge-modern" color="gray" size="sm">
+                                  <Badge type="pill-color" color="gray" size="sm">
                                     Entreprise
                                   </Badge>
                                 </>

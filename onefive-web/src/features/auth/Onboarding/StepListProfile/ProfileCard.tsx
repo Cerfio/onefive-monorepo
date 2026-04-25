@@ -134,9 +134,9 @@ const ProfileCard = ({
             >
               <Button
                 size="sm"
-                variant={isFollow ? "default" : "ghost"}
+                color={isFollow ? "primary" : "tertiary"}
                 className="text-xs gap-1 py-1 px-2 w-full"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent) => {
                   e.preventDefault();
                   e.stopPropagation();
                   callback(profile.id, !isFollow);

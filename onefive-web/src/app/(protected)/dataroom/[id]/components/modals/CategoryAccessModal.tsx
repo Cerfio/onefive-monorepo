@@ -235,7 +235,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                             <DialogDescription className="flex items-center gap-2 mt-1">
                                 <span className="truncate">{category.name}</span>
                                 {category.count !== undefined && (
-                                    <Badge type="badge-modern" color="gray" size="sm" className="ml-2">
+                                    <Badge type="pill-color" color="gray" size="sm" className="ml-2">
                                         {category.count} fichiers
                                     </Badge>
                                 )}
@@ -569,9 +569,9 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                     <p className="text-xs text-gray-500">{access.userEmail}</p>
                                                     <div className="flex items-center gap-1 mt-1">
                                                         <Badge
-                                                            type={access.status === 'pending' ? 'badge-modern' : 'pill-color'}
+                                                            type="pill-color"
                                                             color={access.status === 'accepted' ? 'brand' :
-                                                                    access.status === 'pending' ? 'gray' : 'error'}
+                                                                    access.status === 'pending' ? 'warning' : 'error'}
                                                             size="sm"
                                                         >
                                                             {access.status === 'accepted' ? 'Accepté' :

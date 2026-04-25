@@ -307,7 +307,7 @@ export const InvestmentProposalModal = ({
               id="message"
               placeholder="Expliquez votre démarche, posez une question, etc."
               value={formData.message}
-              onChange={(value) => setFormData(prev => ({ ...prev, message: value }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
               rows={4}
             />
           </div>

@@ -140,7 +140,7 @@ export const StartupHeader = ({
                   {!currentUser && (
                     <>
                       <Button
-                        variant={isFollowing ? "outline" : "default"}
+                        color={isFollowing ? "secondary" : "primary"}
                         size="sm"
                         onClick={() => setIsFollowing(!isFollowing)}
                         className={isFollowing ? "border-violet-200 text-violet-700" : ""}

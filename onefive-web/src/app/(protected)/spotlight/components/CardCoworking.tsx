@@ -249,7 +249,7 @@ export const CardCoworking = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {/* Badge de type Coworking */}
-              <Badge type="badge-modern" color="gray" size="sm">
+              <Badge type="pill-color" color="gray" size="sm">
                 <Building2 className="h-3 w-3 mr-1" />
                 Coworking
               </Badge>

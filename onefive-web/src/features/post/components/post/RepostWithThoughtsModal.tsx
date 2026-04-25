@@ -65,7 +65,7 @@ export default function RepostWithThoughtsModal({
             <TextArea
               placeholder="What are your thoughts?"
               value={thoughts}
-              onChange={setThoughts}
+              onChange={(e) => setThoughts(e.target.value)}
               className="min-h-[120px] resize-none"
               isDisabled={isPending}
               autoFocus

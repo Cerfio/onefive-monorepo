@@ -328,7 +328,7 @@ export default function PostReactionsModal({
                             {formatRelativeTime(reaction.createdAt)}
                           </p>
                         </div>
-                        <Badge type="badge-modern" color="gray" size="sm" className={cn('gap-1 capitalize', meta.accent)}>
+                        <Badge type="pill-color" color="gray" size="sm" className={cn('gap-1 capitalize', meta.accent)}>
                           <Image src={meta.icon} alt={`${meta.label} icon`} width={16} height={16} />
                           {meta.label}
                         </Badge>

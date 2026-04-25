@@ -115,7 +115,7 @@ export const FundingCard = ({
         {funding.lastRound && (
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Dernière levée</span>
-            <Badge type="badge-modern" color="gray" size="sm">{funding.lastRound}</Badge>
+            <Badge type="pill-color" color="gray" size="sm">{funding.lastRound}</Badge>
           </div>
         )}
         
@@ -148,7 +148,7 @@ export const FundingCard = ({
                         <span className="text-xs">👤</span>
                       </div>
                       <span className="text-sm font-medium flex-1">{investor.name}</span>
-                      <Badge type="badge-modern" color="gray" size="sm">Invité</Badge>
+                      <Badge type="pill-color" color="gray" size="sm">Invité</Badge>
                     </>
                   )}
                 </div>
@@ -177,7 +177,7 @@ export const FundingCard = ({
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <Badge type="badge-modern" color="gray" size="sm">{ROUND_LABELS[entry.round]}</Badge>
+                        <Badge type="pill-color" color="gray" size="sm">{ROUND_LABELS[entry.round]}</Badge>
                         <span className="text-sm text-gray-500">
                           {format(new Date(entry.date), 'd MMMM yyyy', { locale: fr })}
                         </span>
@@ -299,13 +299,13 @@ export const FundingCard = ({
                                   ) : (
                                     <span className="text-xs font-medium flex-1">{displayName}</span>
                                   )}
-                                  <Badge type="badge-modern" color="gray" size="sm" className="text-[10px] px-1.5 py-0">
+                                  <Badge type="pill-color" color="gray" size="sm" className="text-[10px] px-1.5 py-0">
                                     Pas sur OneFive
                                   </Badge>
                                 </>
                               )}
                               {isPending && (
-                                <Badge type="badge-modern" color="warning" size="sm" className="text-[10px] px-1.5 py-0">
+                                <Badge type="pill-color" color="warning" size="sm" className="text-[10px] px-1.5 py-0">
                                   En attente
                                 </Badge>
                               )}
@@ -363,7 +363,7 @@ export const FundingCard = ({
                   <Badge type="pill-color" color="warning" size="sm">
                     💸 Levée en cours
                   </Badge>
-                  <Badge type="badge-modern" color="gray" size="sm">
+                  <Badge type="pill-color" color="gray" size="sm">
                     {funding.structuredRound.instrument}
                   </Badge>
                 </div>
@@ -418,7 +418,7 @@ export const FundingCard = ({
                   <Badge type="pill-color" color="success" size="sm">
                     🟢 Accepte les investissements
                   </Badge>
-                  <Badge type="badge-modern" color="gray" size="sm">
+                  <Badge type="pill-color" color="gray" size="sm">
                     {funding.rollingInvestment.instrument}
                   </Badge>
                 </div>

@@ -107,7 +107,7 @@ export const ManagePermissionsModal: React.FC<ManagePermissionsModalProps> = ({
                                 {group.members.length} membre{group.members.length > 1 ? 's' : ''}
                             </p>
                         </div>
-                        <Badge type="badge-modern" color="gray" size="sm" className="ml-auto">
+                        <Badge type="pill-color" color="gray" size="sm" className="ml-auto">
                             {enabledCount}/{totalCategories} catégories
                         </Badge>
                     </div>

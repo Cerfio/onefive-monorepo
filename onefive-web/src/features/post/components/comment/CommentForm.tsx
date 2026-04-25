@@ -54,8 +54,8 @@ const CommentForm = forwardRef<HTMLTextAreaElement, Props>(({
           placeholder={parentId ? "Add a reply..." : "Add a comment..."}
           className="resize-none min-h-[60px] text-sm focus-visible:ring-0"
           value={comment}
-          onChange={setComment}
-          ref={ref}
+          onChange={(e) => setComment(e.target.value)}
+          ref={ref as any}
           isDisabled={createCommentMutation.isPending}
         />
         <div className="flex justify-end mt-2">

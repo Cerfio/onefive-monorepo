@@ -538,7 +538,7 @@ const StepProfile = () => {
         <div className="flex flex-col items-center gap-4 my-6">
           <Button
             onClick={() => setShowLinkedInModal(true)}
-            variant="outline"
+            color="secondary"
             className="w-full max-w-md flex items-center justify-center gap-3 py-6 border-2 border-[#0A66C2] text-[#0A66C2] hover:bg-[#0A66C2] hover:text-white transition-all"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

@@ -225,7 +225,7 @@ export const LinkedInConfirmation = ({ data, onConfirm, onCancel }: LinkedInConf
 
         {/* Footer */}
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-between gap-4">
-          <ShadcnButton variant="outline" onClick={onCancel} className="flex-1">
+          <ShadcnButton color="secondary" onClick={onCancel} className="flex-1">
             Annuler
           </ShadcnButton>
           <ShadcnButton onClick={handleConfirm} className="flex-1">

@@ -229,7 +229,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
                             placeholder="Tapez votre message..."
                             value={inputMessage}
                             onChange={setInputMessage}
-                            onKeyPress={handleKeyPress}
+                            onKeyDown={handleKeyPress}
                             className="flex-1"
                           />
                           <Button

@@ -58,9 +58,9 @@ const EditReplyForm: React.FC<EditReplyFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="w-full">
       <TextArea
-        ref={textareaRef}
+        ref={textareaRef as any}
         value={content}
-        onChange={setContent}
+        onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Modifier votre réponse..."
         className="min-h-[60px] resize-none border-gray-300 focus:border-[#5E6AD2] focus:ring-[#5E6AD2]"
@@ -73,7 +73,7 @@ const EditReplyForm: React.FC<EditReplyFormProps> = ({
         <div className="flex gap-2">
           <Button
             type="button"
-            variant="ghost"
+            color="tertiary"
             size="sm"
             onClick={onCancel}
             isDisabled={isLoading}

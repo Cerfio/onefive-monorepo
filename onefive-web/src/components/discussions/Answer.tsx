@@ -531,9 +531,9 @@ const Answer = ({
           {isEditing ? (
             <div className="space-y-2">
               <TextArea
-                ref={textareaRef}
+                ref={textareaRef as any}
                 value={editContent}
-                onChange={setEditContent}
+                onChange={(e) => setEditContent(e.target.value)}
                 onKeyDown={handleEditKeyDown}
                 placeholder="Modifier votre réponse..."
                 className="min-h-[80px] resize-none border-gray-300 focus:border-[#5E6AD2] focus:ring-[#5E6AD2]"

@@ -82,7 +82,7 @@ const FAQCard = ({ faq, onRate }: { faq: FAQ; onRate: (id: string, helpful: bool
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
           {faq.tags.map(tag => (
-            <Badge key={tag} type="badge-modern" color="gray" size="sm">
+            <Badge key={tag} type="pill-color" color="gray" size="sm">
               {tag}
             </Badge>
           ))}
@@ -130,7 +130,7 @@ const GuideCard = ({ guide, onClick }: { guide: Guide; onClick: () => void }) =>
             <Icon className="h-5 w-5 text-[#5E6AD2]" />
           </div>
           <div className="flex gap-2">
-            <Badge type="badge-modern" color="gray" size="sm">
+            <Badge type="pill-color" color="gray" size="sm">
               {guide.duration}
             </Badge>
             <Badge type="pill-color" color={difficultyColors[guide.difficulty]} size="sm">
@@ -147,7 +147,7 @@ const GuideCard = ({ guide, onClick }: { guide: Guide; onClick: () => void }) =>
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
             {guide.tags.slice(0, 2).map(tag => (
-              <Badge key={tag} type="badge-modern" color="gray" size="sm">
+              <Badge key={tag} type="pill-color" color="gray" size="sm">
                 {tag}
               </Badge>
             ))}
@@ -430,7 +430,7 @@ const SupportPage = () => {
                     );
                   })()}
                   <div className="flex gap-2">
-                    <Badge type="badge-modern" color="gray" size="sm">
+                    <Badge type="pill-color" color="gray" size="sm">
                       {selectedGuide.duration}
                     </Badge>
                     <Badge
@@ -454,7 +454,7 @@ const SupportPage = () => {
                 </DialogDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
                   {selectedGuide.tags.map((tag) => (
-                    <Badge key={tag} type="badge-modern" color="gray" size="sm">
+                    <Badge key={tag} type="pill-color" color="gray" size="sm">
                       {tag}
                     </Badge>
                   ))}

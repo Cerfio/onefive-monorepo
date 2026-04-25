@@ -233,7 +233,7 @@ export const CardIncubator = ({
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge type="badge-modern" color="gray" size="sm">
+              <Badge type="pill-color" color="gray" size="sm">
                 <Building className="h-3 w-3 mr-1" />
                 Incubateur
               </Badge>

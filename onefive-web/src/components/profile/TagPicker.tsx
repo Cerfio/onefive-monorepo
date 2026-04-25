@@ -48,33 +48,38 @@ export const TagPicker = ({
           const isSelect = selectedTags.includes(tag.title);
           const ringColor = getRingColorStyle(tag.topicColor);
           return (
-            <Badge
+            <button
               key={tag.title}
-              type="pill-color"
-              color="gray"
-              size="sm"
-              className={`text-sm font-normal flex gap-2 items-center cursor-pointer whitespace-nowrap transition-all duration-200 border-0 ${
-                isSelect ? 'ring-2 shadow-lg' : 'hover:shadow-md'
-              } ${tag.bgColor} ${tag.textColor} ${tag.hoverBgColor}`}
-              style={
-                isSelect
-                  ? ({ '--tw-ring-color': ringColor } as React.CSSProperties)
-                  : undefined
-              }
+              type="button"
               onClick={() => handleTagClick(tag.title, isSelect)}
+              className="cursor-pointer"
             >
-              <span className="flex-shrink-0">{tag.icon}</span>
-              <span className="font-medium truncate max-w-[120px]">
-                {tag.title}
-              </span>
-              {isSelect ? (
-                <X className={`w-3 h-3 stroke-[4] flex-shrink-0 ${tag.iconColor}`} />
-              ) : (
-                <Plus
-                  className={`w-3 h-3 stroke-[4] flex-shrink-0 ${tag.iconColor}`}
-                />
-              )}
-            </Badge>
+              <Badge
+                type="pill-color"
+                color="gray"
+                size="sm"
+                className={`text-sm font-normal flex gap-2 items-center cursor-pointer whitespace-nowrap transition-all duration-200 border-0 ${
+                  isSelect ? 'ring-2 shadow-lg' : 'hover:shadow-md'
+                } ${tag.bgColor} ${tag.textColor} ${tag.hoverBgColor}`}
+                style={
+                  isSelect
+                    ? ({ '--tw-ring-color': ringColor } as React.CSSProperties)
+                    : undefined
+                }
+              >
+                <span className="flex-shrink-0">{tag.icon}</span>
+                <span className="font-medium truncate max-w-[120px]">
+                  {tag.title}
+                </span>
+                {isSelect ? (
+                  <X className={`w-3 h-3 stroke-[4] flex-shrink-0 ${tag.iconColor}`} />
+                ) : (
+                  <Plus
+                    className={`w-3 h-3 stroke-[4] flex-shrink-0 ${tag.iconColor}`}
+                  />
+                )}
+              </Badge>
+            </button>
           );
         })}
       </div>

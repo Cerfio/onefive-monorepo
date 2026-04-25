@@ -223,7 +223,7 @@ export const InvestorSearch = ({
               setShowManualAdd(true);
               setManualType('person');
             }}
-            variant="outline"
+            color="secondary"
             size="sm"
             className="flex-1"
           >
@@ -235,7 +235,7 @@ export const InvestorSearch = ({
               setShowManualAdd(true);
               setManualType('company');
             }}
-            variant="outline"
+            color="secondary"
             size="sm"
             className="flex-1"
           >

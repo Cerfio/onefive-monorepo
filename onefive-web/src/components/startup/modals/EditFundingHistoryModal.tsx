@@ -660,7 +660,7 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Badge type="badge-modern" color="gray" size="sm">
+                      <Badge type="pill-color" color="gray" size="sm">
                           {ROUND_OPTIONS.find(o => o.id === entry.round)?.label || entry.round}
                       </Badge>
                       <span className="text-sm text-gray-500">
@@ -725,24 +725,24 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
                     )}
                   </div>
                   <div className="flex gap-1 ml-4">
-                    <UIButton
+                    <Button
                       type="button"
-                      variant="ghost"
+                      color="tertiary"
                       size="sm"
                       onClick={() => handleEdit(entry)}
                       className="hover:bg-gray-200"
                     >
                       <Edit2 className="w-4 h-4" />
-                    </UIButton>
-                    <UIButton
+                    </Button>
+                    <Button
                       type="button"
-                      variant="ghost"
+                      color="tertiary"
                       size="sm"
                       onClick={() => handleDelete(entry.id)}
                       className="hover:bg-red-50"
                     >
                       <Trash2 className="w-4 h-4 text-red-600" />
-                    </UIButton>
+                    </Button>
                   </div>
                 </div>
               ))}

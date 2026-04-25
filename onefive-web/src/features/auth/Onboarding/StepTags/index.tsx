@@ -219,39 +219,44 @@ const Tag = ({
       whileHover="hover"
       whileTap={{ scale: 0.95 }}
     >
-      <Badge
-        type="pill-color"
-        color="gray"
-        size="sm"
-        className={`text-sm font-normal flex gap-2 items-center cursor-pointer whitespace-nowrap transition-all duration-200 border-0 ${
-          isSelect ? "ring-2 shadow-lg" : "hover:shadow-md"
-        } ${tag.bgColor} ${tag.textColor} ${tag.hoverBgColor}`}
-        style={isSelect ? { '--tw-ring-color': ringColor } as React.CSSProperties : undefined}
+      <button
+        type="button"
         onClick={() => {
           callback(tag.title, !isSelect);
         }}
+        className="cursor-pointer"
       >
-        <motion.div
-          animate={{ rotate: isSelect ? 360 : 0 }}
-          transition={{ duration: 0.3 }}
-          className="flex-shrink-0"
+        <Badge
+          type="pill-color"
+          color="gray"
+          size="sm"
+          className={`text-sm font-normal flex gap-2 items-center cursor-pointer whitespace-nowrap transition-all duration-200 border-0 ${
+            isSelect ? "ring-2 shadow-lg" : "hover:shadow-md"
+          } ${tag.bgColor} ${tag.textColor} ${tag.hoverBgColor}`}
+          style={isSelect ? { '--tw-ring-color': ringColor } as React.CSSProperties : undefined}
         >
-          {tag.icon}
-        </motion.div>
-        <span className="font-medium truncate max-w-[120px]">{tag.title}</span>
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 300 }}
-          className="flex-shrink-0"
-        >
-          {isSelect ? (
-            <X className={`w-3 h-3 stroke-[4] ${tag.iconColor}`} />
-          ) : (
-            <Plus className={`w-3 h-3 stroke-[4] ${tag.iconColor}`} />
-          )}
-        </motion.div>
-      </Badge>
+          <motion.div
+            animate={{ rotate: isSelect ? 360 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex-shrink-0"
+          >
+            {tag.icon}
+          </motion.div>
+          <span className="font-medium truncate max-w-[120px]">{tag.title}</span>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="flex-shrink-0"
+          >
+            {isSelect ? (
+              <X className={`w-3 h-3 stroke-[4] ${tag.iconColor}`} />
+            ) : (
+              <Plus className={`w-3 h-3 stroke-[4] ${tag.iconColor}`} />
+            )}
+          </motion.div>
+        </Badge>
+      </button>
     </motion.div>
   );
 };

@@ -317,7 +317,7 @@ const StartupCard = ({
 
           <div className="flex gap-2 mb-4">
             <Badge
-              type="badge-modern"
+              type="pill-color"
               color="gray"
               size="sm"
               className="group-hover:border-green-500/50 transition-colors"
@@ -325,7 +325,7 @@ const StartupCard = ({
               {startup.stage}
             </Badge>
             <Badge
-              type="badge-modern"
+              type="pill-color"
               color="gray"
               size="sm"
               className="group-hover:border-green-500/50 transition-colors"
@@ -350,7 +350,7 @@ const StartupCard = ({
                 size="sm"
                 color={isFollow ? "primary" : "tertiary"}
                 className="text-xs gap-1 py-1 px-2 w-full"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent) => {
                   e.preventDefault();
                   e.stopPropagation();
                   callback(startup.id, !isFollow);

@@ -130,7 +130,7 @@ const ResetPasswordPage = () => {
                   value={email}
                   onChange={setEmail}
                   className="h-11"
-                  required
+                  isRequired
                 />
               </div>
               

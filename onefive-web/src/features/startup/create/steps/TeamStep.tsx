@@ -279,7 +279,7 @@ export const TeamStep = ({ onNext, onBack, data, onDataChange }: TeamStepProps) 
                           <Badge type="pill-color" color="gray" size="sm">Vous</Badge>
                         )}
                         {field.status === 'invited' && (
-                          <Badge type="badge-modern" color="gray" size="sm">Invitation envoyée</Badge>
+                          <Badge type="pill-color" color="gray" size="sm">Invitation envoyée</Badge>
                         )}
                       </div>
                     </div>

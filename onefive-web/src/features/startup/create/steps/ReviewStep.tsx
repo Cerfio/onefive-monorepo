@@ -262,7 +262,7 @@ export const ReviewStep = ({ onNext, onBack, onEdit, data, isSubmitting }: Revie
                       {member.equity}%
                     </div>
                     {member.status === 'invited' && (
-                      <Badge type="badge-modern" color="gray" size="sm" className="mt-1">
+                      <Badge type="pill-color" color="gray" size="sm" className="mt-1">
                         Invité
                       </Badge>
                     )}

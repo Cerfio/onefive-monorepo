@@ -92,7 +92,7 @@ export const InvestmentSettingsModal = ({
             <Label className="text-base font-medium">Type d'investissement</Label>
             <div className="flex gap-2 mt-2">
               <Button
-                variant={activeTab === 'none' ? 'default' : 'outline'}
+                color={activeTab === 'none' ? 'primary' : 'secondary'}
                 size="sm"
                 onClick={() => {
                   setActiveTab('none');
@@ -102,12 +102,12 @@ export const InvestmentSettingsModal = ({
                 Aucun
               </Button>
               <Button
-                variant={activeTab === 'rolling' ? 'default' : 'outline'}
+                color={activeTab === 'rolling' ? 'primary' : 'secondary'}
                 size="sm"
                 onClick={() => {
                   setActiveTab('rolling');
-                  setCurrentSettings(prev => ({ 
-                    ...prev, 
+                  setCurrentSettings(prev => ({
+                    ...prev,
                     fundraisingType: 'rolling',
                     rollingInvestment: prev.rollingInvestment || { instrument: 'SAFE' }
                   }));
@@ -116,7 +116,7 @@ export const InvestmentSettingsModal = ({
                 🟢 Rolling SAFE
               </Button>
               <Button
-                variant={activeTab === 'structured' ? 'default' : 'outline'}
+                color={activeTab === 'structured' ? 'primary' : 'secondary'}
                 size="sm"
                 onClick={() => {
                   setActiveTab('structured');

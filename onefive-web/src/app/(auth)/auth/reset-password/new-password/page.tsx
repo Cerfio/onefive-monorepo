@@ -146,7 +146,7 @@ const NewPasswordPage = () => {
                     value={password}
                     onChange={setPassword}
                     className="h-11 pr-10"
-                    required
+                    isRequired
                   />
                   <button
                     type="button"
@@ -189,7 +189,7 @@ const NewPasswordPage = () => {
                     value={confirmPassword}
                     onChange={setConfirmPassword}
                     className="h-11 pr-10"
-                    required
+                    isRequired
                   />
                   <button
                     type="button"

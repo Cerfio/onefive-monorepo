@@ -160,7 +160,7 @@ export const SpotlightNotifications = ({ onNotificationAction }: SpotlightNotifi
                             <Button
                               color="tertiary"
                               size="sm"
-                              onClick={(e) => {
+                              onClick={(e: React.MouseEvent) => {
                                 e.stopPropagation();
                                 handleDismiss(notification.id);
                               }}

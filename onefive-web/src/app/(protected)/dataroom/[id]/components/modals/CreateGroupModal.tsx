@@ -84,7 +84,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                             value={name}
                             onChange={setName}
                             placeholder="Entrez le nom du groupe"
-                            required
+                            isRequired
                         />
                     </div>
 

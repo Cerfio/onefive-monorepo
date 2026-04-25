@@ -24,7 +24,7 @@ const ReplyForm: React.FC<Props> = ({ parentId, parentAuthor, postId }) => {
         placeholder={`Reply to ${parentAuthor}`}
         className="resize-none min-h-[60px] text-sm focus-visible:ring-0"
         value={reply}
-        onChange={setReply}
+        onChange={(e) => setReply(e.target.value)}
       />
       <div className="flex justify-end mt-2">
         <Button size="sm" className="h-8" isDisabled={!reply.trim() || isPending}>

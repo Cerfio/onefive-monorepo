@@ -57,7 +57,7 @@ const getPriorityBadge = (priority: string) => {
   switch (priority) {
     case 'high': return <Badge type="pill-color" color="error" size="sm">Urgent</Badge>;
     case 'medium': return <Badge type="pill-color" color="warning" size="sm">Important</Badge>;
-    case 'low': return <Badge type="badge-modern" color="gray" size="sm">Info</Badge>;
+    case 'low': return <Badge type="pill-color" color="gray" size="sm">Info</Badge>;
     default: return null;
   }
 };
@@ -163,7 +163,7 @@ export default function SmartNotifications() {
                       {notification.activity && (
                         <div className="flex items-center gap-1 mb-2">
                           <span className="text-xs text-gray-500">Activité:</span>
-                          <Badge type="badge-modern" color="gray" size="sm">
+                          <Badge type="pill-color" color="gray" size="sm">
                             {notification.activity}
                           </Badge>
                         </div>

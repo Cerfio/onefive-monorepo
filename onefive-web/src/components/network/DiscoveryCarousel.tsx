@@ -131,7 +131,7 @@ const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                   <span className="truncate">{formatLocationDisplay(item.location)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge type="badge-modern" color="gray" size="sm">
+                  <Badge type="pill-color" color="gray" size="sm">
                     {item.stage}
                   </Badge>
                   <span className="text-xs text-gray-500">{item.employees} employés</span>
