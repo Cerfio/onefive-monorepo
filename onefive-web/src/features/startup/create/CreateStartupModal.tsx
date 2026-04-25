@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
-import { User01, UsersPlus } from '@untitledui/icons';
+import { Building01, MarkerPin01, Tag01, UsersPlus, CheckCircle } from '@untitledui/icons';
 import { Progress } from '@/components/application/progress-steps/progress-steps';
 import type { ProgressFeaturedIconType } from '@/components/application/progress-steps/progress-types';
 import { DialogTrigger, ModalOverlay, Modal, Dialog } from '@/components/application/modals/modal';
@@ -138,21 +138,21 @@ export const CreateStartupModal = ({ open, onOpenChange }: CreateStartupModalPro
       title: 'Identité',
       description: 'Nom et description',
       status: currentStep === 1 ? 'current' : currentStep > 1 ? 'complete' : 'incomplete',
-      icon: User01,
+      icon: Building01,
       connector: true,
     },
     {
       title: 'Détails',
       description: 'Localisation et contacts',
       status: currentStep === 2 ? 'current' : currentStep > 2 ? 'complete' : 'incomplete',
-      icon: User01,
+      icon: MarkerPin01,
       connector: true,
     },
     {
       title: 'Secteurs',
       description: 'Catégories et médias',
       status: currentStep === 3 ? 'current' : currentStep > 3 ? 'complete' : 'incomplete',
-      icon: User01,
+      icon: Tag01,
       connector: true,
     },
     {
@@ -166,7 +166,7 @@ export const CreateStartupModal = ({ open, onOpenChange }: CreateStartupModalPro
       title: 'Récapitulatif',
       description: 'Vérification finale',
       status: currentStep === 5 ? 'current' : currentStep > 5 ? 'complete' : 'incomplete',
-      icon: User01,
+      icon: CheckCircle,
       connector: false,
     },
   ];
