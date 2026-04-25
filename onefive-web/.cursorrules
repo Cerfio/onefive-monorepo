@@ -4,6 +4,32 @@
 
 Ce projet suit les conventions **Untitled UI React**. Référence complète : `docs/untitled-ui-AGENT.md` (racine du monorepo) ; source officielle : https://www.untitledui.com/react/AGENT.md
 
+### Imports UI (post-migration shadcn → Untitled UI)
+
+✅ **Utiliser** :
+- `@/components/base/buttons/button` pour Button
+- `@/components/base/badges/badges` pour Badge
+- `@/components/base/input/input` pour Input
+- `@/components/base/textarea/textarea` pour TextArea (PascalCase A)
+- `@/components/base/tooltip/tooltip` pour Tooltip
+- `@/components/base/skeleton/skeleton` pour Skeleton
+- `@/components/base/separator/separator` pour Separator
+- `@/components/base/avatar/avatar` pour Avatar
+- `@/components/base/checkbox/checkbox` pour Checkbox
+- `@/components/base/toggle/toggle` pour Toggle (= Switch shadcn)
+- `@/components/base/radio-buttons/radio-buttons` pour RadioGroup, RadioButton
+- `@/components/base/select/select` pour Select
+- `@/components/base/card/card` pour Card et sous-composants
+- `@/components/base/dialog/dialog` pour Dialog et sous-composants
+- `@/components/base/dialog/alert-dialog` pour AlertDialog
+
+🚫 **Interdit (bloqué par ESLint `no-restricted-imports`)** :
+- `@/components/ui/{skeleton,separator,tooltip,textarea,text-area,input,badge,button,avatar,checkbox,switch,radio-group,select,card,dialog,alert-dialog}`
+
+⚠️ **Encore tolérés** (composants pas encore migrés) :
+- `@/components/ui/{alert,button-group,command,dropdown-menu,form,hover-card,input-search,label,modal,pagination,placeholder,popover,progress,sheet,slider,spinner,tabs,textareaAutoresize}`
+- Customs OneFive : `@/components/ui/{flag,saas-selector,animated-number,searchbar-bar,social-button,social-logos}`
+
 ## 🚫 Interdictions Strictes
 
 ### NE JAMAIS :
