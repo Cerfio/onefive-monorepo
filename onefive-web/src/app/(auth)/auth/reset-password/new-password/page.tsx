@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { resetPassword } from '@/queries/auth';
 import { toast } from 'sonner';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/base/alert/alert';
 import { Meteors } from '@/components/meteors';
 import { motion } from 'framer-motion';
 import Image from 'next/image';

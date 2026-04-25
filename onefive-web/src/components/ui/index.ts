@@ -53,9 +53,13 @@ export {
   TabsContent,
 } from '@/components/base/tabs/tabs';
 export { Label } from '@/components/base/label/label';
+export {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+} from '@/components/base/alert/alert';
 
 // Composants shadcn pas encore migrés
-export * from './alert';
 export * from './button-group';
 export * from './dropdown-menu';
 export * from './form';

@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { deleteCookie } from 'cookies-next';
 import { Meteors } from '@/components/meteors';
 import { PinInput } from '@/components/base/pin-input/pin-input';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/base/alert/alert';
 import { AlertCircle, X } from 'lucide-react';
 
 const RESEND_COOLDOWN_SECONDS = 30;

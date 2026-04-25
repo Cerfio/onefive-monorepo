@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/base/buttons/button";
 import { ArrowLeft } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/base/alert/alert";
 import { AlertCircle, X } from "lucide-react";
 import { uploadAvatar, GenderSalutationPreference, createProfile } from "@/queries/profile";
 import { smsConfirm } from "@/queries/auth";

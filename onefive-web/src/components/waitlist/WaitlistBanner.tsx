@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertTitle, AlertDescription } from '@/components/base/alert/alert';
 import { Button } from '@/components/base/buttons/button';
 import { Clock, Copy, CheckCircle2 } from 'lucide-react';
 import { useWaitlistStatus } from '@/hooks/useWaitlistStatus';

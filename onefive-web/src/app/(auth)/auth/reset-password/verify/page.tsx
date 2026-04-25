@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { verifyPasswordResetCode } from '@/queries/auth';
 import { toast } from 'sonner';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/base/alert/alert';
 import { Meteors } from '@/components/meteors';
 import { motion } from 'framer-motion';
 import { PinInput } from '@/components/base/pin-input/pin-input';
