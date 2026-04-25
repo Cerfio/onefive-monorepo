@@ -26,7 +26,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Textarea } from '@/components/ui/textarea';
+import { TextArea } from '@/components/base/textarea/textarea';
 
 const Answer = ({
   answer,
@@ -530,14 +530,14 @@ const Answer = ({
 
           {isEditing ? (
             <div className="space-y-2">
-              <Textarea
+              <TextArea
                 ref={textareaRef}
                 value={editContent}
-                onChange={(e) => setEditContent(e.target.value)}
+                onChange={setEditContent}
                 onKeyDown={handleEditKeyDown}
                 placeholder="Modifier votre réponse..."
                 className="min-h-[80px] resize-none border-gray-300 focus:border-[#5E6AD2] focus:ring-[#5E6AD2]"
-                disabled={isUpdating}
+                isDisabled={isUpdating}
               />
               <div className="flex items-center justify-between">
                 <p className="text-xs text-gray-500">

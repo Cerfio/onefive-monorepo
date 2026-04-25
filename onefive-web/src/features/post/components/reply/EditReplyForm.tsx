@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui';
-import { Textarea } from '@/components/ui/textarea';
+import { TextArea } from '@/components/base/textarea/textarea';
 import { useEditComment } from '../../hooks/mutations/useEditComment';
 
 interface EditReplyFormProps {
@@ -57,14 +57,14 @@ const EditReplyForm: React.FC<EditReplyFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <Textarea
+      <TextArea
         ref={textareaRef}
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={setContent}
         onKeyDown={handleKeyDown}
         placeholder="Modifier votre réponse..."
         className="min-h-[60px] resize-none border-gray-300 focus:border-[#5E6AD2] focus:ring-[#5E6AD2]"
-        disabled={isLoading}
+        isDisabled={isLoading}
       />
       <div className="flex items-center justify-between mt-2 gap-2">
         <div className="text-xs text-gray-500">

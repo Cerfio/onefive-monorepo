@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { TextArea } from '@/components/base/textarea/textarea';
 import { useRepost } from '../../hooks/mutations/useRepost';
 
 interface RepostWithThoughtsModalProps {
@@ -62,12 +62,12 @@ export default function RepostWithThoughtsModal({
 
         <div className="space-y-4">
           <div>
-            <Textarea
+            <TextArea
               placeholder="What are your thoughts?"
               value={thoughts}
-              onChange={(e) => setThoughts(e.target.value)}
+              onChange={setThoughts}
               className="min-h-[120px] resize-none"
-              disabled={isPending}
+              isDisabled={isPending}
               autoFocus
             />
             <p className="text-xs text-muted-foreground mt-2">

@@ -1,4 +1,5 @@
-import { Button, Textarea } from '@/components/ui';
+import { Button } from '@/components/ui';
+import { TextArea } from '@/components/base/textarea/textarea';
 import { memo, useCallback, useState } from 'react';
 import { useCreateComment } from '../../hooks/mutations/useCreateComment';
 
@@ -19,11 +20,11 @@ const ReplyForm: React.FC<Props> = ({ parentId, parentAuthor, postId }) => {
 
   return (
     <form onSubmit={handleReply} className="flex-1 mt-2">
-      <Textarea
+      <TextArea
         placeholder={`Reply to ${parentAuthor}`}
         className="resize-none min-h-[60px] text-sm focus-visible:ring-0"
         value={reply}
-        onChange={(e) => setReply(e.target.value)}
+        onChange={setReply}
       />
       <div className="flex justify-end mt-2">
         <Button size="sm" className="h-8" disabled={!reply.trim() || isPending}>

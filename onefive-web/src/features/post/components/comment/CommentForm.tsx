@@ -1,7 +1,7 @@
 'use client';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { TextArea } from '@/components/base/textarea/textarea';
 import { useMe } from '@/hooks/useUser';
 import { useCreateComment } from '../../hooks/mutations';
 import { forwardRef, useState } from 'react';
@@ -50,13 +50,13 @@ const CommentForm = forwardRef<HTMLTextAreaElement, Props>(({
         lastName={profile?.lastName}
       />
       <div className="flex-1">
-        <Textarea
+        <TextArea
           placeholder={parentId ? "Add a reply..." : "Add a comment..."}
           className="resize-none min-h-[60px] text-sm focus-visible:ring-0"
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          onChange={setComment}
           ref={ref}
-          disabled={createCommentMutation.isPending}
+          isDisabled={createCommentMutation.isPending}
         />
         <div className="flex justify-end mt-2">
           <Button

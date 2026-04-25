@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { TextArea } from '@/components/base/textarea/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
@@ -302,11 +302,11 @@ export const InvestmentProposalModal = ({
           {/* Message à l'équipe */}
           <div className="space-y-2">
             <Label htmlFor="message">Message à l'équipe *</Label>
-            <Textarea
+            <TextArea
               id="message"
               placeholder="Expliquez votre démarche, posez une question, etc."
               value={formData.message}
-              onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+              onChange={(value) => setFormData(prev => ({ ...prev, message: value }))}
               rows={4}
             />
           </div>

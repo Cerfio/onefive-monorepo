@@ -24,7 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Textarea } from '@/components/ui/textarea';
+import { TextArea } from '@/components/base/textarea/textarea';
 
 type ReplyType = SpecificDiscussionInfer['answers'][0]['replies'][0];
 
@@ -460,14 +460,14 @@ const ReplyItem = ({ reply, discussionId, answerId, viewerId }: ReplyItemProps) 
         
         {isEditing ? (
           <div className="space-y-2 mt-2">
-            <Textarea
+            <TextArea
               ref={textareaRef}
               value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
+              onChange={setEditContent}
               onKeyDown={handleEditKeyDown}
               placeholder="Modifier votre réponse..."
               className="min-h-16 resize-none border-gray-300 focus:border-[#5E6AD2] focus:ring-[#5E6AD2] text-sm"
-              disabled={isUpdating}
+              isDisabled={isUpdating}
             />
             <div className="flex items-center justify-between">
               <p className="text-xs text-gray-500">

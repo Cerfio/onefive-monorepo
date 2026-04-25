@@ -1,7 +1,7 @@
 import type { FormEvent, HTMLAttributes } from "react";
 import { Paperclip, Smile, Mic, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { TextArea } from "@/components/base/textarea/textarea";
 import { cn } from "@/lib/utils";
 import { VALIDATION_LIMITS } from "@/constants/validation-limits";
 
@@ -30,7 +30,7 @@ export const MessageActionTextarea = ({
       onSubmit={handleSubmit}
       {...props}
     >
-      <Textarea
+      <TextArea
         aria-label="Message"
         placeholder="Message"
         name="message"
