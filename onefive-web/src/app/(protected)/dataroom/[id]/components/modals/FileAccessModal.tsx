@@ -12,7 +12,7 @@ import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/base/tabs/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
+import { Avatar } from "@/components/base/avatar/avatar";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/base/label/label";
 import { Dropdown } from "@/components/base/dropdown/dropdown";
@@ -254,7 +254,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
     if (!file) return null;
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
                 <DialogHeader>
                     <div className="flex items-center gap-3">
@@ -455,12 +455,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                                                         setSearchValue('');
                                                                     }}
                                                                 >
-                                                                    <Avatar className="h-8 w-8">
-                                                                        <AvatarImage src={user.avatar || ''} alt={user.name} />
-                                                                        <AvatarFallback className="text-xs">
-                                                                            {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                                                                        </AvatarFallback>
-                                                                    </Avatar>
+                                                                    <Avatar size="sm" src={user.avatar || undefined} alt={user.name} initials={user.name.split(' ').map(n => n[0]).join('').toUpperCase()} />
                                                                     <div className="flex-1">
                                                                         <p className="font-medium text-sm">{user.name}</p>
                                                                         {user.highlight && (
@@ -535,12 +530,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                         <div className="space-y-2 max-h-32 overflow-y-auto">
                                             {selectedPeople.map((person) => (
                                                 <div key={person.email} className="flex items-center gap-3 p-2 bg-white rounded-lg border">
-                                                    <Avatar className="h-6 w-6">
-                                                        <AvatarImage src={person.avatar} alt={person.name} />
-                                                        <AvatarFallback className="text-xs">
-                                                            {person.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                                                        </AvatarFallback>
-                                                    </Avatar>
+                                                    <Avatar size="xs" src={person.avatar} alt={person.name} initials={person.name.split(' ').map(n => n[0]).join('').toUpperCase()} />
                                                     <div className="flex-1">
                                                         <p className="text-sm font-medium">{person.name}</p>
                                                         <p className="text-xs text-gray-500">{person.email}</p>
@@ -656,12 +646,7 @@ export const FileAccessModal: React.FC<FileAccessModalProps> = ({
                                     }`}>
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-3">
-                                                <Avatar className="h-8 w-8">
-                                                    <AvatarImage src={access.userAvatar} />
-                                                    <AvatarFallback>
-                                                        {access.userName.charAt(0).toUpperCase()}
-                                                    </AvatarFallback>
-                                                </Avatar>
+                                                <Avatar size="sm" src={access.userAvatar} initials={access.userName.charAt(0).toUpperCase()} />
                                                 <div>
                                                     <p className="font-medium">{access.userName}</p>
                                                     <p className="text-sm text-gray-500">{access.userEmail}</p>

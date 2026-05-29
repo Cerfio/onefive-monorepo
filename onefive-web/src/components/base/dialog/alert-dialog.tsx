@@ -1,6 +1,16 @@
 "use client";
 
-import { createContext, useContext, type ComponentProps, type ReactNode } from "react";
+import {
+  cloneElement,
+  createContext,
+  isValidElement,
+  useContext,
+  type ComponentProps,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import {
   Dialog as AriaDialog,
   Heading as AriaHeading,
@@ -112,8 +122,8 @@ export const AlertDialogAction = ({
       color="primary"
       size="sm"
       className={className}
-      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+      onClick={(e: MouseEvent<HTMLButtonElement>) => {
+        onClick?.(e);
         onOpenChange?.(false);
       }}
       {...(props as any)}
@@ -136,8 +146,8 @@ export const AlertDialogCancel = ({
       color="secondary"
       size="sm"
       className={className}
-      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement, MouseEvent>);
+      onClick={(e: MouseEvent<HTMLButtonElement>) => {
+        onClick?.(e);
         onOpenChange?.(false);
       }}
       {...(props as any)}
@@ -147,6 +157,73 @@ export const AlertDialogCancel = ({
   );
 };
 
-export const AlertDialogTrigger = ({ children }: { children: ReactNode }) => (
-  <>{children}</>
-);
+interface AlertDialogTriggerProps {
+  children: ReactNode;
+  asChild?: boolean;
+  className?: string;
+}
+
+const openKey = (e: KeyboardEvent) => e.key === "Enter" || e.key === " ";
+
+export const AlertDialogTrigger = ({ children, className, asChild }: AlertDialogTriggerProps) => {
+  const { onOpenChange } = useContext(AlertDialogContext);
+  const open = () => onOpenChange?.(true);
+
+  if (asChild && isValidElement(children)) {
+    const el = children as ReactElement<{
+      onClick?: (e: MouseEvent) => void;
+      onKeyDown?: (e: KeyboardEvent) => void;
+      className?: string;
+    }>;
+    const p = el.props;
+    return cloneElement(el, {
+      onClick: (e: MouseEvent) => {
+        p.onClick?.(e);
+        open();
+      },
+      onKeyDown: (e: KeyboardEvent) => {
+        p.onKeyDown?.(e);
+        if (!e.defaultPrevented && openKey(e)) {
+          e.preventDefault();
+          open();
+        }
+      },
+      className: className ? cx(p.className, className) : p.className,
+    } as any);
+  }
+
+  if (className) {
+    return (
+      <span
+        className={className}
+        role="button"
+        tabIndex={0}
+        onClick={open}
+        onKeyDown={(e) => {
+          if (openKey(e)) {
+            e.preventDefault();
+            open();
+          }
+        }}
+      >
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className="inline-flex"
+      onClick={open}
+      onKeyDown={(e) => {
+        if (openKey(e)) {
+          e.preventDefault();
+          open();
+        }
+      }}
+    >
+      {children}
+    </button>
+  );
+};

@@ -232,7 +232,7 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
 
     return (
         <>
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

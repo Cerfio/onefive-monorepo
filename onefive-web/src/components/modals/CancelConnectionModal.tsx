@@ -27,7 +27,7 @@ export function CancelConnectionModal({
   isLoading = false,
 }: CancelConnectionModalProps) {
   return (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
+    <AlertDialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Annuler la demande de connexion ?</AlertDialogTitle>

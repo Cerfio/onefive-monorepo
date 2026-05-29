@@ -85,7 +85,7 @@ export const ChangeCategoryModal: React.FC<ChangeCategoryModalProps> = ({
     }));
 
     return (
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

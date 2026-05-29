@@ -19,7 +19,7 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
     currentDocument,
 }) => {
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <DialogContent className="sm:max-w-5xl h-[80vh]">
                 <DialogHeader>
                     <DialogTitle>{currentDocument?.fileName}</DialogTitle>

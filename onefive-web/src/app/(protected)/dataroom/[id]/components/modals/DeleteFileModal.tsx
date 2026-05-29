@@ -51,7 +51,7 @@ export const DeleteFileModal: React.FC<DeleteFileModalProps> = ({
     const isFormValid = deleteFileConfirmation === fileToDelete?.name && !isLoading;
 
     return (
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

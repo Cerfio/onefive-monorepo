@@ -56,7 +56,7 @@ export const DeleteCategoryModal: React.FC<DeleteCategoryModalProps> = ({
                        !deleteCategoryMutation.isLoading;
 
     return (
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

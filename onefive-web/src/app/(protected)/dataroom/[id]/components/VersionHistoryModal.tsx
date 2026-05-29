@@ -94,7 +94,7 @@ export const VersionHistoryModal: React.FC<VersionHistoryModalProps> = ({
     ].sort((a, b) => (b.version ?? 0) - (a.version ?? 0)); // Trier par version décroissante
 
     return (
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

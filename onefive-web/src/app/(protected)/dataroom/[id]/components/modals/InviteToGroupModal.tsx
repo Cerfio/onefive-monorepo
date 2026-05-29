@@ -98,7 +98,7 @@ export const InviteToGroupModal: React.FC<InviteToGroupModalProps> = ({
     const targetGroup = groups.find(g => g.id === inviteTargetGroupId);
 
     return (
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

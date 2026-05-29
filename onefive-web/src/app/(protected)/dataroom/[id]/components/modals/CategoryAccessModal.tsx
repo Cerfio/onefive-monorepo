@@ -12,7 +12,7 @@ import { Button } from "@/components/base/buttons/button";
 import { Badge } from '@/components/base/badges/badges';
 import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/base/tabs/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
+import { Avatar } from "@/components/base/avatar/avatar";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/base/label/label";
 import { 
@@ -223,7 +223,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
     if (!category) return null;
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
                 <DialogHeader>
                     <div className="flex items-center gap-3">
@@ -404,12 +404,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                                     }}
                                                 >
                                                     <div className="flex items-center gap-2">
-                                                        <Avatar className="h-6 w-6">
-                                                            <AvatarImage src={user.avatar || ''} alt={user.name} />
-                                                            <AvatarFallback className="text-xs">
-                                                                {user.name.split(' ').map(n => n[0]).join('')}
-                                                            </AvatarFallback>
-                                                        </Avatar>
+                                                        <Avatar size="xs" src={user.avatar || undefined} alt={user.name} initials={user.name.split(' ').map(n => n[0]).join('')} />
                                                         <div>
                                                             <p className="text-sm font-medium">{user.name}</p>
                                                             {user.highlight && (
@@ -558,12 +553,7 @@ export const CategoryAccessModal: React.FC<CategoryAccessModalProps> = ({
                                     >
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <Avatar className="h-8 w-8">
-                                                    <AvatarImage src={access.userAvatar} alt={access.userName} />
-                                                    <AvatarFallback className="text-xs">
-                                                        {access.userName.split(' ').map(n => n[0]).join('')}
-                                                    </AvatarFallback>
-                                                </Avatar>
+                                                <Avatar size="sm" src={access.userAvatar} alt={access.userName} initials={access.userName.split(' ').map(n => n[0]).join('')} />
                                                 <div>
                                                     <p className="font-medium text-sm">{access.userName}</p>
                                                     <p className="text-xs text-gray-500">{access.userEmail}</p>

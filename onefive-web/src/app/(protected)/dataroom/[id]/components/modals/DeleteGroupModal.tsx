@@ -48,7 +48,7 @@ export const DeleteGroupModal = ({
     const isFormValid = confirmationName === group.name && !isDeleting;
 
     return (
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

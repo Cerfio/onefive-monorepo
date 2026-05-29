@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Spinner from '@/components/ui/spinner';
+import { Spinner } from '@/components/base/spinner/spinner';
 import LinkedInIcon from '@/icons/society/LinkedIn.svg';
 import GoogleIcon from '@/icons/society/Google.svg';
 import AppleIcon from '@/icons/society/Apple.svg';
@@ -200,7 +200,7 @@ const Oauth2CallbackPageClient = ({
   return (
     <div className="flex flex-col justify-center items-center h-screen gap-8">
       <div className="w-20 h-20 relative flex flex-col justify-center items-center">
-        <Spinner />
+        <Spinner size="xl" />
         <Image
           className="absolute"
           src={findImage(resolvedProvider)}

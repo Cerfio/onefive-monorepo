@@ -5,7 +5,7 @@ import NavigationBar from "@/components/NavigationBar";
 import { useAdvancedFileTracking } from "@/hooks/useAdvancedFileTracking";
 import { useFileComments } from "@/hooks/useFileComments";
 import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
-import { Slider } from "@/components/ui/slider";
+import { Slider } from "@/components/base/slider/slider";
 import type { KeyboardShortcut } from "@/hooks/useKeyboardShortcuts";
 
 interface ImageViewerProps {
@@ -145,11 +145,11 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
                     </button>
                     <div className="w-24 sm:w-32">
                         <Slider
-                            value={[zoom * 100]}
-                            min={ZOOM_MIN * 100}
-                            max={ZOOM_MAX * 100}
+                            value={zoom * 100}
+                            minValue={ZOOM_MIN * 100}
+                            maxValue={ZOOM_MAX * 100}
                             step={5}
-                            onValueChange={([val]) => setZoom(+(val / 100).toFixed(2))}
+                            onChange={(v) => setZoom(+(((Array.isArray(v) ? v[0] : v) / 100)).toFixed(2))}
                         />
                     </div>
                     <span className="text-xs font-medium text-gray-600 tabular-nums w-12 text-center">

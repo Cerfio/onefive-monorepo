@@ -127,7 +127,7 @@ export const CoverCropModal = ({
   if (!isOpen || !imageData) return null;
 
   return (
-    <ModalOverlay isDismissable isOpen={isOpen} onOpenChange={onClose}>
+    <ModalOverlay isDismissable isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <Modal>
         <Dialog>
           <div className="relative w-full overflow-hidden rounded-2xl bg-primary shadow-xl sm:max-w-5xl">

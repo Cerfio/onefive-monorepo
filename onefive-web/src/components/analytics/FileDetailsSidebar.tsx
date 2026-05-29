@@ -29,7 +29,7 @@ export const FileDetailsSidebar = ({
   const userActivity = fileDetails?.userActivity || [];
 
   return (
-    <SlideoutMenu.Trigger isOpen={isOpen} onOpenChange={onClose}>
+    <SlideoutMenu.Trigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <SlideoutMenu isDismissable>
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">

@@ -200,7 +200,7 @@ export const CreateGroupWithStepsModal: React.FC<CreateGroupWithStepsModalProps>
     ];
 
     return (
-        <AriaDialogTrigger isOpen={isOpen} onOpenChange={onClose}>
+        <AriaDialogTrigger isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <ModalOverlay isDismissable>
                 <Modal>
                     <Dialog>

@@ -56,13 +56,12 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'warn',
     'prefer-const': 'warn',
     // Bloque les imports shadcn déjà migrés vers Untitled UI.
-    // Whitelist customs OneFive (flag, saas-selector, animated-number,
-    // social-button, social-logos, avatar2 placeholder) et composants pas
-    // encore migrés (button-group, command, hover-card, input-search, modal,
-    // placeholder, popover, sheet, slider, spinner, textareaAutoresize)
-    // restent autorisés.
-    // Vague 6 (avril 2026) : tabs, label, alert, dropdown-menu, progress,
-    // form (mort) → Untitled UI / wrapper local.
+    // Restent autorisés : customs OneFive sans équivalent UUI direct
+    // (flag, saas-selector, animated-number, social-button, social-logos,
+    // command, hover-card, input-search, modal, sheet).
+    // Vague 6 (avr. 2026) : tabs, label, alert, dropdown-menu, progress, form.
+    // Vague 7 (mai 2026) : avatar2, slider, spinner → Untitled UI ;
+    // button-group, popover, placeholder, textareaAutoresize supprimés (morts).
     'no-restricted-imports': [
       'error',
       {
@@ -87,6 +86,10 @@ module.exports = {
           { name: '@/components/ui/label', message: 'Use @/components/base/label/label' },
           { name: '@/components/ui/alert', message: 'Use @/components/base/alert/alert' },
           { name: '@/components/ui/dropdown-menu', message: 'Use Dropdown from @/components/base/dropdown/dropdown' },
+          { name: '@/components/ui/avatar2', message: 'Use @/components/base/avatar/avatar' },
+          { name: '@/components/ui/slider', message: 'Use @/components/base/slider/slider' },
+          { name: '@/components/ui/spinner', message: 'Use Spinner from @/components/base/spinner/spinner' },
+          { name: '@/components/ui/button-group', message: 'Use ButtonGroup from @/components/base/button-group/button-group' },
         ],
       },
     ],

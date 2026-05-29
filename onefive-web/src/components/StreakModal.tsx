@@ -23,7 +23,7 @@ export const StreakModal = ({ streak, onClose }: StreakModalProps) => {
   }, [currentStreak, streak]);
 
   return (
-    <AriaDialogTrigger isOpen={true} onOpenChange={onClose}>
+    <AriaDialogTrigger isOpen={true} onOpenChange={(open) => { if (!open) onClose(); }}>
       <ModalOverlay isDismissable>
         <Modal>
           <Dialog>

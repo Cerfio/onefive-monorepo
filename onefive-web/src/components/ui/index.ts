@@ -59,14 +59,6 @@ export {
   AlertDescription,
 } from '@/components/base/alert/alert';
 
-// Composants shadcn pas encore migrés
-export * from './button-group';
+// Composants custom OneFive (pas d'équivalent Untitled UI direct)
 export * from './hover-card';
 export * from './input-search';
-export * from './placeholder';
-export * from './popover';
-export * from './spinner';
-export {
-  TextareaAutoResize,
-  type TextareaProps as AutoResizeTextareaProps,
-} from './textareaAutoresize';

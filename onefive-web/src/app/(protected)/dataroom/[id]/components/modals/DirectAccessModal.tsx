@@ -4,7 +4,7 @@ import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Label } from "@/components/base/label/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/base/dialog/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar2";
+import { Avatar } from "@/components/base/avatar/avatar";
 import { Plus, X } from "lucide-react";
 import { UserProfile } from "../../types";
 
@@ -184,12 +184,7 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                                                         className="w-full p-3 flex items-center gap-3 hover:bg-gray-50 transition-colors"
                                                         onClick={() => handleUserSelect(user)}
                                                     >
-                                                        <Avatar className="h-10 w-10">
-                                                            <AvatarImage src={user.avatar} />
-                                                            <AvatarFallback>
-                                                                {user.email[0].toUpperCase()}
-                                                            </AvatarFallback>
-                                                        </Avatar>
+                                                        <Avatar size="md" src={user.avatar} initials={user.email[0].toUpperCase()} />
                                                         <div className="text-left">
                                                             <p className="font-medium">
                                                                 {user.name || user.email}
@@ -207,12 +202,7 @@ export const DirectAccessModal: React.FC<DirectAccessModalProps> = ({
                                         {selectedUser && (
                                             <div className="mt-2 p-3 border rounded-lg flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
-                                                    <Avatar className="h-10 w-10">
-                                                        <AvatarImage src={selectedUser.avatar} />
-                                                        <AvatarFallback>
-                                                            {selectedUser.email[0].toUpperCase()}
-                                                        </AvatarFallback>
-                                                    </Avatar>
+                                                    <Avatar size="md" src={selectedUser.avatar} initials={selectedUser.email[0].toUpperCase()} />
                                                     <div>
                                                         <p className="font-medium">
                                                             {selectedUser.name || selectedUser.email}

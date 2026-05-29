@@ -1,10 +1,18 @@
 "use client";
 
-import { createContext, useContext, type ComponentProps, type ReactNode } from "react";
 import {
-  Dialog as AriaDialog,
-  Heading as AriaHeading,
-} from "react-aria-components";
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  useContext,
+  type ComponentProps,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactElement,
+  type ReactNode,
+} from "react";
+import { Dialog as AriaDialog, Heading as AriaHeading } from "react-aria-components";
 import { Modal, ModalOverlay } from "@/components/application/modals/modal";
 import { CloseButton } from "@/components/base/buttons/close-button";
 import { cx } from "@/utils/cx";
@@ -23,9 +31,7 @@ interface DialogProps {
 }
 
 export const Dialog = ({ open, onOpenChange, children }: DialogProps) => (
-  <DialogContext.Provider value={{ open, onOpenChange }}>
-    {children}
-  </DialogContext.Provider>
+  <DialogContext.Provider value={{ open, onOpenChange }}>{children}</DialogContext.Provider>
 );
 
 interface DialogContentProps extends ComponentProps<"div"> {
@@ -68,11 +74,7 @@ export const DialogContent = ({
 };
 
 export const DialogHeader = ({ className, ...props }: ComponentProps<"div">) => (
-  <div
-    data-slot="dialog-header"
-    className={cx("flex flex-col gap-1.5 text-left", className)}
-    {...props}
-  />
+  <div data-slot="dialog-header" className={cx("flex flex-col gap-1.5 text-left", className)} {...props} />
 );
 
 export const DialogTitle = ({ className, children, ...props }: ComponentProps<"h2">) => (
@@ -86,24 +88,14 @@ export const DialogTitle = ({ className, children, ...props }: ComponentProps<"h
   </AriaHeading>
 );
 
-export const DialogDescription = ({
-  className,
-  ...props
-}: ComponentProps<"p">) => (
-  <p
-    data-slot="dialog-description"
-    className={cx("text-sm text-tertiary", className)}
-    {...props}
-  />
+export const DialogDescription = ({ className, ...props }: ComponentProps<"p">) => (
+  <p data-slot="dialog-description" className={cx("text-sm text-tertiary", className)} {...props} />
 );
 
 export const DialogFooter = ({ className, ...props }: ComponentProps<"div">) => (
   <div
     data-slot="dialog-footer"
-    className={cx(
-      "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
-      className,
-    )}
+    className={cx("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
     {...props}
   />
 );
@@ -114,16 +106,110 @@ interface DialogTriggerProps {
   className?: string;
 }
 
-export const DialogTrigger = ({ children, className }: DialogTriggerProps) => {
-  if (className) {
-    return <span className={className}>{children}</span>;
+const openKey = (e: KeyboardEvent) => e.key === "Enter" || e.key === " ";
+
+export const DialogTrigger = ({ children, className, asChild }: DialogTriggerProps) => {
+  const { onOpenChange } = useContext(DialogContext);
+  const open = () => onOpenChange?.(true);
+
+  if (asChild && isValidElement(children)) {
+    const el = children as ReactElement<{
+      onClick?: (e: MouseEvent) => void;
+      onKeyDown?: (e: KeyboardEvent) => void;
+      className?: string;
+    }>;
+    const p = el.props;
+    return cloneElement(el, {
+      onClick: (e: MouseEvent) => {
+        p.onClick?.(e);
+        open();
+      },
+      onKeyDown: (e: KeyboardEvent) => {
+        p.onKeyDown?.(e);
+        if (!e.defaultPrevented && openKey(e)) {
+          e.preventDefault();
+          open();
+        }
+      },
+      className: className ? cx(p.className, className) : p.className,
+    } as any);
   }
-  return <>{children}</>;
+
+  if (className) {
+    return (
+      <span
+        className={className}
+        role="button"
+        tabIndex={0}
+        onClick={open}
+        onKeyDown={(e) => {
+          if (openKey(e)) {
+            e.preventDefault();
+            open();
+          }
+        }}
+      >
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className="inline-flex"
+      onClick={open}
+      onKeyDown={(e) => {
+        if (openKey(e)) {
+          e.preventDefault();
+          open();
+        }
+      }}
+    >
+      {children}
+    </button>
+  );
 };
 
-export const DialogClose = ({ children, className }: DialogTriggerProps) => {
-  if (className) {
-    return <span className={className}>{children}</span>;
+export const DialogClose = ({ children, className, asChild }: DialogTriggerProps) => {
+  const { onOpenChange } = useContext(DialogContext);
+  const close = () => onOpenChange?.(false);
+
+  const patchClose = (el: ReactElement) => {
+    const p = el.props as {
+      onClick?: (e: MouseEvent) => void;
+      className?: string;
+    };
+    return {
+      onClick: (e: MouseEvent) => {
+        p.onClick?.(e);
+        close();
+      },
+      className: className ? cx(p.className, className) : p.className,
+    } as any;
+  };
+
+  const list = Children.toArray(children);
+  const onlyChild = list.length === 1 && isValidElement(list[0]) ? (list[0] as ReactElement) : null;
+
+  if (asChild) {
+    if (onlyChild) {
+      return cloneElement(onlyChild, patchClose(onlyChild));
+    }
+  } else if (onlyChild) {
+    return cloneElement(onlyChild, patchClose(onlyChild));
   }
-  return <>{children}</>;
+
+  if (className) {
+    return (
+      <span className={className} role="button" tabIndex={0} onClick={close}>
+        {children}
+      </span>
+    );
+  }
+  return (
+    <button type="button" onClick={close}>
+      {children}
+    </button>
+  );
 };

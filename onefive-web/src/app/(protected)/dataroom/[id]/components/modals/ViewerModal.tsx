@@ -16,7 +16,7 @@ export const ViewerModal = ({
     if (!document) return null;
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <DialogContent className="ph-no-capture max-w-6xl h-[80vh]">
                 <DocViewer
                     documents={[{ uri: document.uri }]}

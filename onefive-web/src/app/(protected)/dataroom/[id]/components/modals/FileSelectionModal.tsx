@@ -72,7 +72,7 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>Sélectionner des fichiers</DialogTitle>
