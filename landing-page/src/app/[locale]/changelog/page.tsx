@@ -39,7 +39,7 @@ interface Release {
 
 const changeTypeConfig: Record<
   ChangeType,
-  { icon: JSX.Element; color: string; label: string }
+  { icon: React.ReactElement; color: string; label: string }
 > = {
   feature: {
     icon: <Sparkles className="w-4 h-4" />,

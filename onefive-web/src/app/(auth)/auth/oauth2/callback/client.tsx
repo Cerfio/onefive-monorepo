@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Spinner } from '@/components/base/spinner/spinner';
-import LinkedInIcon from '@/icons/society/LinkedIn.svg';
+import LinkedInIcon from '@/icons/society/Linkedin.svg';
 import GoogleIcon from '@/icons/society/Google.svg';
 import AppleIcon from '@/icons/society/Apple.svg';
 import { useMutation } from '@tanstack/react-query';

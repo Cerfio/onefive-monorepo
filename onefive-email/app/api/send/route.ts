@@ -1,4 +1,6 @@
-import { resend } from "@/lib/resend";
+import { getResend } from "@/lib/resend";
+
+export const dynamic = "force-dynamic";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { VerificationCodeEmail } from "@/emails/verify-email";
@@ -176,7 +178,7 @@ export async function POST(request: Request) {
             })()
           : payload;
 
-    const emailSent = await resend.emails.send({
+    const emailSent = await getResend().emails.send({
       from: `Onefive <${emails[body.type].sender}>`,
       to: body.to,
       subject: emails[body.type].subject,

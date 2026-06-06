@@ -1,8 +1,9 @@
+import type { ComponentPropsWithoutRef, ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
 import { clx } from "@/lib/utils/clx/clx-merge";
-import type { ComponentProps, VariantProps } from "@/lib/utils/clx/types";
+import type { VariantProps } from "@/lib/utils/clx/types";
 import { STYLES } from "@/components/ui/_shared";
 
-export const Badge = clx.div(
+const BadgeBase = clx.div(
   STYLES.RING_FOCUS,
   STYLES.FLEX_CENTER,
   "rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors w-fit",
@@ -27,5 +28,10 @@ export const Badge = clx.div(
   }
 );
 
-export type BadgeVariants = VariantProps<typeof Badge>;
-export type BadgeProps = ComponentProps<typeof Badge>;
+export type BadgeVariants = VariantProps<typeof BadgeBase>;
+export type BadgeProps = ComponentPropsWithoutRef<"div"> &
+  BadgeVariants & { children?: ReactNode; className?: string };
+
+export const Badge = BadgeBase as ForwardRefExoticComponent<
+  BadgeProps & RefAttributes<HTMLDivElement>
+>;
