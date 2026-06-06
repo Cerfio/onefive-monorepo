@@ -24,6 +24,7 @@
   },
   "pnpm": {
     "overrides": {
+      "next@15.0.5": "15.0.7",
       "@types/react": "19.2.3",
       "@types/react-dom": "19.2.3",
       "react-aria": "3.47.0",

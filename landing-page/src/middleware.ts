@@ -1,5 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
+import { getWebOrigin, shouldProxyToWeb } from './lib/onefive-gateway';
 
 export default function middleware(request: NextRequest) {
   // PostHog proxy: Safari (and others) may send OPTIONS preflight for /ingest.
@@ -19,6 +20,17 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (shouldProxyToWeb(request)) {
+    const webOrigin = getWebOrigin();
+    if (webOrigin) {
+      const target = new URL(
+        `${request.nextUrl.pathname}${request.nextUrl.search}`,
+        webOrigin,
+      );
+      return NextResponse.rewrite(target);
+    }
+  }
+
   return createMiddleware({
     locales: ['en', 'fr'],
     defaultLocale: 'en',
@@ -27,5 +39,6 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+  // Run on app routes and on /_next assets (excluded from the dot rule below).
+  matcher: ['/_next/:path*', '/((?!api|_vercel|.*\\..*).*)'],
 }; 

@@ -1,0 +1,10 @@
+onefive-back
+node_modules
+.git
+.cursor
+**/.next
+**/dist
+**/coverage
+**/*.log
+.env*
+!.env.example

@@ -2,13 +2,19 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/lib/i18n/request.ts');
 
+const webAssetPrefix = process.env.ONEFIVE_WEB_ASSET_PREFIX?.replace(/\/$/, '');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
   transpilePackages: ["@onefive/ui"],
   skipTrailingSlashRedirect: true,
+  ...(webAssetPrefix ? { assetPrefix: webAssetPrefix } : {}),
   experimental: {
     optimizePackageImports: ['@untitledui/icons'],
+    serverActions: {
+      allowedOrigins: ['onefive.app', 'www.onefive.app', 'localhost:3002'],
+    },
   },
   async rewrites() {
     return [

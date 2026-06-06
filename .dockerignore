@@ -1,0 +1,21 @@
+# Speed up onefive-back Docker builds (context = repo root)
+.git
+.cursor
+**/.next
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example
+**/dist
+**/coverage
+**/test-results
+**/playwright-report
+onefive-web
+onefive-backoffice
+landing-page
+onefive-bo-landing-page
+onefive-email
+newsletter
+docs
+**/*.md
+!onefive-back/README.md
