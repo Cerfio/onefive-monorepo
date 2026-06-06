@@ -1,25 +1,27 @@
-// ts-ignore 7017 is used to ignore the error that the global object is not
-// defined in the global scope. This is because the global object is only
-// defined in the global scope in Node.js and not in the browser.
+import { PrismaClient } from '@/generated/prisma';
 
-import { PrismaClient } from '@/generated/prisma'
+const globalForPrisma = global as unknown as { prisma?: PrismaClient };
 
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-//
-// Learn more:
-// https://pris.ly/d/help/next-js-best-practices
+export function getPrisma(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    const url = process.env.DATABASE_URL;
+    if (!url) {
+      throw new Error('DATABASE_URL is not set');
+    }
+    globalForPrisma.prisma = new PrismaClient({
+      datasources: {
+        db: { url },
+      },
+    });
+  }
+  return globalForPrisma.prisma;
+}
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient }
-
-export const prisma = globalForPrisma.prisma || new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
+/** @deprecated Prefer getPrisma() so build does not require DATABASE_URL at import time. */
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    return Reflect.get(getPrisma(), prop);
   },
-})
+});
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
-
-export default prisma
+export default prisma;

@@ -14,7 +14,7 @@ import { FoundingMemberEmail } from "@/emails/founding-member";
 import { AdminInvitationEmail } from "@/emails/admin-invitation";
 import { DataroomInvitationEmail } from "@/emails/dataroom-invitation";
 import { PasswordChangedEmail } from "@/emails/password-changed";
-import { prisma } from "@/lib/prisma.service";
+import { getPrisma } from "@/lib/prisma.service";
 
 const EmailTypeEnum = z.enum([
   "verification",
@@ -192,7 +192,7 @@ export async function POST(request: Request) {
       );
     }
 
-    await prisma.resendEmail.create({
+    await getPrisma().resendEmail.create({
       data: {
         email: body.to,
         resendId: emailSent.data?.id || "",

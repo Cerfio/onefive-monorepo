@@ -1,5 +1,7 @@
-import prisma from "@/lib/prisma.service";
+import { getPrisma } from "@/lib/prisma.service";
 import { z } from "zod";
+
+export const dynamic = "force-dynamic";
 
 const BodyWebhookEmail = z.object({
   created_at: z.string(),
@@ -27,6 +29,7 @@ export async function POST(request: Request) {
     );
   }
   try {
+    const prisma = getPrisma();
     const resendEmail = await prisma.resendEmail.findUnique({
       where: { resendId: payloadParsed.data.email_id },
     });
