@@ -65,7 +65,9 @@ export function shouldProxyToWeb(request: NextRequest): boolean {
   const { pathname } = request.nextUrl;
 
   if (isLandingRoute(pathname)) return false;
-  if (shouldProxyNextAsset(request)) return true;
+  // /_next assets: only proxy to web when authenticated and coming from a web page.
+  // Without this guard the landing page's own CSS/JS would be forwarded to onefive-web.
+  if (pathname.startsWith('/_next/')) return shouldProxyNextAsset(request);
   if (pathname === '/') return hasAuthCookie(request);
   if (isWebAlwaysRoute(pathname)) return true;
 
