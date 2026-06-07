@@ -71,6 +71,8 @@ export function shouldProxyToWeb(request: NextRequest): boolean {
   if (pathname === '/') return hasAuthCookie(request);
   if (isWebAlwaysRoute(pathname)) return true;
 
-  // App routes (/feed, /profile, /post/..., etc.) always hit onefive-web.
-  return true;
+  // Authenticated users: proxy app routes (/feed, /profile, /post/…) to onefive-web.
+  // Non-authenticated: let landing page handle everything (next-intl will locale-prefix
+  // /about, /blog, /terms, etc. — they are landing routes served without locale prefix).
+  return hasAuthCookie(request);
 }
