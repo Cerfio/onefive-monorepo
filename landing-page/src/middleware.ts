@@ -20,6 +20,23 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // /_next/* assets: either proxy to onefive-web (authenticated) or let Next.js
+  // serve the landing page's own static files directly — never pass through
+  // next-intl which would prepend a locale prefix and cause a 307 redirect loop.
+  if (request.nextUrl.pathname.startsWith('/_next/')) {
+    if (shouldProxyToWeb(request)) {
+      const webOrigin = getWebOrigin();
+      if (webOrigin) {
+        const target = new URL(
+          `${request.nextUrl.pathname}${request.nextUrl.search}`,
+          webOrigin,
+        );
+        return NextResponse.rewrite(target);
+      }
+    }
+    return NextResponse.next();
+  }
+
   if (shouldProxyToWeb(request)) {
     const webOrigin = getWebOrigin();
     if (webOrigin) {
