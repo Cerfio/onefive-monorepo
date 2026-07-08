@@ -10,8 +10,12 @@ import {
   Param,
   Query,
   Req,
+  Sse,
   UseGuards,
+  MessageEvent,
 } from '@nestjs/common';
+import { Observable, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Throttle } from '@nestjs/throttler';
 import { SessionGuard } from '../common/guards/session-guard/session.guard';
 import { FastifyRequestUserId } from 'src/types/fastify-request-user-id';
@@ -28,8 +32,9 @@ import { UpdateMessageHandler } from './handlers/update-message.handler';
 import { CreateReactionHandler } from './handlers/create-reaction.handler';
 import { DeleteReactionHandler } from './handlers/delete-reaction.handler';
 
-// Gateway pour notifications WebSocket
-import { MessagingGateway } from './messaging.gateway';
+// Hub SSE pour notifications temps réel
+import { MessagingEventsService } from './messaging.events.service';
+import { MessagingService } from './messaging.service';
 
 // DTOs
 import {
@@ -39,6 +44,7 @@ import {
   CreateReactionDto,
   ListConversationsDto,
   GetMessagesDto,
+  TypingDto,
 } from './dto';
 import { ApiResponseDto } from '../common/dto';
 
@@ -56,7 +62,8 @@ export class MessagingController {
     private readonly updateMessageHandler: UpdateMessageHandler,
     private readonly createReactionHandler: CreateReactionHandler,
     private readonly deleteReactionHandler: DeleteReactionHandler,
-    private readonly messagingGateway: MessagingGateway,
+    private readonly messagingService: MessagingService,
+    private readonly events: MessagingEventsService,
   ) {}
 
   private async getProfileIdFromUserId(userId: string): Promise<string> {
@@ -68,6 +75,45 @@ export class MessagingController {
       throw new NotFoundException('Profile not found');
     }
     return profile.id;
+  }
+
+  // ==================== SSE STREAM (server -> client) ====================
+
+  /**
+   * Stream temps réel des events de messagerie (nouveaux messages, read receipts,
+   * réactions, typing, présence). Le cookie de session authentifie la connexion
+   * (EventSource envoie les cookies via withCredentials).
+   */
+  @Sse('events')
+  streamEvents(@Req() req: FastifyRequestUserId): Observable<MessageEvent> {
+    return from(this.getProfileIdFromUserId(req.userId)).pipe(
+      switchMap((profileId) => this.events.subscribe(profileId)),
+    );
+  }
+
+  // ==================== TYPING (client -> server) ====================
+
+  @Post('typing')
+  @HttpCode(204)
+  @Throttle({
+    short: { limit: 5, ttl: 1000 },
+    medium: { limit: 20, ttl: 10000 },
+    long: { limit: 60, ttl: 60000 },
+  })
+  async typing(
+    @Req() req: FastifyRequestUserId,
+    @Body() body: TypingDto,
+  ): Promise<void> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
+
+    // Defense-in-depth : ne diffuser que si l'auteur est bien membre
+    const isMember = await this.messagingService.isConversationMember(
+      body.conversationId,
+      profileId,
+    );
+    if (!isMember) return;
+
+    await this.events.notifyTyping(body.conversationId, profileId, body.state);
   }
 
   // ==================== CONVERSATIONS ====================
@@ -151,7 +197,7 @@ export class MessagingController {
     });
 
     // ✅ Notifier les autres participants via WebSocket (exclure par profileId)
-    await this.messagingGateway.notifyNewMessage(
+    await this.events.notifyNewMessage(
       body.conversationId,
       result,
       profileId,
@@ -176,7 +222,7 @@ export class MessagingController {
 
     // ✅ Notifier les autres participants via WebSocket
     if (result.conversationId) {
-      await this.messagingGateway.notifyMessageEdited(
+      await this.events.notifyMessageEdited(
         result.conversationId,
         result,
       );
@@ -199,7 +245,7 @@ export class MessagingController {
 
     // ✅ Notifier les autres participants via WebSocket
     if (result.conversationId) {
-      await this.messagingGateway.notifyMessageDeleted(
+      await this.events.notifyMessageDeleted(
         result.conversationId,
         messageId,
       );
@@ -226,7 +272,7 @@ export class MessagingController {
     });
 
     // ✅ Notifier les autres participants via WebSocket (read receipt)
-    await this.messagingGateway.notifyMessageRead(
+    await this.events.notifyMessageRead(
       conversationId,
       profileId,
       messageId,
@@ -258,7 +304,7 @@ export class MessagingController {
 
     // ✅ Notifier les autres participants via WebSocket
     if (result.conversationId) {
-      await this.messagingGateway.notifyReactionAdded(result.conversationId, {
+      await this.events.notifyReactionAdded(result.conversationId, {
         messageId,
         emoji: body.emoji,
         profileId,
@@ -285,7 +331,7 @@ export class MessagingController {
 
     // ✅ Notifier les autres participants via WebSocket
     if (result.conversationId) {
-      await this.messagingGateway.notifyReactionRemoved(result.conversationId, {
+      await this.events.notifyReactionRemoved(result.conversationId, {
         messageId,
         emoji: decodedEmoji,
         profileId,

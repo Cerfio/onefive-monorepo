@@ -152,10 +152,9 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     UserSettingsModule,
     ProfileFollowModule,
     ProfileConnectionModule,
-    // MessagingModule was previously skipped in tests due to WebSocket adapter
-    // issues; kept enabled now so cascading tests (notifyNewMessage, read
-    // receipts) can run. The IoAdapter is set up in main.ts and the gateway
-    // tolerates absence of Socket.io clients in unit-scoped tests.
+    // Realtime messaging is delivered via SSE (MessagingEventsService), not
+    // WebSocket. Cascading tests (notifyNewMessage, read receipts) push into
+    // in-memory streams and tolerate the absence of connected SSE clients.
     MessagingModule,
     NotificationModule,
     ReferralModule,

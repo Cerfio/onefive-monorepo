@@ -1143,7 +1143,7 @@ export class MessagingService {
 
   /**
    * Vérifier si un profil est membre actif d'une conversation.
-   * Utilisé par le WebSocket gateway pour valider l'accès.
+   * Utilisé par le SSE events service pour valider l'accès.
    */
   async isConversationMember(
     conversationId: string,
@@ -1158,5 +1158,20 @@ export class MessagingService {
       select: { conversationId: true },
     });
     return !!member;
+  }
+
+  /**
+   * Récupérer les profileId de tous les membres actifs d'une conversation.
+   * Utilisé par le SSE events service pour router les notifications.
+   */
+  async getConversationMemberIds(conversationId: string): Promise<string[]> {
+    const members = await this.prisma.conversationMember.findMany({
+      where: {
+        conversationId,
+        leftAt: null,
+      },
+      select: { profileId: true },
+    });
+    return members.map((m) => m.profileId);
   }
 }

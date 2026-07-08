@@ -15,7 +15,6 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import fastifyMultipart from '@fastify/multipart';
 import fastifyHelmet from '@fastify/helmet';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 
 const logger = new Logger();
 
@@ -92,8 +91,8 @@ export async function createApp(): Promise<any> {
   // 8. Graceful shutdown
   app.enableShutdownHooks();
 
-  // 9. WebSocket adapter (pour Fastify + Socket.io)
-  app.useWebSocketAdapter(new IoAdapter(app));
+  // NOTE: le temps réel passe désormais par SSE (GET /messaging/events),
+  // plus besoin d'adapter WebSocket/Socket.io.
 
   return app;
 }

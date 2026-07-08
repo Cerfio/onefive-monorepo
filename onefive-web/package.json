@@ -100,7 +100,6 @@
     "react-stately": "^3.45.0",
     "recharts": "^2.15.4",
     "shiki": "^3.22.0",
-    "socket.io-client": "^4.8.3",
     "sonner": "^1.7.4",
     "styled-components": "6.1.0",
     "styled-jsx": "5.1.2",

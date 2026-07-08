@@ -1,8 +1,8 @@
 /**
- * Messaging cascades — REST to WebSocket bridge + DB state.
+ * Messaging cascades — REST to SSE bridge + DB state.
  *
  * Le test n'ouvre pas de vrai client Socket.io : on spie les méthodes
- * notifyXxx du gateway (installMocks) et on assert qu'elles sont appelées
+ * notifyXxx du hub SSE (installMocks) et on assert qu'elles sont appelées
  * avec le bon profileId (et PAS le userId — vérif explicite du fix af852f7).
  */
 import { INestApplication } from '@nestjs/common';
@@ -56,7 +56,7 @@ describe('Messaging cascades — send / edit / delete / react / read', () => {
 
   beforeEach(() => resetMocks(mocks));
 
-  it('sendMessage: persists message, notifies gateway with profileId (not userId), excludes sender', async () => {
+  it('sendMessage: persists message, notifies SSE hub with profileId (not userId), excludes sender', async () => {
     if (!mocks.wsNewMessage) {
       // MessagingModule disabled — skip (should not happen after app.module fix)
       return;
@@ -77,7 +77,7 @@ describe('Messaging cascades — send / edit / delete / react / read', () => {
     expect(msgs).toHaveLength(1);
     expect(msgs[0].content).toBe('hello bob');
 
-    // Gateway called with (conversationId, message, excludeProfileId=alice.profileId)
+    // SSE hub called with (conversationId, message, excludeProfileId=alice.profileId)
     expect(mocks.wsNewMessage).toHaveBeenCalledTimes(1);
     const [convIdArg, messageArg, excludeArg] = mocks.wsNewMessage.mock.calls[0];
     expect(convIdArg).toBe(conversationId);
@@ -88,7 +88,7 @@ describe('Messaging cascades — send / edit / delete / react / read', () => {
     expect(posthogEventsFor(mocks, 'message_sent')).toHaveLength(1);
   });
 
-  it('markAsRead: notifies gateway with reader profileId (not userId)', async () => {
+  it('markAsRead: notifies SSE hub with reader profileId (not userId)', async () => {
     if (!mocks.wsMessageRead) return;
 
     // Alice sends, then Bob reads
@@ -115,7 +115,7 @@ describe('Messaging cascades — send / edit / delete / react / read', () => {
     expect(readerArg).not.toBe(bob.userId);
   });
 
-  it('editMessage: notifies gateway message:edited', async () => {
+  it('editMessage: notifies SSE hub message:edited', async () => {
     if (!mocks.wsMessageEdited) return;
 
     const sendRes = await request(app.getHttpServer())
@@ -137,7 +137,7 @@ describe('Messaging cascades — send / edit / delete / react / read', () => {
     expect(mocks.wsMessageEdited.mock.calls[0][0]).toBe(conversationId);
   });
 
-  it('deleteMessage: notifies gateway message:deleted', async () => {
+  it('deleteMessage: notifies SSE hub message:deleted', async () => {
     if (!mocks.wsMessageDeleted) return;
 
     const sendRes = await request(app.getHttpServer())
@@ -159,7 +159,7 @@ describe('Messaging cascades — send / edit / delete / react / read', () => {
     expect(mocks.wsMessageDeleted.mock.calls[0][1]).toBe(messageId);
   });
 
-  it('createReaction: notifies gateway reaction:added with reactor profileId', async () => {
+  it('createReaction: notifies SSE hub reaction:added with reactor profileId', async () => {
     if (!mocks.wsReactionAdded) return;
 
     const sendRes = await request(app.getHttpServer())

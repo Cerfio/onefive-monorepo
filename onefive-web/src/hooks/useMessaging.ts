@@ -221,7 +221,7 @@ export const useCreateConversation = () => {
  * 2. REST API envoie au backend
  * 3. Si succès: message confirmé, status 'SENT'
  * 4. Si erreur: rollback, message disparaît, toast d'erreur
- * 5. Le backend notifie les autres participants via WebSocket
+ * 5. Le backend notifie les autres participants via SSE
  */
 export const useSendMessage = () => {
   const queryClient = useQueryClient();

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MessagingController } from './messaging.controller';
 import { MessagingService } from './messaging.service';
-import { MessagingGateway } from './messaging.gateway';
+import { MessagingEventsService } from './messaging.events.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { LoggerProvider } from '../common/logger/logger.provider';
 import { SessionsModule } from '../sessions/sessions.module';
@@ -24,7 +24,7 @@ import { DeleteReactionHandler } from './handlers/delete-reaction.handler';
   providers: [
     LoggerProvider,
     MessagingService,
-    MessagingGateway,
+    MessagingEventsService,
     ListConversationsHandler,
     GetConversationMessagesHandler,
     CreateConversationHandler,
@@ -35,6 +35,6 @@ import { DeleteReactionHandler } from './handlers/delete-reaction.handler';
     CreateReactionHandler,
     DeleteReactionHandler,
   ],
-  exports: [MessagingService, MessagingGateway],
+  exports: [MessagingService, MessagingEventsService],
 })
 export class MessagingModule {}

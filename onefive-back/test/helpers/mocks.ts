@@ -15,7 +15,7 @@ import { ApifyService } from '../../src/linkedin-sync/apify.service';
 import { DiscordWebhookService } from '../../src/discord/discord-webhook.service';
 import { PostHogService } from '../../src/posthog/posthog.service';
 import { LinkedinService } from '../../src/linkedin/linkedin.service';
-import { MessagingGateway } from '../../src/messaging/messaging.gateway';
+import { MessagingEventsService } from '../../src/messaging/messaging.events.service';
 import { StorageService } from '../../src/storage/storage.service';
 import { GoogleService } from '../../src/google/google.service';
 import { OAuthStateService } from '../../src/auth/oauth-state/oauth-state.service';
@@ -98,8 +98,8 @@ export function installMocks(app: INestApplication): ExternalCallMocks {
     // Service not registered in this test context — skip.
   }
 
-  // Messaging gateway WS emissions — spy without replacing so participant
-  // tracking inside the gateway still works. Tests assert on .mock.calls.
+  // Messaging SSE emissions — spy without replacing so member resolution inside
+  // the events service still works. Tests assert on .mock.calls.
   let wsNewMessage: jest.SpyInstance | undefined;
   let wsMessageRead: jest.SpyInstance | undefined;
   let wsMessageEdited: jest.SpyInstance | undefined;
@@ -107,14 +107,14 @@ export function installMocks(app: INestApplication): ExternalCallMocks {
   let wsReactionAdded: jest.SpyInstance | undefined;
   let wsReactionRemoved: jest.SpyInstance | undefined;
   try {
-    const gateway = app.get(MessagingGateway, { strict: false });
-    if (gateway) {
-      wsNewMessage = jest.spyOn(gateway, 'notifyNewMessage').mockResolvedValue(undefined);
-      wsMessageRead = jest.spyOn(gateway, 'notifyMessageRead').mockResolvedValue(undefined);
-      wsMessageEdited = jest.spyOn(gateway, 'notifyMessageEdited').mockResolvedValue(undefined);
-      wsMessageDeleted = jest.spyOn(gateway, 'notifyMessageDeleted').mockResolvedValue(undefined);
-      wsReactionAdded = jest.spyOn(gateway, 'notifyReactionAdded').mockResolvedValue(undefined);
-      wsReactionRemoved = jest.spyOn(gateway, 'notifyReactionRemoved').mockResolvedValue(undefined);
+    const events = app.get(MessagingEventsService, { strict: false });
+    if (events) {
+      wsNewMessage = jest.spyOn(events, 'notifyNewMessage').mockResolvedValue(undefined);
+      wsMessageRead = jest.spyOn(events, 'notifyMessageRead').mockResolvedValue(undefined);
+      wsMessageEdited = jest.spyOn(events, 'notifyMessageEdited').mockResolvedValue(undefined);
+      wsMessageDeleted = jest.spyOn(events, 'notifyMessageDeleted').mockResolvedValue(undefined);
+      wsReactionAdded = jest.spyOn(events, 'notifyReactionAdded').mockResolvedValue(undefined);
+      wsReactionRemoved = jest.spyOn(events, 'notifyReactionRemoved').mockResolvedValue(undefined);
     }
   } catch {
     // MessagingModule not registered (e.g. NODE_ENV=test skips it in app.module.ts)

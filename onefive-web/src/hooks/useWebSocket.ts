@@ -1,19 +1,28 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useEffect, useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { api } from '@/utils/kyInstance';
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'http://localhost:50050';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:50050';
+const SSE_URL = `${API_URL}/messaging/events`;
+
+// ==================== TYPES ====================
+// NOTE: les payloads SSE embarquent toujours conversationId pour permettre au
+// client de filtrer (un seul stream global reçoit les events de TOUTES les
+// conversations de l'utilisateur).
 
 export interface WebSocketMessage {
-  id: string;
   conversationId: string;
-  content: string | null;
-  type: string;
-  senderId: string;
-  createdAt: string;
+  message: {
+    id: string;
+    content: string | null;
+    type: string;
+    senderId: string;
+    createdAt: string;
+  };
 }
 
 export interface TypingEvent {
+  conversationId: string;
   profileId: string; // NOTE: Utilise profileId, pas userId
 }
 
@@ -31,138 +40,208 @@ export interface MessageReadEvent {
 }
 
 export interface MessageEditedEvent {
-  id: string;
   conversationId: string;
-  content: string;
-  editedAt: string;
+  message: {
+    id: string;
+    content: string;
+    editedAt: string;
+  };
 }
 
 export interface MessageDeletedEvent {
+  conversationId: string;
   messageId: string;
 }
 
 export interface ReactionEvent {
+  conversationId: string;
   messageId: string;
   emoji: string;
   profileId: string;
 }
 
+// ==================== SHARED SSE CONNECTION ====================
+
 /**
- * Hook pour gérer la connexion WebSocket
- * 
- * ARCHITECTURE (Approche 1 - REST + WS notification):
- * - Messages: Envoi via REST API, réception via WebSocket
- * - Typing: Via WebSocket (éphémère)
- * - Présence: Via WebSocket (seulement si relationship)
- * - Read receipts: Via REST API + notification WebSocket
- * 
- * NOTE: Le profileId est automatiquement extrait du cookie côté serveur
+ * Connexion SSE unique partagée par tous les hooks (refcount).
+ *
+ * Pourquoi un singleton : useWebSocket est appelé à plusieurs endroits
+ * (page messages, useWebSocketMessages, useWebSocketPresence). Sans partage,
+ * chaque appel ouvrirait son propre EventSource → 3 connexions par page et
+ * 3× la présence. Ici, une seule connexion est ouverte tant qu'au moins un
+ * consommateur est monté.
+ *
+ * EventSource gère nativement la reconnexion automatique. Le serveur envoie
+ * des events typés (message:new, typing:start, presence:update…) + un `ping`
+ * de keep-alive qu'on ignore.
+ */
+class SseConnection {
+  private es: EventSource | null = null;
+  private refCount = 0;
+  private connected = false;
+  private readonly listeners = new Map<string, Set<(data: unknown) => void>>();
+  private readonly boundTypes = new Set<string>();
+  private readonly connStateListeners = new Set<(connected: boolean) => void>();
+
+  constructor(private readonly url: string) {}
+
+  acquire() {
+    this.refCount += 1;
+    if (!this.es) this.connect();
+  }
+
+  release() {
+    this.refCount -= 1;
+    if (this.refCount <= 0) {
+      this.refCount = 0;
+      this.disconnect();
+    }
+  }
+
+  private connect() {
+    const es = new EventSource(this.url, { withCredentials: true });
+    this.es = es;
+
+    es.onopen = () => this.setConnected(true);
+    // EventSource se reconnecte tout seul après une erreur réseau.
+    es.onerror = () => this.setConnected(false);
+
+    // Rebrancher les listeners natifs pour chaque type déjà souscrit.
+    this.boundTypes.clear();
+    for (const type of this.listeners.keys()) this.bindType(type);
+  }
+
+  private disconnect() {
+    this.es?.close();
+    this.es = null;
+    this.boundTypes.clear();
+    this.setConnected(false);
+  }
+
+  private bindType(type: string) {
+    if (!this.es || this.boundTypes.has(type)) return;
+    this.boundTypes.add(type);
+    this.es.addEventListener(type, (ev: MessageEvent) => {
+      const set = this.listeners.get(type);
+      if (!set || set.size === 0) return;
+      let data: unknown;
+      try {
+        data = ev.data ? JSON.parse(ev.data) : undefined;
+      } catch {
+        data = ev.data;
+      }
+      set.forEach((cb) => cb(data));
+    });
+  }
+
+  on(type: string, callback: (data: unknown) => void): () => void {
+    let set = this.listeners.get(type);
+    if (!set) {
+      set = new Set();
+      this.listeners.set(type, set);
+    }
+    set.add(callback);
+    this.bindType(type);
+    return () => this.off(type, callback);
+  }
+
+  off(type: string, callback: (data: unknown) => void) {
+    this.listeners.get(type)?.delete(callback);
+  }
+
+  onConnState(callback: (connected: boolean) => void): () => void {
+    this.connStateListeners.add(callback);
+    callback(this.connected);
+    return () => this.connStateListeners.delete(callback);
+  }
+
+  private setConnected(value: boolean) {
+    if (this.connected === value) return;
+    this.connected = value;
+    this.connStateListeners.forEach((cb) => cb(value));
+  }
+}
+
+// Singleton module-level (une connexion pour toute l'app).
+let connection: SseConnection | null = null;
+const getConnection = (): SseConnection => {
+  if (!connection) connection = new SseConnection(SSE_URL);
+  return connection;
+};
+
+// ==================== TYPING (client -> server via REST) ====================
+
+const sendTyping = (conversationId: string, state: 'start' | 'stop') => {
+  // Fire-and-forget : un échec de typing ne doit jamais casser l'UI.
+  void api
+    .post('messaging/typing', { json: { conversationId, state } })
+    .catch(() => {});
+};
+
+// ==================== HOOKS ====================
+
+/**
+ * Hook de connexion temps réel (SSE).
+ *
+ * ARCHITECTURE (REST + SSE):
+ * - Messages: envoi via REST API, réception via SSE
+ * - Typing: POST REST (éphémère)
+ * - Présence: via SSE (online quand le stream est ouvert)
+ * - Read receipts: REST API + notification SSE
+ *
+ * NOTE: le profileId est extrait du cookie côté serveur. Le paramètre profileId
+ * sert juste à conditionner l'ouverture de la connexion (utilisateur connecté).
+ *
+ * joinConversation/leaveConversation sont conservés pour compat mais ne font
+ * plus rien : le routing se fait désormais par membership côté serveur.
  */
 export const useWebSocket = (profileId: string | null) => {
-  const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  // Connexion WebSocket
   useEffect(() => {
     if (!profileId) return;
 
-    // Créer la connexion
-    // NOTE: Le cookie de session est automatiquement envoyé avec withCredentials: true
-    const socket = io(`${WS_URL}/messaging`, {
-      withCredentials: true, // ✅ Envoie automatiquement les cookies
-      transports: ['websocket', 'polling'],
-    });
+    const conn = getConnection();
+    conn.acquire();
+    const unsubscribe = conn.onConnState(setIsConnected);
 
-    socketRef.current = socket;
-
-    // Event: Connexion établie
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
-
-    // Event: Déconnexion
-    socket.on('disconnect', () => {
-      setIsConnected(false);
-    });
-
-    // Event: Erreur de connexion
-    socket.on('connect_error', () => {
-      setIsConnected(false);
-    });
-
-    // Event: Confirmation de présence
-    socket.on('presence:connected', (_data: { profileId: string; status: string }) => {
-    });
-
-    // Heartbeat pour maintenir la connexion active
-    const heartbeatInterval = setInterval(() => {
-      if (socket.connected) {
-        socket.emit('presence:heartbeat');
-      }
-    }, 30000); // Toutes les 30 secondes
-
-    // Cleanup
     return () => {
-      clearInterval(heartbeatInterval);
-      socket.disconnect();
-      socketRef.current = null;
+      unsubscribe();
+      conn.release();
     };
   }, [profileId]);
 
-  // Joindre une conversation (pour recevoir les events de cette conversation)
-  const joinConversation = useCallback((conversationId: string) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('conversation:join', { conversationId });
-    }
+  const joinConversation = useCallback((_conversationId: string) => {
+    // No-op: le serveur route par membership (plus de rooms).
   }, []);
 
-  // Quitter une conversation
-  const leaveConversation = useCallback((conversationId: string) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('conversation:leave', { conversationId });
-    }
+  const leaveConversation = useCallback((_conversationId: string) => {
+    // No-op: voir joinConversation.
   }, []);
 
-  // Typing indicators (via WebSocket car éphémère)
-  // NOTE: Pas besoin d'envoyer le profileId - extrait du cookie côté serveur
   const startTyping = useCallback((conversationId: string) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('typing:start', { conversationId });
-    }
+    sendTyping(conversationId, 'start');
   }, []);
 
   const stopTyping = useCallback((conversationId: string) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('typing:stop', { conversationId });
-    }
+    sendTyping(conversationId, 'stop');
   }, []);
 
-  // Écouter les events
   const on = useCallback(
-    <T = any>(event: string, callback: (data: T) => void) => {
-      if (socketRef.current) {
-        socketRef.current.on(event, callback);
-        return () => {
-          socketRef.current?.off(event, callback);
-        };
-      }
-      return () => {};
+    <T = unknown>(event: string, callback: (data: T) => void) => {
+      return getConnection().on(event, callback as (data: unknown) => void);
     },
     [],
   );
 
-  const off = useCallback((event: string, callback?: (...args: any[]) => void) => {
-    if (socketRef.current) {
-      socketRef.current.off(event, callback);
-    }
+  const off = useCallback((event: string, callback: (data: unknown) => void) => {
+    getConnection().off(event, callback);
   }, []);
 
   return {
-    socket: socketRef.current,
     isConnected,
     joinConversation,
     leaveConversation,
-    // ❌ sendMessage et markAsRead SUPPRIMÉS - utiliser REST API à la place
     startTyping,
     stopTyping,
     on,
@@ -171,63 +250,73 @@ export const useWebSocket = (profileId: string | null) => {
 };
 
 /**
- * Hook pour gérer les événements de messagerie en temps réel
- * 
- * - Écoute les nouveaux messages (envoyés par d'autres via REST, notifiés via WS)
- * - Écoute les read receipts
- * - Écoute les messages édités/supprimés
+ * Hook pour gérer les événements de messagerie en temps réel.
+ *
+ * - Écoute les nouveaux messages, read receipts, édits/suppressions, réactions
  * - Gère le typing indicator
+ *
+ * Filtre sur conversationId : la liste des conversations / unread est toujours
+ * invalidée, mais les messages d'une conversation ne sont rafraîchis que si
+ * l'event concerne bien la conversation ouverte.
  */
-export const useWebSocketMessages = (conversationId: string | null, profileId: string | null) => {
+export const useWebSocketMessages = (
+  conversationId: string | null,
+  profileId: string | null,
+) => {
   const queryClient = useQueryClient();
-  const { on, joinConversation, leaveConversation } = useWebSocket(profileId);
+  const { on } = useWebSocket(profileId);
   const [typingProfiles, setTypingProfiles] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!conversationId) return;
 
-    // Joindre la conversation pour recevoir les événements
-    joinConversation(conversationId);
-
-    // Écouter les nouveaux messages (envoyés par les autres via REST)
-    const unsubscribeNewMessage = on<WebSocketMessage>('message:new', (_message) => {
-      // Invalider les queries pour rafraîchir la liste des messages
+    const invalidateMessages = () =>
       queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+
+    const isForThisConversation = (cid: string | undefined) =>
+      cid === conversationId;
+
+    // Nouveaux messages : rafraîchir la liste des conversations + unread dans
+    // tous les cas, et les messages seulement si c'est la conversation ouverte.
+    const unsubscribeNewMessage = on<WebSocketMessage>('message:new', (data) => {
+      if (isForThisConversation(data?.conversationId)) invalidateMessages();
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
-      // Aussi mettre à jour le compteur de messages non lus
       queryClient.invalidateQueries({ queryKey: ['unreadCount'] });
     });
 
-    // Écouter les messages lus (read receipts)
-    const unsubscribeRead = on<MessageReadEvent>('message:read', () => {
-      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+    const unsubscribeRead = on<MessageReadEvent>('message:read', (data) => {
+      if (isForThisConversation(data?.conversationId)) invalidateMessages();
     });
 
-    // Écouter les messages édités
-    const unsubscribeEdited = on<MessageEditedEvent>('message:edited', () => {
-      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+    const unsubscribeEdited = on<MessageEditedEvent>('message:edited', (data) => {
+      if (isForThisConversation(data?.conversationId)) invalidateMessages();
     });
 
-    // Écouter les messages supprimés
-    const unsubscribeDeleted = on<MessageDeletedEvent>('message:deleted', () => {
-      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+    const unsubscribeDeleted = on<MessageDeletedEvent>(
+      'message:deleted',
+      (data) => {
+        if (isForThisConversation(data?.conversationId)) invalidateMessages();
+      },
+    );
+
+    const unsubscribeReactionAdded = on<ReactionEvent>('reaction:added', (data) => {
+      if (isForThisConversation(data?.conversationId)) invalidateMessages();
     });
 
-    // Écouter les réactions ajoutées
-    const unsubscribeReactionAdded = on<ReactionEvent>('reaction:added', () => {
-      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
-    });
+    const unsubscribeReactionRemoved = on<ReactionEvent>(
+      'reaction:removed',
+      (data) => {
+        if (isForThisConversation(data?.conversationId)) invalidateMessages();
+      },
+    );
 
-    // Écouter les réactions retirées
-    const unsubscribeReactionRemoved = on<ReactionEvent>('reaction:removed', () => {
-      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
-    });
-
-    // Écouter typing start
-    const unsubscribeTypingStart = on<TypingEvent>('typing:start', ({ profileId: typingProfileId }) => {
+    // Typing start (seulement pour la conversation ouverte)
+    const unsubscribeTypingStart = on<TypingEvent>('typing:start', (data) => {
+      if (!isForThisConversation(data?.conversationId)) return;
+      const typingProfileId = data.profileId;
       setTypingProfiles((prev) => new Set(prev).add(typingProfileId));
-      
-      // Auto-stop après 5 secondes si pas de typing:stop reçu
+
+      // Auto-stop après 5s si pas de typing:stop reçu
       setTimeout(() => {
         setTypingProfiles((prev) => {
           const next = new Set(prev);
@@ -237,18 +326,17 @@ export const useWebSocketMessages = (conversationId: string | null, profileId: s
       }, 5000);
     });
 
-    // Écouter typing stop
-    const unsubscribeTypingStop = on<TypingEvent>('typing:stop', ({ profileId: typingProfileId }) => {
+    // Typing stop
+    const unsubscribeTypingStop = on<TypingEvent>('typing:stop', (data) => {
+      if (!isForThisConversation(data?.conversationId)) return;
       setTypingProfiles((prev) => {
         const next = new Set(prev);
-        next.delete(typingProfileId);
+        next.delete(data.profileId);
         return next;
       });
     });
 
-    // Cleanup
     return () => {
-      leaveConversation(conversationId);
       unsubscribeNewMessage();
       unsubscribeRead();
       unsubscribeEdited();
@@ -258,7 +346,7 @@ export const useWebSocketMessages = (conversationId: string | null, profileId: s
       unsubscribeTypingStart();
       unsubscribeTypingStop();
     };
-  }, [conversationId, profileId, on, joinConversation, leaveConversation, queryClient]);
+  }, [conversationId, on, queryClient]);
 
   return {
     isTyping: typingProfiles.size > 0,
@@ -267,17 +355,16 @@ export const useWebSocketMessages = (conversationId: string | null, profileId: s
 };
 
 /**
- * Hook pour gérer la présence utilisateur (online/offline)
- * 
- * NOTE: La présence est uniquement visible pour les profils
- * avec lesquels on a une relationship ACCEPTED
+ * Hook pour gérer la présence utilisateur (online/offline).
+ *
+ * NOTE: La présence est uniquement visible pour les profils avec lesquels on a
+ * une relationship ACCEPTED (filtrage côté serveur).
  */
 export const useWebSocketPresence = (profileId: string | null) => {
   const { on } = useWebSocket(profileId);
   const [onlineProfiles, setOnlineProfiles] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    // Écouter les changements de présence (seulement des contacts en relationship)
     const unsubscribe = on<PresenceEvent>('presence:update', (data) => {
       setOnlineProfiles((prev) => {
         const next = new Set(prev);
@@ -294,9 +381,7 @@ export const useWebSocketPresence = (profileId: string | null) => {
   }, [on]);
 
   const isOnline = useCallback(
-    (checkProfileId: string) => {
-      return onlineProfiles.has(checkProfileId);
-    },
+    (checkProfileId: string) => onlineProfiles.has(checkProfileId),
     [onlineProfiles],
   );
 
