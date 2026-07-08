@@ -162,25 +162,16 @@ export default function ProfileActions({
 
   const handleAddCustomTag = () => {
     if (customTag.trim()) {
-      const _newTag = { id: `custom-${Date.now()}`, label: customTag, icon: '🏷️', color: 'gray' };
-      // Ici on ajouterait le tag personnalisé à la liste
       setCustomTag('');
-      toast.success('Tag personnalisé ajouté');
+      // Pas encore persisté côté serveur : rester honnête plutôt que simuler un succès.
+      toast.info('Les tags personnalisés arrivent bientôt');
     }
   };
 
   const handleCreateReminder = () => {
     if (reminderDate && reminderTime && reminderReason) {
-      const _reminder: ProfileReminder = {
-        id: `reminder-${Date.now()}`,
-        date: reminderDate,
-        time: reminderTime,
-        reason: reminderReason,
-        profileId
-      };
-      
-      // Ici on sauvegarderait le rappel
-      toast.success('Rappel créé avec succès');
+      // Pas encore persisté côté serveur : message honnête plutôt que faux succès.
+      toast.info('Les rappels arrivent bientôt');
       setIsReminderModalOpen(false);
       setReminderDate('');
       setReminderTime('');
@@ -190,15 +181,8 @@ export default function ProfileActions({
 
   const handleSaveNote = () => {
     if (noteContent.trim()) {
-      const _note: ProfileNote = {
-        id: `note-${Date.now()}`,
-        content: noteContent,
-        createdAt: new Date().toISOString(),
-        profileId
-      };
-      
-      // Ici on sauvegarderait la note
-      toast.success('Note sauvegardée');
+      // Pas encore persisté côté serveur : message honnête plutôt que faux succès.
+      toast.info('Les notes arrivent bientôt');
       setIsNoteModalOpen(false);
       setNoteContent('');
     }
