@@ -9,7 +9,7 @@ import { useUpdateNotifications } from '@/features/settings/hooks/useUpdateNotif
 import { useUpdatePrivacy } from '@/features/settings/hooks/useUpdatePrivacy';
 import { useUpdatePreferences } from '@/features/settings/hooks/useUpdatePreferences';
 import { useUpdatePassword } from '@/features/settings/hooks/useUpdatePassword';
-import { useSessions, useRevokeSession } from '@/features/sessions/hooks/useSessions';
+import { useSessions, useRevokeSession, useRevokeSessions } from '@/features/sessions/hooks/useSessions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
@@ -71,6 +71,7 @@ const SettingsPage = () => {
   const { data: user, isLoading } = useUserSettings();
   const { data: sessions, isLoading: sessionsLoading } = useSessions();
   const revokeSessionMutation = useRevokeSession();
+  const revokeAllSessionsMutation = useRevokeSessions();
   const updateNotificationsMutation = useUpdateNotifications();
   const updatePrivacyMutation = useUpdatePrivacy();
   const updatePreferencesMutation = useUpdatePreferences();
@@ -945,9 +946,21 @@ const SettingsPage = () => {
                       <Button
                         color="secondary"
                         size="md"
-                        onClick={() => toast.info('Déconnexion de toutes les sessions à venir')}
+                        isDisabled={revokeAllSessionsMutation.isPending}
+                        onClick={() => {
+                          const others = (sessions?.sessions || [])
+                            .filter((s) => !s.isCurrentSession)
+                            .map((s) => s.id);
+                          if (others.length === 0) {
+                            toast.info('Aucune autre session active');
+                            return;
+                          }
+                          revokeAllSessionsMutation.mutate(others);
+                        }}
                       >
-                        Déconnecter tous les appareils
+                        {revokeAllSessionsMutation.isPending
+                          ? 'Déconnexion...'
+                          : 'Déconnecter tous les appareils'}
                       </Button>
                       <Button color="secondary" size="md" onClick={() => setIsSecurityAuditOpen(true)}>
                         Audit de sécurité
