@@ -11,8 +11,12 @@ export function useLoginMutation(returnUrl: string = '/feed') {
   const router = useRouter();
   const t = useTranslations('auth.login.errors');
   return useMutation({
-    mutationFn: async ({ email, password }: LoginFormType) => {
-      return apiClient.auth.signin(email, password);
+    mutationFn: async ({
+      email,
+      password,
+      twoFactorCode,
+    }: LoginFormType & { twoFactorCode?: string }) => {
+      return apiClient.auth.signin(email, password, twoFactorCode);
     },
     onError: (error: unknown) => {
       // 401: message affiché dans le formulaire (Signin), pas de toast

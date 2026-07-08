@@ -21,6 +21,8 @@ import { SecurityService } from '../common/security/security.service';
 import { ReferralModule } from '../referral/referral.module';
 import { OAuthStateModule } from './oauth-state/oauth-state.module';
 import { PasswordResetModule } from '../password-reset/password-reset.module';
+import { TwoFactorController } from './two-factor/two-factor.controller';
+import { TwoFactorService } from './two-factor/two-factor.service';
 
 @Module({
   imports: [
@@ -35,8 +37,10 @@ import { PasswordResetModule } from '../password-reset/password-reset.module';
     OAuthStateModule,
     PasswordResetModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, TwoFactorController],
   providers: [
+    TwoFactorService,
+    PrismaService,
     AuthService,
     SignupHandler,
     SigninHandler,

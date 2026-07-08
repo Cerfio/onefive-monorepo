@@ -10,6 +10,7 @@ import { useUpdatePrivacy } from '@/features/settings/hooks/useUpdatePrivacy';
 import { useUpdatePreferences } from '@/features/settings/hooks/useUpdatePreferences';
 import { useUpdatePassword } from '@/features/settings/hooks/useUpdatePassword';
 import { useSessions, useRevokeSession, useRevokeSessions } from '@/features/sessions/hooks/useSessions';
+import { TwoFactorSettings } from '@/components/settings/TwoFactorSettings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card/card';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
@@ -778,46 +779,7 @@ const SettingsPage = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 pb-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-gray-900">2FA activée</p>
-                          <p className="text-sm text-gray-500">
-                            {user.security.twoFactorEnabled
-                              ? 'Votre compte est protégé par 2FA'
-                              : 'Ajouter une couche de sécurité supplémentaire'}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              user.security.twoFactorEnabled ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                            }`}
-                          >
-                            {user.security.twoFactorEnabled ? 'Activée' : 'Désactivée'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="pt-4">
-                        {!user.security.twoFactorEnabled ? (
-                          <Button color="secondary" size="sm" onClick={() => toast.info('Configuration 2FA à venir')}>
-                            Configurer 2FA
-                          </Button>
-                        ) : (
-                          <div className="space-y-2">
-                            <Button
-                              color="secondary"
-                              size="sm"
-                              onClick={() => toast.info('Codes de récupération à venir')}
-                            >
-                              Voir les codes de récupération
-                            </Button>
-                            <Button color="primary-destructive" size="md" onClick={() => toast.info('Désactivation 2FA à venir')}>
-                              Désactiver 2FA
-                            </Button>
-                          </div>
-                        )}
-                      </div>
+                      <TwoFactorSettings />
                     </CardContent>
                   </Card>
 

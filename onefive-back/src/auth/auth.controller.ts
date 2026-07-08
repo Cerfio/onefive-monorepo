@@ -128,6 +128,7 @@ export class AuthController {
       transactionId: req.id,
       email: signinInput.email,
       password: signinInput.password,
+      twoFactorCode: signinInput.twoFactorCode,
       ip: ip as string,
       userAgent: userAgent as string,
     });

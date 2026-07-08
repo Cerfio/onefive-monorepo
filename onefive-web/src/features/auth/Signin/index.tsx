@@ -1,5 +1,5 @@
 'use client';
-import { startTransition, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Input } from '@/components/base/input/input';
 import { Separator } from '@/components/base/separator/separator';
 import Image from 'next/image';
@@ -78,11 +78,33 @@ const Signin = ({ returnUrl = '/feed' }: SigninProps) => {
     }
   }, []);
 
+  const [requires2FA, setRequires2FA] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+
   const onSubmit = async (data: LoginFormType) => {
     posthog.capture('login_submitted', { auth_type: 'email' });
-    startTransition(() => {
-      login(data);
-    });
+    try {
+      await login({
+        ...data,
+        twoFactorCode: requires2FA ? twoFactorCode : undefined,
+      });
+    } catch (e: unknown) {
+      // Le backend renvoie TWO_FACTOR_REQUIRED / TWO_FACTOR_INVALID en 401
+      // quand un compte a activé la 2FA. On affiche alors le champ code.
+      try {
+        const body =
+          e && typeof e === 'object' && 'response' in e
+            ? await (e as any).response.json()
+            : null;
+        const msg = body?.error?.message || body?.message;
+        if (msg === 'TWO_FACTOR_REQUIRED' || msg === 'TWO_FACTOR_INVALID') {
+          setRequires2FA(true);
+          if (msg === 'TWO_FACTOR_INVALID') toast.error('Code invalide, réessayez');
+        }
+      } catch {
+        /* autres erreurs gérées par le hook */
+      }
+    }
   };
 
   return (
@@ -142,6 +164,26 @@ const Signin = ({ returnUrl = '/feed' }: SigninProps) => {
             )}
           />
         </motion.div>
+
+        {requires2FA && (
+          <motion.div className="mt-5 w-full" variants={cardVariants}>
+            <label htmlFor="twoFactorCode" className="mb-1.5 block text-sm font-medium text-gray-900">
+              Code d&apos;authentification
+            </label>
+            <input
+              id="twoFactorCode"
+              value={twoFactorCode}
+              onChange={(e) => setTwoFactorCode(e.target.value.replace(/[^0-9A-Za-z]/g, '').slice(0, 8))}
+              placeholder="Code à 6 chiffres ou code de secours"
+              inputMode="numeric"
+              autoFocus
+              className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Saisissez le code de votre app d&apos;authentification.
+            </p>
+          </motion.div>
+        )}
 
         <motion.div className="flex flex-col gap-[6px] mt-6 w-full" variants={cardVariants}>
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

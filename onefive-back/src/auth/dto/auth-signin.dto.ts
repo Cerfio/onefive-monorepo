@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsOptional } from 'class-validator';
 import { VALIDATION_LIMITS } from '../../common/constants/validation-limits.constants';
 
 export class AuthSigninDto {
@@ -10,4 +10,8 @@ export class AuthSigninDto {
     message: 'Le mot de passe ne peut pas être vide',
   })
   password: string;
+
+  @IsOptional()
+  @IsString()
+  twoFactorCode?: string;
 }

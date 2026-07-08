@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { LogService } from 'logstash-winston-3';
 import {
@@ -10,6 +10,7 @@ import { UsersService } from 'src/users/users.service';
 import { SessionsService } from 'src/sessions/sessions.service';
 import { SecurityService } from 'src/common/security/security.service';
 import { PostHogService } from 'src/posthog/posthog.service';
+import { TwoFactorService } from '../two-factor/two-factor.service';
 
 @Injectable()
 export class SigninHandler {
@@ -19,6 +20,7 @@ export class SigninHandler {
     private readonly securityService: SecurityService,
     @Inject('Logger') private readonly logger: LogService,
     private readonly posthogService: PostHogService,
+    private readonly twoFactorService: TwoFactorService,
   ) {}
 
   @Log()
@@ -28,12 +30,14 @@ export class SigninHandler {
     password,
     ip,
     userAgent,
+    twoFactorCode,
   }: {
     transactionId: string;
     email: string;
     password: string;
     ip?: string;
     userAgent?: string;
+    twoFactorCode?: string;
   }): Promise<{ sessionId: string }> {
     const authentication = await this.usersService.findByEmailWithPassword({
       transactionId,
@@ -103,6 +107,22 @@ export class SigninHandler {
         });
       }
       AuthenticationBadPasswordException.throw(this.logger, { transactionId });
+    }
+
+    // ✅ 2FA (opt-in) : n'affecte QUE les comptes ayant activé la 2FA. Le code
+    // (TOTP ou backup) est fourni dans la même requête ; le front redemande le
+    // mot de passe + code si "TWO_FACTOR_REQUIRED" est renvoyé.
+    if (await this.twoFactorService.isEnabled(authentication.id)) {
+      if (!twoFactorCode) {
+        throw new UnauthorizedException('TWO_FACTOR_REQUIRED');
+      }
+      const valid = await this.twoFactorService.verifyLoginCode(
+        authentication.id,
+        twoFactorCode,
+      );
+      if (!valid) {
+        throw new UnauthorizedException('TWO_FACTOR_INVALID');
+      }
     }
 
     // ✅ Log connexion réussie

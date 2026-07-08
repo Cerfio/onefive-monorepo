@@ -4,9 +4,9 @@ import { LoginResponseSchema, SignupResponseSchema } from '@/lib/definitions/aut
 export class AuthApi {
   constructor(private readonly api: KyInstance) {}
 
-  async signin(email: string, password: string) {
+  async signin(email: string, password: string, twoFactorCode?: string) {
     const response = await this.api.post('auth/signin', {
-      json: { email, password },
+      json: { email, password, ...(twoFactorCode ? { twoFactorCode } : {}) },
     });
     const payload = await response.json();
     const parsedPayload = LoginResponseSchema.parse(payload);
