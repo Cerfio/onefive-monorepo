@@ -60,11 +60,13 @@ export async function generateMetadata({
   return {
     title: pageTitle,
     description: contentPreview,
+    // Canonical: /post/[id] is the primary URL for a post (richer SEO / JSON-LD).
+    alternates: { canonical: `${baseUrl}/post/${postId}` },
     openGraph: {
       title: fullTitle,
       description: contentPreview,
       type: 'article',
-      url: `${baseUrl}/feed/${postId}`,
+      url: `${baseUrl}/post/${postId}`,
       siteName: 'Onefive',
       images: [{ url: `${baseUrl}/api/og/post/${postId}`, width: 1200, height: 630, alt: fullTitle }],
     },

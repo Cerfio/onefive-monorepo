@@ -63,11 +63,13 @@ export async function generateMetadata({
   return {
     title: pageTitle,
     description,
+    // Canonical: singular /discussion/[id] is the primary URL (matches sitemap + JSON-LD).
+    alternates: { canonical: `${baseUrl}/discussion/${id}` },
     openGraph: {
       title: fullTitle,
       description,
       type: 'article',
-      url: `${baseUrl}/discussions/${id}`,
+      url: `${baseUrl}/discussion/${id}`,
       siteName: 'Onefive',
       images: [{ url: `${baseUrl}/api/og/discussion/${id}`, width: 1200, height: 630, alt: pageTitle }],
     },

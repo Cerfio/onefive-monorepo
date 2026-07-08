@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getCookie } from 'cookies-next';
 import dynamic from 'next/dynamic';
 import { SignupWallModal } from '@/components/seo/SignupWallModal';
+import { FeedFilterProvider } from '@/contexts/FeedFilterContext';
 
 const PostDetailFull = dynamic(
   () => import('./PostFullView').then((mod) => mod.PostFullView),
@@ -29,7 +30,11 @@ export function PostAuthSwitch({
   if (isAuth === null) return <>{children}</>;
 
   if (isAuth) {
-    return <PostDetailFull postId={postId} />;
+    return (
+      <FeedFilterProvider>
+        <PostDetailFull postId={postId} />
+      </FeedFilterProvider>
+    );
   }
 
   return (

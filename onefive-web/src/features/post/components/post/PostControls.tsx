@@ -263,7 +263,7 @@ const PostControls: React.FC<PostControlsProps> = ({
               
               {/* Share Action */}
               <Dropdown.Item icon={Share} onAction={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/feed/${postId}`);
+                navigator.clipboard.writeText(`${window.location.origin}/post/${postId}`);
                 // Vous pouvez ajouter un toast ici
               }}>
                 Copy link to post
