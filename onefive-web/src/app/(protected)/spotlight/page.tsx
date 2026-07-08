@@ -6,7 +6,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { LoadScript } from '@react-google-maps/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Share2, Filter, Loader2, Bookmark, Map, List } from 'lucide-react';
+import { Search, MapPin, Share2, Filter, Loader2, Bookmark, Map, List, X } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
@@ -706,6 +706,34 @@ const Spotlight = () => {
                   {filteredData.length} résultat{filteredData.length > 1 ? 's' : ''} trouvé{filteredData.length > 1 ? 's' : ''}
                   {spotsOnMap < filteredData.length && ` · ${spotsOnMap} sur la carte`}
                 </motion.p>
+              )}
+              {hasActiveFilters && (
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  {([
+                    dateFilter !== 'all' && { key: 'date', label: `Date : ${dateFilter}`, clear: () => setDateFilter('all') },
+                    pricingFilter !== 'all' && { key: 'pricing', label: `Prix : ${pricingFilter}`, clear: () => setPricingFilter('all') },
+                    typeFilter !== 'all' && { key: 'type', label: `Type : ${typeFilter}`, clear: () => setTypeFilter('all') },
+                    sectorFilter !== 'all' && { key: 'sector', label: `Secteur : ${sectorFilter}`, clear: () => setSectorFilter('all') },
+                    distanceFilter !== '25' && { key: 'distance', label: `${distanceFilter} km`, clear: () => setDistanceFilter('25') },
+                    sortBy !== 'recent' && { key: 'sort', label: `Tri : ${sortBy}`, clear: () => setSortBy('recent') },
+                  ].filter(Boolean) as { key: string; label: string; clear: () => void }[]).map((chip) => (
+                    <button
+                      key={chip.key}
+                      onClick={chip.clear}
+                      className="inline-flex items-center gap-1 rounded-full bg-[#EDEEFB] px-2.5 py-1 text-xs font-medium text-[#4149A8] transition-colors hover:bg-[#e0e2f8]"
+                      aria-label={`Retirer le filtre ${chip.label}`}
+                    >
+                      {chip.label}
+                      <X className="h-3 w-3" />
+                    </button>
+                  ))}
+                  <button
+                    onClick={clearFilters}
+                    className="text-xs text-[#667085] underline transition-colors hover:text-[#475467]"
+                  >
+                    Tout effacer
+                  </button>
+                </div>
               )}
             </div>
             <motion.div 
