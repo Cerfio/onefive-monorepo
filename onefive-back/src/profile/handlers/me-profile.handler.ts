@@ -26,6 +26,7 @@ type MeProfileHandlerResponse = {
   createdAt: Date;
   ecosystemRoles: string[];
   skills: string[];
+  intentions: string[];
   interests: string[];
   stats: {
     posts: number;
@@ -110,6 +111,7 @@ export class MeProfileHandler {
         },
         ecosystemRoles: true,
         skills: true,
+        intentions: true,
         tagFollowing: {
           select: {
             name: true,
@@ -240,6 +242,7 @@ export class MeProfileHandler {
       createdAt: profile.createdAt,
       ecosystemRoles: profile.ecosystemRoles ?? [],
       skills: profile.skills ?? [],
+      intentions: profile.intentions ?? [],
       interests: profile.tagFollowing?.map((tag) => tag.name) ?? [],
       stats: {
         posts: profile._count?.posts ?? 0,

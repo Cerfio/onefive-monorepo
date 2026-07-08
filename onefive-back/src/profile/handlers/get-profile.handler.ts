@@ -58,6 +58,7 @@ export class GetProfileHandler {
         },
         bio: true,
         skills: true,
+        intentions: true,
         city: true,
         countryCode: true,
         ecosystemRoles: true,
@@ -197,6 +198,7 @@ export class GetProfileHandler {
       countryCode: profile.countryCode,
       createdAt: profile.createdAt,
       ecosystemRoles: profile.ecosystemRoles ?? [],
+      intentions: profile.intentions ?? [],
       genderSalutationPreferenceType: profile.genderSalutationPreferenceType,
       stats: {
         posts: profile._count?.posts ?? 0,

@@ -53,8 +53,18 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 // Modal pour modifier l'en-tête du profil
+const INTENTION_OPTIONS: { value: string; label: string }[] = [
+  { value: 'RAISING', label: 'Je lève' },
+  { value: 'INVESTING', label: "J'investis" },
+  { value: 'HIRING', label: 'Je recrute' },
+  { value: 'JOB_SEEKING', label: 'Je cherche un poste' },
+  { value: 'COFOUNDER', label: 'Je cherche un associé' },
+  { value: 'MENTORING', label: 'Je mentore' },
+];
+
 const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSave }: { open: boolean, onOpenChange: (isOpen: boolean) => void, profileData: any, onSave: (data: any) => void }) => {
   const updateProfileMutation = useUpdateProfile();
+  const [intentions, setIntentions] = useState<string[]>(profileData?.intentions ?? []);
   const uploadAvatarMutation = useUploadAvatar();
   const uploadCoverMutation = useUploadCover();
   
@@ -137,6 +147,7 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
     setPendingCoverFile(null);
     setAvatarPreview(null);
     setCoverPreview(null);
+    setIntentions(profileData?.intentions ?? []);
   }, [profileData, reset, open]);
 
   const onSubmit = async (data: ProfileFormData) => {
@@ -172,6 +183,7 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
           data.mainRole,
           ...(data.secondaryRole && data.secondaryRole !== data.mainRole ? [data.secondaryRole] : []),
         ],
+        intentions,
       });
       onOpenChange(false);
     } catch {
@@ -411,7 +423,38 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
                     <p className="text-sm text-red-500">{errors.mainRole.message}</p>
                   )}
                 </div>
-                
+
+                {/* Intention / disponibilité */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-primary">Intention du moment</h3>
+                  <p className="text-sm text-tertiary">Ce que vous cherchez en ce moment (facultatif).</p>
+                  <div className="flex flex-wrap gap-2">
+                    {INTENTION_OPTIONS.map((opt) => {
+                      const active = intentions.includes(opt.value);
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() =>
+                            setIntentions((prev) =>
+                              prev.includes(opt.value)
+                                ? prev.filter((v) => v !== opt.value)
+                                : [...prev, opt.value],
+                            )
+                          }
+                          className={
+                            active
+                              ? 'rounded-full border border-[#5E6AD2] bg-[#EDEEFB] px-3 py-1.5 text-sm font-medium text-[#4149A8] transition-colors'
+                              : 'rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300'
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Liens sociaux */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">

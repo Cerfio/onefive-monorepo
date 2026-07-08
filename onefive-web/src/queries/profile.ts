@@ -187,6 +187,7 @@ const meProfileSchema = z.object({
   countryCode: z.string(),
   createdAt: z.string(),
   ecosystemRoles: z.array(z.string()).optional().default([]),
+  intentions: z.array(z.string()).optional().default([]),
   isFollowing: z.boolean().optional().default(false),
   stats: z.object({
     posts: z.number(),
@@ -332,6 +333,7 @@ export type UpdateProfileData = {
   countryCode?: string;
   city?: string;
   ecosystemRoles?: string[];
+  intentions?: string[];
 };
 
 // Fonction pour mettre à jour le profil

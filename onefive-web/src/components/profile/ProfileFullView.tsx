@@ -141,6 +141,7 @@ const mapProfileToHeaderData = (profile: MeProfile) => {
       month: 'long'
     }),
     ecosystemRoles: profile.ecosystemRoles,
+    intentions: profile.intentions ?? [],
     badges: [],
     bio: profile.bio ?? '',
   stats: {
@@ -365,6 +366,7 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
     createdAt: new Date().toISOString(),
     isFollowing: false,
     ecosystemRoles: [],
+    intentions: [],
     skills: [],
     interests: [],
     achievements: [],

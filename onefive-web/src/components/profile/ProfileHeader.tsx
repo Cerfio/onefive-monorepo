@@ -24,6 +24,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Flag } from '@/components/ui/flag';
 import { getProfileRoleLabel, PROFILE_ROLE_METADATA, ProfileRole, getGenderedShortLabel, type GenderPreference } from '@/sharing-enum/profile';
 
+const INTENTION_LABELS: Record<string, string> = {
+  RAISING: 'Je lève',
+  INVESTING: "J'investis",
+  HIRING: 'Je recrute',
+  JOB_SEEKING: 'Je cherche un poste',
+  COFOUNDER: 'Je cherche un associé',
+  MENTORING: 'Je mentore',
+};
+
 // Fonction pour obtenir les couleurs des badges de rôles depuis la configuration
 const getRoleBadgeColors = (roleValue: string) => {
   // Chercher d'abord dans les métadonnées
@@ -260,6 +269,19 @@ export const ProfileHeader = ({
                             ? getGenderedShortLabel(role as ProfileRole, profileData.genderSalutationPreferenceType as GenderPreference)
                             : getProfileRoleLabel(role)}
                         </Badge>
+                      ))}
+                    </div>
+                  )}
+                  {profileData.intentions && profileData.intentions.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {profileData.intentions.map((intention: string) => (
+                        <span
+                          key={intention}
+                          className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                          {INTENTION_LABELS[intention] ?? intention}
+                        </span>
                       ))}
                     </div>
                   )}

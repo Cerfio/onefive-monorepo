@@ -42,6 +42,7 @@ export class UpdateProfileHandler {
     countryCode,
     city,
     ecosystemRoles,
+    intentions,
   }: UpdateProfileHandlerParams): Promise<UpdateProfileHandlerResponse> {
     // Debug log pour voir les données reçues
     this.logger.info('UpdateProfileHandler data received', {
@@ -103,6 +104,9 @@ export class UpdateProfileHandler {
     // Gérer les rôles écosystème si fournis (1 à 2 rôles)
     if (ecosystemRoles !== undefined) {
       updateData.ecosystemRoles = ecosystemRoles as ProfileRole[];
+    }
+    if (intentions !== undefined) {
+      updateData.intentions = intentions;
     }
 
     // Gérer les liens sociaux si fournis

@@ -113,6 +113,14 @@ export class UpdateProfileDto {
   @ArrayMaxSize(2, { message: "Maximum 2 rôles dans l'écosystème" })
   @IsEnum(ProfileRole, { each: true })
   ecosystemRoles?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(40, { each: true })
+  @ArrayMaxSize(6)
+  @SanitizeArray()
+  intentions?: string[];
 }
 
 export class UpdateSkillsInterestsDto {
