@@ -28,6 +28,7 @@ import { Clock, CheckCircle, Trash01 } from '@untitledui/icons';
 import { useMeProfile } from '@/queries/profile';
 import { CancelConnectionModal } from '@/components/modals/CancelConnectionModal';
 import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
+import { addCrmNote, addCrmReminder } from '@/queries/crm';
 
 // Types pour la gestion relationnelle
 interface ProfileTag {
@@ -168,23 +169,35 @@ export default function ProfileActions({
     }
   };
 
-  const handleCreateReminder = () => {
+  const handleCreateReminder = async () => {
     if (reminderDate && reminderTime && reminderReason) {
-      // Pas encore persisté côté serveur : message honnête plutôt que faux succès.
-      toast.info('Les rappels arrivent bientôt');
-      setIsReminderModalOpen(false);
-      setReminderDate('');
-      setReminderTime('');
-      setReminderReason('');
+      try {
+        await addCrmReminder(
+          profileId,
+          reminderReason,
+          new Date(`${reminderDate}T${reminderTime}`).toISOString(),
+        );
+        toast.success('Rappel créé');
+        setIsReminderModalOpen(false);
+        setReminderDate('');
+        setReminderTime('');
+        setReminderReason('');
+      } catch {
+        toast.error('Erreur lors de la création du rappel');
+      }
     }
   };
 
-  const handleSaveNote = () => {
+  const handleSaveNote = async () => {
     if (noteContent.trim()) {
-      // Pas encore persisté côté serveur : message honnête plutôt que faux succès.
-      toast.info('Les notes arrivent bientôt');
-      setIsNoteModalOpen(false);
-      setNoteContent('');
+      try {
+        await addCrmNote(profileId, noteContent.trim());
+        toast.success('Note enregistrée');
+        setIsNoteModalOpen(false);
+        setNoteContent('');
+      } catch {
+        toast.error("Erreur lors de l'enregistrement de la note");
+      }
     }
   };
 

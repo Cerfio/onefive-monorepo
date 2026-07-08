@@ -61,6 +61,7 @@ import { UserSettingsModule } from './user-settings/user-settings.module';
 import { ProfileFollowModule } from './profile-follow/profile-follow.module';
 import { ProfileConnectionModule } from './profile-connection/profile-connection.module';
 import { MessagingModule } from './messaging/messaging.module';
+import { CrmModule } from './crm/crm.module';
 import { NotificationModule } from './notification/notification.module';
 import { ReferralModule } from './referral/referral.module';
 import { LinkedInSyncModule } from './linkedin-sync/linkedin-sync.module';
@@ -156,6 +157,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     // WebSocket. Cascading tests (notifyNewMessage, read receipts) push into
     // in-memory streams and tolerate the absence of connected SSE clients.
     MessagingModule,
+    CrmModule,
     NotificationModule,
     ReferralModule,
     LinkedInSyncModule,

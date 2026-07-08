@@ -1,0 +1,36 @@
+// CRM relationnel : couche perso par (owner, contact) — pipeline de stades,
+// notes et rappels persistés. Découplé du modèle Relationship (social graph).
+
+model ContactCrm {
+  ownerProfileId   String
+  contactProfileId String
+  stage            String   @default("NEW")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@id([ownerProfileId, contactProfileId])
+  @@index([ownerProfileId, stage])
+}
+
+model ContactNote {
+  id               String   @id @default(uuid())
+  ownerProfileId   String
+  contactProfileId String
+  content          String
+  createdAt        DateTime @default(now())
+
+  @@index([ownerProfileId, contactProfileId])
+}
+
+model ContactReminder {
+  id               String   @id @default(uuid())
+  ownerProfileId   String
+  contactProfileId String
+  reason           String
+  dueAt            DateTime
+  done             Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  @@index([ownerProfileId, done, dueAt])
+  @@index([ownerProfileId, contactProfileId])
+}
