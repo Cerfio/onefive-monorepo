@@ -133,6 +133,8 @@ model Startup {
   id             String                  @id @default(uuid())
   name           String
   categories     String[]
+  technologies   String[]
+  achievements   Json?
   description    String?
   countryCode    String
   city           String

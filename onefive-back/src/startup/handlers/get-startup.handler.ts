@@ -57,6 +57,8 @@ export class GetStartupHandler {
         linkedin: true,
         foundedDate: true,
         categories: true,
+        technologies: true,
+        achievements: true,
         countryCode: true,
         city: true,
         createdAt: true,
@@ -153,6 +155,16 @@ export class GetStartupHandler {
         })),
     );
 
+    // Nombre de posts de la startup = posts publiés par ses membres (Post n'a
+    // pas de startupId ; on agrège via les profils membres).
+    const memberProfileIds = startup.members.map((m) => m.profile.id);
+    const postsCount =
+      memberProfileIds.length > 0
+        ? await this.prisma.post.count({
+            where: { profileId: { in: memberProfileIds }, isHidden: false },
+          })
+        : 0;
+
     // Construire la réponse
     const result: any = {
       id: startup.id,
@@ -167,6 +179,10 @@ export class GetStartupHandler {
         ? startup.foundedDate.toISOString()
         : null,
       categories: startup.categories || [],
+      technologies: startup.technologies || [],
+      achievements: Array.isArray(startup.achievements)
+        ? startup.achievements
+        : [],
       countryCode: startup.countryCode,
       city: startup.city,
       location: `${startup.city}, ${startup.countryCode}`,
@@ -176,6 +192,7 @@ export class GetStartupHandler {
       stats: {
         followers: startup._count.followedBy,
         members: startup.members.length,
+        posts: postsCount,
       },
       isMember,
       canEdit,

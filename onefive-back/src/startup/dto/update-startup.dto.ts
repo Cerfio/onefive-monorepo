@@ -76,6 +76,26 @@ export class UpdateStartupDto {
   categories?: string[];
 
   @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(30)
+  @IsString({ each: true })
+  @MaxLength(60, { each: true })
+  @SanitizeArray()
+  technologies?: string[];
+
+  // Liste complète des réalisations (remplacement total à chaque save). Validée
+  // souplement puis normalisée dans le handler (indépendant du transform du pipe).
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(50)
+  achievements?: Array<{
+    id?: string;
+    title?: string;
+    description?: string;
+    date?: string;
+  }>;
+
+  @IsOptional()
   @IsString()
   @MaxLength(VALIDATION_LIMITS.STARTUP.LOGO_MAX)
   logo?: string;

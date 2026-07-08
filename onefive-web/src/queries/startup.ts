@@ -152,6 +152,14 @@ export interface StartupStats {
   followers: number;
   members: number;
   views?: number;
+  posts?: number;
+}
+
+export interface StartupAchievement {
+  id: string;
+  title: string;
+  description: string;
+  date?: string | null;
 }
 
 export interface Startup {
@@ -165,6 +173,8 @@ export interface Startup {
   linkedin: string | null;
   foundedDate: string | null;
   categories: string[];
+  technologies: string[];
+  achievements: StartupAchievement[];
   countryCode: string;
   city: string;
   location: string;
@@ -255,10 +265,23 @@ const getStartupSchema = z.object({
       position: z.string(),
       role: z.string().optional(),
     })),
+    technologies: z.array(z.string()).optional().default([]),
+    achievements: z
+      .array(
+        z.object({
+          id: z.string(),
+          title: z.string(),
+          description: z.string(),
+          date: z.string().nullable().optional(),
+        }),
+      )
+      .optional()
+      .default([]),
     stats: z.object({
       followers: z.number(),
       members: z.number(),
       views: z.number().optional(),
+      posts: z.number().optional(),
     }),
     isMember: z.boolean(),
     canEdit: z.boolean(),
@@ -646,6 +669,8 @@ export const updateStartup = async (
     countryCode?: string;
     city?: string;
     categories?: string[];
+    technologies?: string[];
+    achievements?: { id?: string; title: string; description: string; date?: string | null }[];
     logo?: string;
     coverImage?: string;
   }

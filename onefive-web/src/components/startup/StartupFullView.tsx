@@ -90,8 +90,8 @@ export function StartupFullView({ startupId }: { startupId: string }) {
     stats: {
       followers: startup.stats.followers,
       views: startup.stats.views || 0,
-      posts: 0, // TODO: Ajouter ce champ dans le backend
-      mentions: 0 // TODO: Ajouter ce champ dans le backend
+      posts: startup.stats.posts || 0,
+      mentions: 0 // Pas de système de mentions pour l'instant
     },
     founders: startup.founders.map((founder: any) => ({
       id: founder.id,
@@ -111,8 +111,8 @@ export function StartupFullView({ startupId }: { startupId: string }) {
       position: member.position,
       role: member.role,
     })),
-    technologies: [], // TODO: Ajouter ce champ dans le backend
-    achievements: [], // TODO: Ajouter ce champ dans le backend
+    technologies: startup.technologies || [],
+    achievements: startup.achievements || [],
     socialLinks: [
       ...(startup.website ? [{ id: '1', platform: 'Website', url: startup.website, icon: 'globe' }] : []),
       ...(startup.linkedin ? [{ id: '2', platform: 'LinkedIn', url: startup.linkedin, icon: 'linkedin' }] : [])
@@ -137,6 +137,7 @@ export function StartupFullView({ startupId }: { startupId: string }) {
     countryCode: string;
     city: string;
     sectors: string[];
+    technologies: string[];
   }) => {
     await updateStartupMutation.mutateAsync({
       startupId,
@@ -150,6 +151,7 @@ export function StartupFullView({ startupId }: { startupId: string }) {
         city: data.city,
         countryCode: data.countryCode,
         categories: data.sectors,
+        technologies: data.technologies,
       },
     });
   };
@@ -265,8 +267,8 @@ export function StartupFullView({ startupId }: { startupId: string }) {
                   />
                   <AchievementsCard
                     achievements={startupData.achievements}
-                    currentUser={false}
-                    onEdit={() => {}}
+                    currentUser={startup?.canEdit || false}
+                    onEdit={() => setIsEditAchievementsModalOpen(true)}
                   />
                 </div>
               </motion.div>
@@ -289,15 +291,25 @@ export function StartupFullView({ startupId }: { startupId: string }) {
             countryCode: startupData.countryCode || '',
             city: startupData.city || '',
             sectors: startupData.sectors,
+            technologies: startupData.technologies,
           }}
           onSave={handleUpdateHeader}
         />
         <EditAchievementsModal
           open={isEditAchievementsModalOpen}
           onOpenChange={setIsEditAchievementsModalOpen}
-          achievements={startupData.achievements}
-          onSave={() => {
-            // TODO: Implémenter la sauvegarde des réalisations quand le backend sera prêt
+          achievements={startupData.achievements.map((a) => ({
+            id: a.id,
+            title: a.title,
+            description: a.description,
+            date: a.date || '',
+          }))}
+          onSave={async (achievements) => {
+            await updateStartupMutation.mutateAsync({
+              startupId,
+              data: { achievements },
+            });
+            setIsEditAchievementsModalOpen(false);
           }}
         />
         <EditFundingHistoryModal

@@ -13,6 +13,7 @@ import { Camera, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUploadStartupLogo, useUploadStartupCover } from '@/queries/startup';
 import { BadgeSelector } from '@/components/startup';
+import { SkillInput } from '@/components/profile/SkillInput';
 import { SECTOR_OPTIONS } from '@/shared/constants/sector-colors';
 import { VALIDATION_LIMITS } from '@/constants/validation-limits';
 
@@ -30,6 +31,7 @@ interface EditStartupHeaderModalProps {
     countryCode: string;
     city: string;
     sectors?: string[];
+    technologies?: string[];
   };
   onSave: (data: {
     name: string;
@@ -41,6 +43,7 @@ interface EditStartupHeaderModalProps {
     countryCode: string;
     city: string;
     sectors: string[];
+    technologies: string[];
   }) => void;
 }
 
@@ -70,6 +73,7 @@ export const EditStartupHeaderModal: React.FC<EditStartupHeaderModalProps> = ({
     countryCode: normalizeCountryCode(startupData.countryCode),
     city: startupData.city,
     sectors: Array.isArray(startupData.sectors) ? startupData.sectors : [],
+    technologies: Array.isArray(startupData.technologies) ? startupData.technologies : [],
   });
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -91,6 +95,7 @@ export const EditStartupHeaderModal: React.FC<EditStartupHeaderModalProps> = ({
       countryCode: normalizeCountryCode(startupData.countryCode),
       city: startupData.city,
       sectors: Array.isArray(startupData.sectors) ? startupData.sectors : [],
+    technologies: Array.isArray(startupData.technologies) ? startupData.technologies : [],
     });
     setLogoPreview(null);
     setCoverPreview(null);
@@ -348,6 +353,15 @@ export const EditStartupHeaderModal: React.FC<EditStartupHeaderModalProps> = ({
                     <p className="text-xs text-tertiary mt-1">
                       {form.sectors.length}/{VALIDATION_LIMITS.STARTUP.CATEGORIES_MAX_COUNT} secteurs sélectionnés
                     </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-2">Technologies</label>
+                    <SkillInput
+                      skills={form.technologies}
+                      onSkillsChange={(technologies) => setForm({ ...form, technologies })}
+                      placeholder="Ex: React, Node.js, PostgreSQL... (Entrée pour ajouter)"
+                    />
                   </div>
                 </div>
               </form>
