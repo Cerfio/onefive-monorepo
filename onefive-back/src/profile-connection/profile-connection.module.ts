@@ -11,6 +11,7 @@ import { DeleteConnectionHandler } from './handlers/delete-connection.handler';
 import { ListConnectionsHandler } from './handlers/list-connections.handler';
 import { ListPendingConnectionsHandler } from './handlers/list-pending-connections.handler';
 import { GetConnectionStatusHandler } from './handlers/get-connection-status.handler';
+import { GetMutualConnectionsHandler } from './handlers/get-mutual-connections.handler';
 
 @Module({
   imports: [PrismaModule, ProfileModule],
@@ -24,6 +25,7 @@ import { GetConnectionStatusHandler } from './handlers/get-connection-status.han
     ListConnectionsHandler,
     ListPendingConnectionsHandler,
     GetConnectionStatusHandler,
+    GetMutualConnectionsHandler,
     LoggerProvider,
   ],
   exports: [ProfileConnectionService],

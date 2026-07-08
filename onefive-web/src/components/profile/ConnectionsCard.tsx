@@ -7,14 +7,19 @@ import { MessageCircle } from 'lucide-react';
 
 export const ConnectionsCard = ({ profileData }: { profileData: any }) => {
     const connections = profileData.connectionsData ?? [];
+    const mutualMode = !!profileData.mutualMode;
+    const title = mutualMode ? 'Connexions en commun' : 'Connexions';
+    const emptyLabel = mutualMode
+        ? 'Aucune connexion en commun.'
+        : 'Aucune connexion pour le moment.';
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Connexions{connections.length > 0 ? ` (${connections.length})` : ''}</CardTitle>
+                <CardTitle>{title}{connections.length > 0 ? ` (${connections.length})` : ''}</CardTitle>
             </CardHeader>
             <CardContent>
                 {connections.length === 0 ? (
-                    <p className="text-sm text-gray-500">Aucune connexion pour le moment.</p>
+                    <p className="text-sm text-gray-500">{emptyLabel}</p>
                 ) : (
                     connections.map((conn: any) => (
                         <div key={conn.id} className="flex gap-3 items-center mb-4">

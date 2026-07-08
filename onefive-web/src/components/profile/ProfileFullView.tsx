@@ -225,6 +225,32 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
     });
   }, [currentUser, myConnections, meProfile?.id]);
 
+  // Connexions communes (mutuals) — uniquement sur le profil d'un autre membre.
+  const { data: mutualConns } = useQuery({
+    queryKey: ['mutual-connections', otherProfile?.id],
+    queryFn: async () => {
+      const res = await api.get(`profiles/${otherProfile!.id}/mutual-connections`);
+      const json = (await res.json()) as {
+        data: { count: number; profiles: Array<{ id: string; name: string; avatar: string | null }> };
+      };
+      return json.data;
+    },
+    enabled: !currentUser && !!otherProfile?.id,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const mutualConnectionsData = useMemo(
+    () =>
+      (mutualConns?.profiles ?? []).map((p) => ({
+        id: p.id,
+        name: p.name || 'Membre',
+        avatar: p.avatar
+          ? `${process.env.NEXT_PUBLIC_API_URL}/file/${p.avatar}`
+          : undefined,
+      })),
+    [mutualConns],
+  );
+
   // Hooks pour le batch update des expériences et des éducations
   const batchUpdateExperiencesMutation = useBatchUpdateExperiences();
   const batchUpdateEducationsMutation = useBatchUpdateEducations();
@@ -483,7 +509,13 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
               </motion.div>
 
               <motion.div variants={cardVariants}>
-                <ConnectionsCard profileData={{ ...profileData, connectionsData }} />
+                <ConnectionsCard
+                  profileData={
+                    currentUser
+                      ? { ...profileData, connectionsData }
+                      : { ...profileData, connectionsData: mutualConnectionsData, mutualMode: true }
+                  }
+                />
               </motion.div>
             </div>
           </div>

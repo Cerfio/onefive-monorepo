@@ -17,6 +17,7 @@ import { DeleteConnectionHandler } from './handlers/delete-connection.handler';
 import { ListConnectionsHandler } from './handlers/list-connections.handler';
 import { ListPendingConnectionsHandler } from './handlers/list-pending-connections.handler';
 import { GetConnectionStatusHandler } from './handlers/get-connection-status.handler';
+import { GetMutualConnectionsHandler } from './handlers/get-mutual-connections.handler';
 import { ApiResponseDto, ApiSuccessResponseDto } from '../common/dto';
 
 @Controller('profiles')
@@ -29,6 +30,7 @@ export class ProfileConnectionController {
     private readonly listConnectionsHandler: ListConnectionsHandler,
     private readonly listPendingConnectionsHandler: ListPendingConnectionsHandler,
     private readonly getConnectionStatusHandler: GetConnectionStatusHandler,
+    private readonly getMutualConnectionsHandler: GetMutualConnectionsHandler,
   ) {}
 
   @Post(':profileId/connect')
@@ -117,5 +119,18 @@ export class ProfileConnectionController {
       profileId,
     });
     return { success: true, data: status };
+  }
+
+  @Get(':profileId/mutual-connections')
+  async getMutual(
+    @Param('profileId') profileId: string,
+    @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
+  ): Promise<ApiResponseDto<unknown>> {
+    const result = await this.getMutualConnectionsHandler.execute({
+      transactionId: req.id,
+      userId: req.userId,
+      otherProfileId: profileId,
+    });
+    return { success: true, data: result };
   }
 }
