@@ -416,6 +416,9 @@ export class PostService {
       const displayReasons = new Map<string, string>();
 
       let tagHasMore: boolean | null = null;
+      // Vrai quand on a dû resservir des posts déjà vus (1re page d'un utilisateur
+      // qui a tout vu) : on force alors la fin du feed pour ne JAMAIS reboucler.
+      let mixRecycledEnd = false;
 
       if (tags && tags.length > 0) {
         const filtered = await this.prisma.post.findMany({
@@ -507,22 +510,35 @@ export class PostService {
           if (!added) break;
         }
 
-        // 4. Fallback si quota non atteint
+        // 4. Fallback si le quota n'est pas atteint : compléter avec les posts
+        //    récents NON VUS. Pas de plafond (ex « 30 plus récents ») afin que le
+        //    feed finisse par surfacer TOUT le backlog au fil des pages, sinon il
+        //    annoncerait « tout vu » alors qu'il reste des posts non vus.
         if (finalMix.length < limit) {
-          const extras = await this.getEmptyFeedFallback(viewerId, limit);
           const currentIds = new Set(finalMix.map((p) => p.id));
+          const extras = await this.prisma.post.findMany({
+            where: {
+              isHidden: false,
+              id: { notIn: [...new Set([...viewedPostIds, ...currentIds])] },
+            },
+            orderBy: { createdAt: 'desc' },
+            take: limit - finalMix.length,
+            select: { id: true, profileId: true, createdAt: true },
+          });
 
           for (const p of extras) {
             if (finalMix.length >= limit) break;
-            if (!currentIds.has(p.id) && !viewedPostIds.includes(p.id)) {
-              (p as any).displayReason = 'recommendation';
-              finalMix.push(p);
-              currentIds.add(p.id);
-            }
+            (p as any).displayReason = 'recommendation';
+            finalMix.push(p);
+            currentIds.add(p.id);
           }
 
-          // 5. Fallback ultime (Feed vide ou tout vu)
-          if (finalMix.length === 0) {
+          // 5. Recyclage UNIQUEMENT sur la 1re page : si l'utilisateur a déjà
+          //    tout vu, on évite un feed vide à l'arrivée en resservant des posts
+          //    récents — MAIS on marque la fin (hasMore=false) pour ne jamais
+          //    reboucler. En pagination (skip>0), on ne resert jamais de posts vus :
+          //    finalMix reste vide → la réponse renvoie [] + hasMore=false (fin propre).
+          if (finalMix.length === 0 && skip === 0) {
             const fallback = await this.getEmptyFeedFallback(viewerId, limit);
             for (const p of fallback) {
               if (finalMix.length >= limit) break;
@@ -532,6 +548,7 @@ export class PostService {
                 currentIds.add(p.id);
               }
             }
+            mixRecycledEnd = true;
           }
         }
 
@@ -540,22 +557,24 @@ export class PostService {
           displayReasons.set(p.id, p.displayReason || 'new_content');
         });
 
-        // 6. Enregistrer les vues (fire-and-forget, idempotent via skipDuplicates)
-        if (postIds.length > 0) {
-          this.prisma.postView
-            .createMany({
+        // 6. Enregistrer les vues AVANT de répondre : la pagination repose sur
+        //    l'exclusion des posts vus, donc la page suivante doit voir ces vues.
+        //    (idempotent via skipDuplicates ; une erreur d'écriture ne casse pas le feed)
+        if (postIds.length > 0 && !mixRecycledEnd) {
+          try {
+            await this.prisma.postView.createMany({
               data: postIds.map((id) => ({
                 postId: id,
                 profileId: viewerId,
               })),
               skipDuplicates: true,
-            })
-            .catch((err) => {
-              this.logger.warn('Failed to record post views', {
-                transactionId,
-                error: err instanceof Error ? err.message : String(err),
-              });
             });
+          } catch (err) {
+            this.logger.warn('Failed to record post views', {
+              transactionId,
+              error: err instanceof Error ? err.message : String(err),
+            });
+          }
         }
       }
 
@@ -775,10 +794,15 @@ export class PostService {
       const resolvedItems = await Promise.all(items);
 
       let hasMore: boolean;
-      if (tagHasMore !== null) {
+      if (mixRecycledEnd) {
+        // On a resservi des posts déjà vus (1re page, tout vu) → fin du feed.
+        hasMore = false;
+      } else if (tagHasMore !== null) {
         hasMore = tagHasMore;
       } else {
-        // Mix feed: probe for remaining unseen posts
+        // Mix feed: il reste des pages s'il existe encore des posts non vus.
+        // Comme on ne sert QUE des posts non vus (et qu'on les enregistre juste
+        // au-dessus), ce compteur décroît à chaque page et tombe à 0 à la fin.
         const allViewedNow = [
           ...(await this.prisma.postView
             .findMany({

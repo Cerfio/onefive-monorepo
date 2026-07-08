@@ -545,7 +545,7 @@ export default function FeedPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useFeed(5, selectedTags);
+  } = useFeed(10, selectedTags);
 
   // Toutes les données du feed aplaties et dédupliquées
   const allPosts = data?.pages.flatMap((page: any) => page.items) ?? [];
@@ -554,13 +554,17 @@ export default function FeedPage() {
     new Map(allPosts.map((post: any) => [post.id, post])).values()
   );
 
+  // Callback mémoïsé : évite que l'effet de useInfiniteScroll se ré-exécute
+  // à chaque render (une fonction inline changerait de référence à chaque fois).
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   // Hook pour le chargement automatique au scroll
   const loadMoreRef = useInfiniteScroll(
-    () => {
-      if (hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
-    },
+    handleLoadMore,
     hasNextPage ?? false,
     isFetchingNextPage ?? false,
     '200px', // Déclenche le chargement 200px avant la fin

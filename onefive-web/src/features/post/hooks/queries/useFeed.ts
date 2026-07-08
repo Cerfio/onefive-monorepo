@@ -17,8 +17,19 @@ export const useFeed = (limit: number = 5, tags?: Tags[]) => {
       const response: any = await getFeed({ skip: pageParam, limit, tags });
       return response.data;
     },
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: (lastPage, allPages) => {
       if (!lastPage.hasMore) return undefined;
+      // Garde-fou : si la dernière page n'apporte aucun post réellement nouveau
+      // (que des doublons déjà en cache), on considère qu'on est au bout. Empêche
+      // toute boucle de requêtes même si le backend renvoyait des pages identiques.
+      const previousIds = new Set<string>();
+      for (let i = 0; i < allPages.length - 1; i++) {
+        for (const post of allPages[i].items) previousIds.add(post.id);
+      }
+      const addsNewPosts = lastPage.items.some(
+        (post) => !previousIds.has(post.id),
+      );
+      if (!addsNewPosts) return undefined;
       return lastPage.page * lastPage.pageSize;
     },
     staleTime: 2 * 60 * 1000,
