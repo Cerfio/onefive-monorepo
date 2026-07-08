@@ -44,6 +44,8 @@ import {
 } from '@/hooks/useMessaging';
 import { useWebSocketMessages, useWebSocket, useWebSocketPresence } from '@/hooks/useWebSocket';
 import { useMe } from '@/hooks/useUser';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/utils/kyInstance';
 
 // ==================== COMPONENTS ====================
 
@@ -211,6 +213,55 @@ const MessagesPage = () => {
 
   // Derived data
   const conversations = conversationsData?.conversations ?? [];
+
+  // Onglets d'inbox : Tous / Non lus / Demandes (conversations avec un membre
+  // hors de mes connexions). Le set des ids connectés vient de mes relations.
+  const [inboxTab, setInboxTab] = useState<'all' | 'unread' | 'requests'>('all');
+
+  const { data: myConnectionRels } = useQuery({
+    queryKey: ['my-connection-ids'],
+    queryFn: async () => {
+      const res = await api.get('profiles/connections');
+      const json = (await res.json()) as {
+        data: Array<{ requesterId: string; accepterId: string }>;
+      };
+      return json.data;
+    },
+    enabled: !!me?.id,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const connectedIdSet = useMemo(() => {
+    const set = new Set<string>();
+    (myConnectionRels ?? []).forEach((r) => {
+      set.add(r.requesterId === me?.id ? r.accepterId : r.requesterId);
+    });
+    return set;
+  }, [myConnectionRels, me?.id]);
+
+  const isRequestConversation = useCallback(
+    (conv: Conversation) => {
+      if (conv.type !== 'DIRECT') return false;
+      const other = conv.participants.find((p) => p.id !== me?.id);
+      return !!other && !connectedIdSet.has(other.id);
+    },
+    [connectedIdSet, me?.id],
+  );
+
+  const unreadTabCount = useMemo(
+    () => conversations.filter((c) => c.unreadCount > 0).length,
+    [conversations],
+  );
+  const requestsTabCount = useMemo(
+    () => conversations.filter(isRequestConversation).length,
+    [conversations, isRequestConversation],
+  );
+
+  const visibleConversations = useMemo(() => {
+    if (inboxTab === 'unread') return conversations.filter((c) => c.unreadCount > 0);
+    if (inboxTab === 'requests') return conversations.filter(isRequestConversation);
+    return conversations;
+  }, [conversations, inboxTab, isRequestConversation]);
   const allMessages = useMemo(() => {
     return messagesData?.pages.flatMap((page: any) => page.messages) ?? [];
   }, [messagesData]);
@@ -668,6 +719,32 @@ const MessagesPage = () => {
               />
             </div>
 
+            <div className="flex items-center gap-1 px-4 pb-3">
+              {([
+                { key: 'all', label: 'Tous', count: conversations.length },
+                { key: 'unread', label: 'Non lus', count: unreadTabCount },
+                { key: 'requests', label: 'Demandes', count: requestsTabCount },
+              ] as const).map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setInboxTab(tab.key)}
+                  className={cn(
+                    'flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors',
+                    inboxTab === tab.key
+                      ? 'bg-[#5E6AD2] text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+                  )}
+                >
+                  {tab.label}
+                  {tab.count > 0 && (
+                    <span className={cn(inboxTab === tab.key ? 'opacity-80' : 'opacity-60')}>
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
             {isLoadingConversations ? (
               <div className="space-y-0">
                 {[1, 2, 3, 4, 5].map(i => (
@@ -685,11 +762,18 @@ const MessagesPage = () => {
                   Nouveau message
                 </Button>
               </div>
+            ) : visibleConversations.length === 0 ? (
+              <div className="px-4 py-12 text-center">
+                <MessageChatCircle className="w-12 h-12 mx-auto mb-4 text-tertiary" />
+                <p className="font-medium text-primary">
+                  {inboxTab === 'unread' ? 'Aucun message non lu' : inboxTab === 'requests' ? 'Aucune demande' : 'Aucune conversation'}
+                </p>
+              </div>
             ) : (
               <ListBox
                 aria-label="Conversations"
                 selectionMode="single"
-                items={conversations}
+                items={visibleConversations}
                 selectedKeys={selectedConversationId ? [selectedConversationId] : []}
                 onSelectionChange={keys => {
                   const conversationId = Array.from(keys).at(0) as string;
