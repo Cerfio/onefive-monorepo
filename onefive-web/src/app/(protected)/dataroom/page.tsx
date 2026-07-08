@@ -23,6 +23,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDatarooms, leaveDataroom } from "@/queries/dataroom";
 import Navbar from "@/components/navbar";
 import DataroomPageSkeleton from "./components/DataroomPageSkeleton";
+import { ConfirmModal } from "@/components/startup/modals/ConfirmModal";
 import { toast } from "sonner";
 
 const DataroomListPage = () => {
@@ -33,6 +34,7 @@ const DataroomListPage = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["datarooms"] });
             toast.success("Vous avez quitté la dataroom");
+            setLeaveTarget(null);
         },
         onError: (error: any) => {
             toast.error(error?.response?.data?.message || "Erreur lors de la sortie de la dataroom");
@@ -42,6 +44,7 @@ const DataroomListPage = () => {
     // États
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("recent");
+    const [leaveTarget, setLeaveTarget] = useState<{ id: string; name: string } | null>(null);
     const [filterBy, setFilterBy] = useState("all");
     const [viewMode, setViewMode] = useState<"all" | "owned" | "shared">("all");
     const [animatedStats, setAnimatedStats] = useState({
@@ -477,11 +480,7 @@ const DataroomListPage = () => {
                                                         </Dropdown.Item>
                                                         <Dropdown.Item
                                                             icon={LogOut}
-                                                            onAction={() => {
-                                                                if (window.confirm(`Quitter la dataroom "${dataroom.name}" ?`)) {
-                                                                    leaveDataroomMut.mutate({ dataroomId: dataroom.id });
-                                                                }
-                                                            }}
+                                                            onAction={() => setLeaveTarget({ id: dataroom.id, name: dataroom.name ?? 'cette dataroom' })}
                                                             className="text-red-600"
                                                         >
                                                             Quitter la dataroom
@@ -543,6 +542,19 @@ const DataroomListPage = () => {
                     </div>
                 )}
             </main>
+
+            <ConfirmModal
+                open={!!leaveTarget}
+                onOpenChange={(open) => { if (!open) setLeaveTarget(null); }}
+                title="Quitter cette dataroom ?"
+                description={leaveTarget ? `Vous perdrez immédiatement l'accès à "${leaveTarget.name}". Il faudra une nouvelle invitation pour y revenir.` : ''}
+                confirmLabel="Quitter"
+                variant="danger"
+                isLoading={leaveDataroomMut.isPending}
+                onConfirm={() => {
+                    if (leaveTarget) leaveDataroomMut.mutate({ dataroomId: leaveTarget.id });
+                }}
+            />
         </div>
     );
 };

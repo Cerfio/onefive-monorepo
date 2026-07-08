@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 import Navbar from '@/components/navbar';
 import { toast } from 'sonner';
 import { CreateConversationModal } from '@/components/messages/CreateConversationModal';
+import { ConfirmModal } from '@/components/startup/modals/ConfirmModal';
 import {
   useConversations,
   useMessages,
@@ -167,6 +168,7 @@ const MessagesPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [pendingAttachment, setPendingAttachment] = useState<UploadedAttachment | null>(null);
+  const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
 
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -429,15 +431,18 @@ const MessagesPage = () => {
   const handleDeleteMessage = useCallback(
     (message: Message) => {
       if (!selectedConversationId || !message.sender.isMe) return;
-      if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) return;
-
-      deleteMessage.mutate({
-        messageId: message.id,
-        conversationId: selectedConversationId,
-      });
+      setMessageToDelete(message);
     },
-    [selectedConversationId, deleteMessage],
+    [selectedConversationId],
   );
+
+  const confirmDeleteMessage = useCallback(() => {
+    if (!messageToDelete || !selectedConversationId) return;
+    deleteMessage.mutate(
+      { messageId: messageToDelete.id, conversationId: selectedConversationId },
+      { onSettled: () => setMessageToDelete(null) },
+    );
+  }, [messageToDelete, selectedConversationId, deleteMessage]);
 
   const handleAddReaction = useCallback(
     (messageId: string, emoji: string) => {
@@ -597,6 +602,17 @@ const MessagesPage = () => {
         isOpen={showCreateModal}
         onOpenChange={setShowCreateModal}
         onConversationCreated={handleConversationCreated}
+      />
+
+      <ConfirmModal
+        open={!!messageToDelete}
+        onOpenChange={(open) => { if (!open) setMessageToDelete(null); }}
+        title="Supprimer ce message ?"
+        description="Ce message sera supprimé pour tous les participants. Cette action est irréversible."
+        confirmLabel="Supprimer"
+        variant="danger"
+        isLoading={deleteMessage.isPending}
+        onConfirm={confirmDeleteMessage}
       />
 
       <header className="shrink-0">

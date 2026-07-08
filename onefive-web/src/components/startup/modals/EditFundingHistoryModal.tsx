@@ -64,6 +64,8 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
   const [formData, setFormData] = useState<any>({});
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     // Si initialEntryId est fourni, charger l'entrée en mode édition
@@ -204,17 +206,23 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
     onOpenChange(true);
   };
 
-  const handleDelete = async (historyId: string) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce financement ?')) {
-      try {
-        await onDelete(historyId);
-        if (editingId === historyId) {
-          resetModal();
-          onOpenChange(false);
-        }
-      } catch (error) {
-        console.error('Error deleting funding history:', error);
+  const handleDelete = (historyId: string) => setDeletingId(historyId);
+
+  const confirmDelete = async () => {
+    if (!deletingId) return;
+    const historyId = deletingId;
+    setIsDeleting(true);
+    try {
+      await onDelete(historyId);
+      setDeletingId(null);
+      if (editingId === historyId) {
+        resetModal();
+        onOpenChange(false);
       }
+    } catch (error) {
+      console.error('Error deleting funding history:', error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -635,13 +643,45 @@ export const EditFundingHistoryModal: React.FC<EditFundingHistoryModalProps> = (
                         >
                           Annuler
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           color="primary"
                           onClick={confirmClose}
                         >
                           Quitter
                         </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de confirmation de suppression */}
+        {deletingId && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-[6px] animate-in fade-in duration-200">
+            <div className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Supprimer ce financement ?
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Cette entrée de financement sera définitivement supprimée. Cette action est irréversible.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <Button
+                  size="sm"
+                  color="secondary"
+                  onClick={() => setDeletingId(null)}
+                  isDisabled={isDeleting}
+                >
+                  Annuler
+                </Button>
+                <Button
+                  size="sm"
+                  color="primary-destructive"
+                  onClick={confirmDelete}
+                  isDisabled={isDeleting}
+                >
+                  {isDeleting ? 'Suppression...' : 'Supprimer'}
+                </Button>
               </div>
             </div>
           </div>

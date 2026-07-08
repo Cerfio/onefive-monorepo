@@ -16,6 +16,7 @@ import { useDataroomMutations } from './hooks/useDataroomMutations';
 import { useModalStates } from './hooks/useModalStates';
 import { useViewedFiles } from './hooks/useViewedFiles';
 import { DataroomMain } from './components/DataroomMain';
+import { ConfirmModal } from '@/components/startup/modals/ConfirmModal';
 import { UploadModal } from './components/modals/UploadModal';
 import { DeleteGroupModal } from './components/modals/DeleteGroupModal';
 import { CreateCategoryModal } from "@/components/dataroom/CreateCategoryModal";
@@ -59,6 +60,7 @@ const DataroomPage = () => {
     const [sortBy, setSortBy] = useState('recent');
     const [currentPage, setCurrentPage] = useState(1);
     const [filesToUpload, setFilesToUpload] = useState<{ file: File; category: string }[]>([]);
+    const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [groups, setGroups] = useState<Group[]>([]);
     const [lastCreatedGroupId, setLastCreatedGroupId] = useState<string | null>(null);
@@ -343,14 +345,12 @@ const DataroomPage = () => {
         });
     };
 
-    const handleLeaveDataroom = async () => {
-        const confirmed = window.confirm(
-            "Voulez-vous vraiment quitter cette dataroom ? Vous perdrez l'accès immédiatement.",
-        );
-        if (!confirmed) return;
+    const handleLeaveDataroom = () => setIsLeaveModalOpen(true);
 
+    const confirmLeaveDataroom = async () => {
         try {
             await mutations.leaveDataroom.mutateAsync();
+            setIsLeaveModalOpen(false);
             router.push('/dataroom');
         } catch {
             // Toast handled in mutation
@@ -881,6 +881,17 @@ const DataroomPage = () => {
                 onInvitationResponse={handleInvitationResponse}
                 onRemoveMember={handleRemoveMember}
                 onCancelInvitation={handleCancelInvitation}
+            />
+
+            <ConfirmModal
+                open={isLeaveModalOpen}
+                onOpenChange={setIsLeaveModalOpen}
+                title="Quitter cette dataroom ?"
+                description="Vous perdrez l'accès immédiatement. Il faudra une nouvelle invitation pour y revenir."
+                confirmLabel="Quitter"
+                variant="danger"
+                isLoading={mutations.leaveDataroom.isPending}
+                onConfirm={confirmLeaveDataroom}
             />
         </div>
     );
