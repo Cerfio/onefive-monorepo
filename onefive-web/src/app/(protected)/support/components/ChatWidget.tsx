@@ -35,49 +35,47 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, _setIsOnline] = useState(true);
 
-  // Simulated responses
-  const botResponses = [
-    "Je vais vous aider avec cela. Pouvez-vous me donner plus de détails ?",
-    "C'est une excellente question ! Laissez-moi vous expliquer...",
-    "Je comprends votre problème. Voici ce que je recommande :",
-    "Parfait ! Je vais vous guider étape par étape.",
-    "Je vais transférer votre demande à un expert. Vous devriez recevoir une réponse sous 15 minutes."
-  ];
-
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
+    const text = inputMessage.trim();
+
+    // Vrai canal de support : on ouvre un email pré-rempli vers l'équipe
+    // (pas de bot simulé). Fait dans le geste utilisateur pour éviter le blocage.
+    try {
+      window.location.href = `mailto:support@onefive.app?subject=${encodeURIComponent(
+        'Support OneFive',
+      )}&body=${encodeURIComponent(text)}`;
+    } catch {
+      /* mailto indisponible */
+    }
 
     const newMessage: Message = {
       id: Date.now().toString(),
-      text: inputMessage,
+      text,
       isUser: true,
       timestamp: new Date(),
-      status: 'sending'
+      status: 'sending',
     };
 
     setMessages(prev => [...prev, newMessage]);
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate message status updates
     setTimeout(() => {
-      setMessages(prev => prev.map(msg => 
-        msg.id === newMessage.id ? { ...msg, status: 'delivered' } : msg
-      ));
-    }, 1000);
-
-    // Simulate bot response
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: botResponses[Math.floor(Math.random() * botResponses.length)],
-        isUser: false,
-        timestamp: new Date(),
-        status: 'delivered'
-      };
-      setMessages(prev => [...prev, botResponse]);
+      setMessages(prev => [
+        ...prev.map(msg =>
+          msg.id === newMessage.id ? { ...msg, status: 'delivered' as const } : msg,
+        ),
+        {
+          id: (Date.now() + 1).toString(),
+          text: "Merci ! On a ouvert un email pré-rempli vers support@onefive.app — envoie-le et notre équipe te répond sous 24h.",
+          isUser: false,
+          timestamp: new Date(),
+          status: 'delivered' as const,
+        },
+      ]);
       setIsTyping(false);
-    }, 2000);
+    }, 700);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
