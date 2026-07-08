@@ -59,6 +59,10 @@ function formatAmount(amount: number): string {
   return `${amount}€`;
 }
 
+function sumAmount(items: MyInvestment[]): number {
+  return items.reduce((s, i) => s + (i.fundingHistory?.amountRaised || 0), 0);
+}
+
 function InvestmentCard({ investment }: { investment: MyInvestment }) {
   const router = useRouter();
   const toggleVisibility = useToggleInvestorVisibility();
@@ -262,6 +266,27 @@ export default function MyInvestmentsPage() {
         </Card>
       ) : (
         <div className="space-y-6">
+          {/* Résumé des montants par statut */}
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Acceptés', items: accepted, color: 'text-green-600' },
+              { label: 'En attente', items: pending, color: 'text-amber-600' },
+              { label: 'Refusés', items: declined, color: 'text-gray-500' },
+            ].map((s) => (
+              <Card key={s.label}>
+                <CardContent className="p-4">
+                  <p className="text-xs text-gray-500">{s.label}</p>
+                  <p className={`text-xl font-bold ${s.color}`}>{s.items.length}</p>
+                  {s.items.length > 0 && (
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {formatAmount(sumAmount(s.items))} levés
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
           {/* Pending invitations */}
           {pending.length > 0 && (
             <div>
