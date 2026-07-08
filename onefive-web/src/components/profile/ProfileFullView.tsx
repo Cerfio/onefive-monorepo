@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/utils/kyInstance';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/navbar';
 import { getCountryName } from '@/lib/country';
@@ -193,6 +195,35 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
   const rawProfileData = currentUser ? meProfile : otherProfile;
   const isLoading = currentUser ? isMeProfileLoading : isOtherProfileLoading;
   const error = currentUser ? meProfileError : otherProfileError;
+
+  // Real connections list (own profile only — the endpoint returns the session
+  // user's accepted connections).
+  const { data: myConnections } = useQuery({
+    queryKey: ['my-connections'],
+    queryFn: async () => {
+      const res = await api.get('profiles/connections');
+      const json = (await res.json()) as {
+        data: Array<{ requesterId: string; accepterId: string; requester: any; accepter: any }>;
+      };
+      return json.data;
+    },
+    enabled: currentUser,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const connectionsData = useMemo(() => {
+    if (!currentUser || !myConnections || !meProfile?.id) return [];
+    return myConnections.map((rel) => {
+      const other = rel.requesterId === meProfile.id ? rel.accepter : rel.requester;
+      return {
+        id: other?.id,
+        name: `${other?.firstName ?? ''} ${other?.lastName ?? ''}`.trim() || 'Membre',
+        avatar: other?.avatarId
+          ? `${process.env.NEXT_PUBLIC_API_URL}/file/${other.avatarId}`
+          : undefined,
+      };
+    });
+  }, [currentUser, myConnections, meProfile?.id]);
 
   // Hooks pour le batch update des expériences et des éducations
   const batchUpdateExperiencesMutation = useBatchUpdateExperiences();
@@ -452,7 +483,7 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
               </motion.div>
 
               <motion.div variants={cardVariants}>
-                <ConnectionsCard profileData={profileData} />
+                <ConnectionsCard profileData={{ ...profileData, connectionsData }} />
               </motion.div>
             </div>
           </div>
