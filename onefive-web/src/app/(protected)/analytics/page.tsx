@@ -30,6 +30,7 @@ import {
   ChevronLeft,
   ChevronRight,
   SwitchVertical01,
+  Download01,
 } from '@untitledui/icons';
 import { PostAnalyticsModal } from '@/components/analytics/PostAnalyticsModal';
 import { NativeSelect } from '@/components/base/select/select-native';
@@ -600,13 +601,43 @@ const EngagementTab = ({
                 </Select.Item>
               )}
             </Select>
-            <Button 
-              color="secondary" 
-              size="sm" 
+            <Button
+              color="secondary"
+              size="sm"
               onClick={() => setOrder(order === 'desc' ? 'asc' : 'desc')}
               iconLeading={<SwitchVertical01 className="h-4 w-4" data-icon />}
             >
               <span className="sr-only">Changer l'ordre</span>
+            </Button>
+            <Button
+              color="secondary"
+              size="sm"
+              onClick={() => {
+                const header = ['Type', 'Titre', 'Date', 'Vues', 'Likes', 'Commentaires', 'Partages'];
+                const rows = posts.map((p) => [
+                  p.type === 'discussion' ? 'Discussion' : 'Post',
+                  decodeBuildInPublicData(p.title).visibleContent || 'Sans titre',
+                  p.date,
+                  p.views,
+                  p.likes,
+                  p.comments,
+                  p.shares,
+                ]);
+                const escape = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
+                const csv = [header, ...rows].map((r) => r.map(escape).join(',')).join('\n');
+                const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `onefive-analytics-${timeRange}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                toast.success(`${posts.length} ligne${posts.length > 1 ? 's' : ''} exportée${posts.length > 1 ? 's' : ''}`);
+              }}
+              isDisabled={posts.length === 0}
+              iconLeading={<Download01 className="h-4 w-4" data-icon />}
+            >
+              Exporter CSV
             </Button>
           </div>
         </div>
