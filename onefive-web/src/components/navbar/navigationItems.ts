@@ -4,6 +4,8 @@ import {
   Mic2,
   LandPlot,
   MessagesSquare,
+  FolderOpen,
+  LineChart,
 } from 'lucide-react';
 import React from 'react';
 
@@ -37,5 +39,17 @@ export const navigationItems = [
     icon: React.createElement(MessagesSquare, { className: "w-4 h-4" }),
     link: '/messages',
     description: 'Messagerie privée',
+  },
+  {
+    name: 'Data rooms',
+    icon: React.createElement(FolderOpen, { className: "w-4 h-4" }),
+    link: '/dataroom',
+    description: 'Vos data rooms',
+  },
+  {
+    name: 'Analytics',
+    icon: React.createElement(LineChart, { className: "w-4 h-4" }),
+    link: '/analytics',
+    description: 'Vos statistiques',
   },
 ]; 
