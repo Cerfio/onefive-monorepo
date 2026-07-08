@@ -92,30 +92,47 @@ export const FileDetailsSidebar = ({
             </div>
           )}
 
-          {/* Vues par page (deck) */}
+          {/* Vues & temps par page (deck) */}
           {(() => {
-            const pageViews = (fileDetails?.pageViews ?? []) as { page: number; views: number }[];
+            const pageViews = (fileDetails?.pageViews ?? []) as {
+              page: number;
+              views: number;
+              avgTimeSeconds?: number;
+            }[];
             if (pageViews.length === 0) return null;
             const max = Math.max(...pageViews.map((p) => p.views), 1);
+            const fmtTime = (s: number) => {
+              if (!s || s <= 0) return null;
+              if (s < 60) return `${s}s`;
+              const m = Math.floor(s / 60);
+              const rest = s % 60;
+              return rest ? `${m}m ${rest}s` : `${m}m`;
+            };
             return (
               <div>
                 <h4 className="font-semibold text-sm mb-3 flex items-center gap-2 text-[#101828]">
                   <Eye className="h-4 w-4 text-indigo-600" />
-                  Vues par page
+                  Vues &amp; temps par page
                 </h4>
                 <div className="space-y-1.5">
-                  {pageViews.map((p) => (
-                    <div key={p.page} className="flex items-center gap-2">
-                      <span className="text-xs text-[#98A2B3] w-14 shrink-0">Page {p.page}</span>
-                      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-indigo-500 rounded-full"
-                          style={{ width: `${(p.views / max) * 100}%` }}
-                        />
+                  {pageViews.map((p) => {
+                    const t = fmtTime(p.avgTimeSeconds ?? 0);
+                    return (
+                      <div key={p.page} className="flex items-center gap-2">
+                        <span className="text-xs text-[#98A2B3] w-14 shrink-0">Page {p.page}</span>
+                        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-indigo-500 rounded-full"
+                            style={{ width: `${(p.views / max) * 100}%` }}
+                          />
+                        </div>
+                        {t && (
+                          <span className="text-xs text-[#98A2B3] w-14 text-right shrink-0 tabular-nums">{t}</span>
+                        )}
+                        <span className="text-xs text-[#101828] font-medium w-8 text-right shrink-0 tabular-nums">{p.views}</span>
                       </div>
-                      <span className="text-xs text-[#101828] font-medium w-8 text-right shrink-0">{p.views}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );

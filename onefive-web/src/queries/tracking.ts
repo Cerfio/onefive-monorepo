@@ -153,7 +153,7 @@ const fileAnalyticsResponseSchema = z.object({
       userRole: z.string().optional(),
       timeSpentFormatted: z.string().optional(),
     })).optional(),
-    pageViews: z.array(z.object({ page: z.number(), views: z.number() })).optional(),
+    pageViews: z.array(z.object({ page: z.number(), views: z.number(), avgTimeSeconds: z.number() })).optional(),
   }),
 });
 

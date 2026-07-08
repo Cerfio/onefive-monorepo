@@ -33,6 +33,6 @@ export class GetFileAnalyticsResponseDto {
       totalTime: number;
       timeSpentFormatted?: string;
     }>;
-    pageViews?: Array<{ page: number; views: number }>;
+    pageViews?: Array<{ page: number; views: number; avgTimeSeconds: number }>;
   };
 }
