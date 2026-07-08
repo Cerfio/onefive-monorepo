@@ -394,4 +394,131 @@ export class DataroomController {
       dataroomId,
     );
   }
+
+  // ==================== SHARE LINKS (lien de partage sécurisé) ====================
+
+  @Post(':dataroomId/share-links')
+  @UseGuards(DataroomOwnerGuard)
+  async createShareLink(
+    @Req() req: FastifyRequestUserId,
+    @Param('dataroomId') dataroomId: string,
+    @Body()
+    body: { groupId: string; requireEmail?: boolean; expiresInDays?: number },
+  ): Promise<{ success: true; data: unknown }> {
+    if (!body?.groupId) throw new BadRequestException('groupId requis');
+    const group = await this.prisma.dataroomGroup.findFirst({
+      where: { id: body.groupId, dataroomId },
+      select: { id: true },
+    });
+    if (!group) {
+      throw new BadRequestException('Groupe introuvable pour ce dataroom');
+    }
+
+    const profileId = await this.getProfileIdFromUserId(req.userId);
+    const expiresAt =
+      body.expiresInDays && body.expiresInDays > 0
+        ? new Date(Date.now() + body.expiresInDays * 24 * 60 * 60 * 1000)
+        : null;
+
+    const link = await this.prisma.dataroomShareLink.create({
+      data: {
+        dataroomId,
+        groupId: body.groupId,
+        createdBy: profileId,
+        requireEmail: body.requireEmail ?? true,
+        expiresAt,
+      },
+      select: {
+        id: true,
+        token: true,
+        requireEmail: true,
+        expiresAt: true,
+        createdAt: true,
+      },
+    });
+    return { success: true, data: link };
+  }
+
+  @Get(':dataroomId/share-links')
+  @UseGuards(DataroomOwnerGuard)
+  async listShareLinks(
+    @Param('dataroomId') dataroomId: string,
+  ): Promise<{ success: true; data: unknown }> {
+    const links = await this.prisma.dataroomShareLink.findMany({
+      where: { dataroomId, isRevoked: false },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        token: true,
+        requireEmail: true,
+        expiresAt: true,
+        redeemCount: true,
+        createdAt: true,
+        group: { select: { id: true, name: true } },
+      },
+    });
+    return { success: true, data: links };
+  }
+
+  @Delete(':dataroomId/share-links/:linkId')
+  @UseGuards(DataroomOwnerGuard)
+  async revokeShareLink(
+    @Param('dataroomId') dataroomId: string,
+    @Param('linkId') linkId: string,
+  ): Promise<{ success: true }> {
+    await this.prisma.dataroomShareLink.updateMany({
+      where: { id: linkId, dataroomId },
+      data: { isRevoked: true },
+    });
+    return { success: true };
+  }
+
+  // Rédemption par un utilisateur authentifié : valide le lien (révocation /
+  // expiration) puis l'ajoute au groupe cible du dataroom (accès = permissions
+  // du groupe). Pas de DataroomMemberGuard : le destinataire n'est pas encore
+  // membre. (Feature rouge non E2E-testable ici — à tester manuellement.)
+  @Post('share/:token/redeem')
+  async redeemShareLink(
+    @Req() req: FastifyRequestUserId,
+    @Param('token') token: string,
+  ): Promise<{ success: true; data: { dataroomId: string } }> {
+    const link = await this.prisma.dataroomShareLink.findUnique({
+      where: { token },
+      select: {
+        id: true,
+        dataroomId: true,
+        groupId: true,
+        isRevoked: true,
+        expiresAt: true,
+      },
+    });
+    if (!link || link.isRevoked) {
+      throw new NotFoundException('Lien invalide ou révoqué');
+    }
+    if (link.expiresAt && link.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException('Ce lien a expiré');
+    }
+
+    const profileId = await this.getProfileIdFromUserId(req.userId);
+
+    const existing = await this.prisma.member.findFirst({
+      where: { dataroomId: link.dataroomId, profileId },
+      select: { id: true },
+    });
+    if (!existing) {
+      await this.prisma.member.create({
+        data: {
+          dataroomId: link.dataroomId,
+          groupId: link.groupId,
+          profileId,
+        },
+      });
+      await this.prisma.dataroomShareLink.update({
+        where: { id: link.id },
+        data: { redeemCount: { increment: 1 } },
+      });
+    }
+
+    return { success: true, data: { dataroomId: link.dataroomId } };
+  }
 }

@@ -20,6 +20,7 @@ import { ConfirmModal } from '@/components/startup/modals/ConfirmModal';
 import { UploadModal } from './components/modals/UploadModal';
 import { DeleteGroupModal } from './components/modals/DeleteGroupModal';
 import { CreateCategoryModal } from "@/components/dataroom/CreateCategoryModal";
+import { ShareLinksModal } from "@/components/dataroom/ShareLinksModal";
 import { ChangeCategoryModal } from './components/modals/ChangeCategoryModal';
 import { InviteToGroupModal } from './components/modals/InviteToGroupModal';
 import {
@@ -61,6 +62,7 @@ const DataroomPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [filesToUpload, setFilesToUpload] = useState<{ file: File; category: string }[]>([]);
     const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+    const [isShareLinksModalOpen, setIsShareLinksModalOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [groups, setGroups] = useState<Group[]>([]);
     const [lastCreatedGroupId, setLastCreatedGroupId] = useState<string | null>(null);
@@ -686,6 +688,7 @@ const DataroomPage = () => {
             <DataroomMain
                 dataroom={adaptedDataroom as any}
                 isOwner={Boolean((dataroom as any)?.isOwner)}
+                onOpenShareLinks={() => setIsShareLinksModalOpen(true)}
                 categories={categories}
                 groups={adaptedGroups as any}
                 displayedDocuments={paginatedDocuments}
@@ -911,6 +914,13 @@ const DataroomPage = () => {
                 onInvitationResponse={handleInvitationResponse}
                 onRemoveMember={handleRemoveMember}
                 onCancelInvitation={handleCancelInvitation}
+            />
+
+            <ShareLinksModal
+                open={isShareLinksModalOpen}
+                onClose={() => setIsShareLinksModalOpen(false)}
+                dataroomId={dataroomId}
+                groups={groups.map((g) => ({ id: g.id, name: g.name }))}
             />
 
             <ConfirmModal

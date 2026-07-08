@@ -11,7 +11,7 @@ import {
     X,
     Folder,
 } from "@untitledui/icons";
-import { InfoIcon, BarChart3, Download, Trash2, Search, Lock, Upload, Users, Settings, LogOut } from "lucide-react";
+import { InfoIcon, BarChart3, Download, Trash2, Search, Lock, Upload, Users, Settings, LogOut, Share2 } from "lucide-react";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
 import { Badge } from "@/components/base/badges/badges";
@@ -94,6 +94,7 @@ interface DataroomMainProps {
     onDirectFilesDrop?: (files: File[]) => void;
     onBulkDelete?: (ids: string[]) => Promise<void>;
     isOwner?: boolean;
+    onOpenShareLinks?: () => void;
 }
 
 const AccessGroupsSidebar: React.FC<{
@@ -273,6 +274,7 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
     onDirectFilesDrop,
     onBulkDelete,
     isOwner = false,
+    onOpenShareLinks,
 }) => {
     const router = useRouter();
     const [logoError, setLogoError] = useState(false);
@@ -484,6 +486,16 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                         >
                             Analytics
                         </Button>
+                        {isOwner && onOpenShareLinks && (
+                            <Button
+                                color="secondary"
+                                size="md"
+                                iconLeading={<Share2 data-icon />}
+                                onClick={onOpenShareLinks}
+                            >
+                                Partager
+                            </Button>
+                        )}
                         <Button
                             color="primary"
                             size="md"

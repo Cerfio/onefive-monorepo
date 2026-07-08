@@ -24,6 +24,26 @@ model Dataroom {
   questionAndAnswers     QuestionAndAnswer[]
   roadmap                Roadmap[]
   trackingEvents         TrackingEvent[]
+  shareLinks             DataroomShareLink[]
+}
+
+model DataroomShareLink {
+  id           String        @id @default(uuid())
+  token        String        @unique @default(uuid())
+  dataroomId   String
+  groupId      String
+  createdBy    String
+  requireEmail Boolean       @default(true)
+  expiresAt    DateTime?
+  isRevoked    Boolean       @default(false)
+  redeemCount  Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  dataroom     Dataroom      @relation(fields: [dataroomId], references: [id], onDelete: Cascade)
+  group        DataroomGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([dataroomId])
+  @@index([token])
 }
 
 model Captable {
@@ -112,6 +132,7 @@ model DataroomGroup {
   members             Member[]
   permissionsCategory PermissionCategory[]
   permissionsFile     PermissionFile[]
+  shareLinks          DataroomShareLink[]
 
   @@index([dataroomId])
 }

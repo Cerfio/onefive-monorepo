@@ -620,3 +620,58 @@ export const updateGroupPermissions = async ({
     throw error;
   }
 };
+// ==================== SHARE LINKS (lien de partage sécurisé) ====================
+
+export interface DataroomShareLink {
+  id: string;
+  token: string;
+  requireEmail: boolean;
+  expiresAt: string | null;
+  redeemCount: number;
+  createdAt: string;
+  group: { id: string; name: string };
+}
+
+export const createShareLink = async ({
+  dataroomId,
+  groupId,
+  requireEmail,
+  expiresInDays,
+}: {
+  dataroomId: string;
+  groupId: string;
+  requireEmail?: boolean;
+  expiresInDays?: number;
+}): Promise<{ id: string; token: string }> => {
+  const response = await api.post(`dataroom/${dataroomId}/share-links`, {
+    json: { groupId, requireEmail, expiresInDays },
+  });
+  const json = (await response.json()) as { data: { id: string; token: string } };
+  return json.data;
+};
+
+export const listShareLinks = async (
+  dataroomId: string,
+): Promise<DataroomShareLink[]> => {
+  const response = await api.get(`dataroom/${dataroomId}/share-links`);
+  const json = (await response.json()) as { data: DataroomShareLink[] };
+  return json.data;
+};
+
+export const revokeShareLink = async ({
+  dataroomId,
+  linkId,
+}: {
+  dataroomId: string;
+  linkId: string;
+}): Promise<void> => {
+  await api.delete(`dataroom/${dataroomId}/share-links/${linkId}`);
+};
+
+export const redeemShareLink = async (
+  token: string,
+): Promise<{ dataroomId: string }> => {
+  const response = await api.post(`dataroom/share/${token}/redeem`);
+  const json = (await response.json()) as { data: { dataroomId: string } };
+  return json.data;
+};
