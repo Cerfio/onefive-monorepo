@@ -1,8 +1,9 @@
 "use client";
 
 import { useOnboardingContext } from "../OnboardingContext";
+import { useStartupSuggestions } from "@/hooks/useFeedExtra";
 import { AnimatePresence } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import keymoire from "@/assets/images/KeymoireSymbolLinear.jpeg";
@@ -21,108 +22,22 @@ import { Tooltip } from "@/components/base/tooltip/tooltip";
 import { Button } from "@/components/base/buttons/button";
 
 const StepStartupList = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  const startups = [
-    {
-      id: "1",
-      name: "Keymoire",
-      tags: ["Fintech"],
-      logo: keymoire,
-      intention: "fundraising",
-      location: "Paris, France",
-      countryCode: "FR",
-      stage: "Seed",
-      industry: "Fintech",
-    },
-    {
-      id: "2",
-      name: "Stripe",
-      tags: ["Fintech", "Payments"],
-      logo: keymoire,
-      intention: "hiring",
-      location: "San Francisco, USA",
-      countryCode: "US",
-      stage: "Series A",
-      industry: "Payments",
-    },
-    {
-      id: "3",
-      name: "Airbnb",
-      tags: ["Hospitality", "Travel"],
-      logo: keymoire,
-      intention: "fundraising",
-      location: "San Francisco, USA",
-      countryCode: "US",
-      stage: "Series B",
-      industry: "Travel",
-    },
-    {
-      id: "4",
-      name: "SpaceX",
-      tags: ["Space", "Technology"],
-      logo: keymoire,
-      intention: "hiring",
-      location: "Los Angeles, USA",
-      countryCode: "US",
-      stage: "Series C",
-      industry: "Space",
-    },
-    {
-      id: "5",
-      name: "Peloton",
-      tags: ["Fitness", "Technology"],
-      logo: keymoire,
-      intention: "fundraising",
-      location: "New York, USA",
-      countryCode: "US",
-      stage: "Series A",
-      industry: "Fitness",
-    },
-    {
-      id: "6",
-      name: "Coinbase",
-      tags: ["Cryptocurrency", "Finance"],
-      logo: keymoire,
-      intention: "hiring",
-      location: "San Francisco, USA",
-      countryCode: "US",
-      stage: "Series B",
-      industry: "Crypto",
-    },
-    {
-      id: "7",
-      name: "Zoom",
-      tags: ["Communication", "Software"],
-      logo: keymoire,
-      intention: "fundraising",
-      location: "San Jose, USA",
-      countryCode: "US",
-      stage: "Series A",
-      industry: "Software",
-    },
-    {
-      id: "8",
-      name: "Canva",
-      tags: ["Design", "Software"],
-      logo: keymoire,
-      intention: "hiring",
-      location: "Sydney, Australia",
-      countryCode: "AU",
-      stage: "Series B",
-      industry: "Design",
-    },
-  ];
-
   const { setButtonDisabled, setStartupsFollowed, startupsFollowed } =
     useOnboardingContext();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: suggestions, isLoading } = useStartupSuggestions(8, 0);
+
+  const startups = (suggestions ?? []).map((s) => ({
+    id: s.id,
+    name: s.name,
+    tags: s.categories ?? [],
+    logo: keymoire,
+    location: s.city ?? "",
+    countryCode: s.countryCode ?? "",
+    industry: s.categories?.[0],
+    stage: undefined as string | undefined,
+    intention: undefined as string | undefined,
+  }));
 
   useEffect(() => {
     // Toujours permettre de continuer, même sans suivre de startups (skip optionnel)
@@ -255,11 +170,11 @@ const StartupCard = ({
     name: string;
     tags: string[];
     logo: string | StaticImageData;
-    intention: string;
+    intention?: string;
     location: string;
     countryCode: string;
-    stage: string;
-    industry: string;
+    stage?: string;
+    industry?: string;
   };
 }) => {
   const _t = useTranslations("onboarding.startupCard");
@@ -274,7 +189,9 @@ const StartupCard = ({
     return configs[intention as keyof typeof configs] || configs.fundraising;
   };
 
-  const intentionConfig = getIntentionConfig(startup.intention);
+  const intentionConfig = startup.intention
+    ? getIntentionConfig(startup.intention)
+    : null;
 
   return (
     <motion.div
@@ -306,33 +223,41 @@ const StartupCard = ({
             <p className="text-sm text-[#475467]">Innovation technologique</p>
           </div>
 
-          <div className="mb-4">
-            <button
-              className={`flex items-center gap-1.5 hover:underline ${intentionConfig.color} text-xs`}
-            >
-              <Users className="h-3.5 w-3.5 flex-shrink-0" />
-              <span>{intentionConfig.text}</span>
-            </button>
-          </div>
+          {intentionConfig && (
+            <div className="mb-4">
+              <button
+                className={`flex items-center gap-1.5 hover:underline ${intentionConfig.color} text-xs`}
+              >
+                <Users className="h-3.5 w-3.5 flex-shrink-0" />
+                <span>{intentionConfig.text}</span>
+              </button>
+            </div>
+          )}
 
-          <div className="flex gap-2 mb-4">
-            <Badge
-              type="pill-color"
-              color="gray"
-              size="sm"
-              className="group-hover:border-green-500/50 transition-colors"
-            >
-              {startup.stage}
-            </Badge>
-            <Badge
-              type="pill-color"
-              color="gray"
-              size="sm"
-              className="group-hover:border-green-500/50 transition-colors"
-            >
-              {startup.industry}
-            </Badge>
-          </div>
+          {(startup.stage || startup.industry) && (
+            <div className="flex gap-2 mb-4">
+              {startup.stage && (
+                <Badge
+                  type="pill-color"
+                  color="gray"
+                  size="sm"
+                  className="group-hover:border-green-500/50 transition-colors"
+                >
+                  {startup.stage}
+                </Badge>
+              )}
+              {startup.industry && (
+                <Badge
+                  type="pill-color"
+                  color="gray"
+                  size="sm"
+                  className="group-hover:border-green-500/50 transition-colors"
+                >
+                  {startup.industry}
+                </Badge>
+              )}
+            </div>
+          )}
 
           <div className="flex-1"></div>
 
