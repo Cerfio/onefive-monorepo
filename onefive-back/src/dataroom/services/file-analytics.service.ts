@@ -116,6 +116,20 @@ export class FileAnalyticsService {
         },
       );
 
+      // Views per page — derived from PDF page_change events (page number lives
+      // in additionalData.newPage). Empty until such events are tracked.
+      const pageViewMap = new Map<number, number>();
+      for (const e of trackingEvents) {
+        if (e.eventType !== 'page_change') continue;
+        const page = (e.additionalData as { newPage?: unknown } | null)?.newPage;
+        if (typeof page === 'number' && Number.isFinite(page)) {
+          pageViewMap.set(page, (pageViewMap.get(page) || 0) + 1);
+        }
+      }
+      const pageViews = Array.from(pageViewMap.entries())
+        .map(([page, views]) => ({ page, views }))
+        .sort((a, b) => a.page - b.page);
+
       return {
         fileId: file.id,
         fileName: file.name,
@@ -127,6 +141,7 @@ export class FileAnalyticsService {
         uploadedAt: file.createdAt.toISOString(),
         lastViewed,
         userActivity,
+        pageViews,
       };
     } catch (error) {
       this.logger.error(
