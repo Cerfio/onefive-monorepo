@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useCallback, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import Navbar from '@/components/navbar';
 import { motion } from 'framer-motion';
 import {
@@ -17,7 +17,7 @@ import {
   useMyReferrals,
   ReferralTier
 } from '@/hooks/useReferral';
-import { useWaitlistStatus } from '@/hooks/useWaitlistStatus';
+import { getWaitlistStatus } from '@/queries/waitlist';
 import { selfProfileType } from '@/queries/profile';
 import { toast } from 'sonner';
 
@@ -77,7 +77,9 @@ export default function InvitePage() {
   const { data: stats, isLoading: statsLoading } = useReferralStats();
   const { data: leaderboardData, isLoading: leaderboardLoading } = useLeaderboard(5);
   const { data: myReferrals, isLoading: referralsLoading } = useMyReferrals();
-  const { referralCode } = useWaitlistStatus();
+  // Referral code is served by the (now inert) status endpoint; keep it for the invite link.
+  const { data: referralInfo } = useQuery(['referralCode'], getWaitlistStatus);
+  const referralCode = referralInfo?.referralCode;
 
   const acceptedCount = stats?.totalAccepted ?? 0;
   const myRank = stats?.rank ?? 0;

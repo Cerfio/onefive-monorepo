@@ -25,15 +25,6 @@ export interface WaitlistStatus {
   activatedAt: string | null;
 }
 
-export interface LeaderboardEntry {
-  rank: number;
-  profileId: string;
-  firstName: string;
-  lastName: string;
-  avatarId: string | null;
-  acceptedCount: number;
-}
-
 export interface AmbassadorInfo {
   name: string;
   title: string | null;
@@ -75,41 +66,3 @@ export const getWaitlistStatus = async (): Promise<WaitlistStatus> => {
   }
 };
 
-export const getWaitlistLeaderboard = async (
-  limit: number = 20,
-): Promise<LeaderboardEntry[]> => {
-  try {
-    const response = await api.get(`waitlist/leaderboard?limit=${limit}`);
-    const responseJson: any = await response.json();
-    return responseJson.data;
-  } catch (error: any) {
-    if (error.name === 'HTTPError') {
-      const payloadError = await error.response.json();
-      throw payloadError;
-    }
-    toast.error('Unable to fetch leaderboard');
-    throw Error('Unable to fetch leaderboard');
-  }
-};
-
-export const toggleLeaderboardOptIn = async (): Promise<{ showInLeaderboard: boolean }> => {
-  try {
-    const response = await api.put('waitlist/leaderboard-opt-in');
-    const responseJson: any = await response.json();
-    return responseJson.data;
-  } catch (error: any) {
-    if (error.name === 'HTTPError') {
-      const payloadError = await error.response.json();
-      throw payloadError;
-    }
-    toast.error('Unable to update preference');
-    throw Error('Unable to update preference');
-  }
-};
-
-/** Self-activate from waitlist (DEV ONLY, requires NODE_ENV=development on backend) */
-export const selfActivateWaitlist = async (): Promise<{ message: string }> => {
-  const response = await api.post('waitlist/self-activate');
-  const responseJson: any = await response.json();
-  return responseJson.data;
-};

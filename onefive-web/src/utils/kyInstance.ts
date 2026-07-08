@@ -30,15 +30,8 @@ async function handleResponseErrors(
       const guardRedirects: Array<{
         match: (msg: string) => boolean;
         redirect: string;
-        storeUrl?: boolean;
         skipRedirect?: () => boolean;
       }> = [
-        {
-          match: (msg) =>
-            msg.includes('waitlist') || msg.includes('waiting') || msg.includes('not active'),
-          redirect: '/waitlist',
-          storeUrl: true,
-        },
         {
           match: (msg) =>
             msg.includes('profileemailnotverifiedexception') || msg.includes('email not verified'),
@@ -59,13 +52,10 @@ async function handleResponseErrors(
         },
       ];
 
-      for (const { match, redirect, storeUrl, skipRedirect } of guardRedirects) {
+      for (const { match, redirect, skipRedirect } of guardRedirects) {
         if (match(message)) {
           if (skipRedirect?.()) {
             break; // Let error propagate to the caller
-          }
-          if (storeUrl) {
-            sessionStorage.setItem('waitlist_blocked_url', window.location.pathname);
           }
           window.location.href = redirect;
           return response;

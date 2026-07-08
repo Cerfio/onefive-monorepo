@@ -165,7 +165,7 @@ const Onboarding = () => {
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      router.push("/waitlist");
+      router.push("/feed");
     } catch (error: any) {
       const errorMessage = error?.message || '';
       if (!errorMessage.includes('Unable to create your profile')) {

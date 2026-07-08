@@ -154,26 +154,23 @@ export class CreateProfileHandler {
         }),
       );
 
-    if (process.env.NODE_ENV === 'test') {
-      try {
-        await this.profileService.update({
-          transactionId,
-          where: { id: profile.id },
-          data: {
-            waitlistStatus: 'ACTIVE',
-            activatedAt: new Date(),
-          },
-        });
-      } catch (error) {
-        this.logger.warn(
-          'Failed to force ACTIVE waitlist status in test mode',
-          {
-            transactionId,
-            profileId: profile.id,
-            error: (error as Error).message,
-          },
-        );
-      }
+    // Waitlist removed: every new profile is activated immediately.
+    // (processNewProfile above is kept only for referral attribution.)
+    try {
+      await this.profileService.update({
+        transactionId,
+        where: { id: profile.id },
+        data: {
+          waitlistStatus: 'ACTIVE',
+          activatedAt: new Date(),
+        },
+      });
+    } catch (error) {
+      this.logger.warn('Failed to force ACTIVE waitlist status', {
+        transactionId,
+        profileId: profile.id,
+        error: (error as Error).message,
+      });
     }
 
     return profile;

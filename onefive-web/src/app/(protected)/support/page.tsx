@@ -55,7 +55,6 @@ const cardVariants = {
 const guideCategoryIcons: Record<string, React.ElementType> = {
   démarrage: Zap,
   profil: Users,
-  waitlist: Users,
   réseau: Users,
   dataroom: Shield,
   contenu: BookOpen,

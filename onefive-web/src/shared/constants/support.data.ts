@@ -5,7 +5,6 @@
 
 export type FAQCategory =
   | 'authentification'
-  | 'waitlist'
   | 'profil'
   | 'réseau'
   | 'dataroom'
@@ -21,7 +20,6 @@ export type GuideDifficulty = 'facile' | 'moyen' | 'avancé';
 export type GuideCategory =
   | 'démarrage'
   | 'profil'
-  | 'waitlist'
   | 'réseau'
   | 'dataroom'
   | 'contenu'
@@ -84,28 +82,20 @@ export const supportData: SupportData = {
       tags: ['verification', 'sms', 'email', 'erreur'],
     },
     {
-      id: 'faq-waitlist-waiting-active',
-      question: 'Pourquoi mon compte est en WAITING au lieu de ACTIVE ?',
-      answer:
-        "Le statut WAITING signifie que votre accès complet n'est pas encore débloqué. Le passage en ACTIVE dépend généralement de la vérification email et de la logique de priorité de la waitlist. Complétez votre profil et utilisez votre lien de parrainage pour accélérer l'activation.",
-      category: 'waitlist',
-      tags: ['waitlist', 'waiting', 'active', 'activation'],
-    },
-    {
-      id: 'faq-waitlist-ref-code',
+      id: 'faq-referral-ref-code',
       question: "Comment utiliser un code de parrainage lors de l'inscription ?",
       answer:
-        "Inscrivez-vous depuis un lien contenant le paramètre ref, par exemple avec ?ref=CODE. Le parrainage est alors enregistré automatiquement sur votre compte. Vérifiez ensuite votre progression dans votre espace waitlist.",
-      category: 'waitlist',
+        "Inscrivez-vous depuis un lien contenant le paramètre ref, par exemple avec ?ref=CODE. Le parrainage est alors enregistré automatiquement sur votre compte. Retrouvez votre progression dans votre espace parrainage.",
+      category: 'référal',
       tags: ['parrainage', 'ref', 'inscription', 'code'],
     },
     {
-      id: 'faq-waitlist-ambassadeur',
-      question: 'Quel est le rôle des ambassadeurs dans la waitlist ?',
+      id: 'faq-referral-ambassadeur',
+      question: 'Quel est le rôle des ambassadeurs ?',
       answer:
-        "Les ambassadeurs relaient OneFive à leur réseau via un lien unique. Leurs filleuls peuvent bénéficier d'une meilleure priorité selon les règles en cours. Pour maximiser vos chances, partagez aussi votre propre lien de manière ciblée.",
-      category: 'waitlist',
-      tags: ['ambassadeur', 'priorite', 'partage', 'waitlist'],
+        "Les ambassadeurs relaient OneFive à leur réseau via un lien unique. Partagez aussi votre propre lien de parrainage de manière ciblée pour faire grandir la communauté et progresser dans les paliers.",
+      category: 'référal',
+      tags: ['ambassadeur', 'partage', 'parrainage'],
     },
     {
       id: 'faq-profil-modifier-infos',
@@ -263,7 +253,7 @@ export const supportData: SupportData = {
       id: 'faq-referral-code-trouver',
       question: 'Où trouver mon code de parrainage OneFive ?',
       answer:
-        "Votre code est disponible dans l'espace referral ou waitlist de votre compte. Copiez le lien personnel associé pour le partager directement. Utilisez de préférence ce lien plutôt qu'un simple code texte.",
+        "Votre code est disponible dans l'espace parrainage de votre compte (page Inviter). Copiez le lien personnel associé pour le partager directement. Utilisez de préférence ce lien plutôt qu'un simple code texte.",
       category: 'référal',
       tags: ['referral', 'code', 'lien', 'partage'],
     },
@@ -371,31 +361,31 @@ export const supportData: SupportData = {
       ],
     },
     {
-      id: 'guide-waitlist-parrainage',
-      title: 'Comprendre la waitlist et le parrainage',
+      id: 'guide-parrainage',
+      title: 'Utiliser le parrainage efficacement',
       description:
-        "Apprenez à passer de WAITING à ACTIVE et à utiliser votre lien de parrainage efficacement.",
-      category: 'waitlist',
-      duration: '7 min',
+        "Apprenez à partager votre lien de parrainage et à suivre votre progression dans les paliers.",
+      category: 'compte',
+      duration: '5 min',
       difficulty: 'facile',
-      tags: ['waitlist', 'waiting', 'active', 'parrainage', 'ref'],
+      tags: ['parrainage', 'ref', 'invitation'],
       sections: [
         {
-          title: 'Lire son statut correctement',
-          content: "Comprendre son statut permet de prioriser les bonnes actions.",
+          title: 'Récupérer son lien de parrainage',
+          content: "Votre lien personnel est le moyen le plus fiable de tracer vos parrainages.",
           steps: [
-            "1. Ouvrez votre espace waitlist pour vérifier votre statut actuel.",
-            '2. Identifiez les actions restantes, notamment la vérification email.',
-            '3. Confirmez que votre profil de base est bien complété.',
+            '1. Ouvrez la page Inviter depuis le menu de votre compte.',
+            '2. Copiez votre lien contenant le paramètre ref.',
+            '3. Vérifiez que votre profil de base est bien complété.',
           ],
         },
         {
-          title: 'Utiliser son lien de parrainage',
-          content: "Le lien personnel est le moyen le plus fiable de tracer les parrainages.",
+          title: 'Partager et suivre sa progression',
+          content: "Chaque parrainage accepté vous fait progresser dans les paliers.",
           steps: [
-            '1. Copiez votre lien contenant le paramètre ref depuis votre espace.',
-            '2. Partagez-le à des contacts réellement intéressés par OneFive.',
-            '3. Suivez ensuite la progression depuis votre tableau de bord.',
+            '1. Partagez votre lien à des contacts réellement intéressés par OneFive.',
+            '2. Suivez le nombre de parrainages acceptés dans la page Inviter.',
+            '3. Débloquez les paliers (Bronze, Silver, Gold…) au fil des invitations.',
           ],
         },
       ],

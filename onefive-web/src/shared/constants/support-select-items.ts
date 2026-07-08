@@ -6,7 +6,6 @@
 export const supportCategoryItems = [
   { id: 'all', label: 'Toutes les catégories', value: 'all' },
   { id: 'authentification', label: 'Authentification', value: 'authentification' },
-  { id: 'waitlist', label: 'Waitlist', value: 'waitlist' },
   { id: 'profil', label: 'Profil', value: 'profil' },
   { id: 'réseau', label: 'Réseau', value: 'réseau' },
   { id: 'dataroom', label: 'Datarooms', value: 'dataroom' },

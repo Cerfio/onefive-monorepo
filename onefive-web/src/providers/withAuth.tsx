@@ -40,11 +40,6 @@ const WithAuth = ({ children }: { children: React.ReactNode }) => {
       ) {
         router.push('/auth/confirm/email');
         toast('Please confirm your email before continuing');
-      } else if (
-        (selfProfileQuery.error as any).message ===
-        'WaitlistPendingException'
-      ) {
-        router.push('/waitlist');
       } else {
         toast.error('Unable to fetch profile: Error ONE-2');
       }

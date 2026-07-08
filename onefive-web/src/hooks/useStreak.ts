@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { api } from '@/utils/kyInstance';
 
 interface StreakData {
@@ -17,13 +16,9 @@ const createStreak = async (): Promise<StreakData> => {
 };
 
 export const useStreak = () => {
-  const pathname = usePathname();
   const queryClient = useQueryClient();
   const [shouldShowModal, setShouldShowModal] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
-
-  // Ne pas faire de requête streak sur la page waiting (utilisateur en attente de validation)
-  const isWaitingPage = pathname === '/waitlist';
 
   // Mutation pour créer la streak
   const createStreakMutation = useMutation({
@@ -99,8 +94,6 @@ export const useStreak = () => {
 
   // Au montage, vérifier le cache localStorage et décider si faire une requête
   useEffect(() => {
-    if (isWaitingPage) return;
-
     const lastUpdated = localStorage.getItem(STREAK_LAST_UPDATED_KEY);
 
     if (lastUpdated) {
@@ -125,7 +118,7 @@ export const useStreak = () => {
       // Pas de cache, faire une requête
       createStreakMutation.mutate();
     }
-  }, [isWaitingPage]);
+  }, []);
 
   // Fonction pour fermer la modal
   const markModalAsShown = () => {

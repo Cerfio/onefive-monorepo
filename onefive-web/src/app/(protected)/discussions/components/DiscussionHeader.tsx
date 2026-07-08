@@ -1,11 +1,9 @@
 'use client';
 
-import { Plus, Clock } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
 import { tags } from '@/constant';
 import { Tags } from '@/enums';
-import { useWaitlistStatus } from '@/hooks/useWaitlistStatus';
-import { Tooltip } from '@/components/base/tooltip/tooltip';
 
 interface DiscussionHeaderProps {
   topic?: Tags;
@@ -13,14 +11,11 @@ interface DiscussionHeaderProps {
 }
 
 export const DiscussionHeader = ({ topic, onOpenCreateModal }: DiscussionHeaderProps) => {
-  const { isWaiting } = useWaitlistStatus();
-
   const createButton = (
     <Button
       size="lg"
-      onClick={isWaiting ? undefined : onOpenCreateModal}
-      isDisabled={isWaiting}
-      iconLeading={isWaiting ? <Clock data-icon /> : <Plus data-icon />}
+      onClick={onOpenCreateModal}
+      iconLeading={<Plus data-icon />}
     >
       Nouvelle discussion
     </Button>
@@ -43,15 +38,7 @@ export const DiscussionHeader = ({ topic, onOpenCreateModal }: DiscussionHeaderP
               Posez des questions, trouvez du support et connectez-vous avec la communauté
             </p>
           </div>
-          <div>
-            {isWaiting ? (
-              <Tooltip title="Vérifiez votre email pour activer votre compte">
-                {createButton}
-              </Tooltip>
-            ) : (
-              createButton
-            )}
-          </div>
+          <div>{createButton}</div>
         </div>
       </div>
     </div>
