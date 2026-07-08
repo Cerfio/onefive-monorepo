@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToggleProfileFollow } from '@/hooks/useFollow';
+import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
 
 interface DiscussionSidebarProps {
   data: SpecificDiscussionInfer;
@@ -22,6 +23,8 @@ const DiscussionSidebar = ({ data }: DiscussionSidebarProps) => {
   const queryClient = useQueryClient();
   const profile = data.profile;
   const followProfile = useToggleProfileFollow();
+  const { navigateToConversation, isLoading: isStartingConversation } =
+    useNavigateToConversation();
   
   // État local pour le suivi - initialisé avec la valeur du backend
   const [isFollowing, setIsFollowing] = useState(profile?.isFollowing ?? false);
@@ -166,13 +169,14 @@ const DiscussionSidebar = ({ data }: DiscussionSidebarProps) => {
                   >
                     {followProfile.isLoading ? '...' : (isFollowing ? 'Suivi' : 'Suivre')}
                   </Button>
-                  <Button 
-                    className="flex-1" 
-                    color="secondary" 
+                  <Button
+                    className="flex-1"
+                    color="secondary"
                     iconLeading={<MessageCircle className="w-4 h-4" data-icon />}
-                    onClick={() => toast.info('Messagerie bientôt disponible !')}
+                    onClick={() => profile?.id && navigateToConversation(profile.id)}
+                    isDisabled={isStartingConversation || !profile?.id}
                   >
-                    Message
+                    {isStartingConversation ? '...' : 'Message'}
                   </Button>
                 </div>
                 <Link href={`/profile/${profile.id}`} className="w-full">
