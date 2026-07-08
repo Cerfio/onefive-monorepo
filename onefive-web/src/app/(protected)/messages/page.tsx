@@ -11,6 +11,8 @@ import {
   X,
   RefreshCw01,
   ArrowLeft,
+  Paperclip,
+  File02,
 } from '@untitledui/icons';
 import { ListBox, ListBoxItem, type ListBoxItemProps } from 'react-aria-components';
 import { ContentDivider } from '@/components/content-divider/content-divider';
@@ -30,12 +32,14 @@ import {
   useConversations,
   useMessages,
   useSendMessage,
+  useUploadMessageAttachment,
   useEditMessage,
   useDeleteMessage,
   useMarkAsRead,
   useAddReaction,
   type Conversation,
   type Message,
+  type UploadedAttachment,
 } from '@/hooks/useMessaging';
 import { useWebSocketMessages, useWebSocket, useWebSocketPresence } from '@/hooks/useWebSocket';
 import { useMe } from '@/hooks/useUser';
@@ -109,6 +113,20 @@ const ConversationListItem = ({
   );
 };
 
+// Taille lisible pour l'aperçu des pièces jointes.
+const formatBytes = (bytes: number): string => {
+  if (!bytes || bytes <= 0) return '';
+  if (bytes < 1024) return `${bytes} o`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} Ko`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+};
+
+// Extension (pour l'icône du composant) depuis le nom dérivé côté serveur.
+const extFromName = (name: string): string => {
+  const dot = name.lastIndexOf('.');
+  return dot >= 0 ? name.slice(dot + 1).toLowerCase() : 'file';
+};
+
 const MessageSkeleton = () => (
   <div className="flex gap-3 animate-pulse">
     <div className="w-10 h-10 bg-secondary rounded-full" />
@@ -148,6 +166,7 @@ const MessagesPage = () => {
   const [isDesktop, setIsDesktop] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [pendingAttachment, setPendingAttachment] = useState<UploadedAttachment | null>(null);
 
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -155,6 +174,7 @@ const MessagesPage = () => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isUserNearBottom = useRef(true);
   const loadMoreSentinelRef = useRef<HTMLLIElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const unreadCountOnSelect = useRef(0);
 
   // API Hooks
@@ -181,6 +201,7 @@ const MessagesPage = () => {
   } = useMessages(selectedConversationId);
 
   const sendMessage = useSendMessage();
+  const uploadAttachment = useUploadMessageAttachment();
   const editMessage = useEditMessage();
   const deleteMessage = useDeleteMessage();
   const markAsRead = useMarkAsRead();
@@ -284,7 +305,9 @@ const MessagesPage = () => {
 
   const handleSendMessage = useCallback(
     (message: string) => {
-      if (!message.trim() || !selectedConversationId || !me) return;
+      const hasText = message.trim().length > 0;
+      // On peut envoyer soit du texte, soit une pièce jointe (avec texte optionnel).
+      if ((!hasText && !pendingAttachment) || !selectedConversationId || !me) return;
 
       stopTyping(selectedConversationId);
       if (typingTimeoutRef.current) {
@@ -294,8 +317,9 @@ const MessagesPage = () => {
 
       sendMessage.mutate({
         conversationId: selectedConversationId,
-        content: message,
-        type: 'TEXT',
+        content: hasText ? message : undefined,
+        type: pendingAttachment ? pendingAttachment.type : 'TEXT',
+        attachmentId: pendingAttachment?.id,
         replyToId: replyingTo?.id,
         _optimistic: {
           tempId: `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -306,13 +330,68 @@ const MessagesPage = () => {
             avatarUrl: me.avatar ?? null,
             isMe: true,
           },
+          attachments: pendingAttachment ? [pendingAttachment] : undefined,
         },
       });
 
+      setPendingAttachment(null);
       setReplyingTo(null);
     },
-    [selectedConversationId, replyingTo, sendMessage, me, stopTyping],
+    [selectedConversationId, replyingTo, sendMessage, me, stopTyping, pendingAttachment],
   );
+
+  const handleFileSelected = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      e.target.value = ''; // permet de re-sélectionner le même fichier
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Fichier trop volumineux (max 10 Mo)');
+        return;
+      }
+      try {
+        const uploaded = await uploadAttachment.mutateAsync(file);
+        setPendingAttachment(uploaded);
+      } catch {
+        // toast déjà géré par le hook
+      }
+    },
+    [uploadAttachment],
+  );
+
+  // Aperçu de la pièce jointe en attente (partagé desktop/mobile).
+  const attachmentPreview = uploadAttachment.isPending ? (
+    <div className="mb-3 flex items-center gap-2 rounded-lg bg-secondary p-2.5">
+      <RefreshCw01 className="size-4 animate-spin text-tertiary" />
+      <p className="text-sm text-tertiary">Téléchargement de la pièce jointe…</p>
+    </div>
+  ) : pendingAttachment ? (
+    <div className="mb-3 flex items-center gap-2 rounded-lg bg-secondary p-2.5">
+      {pendingAttachment.type === 'IMAGE' ? (
+        <img
+          src={pendingAttachment.url}
+          alt={pendingAttachment.name}
+          className="h-10 w-10 rounded object-cover"
+        />
+      ) : (
+        <div className="flex h-10 w-10 items-center justify-center rounded bg-white">
+          <File02 className="size-5 text-tertiary" />
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm text-primary">{pendingAttachment.name}</p>
+        <p className="text-xs text-tertiary">{formatBytes(pendingAttachment.size)}</p>
+      </div>
+      <Button
+        type="button"
+        iconLeading={X}
+        size="sm"
+        color="tertiary"
+        onClick={() => setPendingAttachment(null)}
+        aria-label="Retirer la pièce jointe"
+      />
+    </div>
+  ) : null;
 
   const handleTypingStart = useCallback(() => {
     if (!selectedConversationId) return;
@@ -425,6 +504,29 @@ const MessagesPage = () => {
         const createdAt = msg.createdAt ?? new Date().toISOString();
         const normalizedStatus = (msg.status ?? 'sent').toLowerCase();
 
+        // Le composant MessageItem attend `image` / `attachment` (singulier) ;
+        // on dérive ces champs du tableau `attachments` renvoyé par l'API.
+        const atts = msg.attachments ?? [];
+        const imageAtt = atts.find(
+          (a: any) => a.type === 'IMAGE' || a.mimeType?.startsWith('image/'),
+        );
+        const fileAtt = atts.find((a: any) => a !== imageAtt);
+        const image = imageAtt
+          ? {
+              src: imageAtt.url,
+              alt: imageAtt.name,
+              name: imageAtt.name,
+              size: formatBytes(imageAtt.size),
+            }
+          : undefined;
+        const attachment = fileAtt
+          ? {
+              type: extFromName(fileAtt.name),
+              name: fileAtt.name,
+              size: formatBytes(fileAtt.size),
+            }
+          : undefined;
+
         return {
           id: msg.id,
           text: msg.content,
@@ -450,7 +552,8 @@ const MessagesPage = () => {
               r.users?.map((u: any) => `${u.firstName} ${u.lastName}`.trim()) ?? [],
           })),
           reply: msg.replyTo ? { text: msg.replyTo.content ?? '' } : undefined,
-          attachments: msg.attachments ?? [],
+          image,
+          attachment,
           editedAt: msg.editedAt,
           senderId: sender.id,
         };
@@ -793,6 +896,15 @@ const MessagesPage = () => {
                   </button>
                 )}
 
+                {/* Input fichier caché partagé (images + documents) */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.txt,.zip"
+                  onChange={handleFileSelected}
+                />
+
                 {/* Desktop Input */}
                 <Form
                   onSubmit={e => {
@@ -824,6 +936,7 @@ const MessagesPage = () => {
                       />
                     </div>
                   )}
+                  {attachmentPreview}
                   <TextArea
                     aria-label="Message"
                     name="message"
@@ -844,11 +957,20 @@ const MessagesPage = () => {
                     }}
                     onBlur={handleTypingStop}
                   />
-                  <div className="flex justify-end mt-3">
+                  <div className="mt-3 flex items-center justify-between">
+                    <Button
+                      type="button"
+                      iconLeading={Paperclip}
+                      size="md"
+                      color="tertiary"
+                      onClick={() => fileInputRef.current?.click()}
+                      isDisabled={uploadAttachment.isPending}
+                      aria-label="Joindre un fichier"
+                    />
                     <Button
                       type="submit"
                       size="md"
-                      isDisabled={sendMessage.isPending}
+                      isDisabled={sendMessage.isPending || uploadAttachment.isPending}
                     >
                       {sendMessage.isPending
                         ? 'Envoi...'
@@ -889,7 +1011,16 @@ const MessagesPage = () => {
                       />
                     </div>
                   )}
+                  {attachmentPreview}
                   <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      iconLeading={Paperclip}
+                      color="tertiary"
+                      onClick={() => fileInputRef.current?.click()}
+                      isDisabled={uploadAttachment.isPending}
+                      aria-label="Joindre un fichier"
+                    />
                     <Input
                       name="message"
                       placeholder={
@@ -908,7 +1039,7 @@ const MessagesPage = () => {
                     <Button
                       type="submit"
                       iconLeading={Send01}
-                      isDisabled={sendMessage.isPending}
+                      isDisabled={sendMessage.isPending || uploadAttachment.isPending}
                     />
                   </div>
                 </Form>

@@ -6,6 +6,8 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { LoggerProvider } from '../common/logger/logger.provider';
 import { SessionsModule } from '../sessions/sessions.module';
 import { ProfileConnectionModule } from '../profile-connection/profile-connection.module';
+import { StorageModule } from '../storage/storage.module';
+import { FileModule } from '../file/file.module';
 
 // Handlers
 import { ListConversationsHandler } from './handlers/list-conversations.handler';
@@ -19,7 +21,13 @@ import { CreateReactionHandler } from './handlers/create-reaction.handler';
 import { DeleteReactionHandler } from './handlers/delete-reaction.handler';
 
 @Module({
-  imports: [PrismaModule, SessionsModule, ProfileConnectionModule],
+  imports: [
+    PrismaModule,
+    SessionsModule,
+    ProfileConnectionModule,
+    StorageModule,
+    FileModule,
+  ],
   controllers: [MessagingController],
   providers: [
     LoggerProvider,

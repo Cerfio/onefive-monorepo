@@ -20,6 +20,43 @@ import {
   MessagingException,
 } from './messaging.exception';
 
+// Valid AttachmentType enum values (subset of MessageType).
+const ATTACHMENT_TYPES = ['IMAGE', 'FILE', 'AUDIO', 'VIDEO'];
+
+// Extension par mimeType pour donner un nom d'affichage lisible aux pièces
+// jointes (le modèle File ne stocke pas le nom d'origine — pas de migration).
+const MIME_EXTENSION: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/gif': 'gif',
+  'image/webp': 'webp',
+  'image/svg+xml': 'svg',
+  'application/pdf': 'pdf',
+  'application/msword': 'doc',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+    'docx',
+  'application/vnd.ms-excel': 'xls',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'application/vnd.ms-powerpoint': 'ppt',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+    'pptx',
+  'text/csv': 'csv',
+  'text/plain': 'txt',
+  'application/zip': 'zip',
+};
+
+/**
+ * Nom d'affichage d'une pièce jointe. Le nom de fichier d'origine n'est pas
+ * persisté (File n'a pas de colonne name), on dérive donc un libellé + extension
+ * depuis le type/mimeType. Les images sont rendues inline, le nom y est secondaire.
+ */
+function attachmentDisplayName(type: string, mimeType: string): string {
+  const ext = MIME_EXTENSION[mimeType];
+  const isImage = type === 'IMAGE' || mimeType.startsWith('image/');
+  const base = isImage ? 'Image' : 'Document';
+  return ext ? `${base}.${ext}` : isImage ? 'Image' : 'Fichier';
+}
+
 @Injectable()
 export class MessagingService {
   constructor(
@@ -589,8 +626,10 @@ export class MessagingService {
         attachments: msg.attachments.map((att) => ({
           id: att.id,
           type: att.type,
-          url: `${process.env.STORAGE_URL}/${att.file.bucket}`,
-          name: att.file.bucket,
+          url:
+            att.file.url ||
+            `${process.env.STORAGE_URL}/${att.file.bucket}/${att.file.id}`,
+          name: attachmentDisplayName(att.type, att.file.mimeType),
           size: att.file.size,
           mimeType: att.file.mimeType,
         })),
@@ -662,19 +701,28 @@ export class MessagingService {
         });
       }
 
+      // MessageType and AttachmentType only overlap on IMAGE/FILE/AUDIO/VIDEO.
+      // With an attachment, coerce a TEXT/unknown message type to FILE so neither
+      // enum is violated; the attachment's own type is always a valid one.
+      const messageType =
+        attachmentId && !ATTACHMENT_TYPES.includes(type) ? 'FILE' : type;
+      const attachmentType = ATTACHMENT_TYPES.includes(messageType)
+        ? messageType
+        : 'FILE';
+
       const message = await this.prisma.message.create({
         data: {
           conversationId,
           senderId: currentProfileId,
           content,
-          type: type as any,
+          type: messageType as any,
           status: 'SENT',
           replyToId,
           ...(attachmentId && {
             attachments: {
               create: {
                 fileId: attachmentId,
-                type: type as any,
+                type: attachmentType as any,
               },
             },
           }),
@@ -740,8 +788,10 @@ export class MessagingService {
         attachments: message.attachments.map((att) => ({
           id: att.id,
           type: att.type,
-          url: `${process.env.STORAGE_URL}/${att.file.bucket}`,
-          name: att.file.bucket,
+          url:
+            att.file.url ||
+            `${process.env.STORAGE_URL}/${att.file.bucket}/${att.file.id}`,
+          name: attachmentDisplayName(att.type, att.file.mimeType),
           size: att.file.size,
           mimeType: att.file.mimeType,
         })),

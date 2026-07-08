@@ -237,6 +237,7 @@ export const useSendMessage = () => {
       _optimistic?: {
         tempId: string;
         sender: MessageSender;
+        attachments?: MessageAttachment[];
       };
     }) => {
       const { _optimistic, ...sendData } = data;
@@ -272,7 +273,7 @@ export const useSendMessage = () => {
           editedAt: null,
           sender: variables._optimistic.sender,
           replyTo: null,
-          attachments: [],
+          attachments: variables._optimistic.attachments ?? [],
           reactions: [],
           isRead: false,
           readCount: 0,
@@ -344,6 +345,46 @@ export const useSendMessage = () => {
         );
       }
       toast.error(`Erreur: ${error.message}`);
+    },
+  });
+};
+
+/**
+ * Résultat d'un upload de pièce jointe : l'`id` (File) sert d'`attachmentId`
+ * pour POST /messages, les autres champs alimentent l'aperçu optimiste.
+ */
+export interface UploadedAttachment {
+  id: string;
+  url: string;
+  name: string;
+  size: number;
+  mimeType: string;
+  type: 'IMAGE' | 'FILE';
+}
+
+/**
+ * Uploade une pièce jointe (image ou document, ≤10 Mo) AVANT l'envoi du message.
+ * Le fichier est stocké + une ligne File créée côté serveur ; on récupère l'id.
+ */
+export const useUploadMessageAttachment = () => {
+  return useMutation({
+    mutationFn: async (file: File): Promise<UploadedAttachment> => {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await api.post('messaging/attachments/upload', {
+        body: formData,
+      });
+      const result = (await response.json()) as ApiResponse<UploadedAttachment>;
+
+      if (!result.success) {
+        throw new Error(result.error || "Échec de l'upload");
+      }
+
+      return result.data;
+    },
+    onError: (error: Error) => {
+      toast.error(`Pièce jointe : ${error.message}`);
     },
   });
 };

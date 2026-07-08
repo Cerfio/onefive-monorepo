@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   HttpCode,
   NotFoundException,
+  PayloadTooLargeException,
   Post,
   Put,
   Delete,
@@ -11,15 +13,19 @@ import {
   Query,
   Req,
   Sse,
+  UnsupportedMediaTypeException,
   UseGuards,
   MessageEvent,
 } from '@nestjs/common';
 import { Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Throttle } from '@nestjs/throttler';
+import type { FastifyRequest } from 'fastify';
 import { SessionGuard } from '../common/guards/session-guard/session.guard';
 import { FastifyRequestUserId } from 'src/types/fastify-request-user-id';
 import { PrismaService } from '../prisma/prisma.service';
+import { StorageService } from '../storage/storage.service';
+import { FileService } from '../file/file.service';
 
 // Handlers
 import { ListConversationsHandler } from './handlers/list-conversations.handler';
@@ -48,6 +54,21 @@ import {
 } from './dto';
 import { ApiResponseDto } from '../common/dto';
 
+// Pièces jointes : images + documents courants, ≤10 Mo.
+const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+const ALLOWED_DOC_MIME_TYPES = new Set<string>([
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'text/csv',
+  'text/plain',
+  'application/zip',
+]);
+
 @Controller('messaging')
 @UseGuards(SessionGuard)
 export class MessagingController {
@@ -64,6 +85,8 @@ export class MessagingController {
     private readonly deleteReactionHandler: DeleteReactionHandler,
     private readonly messagingService: MessagingService,
     private readonly events: MessagingEventsService,
+    private readonly storageService: StorageService,
+    private readonly fileService: FileService,
   ) {}
 
   private async getProfileIdFromUserId(userId: string): Promise<string> {
@@ -114,6 +137,83 @@ export class MessagingController {
     if (!isMember) return;
 
     await this.events.notifyTyping(body.conversationId, profileId, body.state);
+  }
+
+  // ==================== ATTACHMENTS (upload avant l'envoi du message) ====================
+
+  /**
+   * Uploade une pièce jointe (image ou document, ≤10 Mo) et persiste une ligne
+   * File. Renvoie l'`id` à repasser comme `attachmentId` de POST /messages, plus
+   * les métadonnées pour l'affichage optimiste côté client.
+   */
+  @Post('attachments/upload')
+  @Throttle({
+    short: { limit: 5, ttl: 1000 },
+    medium: { limit: 30, ttl: 60000 },
+    long: { limit: 100, ttl: 3600000 },
+  })
+  async uploadAttachment(
+    @Req() req: FastifyRequest & FastifyRequestUserId & { id: string },
+  ): Promise<
+    ApiResponseDto<{
+      id: string;
+      url: string;
+      name: string;
+      size: number;
+      mimeType: string;
+      type: 'IMAGE' | 'FILE';
+    }>
+  > {
+    const data = await (
+      req as unknown as { file: () => Promise<any> }
+    ).file();
+    if (!data) {
+      throw new BadRequestException('Aucun fichier fourni');
+    }
+
+    const buffer: Buffer = await data.toBuffer();
+    const mimeType: string = data.mimetype;
+
+    if (buffer.length > MAX_ATTACHMENT_BYTES) {
+      throw new PayloadTooLargeException('Fichier trop volumineux (max 10 Mo)');
+    }
+
+    const isImage = mimeType.startsWith('image/');
+    if (!isImage && !ALLOWED_DOC_MIME_TYPES.has(mimeType)) {
+      throw new UnsupportedMediaTypeException(
+        'Type de fichier non supporté (images et documents uniquement)',
+      );
+    }
+
+    const bucketName = process.env.R2_BUCKET_NAME || 'onefive-storage';
+
+    const uploaded = await this.storageService.uploadFile({
+      transactionId: req.id,
+      data: { buffer, filename: data.filename, mimeType, bucketName },
+    });
+
+    await this.fileService.create({
+      transactionId: req.id,
+      data: {
+        id: uploaded.id,
+        size: buffer.length,
+        mimeType,
+        bucket: bucketName,
+        url: uploaded.url,
+      },
+    });
+
+    return {
+      success: true,
+      data: {
+        id: uploaded.id,
+        url: uploaded.url,
+        name: data.filename,
+        size: buffer.length,
+        mimeType,
+        type: isImage ? 'IMAGE' : 'FILE',
+      },
+    };
   }
 
   // ==================== CONVERSATIONS ====================
