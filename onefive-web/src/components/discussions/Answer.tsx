@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Triangle, MoreHorizontal, Pencil, Trash2, Share2, Flag } from 'lucide-react';
+import { Triangle, MoreHorizontal, Pencil, Trash2, Share2, Flag, MessageCircle } from 'lucide-react';
 import { ReportModal } from '@/components/modals/ReportModal';
 import { useFormatter } from 'next-intl';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,6 +12,7 @@ import DiscussionMiniProfile from '@/components/discussions/DiscussionMiniProfil
 import ReplyItem from '@/components/discussions/ReplyItem';
 import { DiscussionAnswerInfer, SpecificDiscussionInfer, createReactionAnswer, deleteReactionAnswer, createUpvoteAnswer, deleteUpvoteAnswer, createReply, updateAnswer, deleteAnswer } from '@/queries/discussion';
 import { selfProfileType } from '@/queries/profile';
+import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
 import { Reaction } from '@/enums';
 import NumberFlow from '@number-flow/react';
 import { toast } from 'sonner';
@@ -38,6 +39,7 @@ const Answer = ({
   viewerId: string | null;
 }) => {
   const [showReply, setShowReply] = useState(false);
+  const { navigateToConversation } = useNavigateToConversation();
   const [isUpvoted, setIsUpvoted] = useState(answer.hasUpvote);
   const [upvoteCount, setUpvoteCount] = useState(answer.upvoteCount);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -726,7 +728,18 @@ const Answer = ({
               <div className="cursor-pointer hover:text-primary-700" onClick={() => setShowReply(true)}>
                 Reply
               </div>
-              
+
+              {/* CTA d'entraide : contacter l'auteur de la réponse (pas soi-même) */}
+              {!answer.isAuthor && answer.profile?.id && (
+                <div
+                  className="flex cursor-pointer items-center gap-1 hover:text-primary-700"
+                  onClick={() => navigateToConversation(answer.profile!.id)}
+                >
+                  <MessageCircle className="h-3.5 w-3.5" />
+                  Message
+                </div>
+              )}
+
               {/* Dropdown pour les autres actions */}
               <Dropdown.Root>
                 <Button color="tertiary" size="sm" iconLeading={<MoreHorizontal data-icon />} className="h-6 w-6 p-0" />
