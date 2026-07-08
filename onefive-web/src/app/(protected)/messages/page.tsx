@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   Paperclip,
   File02,
+  InfoCircle,
 } from '@untitledui/icons';
 import { ListBox, ListBoxItem, type ListBoxItemProps } from 'react-aria-components';
 import { ContentDivider } from '@/components/content-divider/content-divider';
@@ -29,6 +30,7 @@ import Navbar from '@/components/navbar';
 import { toast } from 'sonner';
 import { CreateConversationModal } from '@/components/messages/CreateConversationModal';
 import { ConfirmModal } from '@/components/startup/modals/ConfirmModal';
+import { ConversationContextPanel } from '@/components/messaging/ConversationContextPanel';
 import {
   useConversations,
   useMessages,
@@ -171,6 +173,7 @@ const MessagesPage = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [pendingAttachment, setPendingAttachment] = useState<UploadedAttachment | null>(null);
   const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
+  const [showContextPanel, setShowContextPanel] = useState(false);
 
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -655,6 +658,12 @@ const MessagesPage = () => {
         onConversationCreated={handleConversationCreated}
       />
 
+      <ConversationContextPanel
+        profileId={canViewSelectedProfile ? selectedParticipant?.id ?? null : null}
+        open={showContextPanel}
+        onClose={() => setShowContextPanel(false)}
+      />
+
       <ConfirmModal
         open={!!messageToDelete}
         onOpenChange={(open) => { if (!open) setMessageToDelete(null); }}
@@ -851,16 +860,26 @@ const MessagesPage = () => {
                     </div>
                   </div>
                   {canViewSelectedProfile && (
-                    <Button
-                      size="sm"
-                      color="tertiary"
-                      className="flex-shrink-0 hidden sm:inline-flex"
-                      onClick={() =>
-                        router.push(`/profile/${selectedParticipant?.id}`)
-                      }
-                    >
-                      Voir le profil
-                    </Button>
+                    <>
+                      <Button
+                        size="sm"
+                        color="tertiary"
+                        className="flex-shrink-0 hidden sm:inline-flex"
+                        onClick={() =>
+                          router.push(`/profile/${selectedParticipant?.id}`)
+                        }
+                      >
+                        Voir le profil
+                      </Button>
+                      <Button
+                        size="sm"
+                        color="tertiary"
+                        iconLeading={InfoCircle}
+                        className="flex-shrink-0"
+                        onClick={() => setShowContextPanel(true)}
+                        aria-label="Infos sur l'interlocuteur"
+                      />
+                    </>
                   )}
                 </div>
 
