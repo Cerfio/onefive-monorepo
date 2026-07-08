@@ -1,6 +1,7 @@
 import WithAuth from '@/providers/withAuth';
 import { FeedFilterProvider } from '@/contexts/FeedFilterContext';
 import ChatWidget from '@/app/(protected)/support/components/ChatWidget';
+import { CommandPalette } from '@/components/CommandPalette';
 
 export default function ProtectedLayout({
   children,
@@ -10,6 +11,7 @@ export default function ProtectedLayout({
   return (
     <WithAuth>
       <FeedFilterProvider>{children}</FeedFilterProvider>
+      <CommandPalette />
       <ChatWidget />
     </WithAuth>
   );
