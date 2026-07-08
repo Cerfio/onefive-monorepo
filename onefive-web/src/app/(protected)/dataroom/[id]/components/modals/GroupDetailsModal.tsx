@@ -102,7 +102,6 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
     useEffect(() => {
         setPermissions(normalizePerms(group));
         setPermissionsSaved(false);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [group?.categoryAccess, group?.categoryPermissions]);
 
     if (!group) return null;
