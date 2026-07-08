@@ -55,6 +55,32 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
   const contentValue = watch('content');
   const mediaFiles = watch('medias');
 
+  // Brouillon persistant (par appareil) : on restaure le texte au montage puis
+  // on l'enregistre à chaque frappe. Nettoyé à la publication (resetForm).
+  const draftRestored = useRef(false);
+  useEffect(() => {
+    if (draftRestored.current) return;
+    draftRestored.current = true;
+    try {
+      const saved = localStorage.getItem('post-draft');
+      if (saved && saved.trim()) setValue('content', saved);
+    } catch {
+      /* localStorage indisponible */
+    }
+  }, [setValue]);
+
+  useEffect(() => {
+    try {
+      if (contentValue && contentValue.trim()) {
+        localStorage.setItem('post-draft', contentValue);
+      } else {
+        localStorage.removeItem('post-draft');
+      }
+    } catch {
+      /* localStorage indisponible */
+    }
+  }, [contentValue]);
+
   const hasContent = contentValue && contentValue.trim().length > 0;
   const isSubmitDisabled = isCreatingPost || !hasContent;
 
