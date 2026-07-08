@@ -18,6 +18,8 @@ import { useSearchParams } from 'next/navigation';
 import { setCookie } from 'cookies-next';
 import { ReferralBanner, type Referrer } from '@/components/waitlist/ReferralBanner';
 import { getReferrerByCode } from '@/queries/waitlist';
+import { initiateOAuth } from '@/utils/oauth-csrf';
+import { toast } from 'sonner';
 import posthog from 'posthog-js';
 
 const Signup = () => {
@@ -83,6 +85,15 @@ const Signup = () => {
       label: labels[Math.min(score - 1, 4)] || '',
       color: colors[Math.min(score - 1, 4)] || 'bg-gray-200',
     };
+  }, []);
+
+  const handleOAuthClick = useCallback(async (provider: 'linkedin' | 'google') => {
+    try {
+      posthog.capture('oauth_clicked', { provider });
+      await initiateOAuth(provider);
+    } catch {
+      toast.error(`Erreur lors de l'inscription ${provider === 'linkedin' ? 'LinkedIn' : 'Google'}`);
+    }
   }, []);
 
   const passwordValue = watch('password');
@@ -248,6 +259,7 @@ const Signup = () => {
             theme="color"
             size="lg"
             aria-label="Sign up with Google"
+            onClick={() => handleOAuthClick('google')}
             className="w-20 h-11 sm:w-28"
           />
         </div>
@@ -257,6 +269,7 @@ const Signup = () => {
             theme="color"
             size="lg"
             aria-label="Sign up with LinkedIn"
+            onClick={() => handleOAuthClick('linkedin')}
             className="w-20 h-11 sm:w-28"
           />
         </div>
