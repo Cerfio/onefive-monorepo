@@ -8,6 +8,7 @@ import Navbar from '@/components/navbar';
 import { getCountryName } from '@/lib/country';
 
 import EditProfileHeaderModal from '@/components/profile/modals/EditProfileHeaderModal';
+import { ProfileCompletionCard } from '@/components/profile/ProfileCompletionCard';
 import EditAboutModal from '@/components/profile/modals/EditAboutModal';
 import EditSkillsInterestsModal from '@/components/profile/modals/EditSkillsInterestsModal';
 import EditAchievementsModal from '@/components/profile/modals/EditAchievementsModal';
@@ -468,6 +469,17 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
               {currentUser && (
                 <motion.div variants={cardVariants}>
                   <ProfileAnalyticsCard analytics={profileData.profileAnalytics} profileName={profileData.name} />
+                </motion.div>
+              )}
+
+              {currentUser && (
+                <motion.div variants={cardVariants}>
+                  <ProfileCompletionCard
+                    profileData={profileData}
+                    onEditHeader={() => setIsEditHeaderModalOpen(true)}
+                    onEditAbout={() => setIsEditAboutModalOpen(true)}
+                    onEditSkills={() => setIsEditSkillsModalOpen(true)}
+                  />
                 </motion.div>
               )}
 
