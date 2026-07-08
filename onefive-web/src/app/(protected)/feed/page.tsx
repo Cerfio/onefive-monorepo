@@ -3,6 +3,7 @@ import Navbar from '@/components/navbar';
 import { Post, FeedSkeleton } from '@/features/post/components/post';
 import { CreatePostButton } from '@/components/feed/CreatePostButton';
 import { CreatePostModal } from '@/components/feed/CreatePostModal';
+import { UnifiedComposerModal } from '@/components/feed/UnifiedComposerModal';
 import { CreateBuildInPublicModal } from '@/components/feed/CreateBuildInPublicModal';
 import CreatePostSkeleton from '@/features/post/components/CreatePostSkeleton';
 import { useFeed } from '@/features/post/hooks/queries';
@@ -625,10 +626,9 @@ export default function FeedPage() {
             </div>
 
             {/* Modale de création de post */}
-            <CreatePostModal
+            <UnifiedComposerModal
               open={isCreatePostModalOpen}
               onOpenChange={setIsCreatePostModalOpen}
-              onPostCreated={handlePostCreated}
             />
             {/* Modale de création de post Build in Public */}
             <CreateBuildInPublicModal
