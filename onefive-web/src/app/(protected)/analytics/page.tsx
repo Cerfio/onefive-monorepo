@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import type { Key } from "react-aria-components";
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import Navbar from '@/components/navbar';
 import { Tooltip, TooltipTrigger } from '@/components/base/tooltip/tooltip';
@@ -717,6 +718,7 @@ const AnalyticsPage = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   // Tabs configuration
 const tabs = [
@@ -742,13 +744,21 @@ const tabs = [
     router.replace(`${pathname}?${next.toString()}`);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setIsRefreshing(true);
-    // Les hooks react-query vont automatiquement refetch
-    setTimeout(() => {
-      setIsRefreshing(false);
+    try {
+      // Refetch réel des requêtes analytics de l'onglet actif
+      await queryClient.invalidateQueries({
+        predicate: (query) =>
+          typeof query.queryKey[0] === 'string' &&
+          (query.queryKey[0] as string).endsWith('-analytics'),
+      });
       toast.success("Données d'analyse à jour !");
-    }, 1000);
+    } catch {
+      toast.error('Impossible de rafraîchir les données');
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   return (

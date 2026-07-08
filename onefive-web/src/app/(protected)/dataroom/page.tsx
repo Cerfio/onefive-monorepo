@@ -12,7 +12,6 @@ import {
     Eye,
     Clock,
     BarChart01 as BarChart2,
-    Settings01 as Settings,
     LogOut01 as LogOut,
 } from "@untitledui/icons";
 import { Info } from "lucide-react";
@@ -349,9 +348,6 @@ const DataroomListPage = () => {
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item icon={Eye} onAction={navigateTo(`/dataroom/${dataroom.id}`)}>
                                                             Voir la dataroom
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item icon={Settings} onAction={navigateTo(`/dataroom/${dataroom.id}/settings`)}>
-                                                            Paramètres
                                                         </Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown.Popover>
