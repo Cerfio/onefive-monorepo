@@ -17,6 +17,7 @@ import { DataroomFileSignedUrlModule } from './dataroom-file-signed-url/dataroom
 import { DataroomCategoryModule } from './dataroom-category/dataroom-category.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { SessionsModule } from '../sessions/sessions.module';
+import { NotificationModule } from '../notification/notification.module';
 import { LoggerProvider } from '../common/logger/logger.provider';
 import { DataroomMemberGuard } from './guards/dataroom-member.guard';
 import { DataroomOwnerGuard } from './guards/dataroom-owner.guard';
@@ -28,6 +29,7 @@ import { DataroomOwnerGuard } from './guards/dataroom-owner.guard';
     FileModule,
     DataroomFileSignedUrlModule,
     DataroomCategoryModule,
+    NotificationModule,
   ],
   controllers: [DataroomController],
   providers: [
