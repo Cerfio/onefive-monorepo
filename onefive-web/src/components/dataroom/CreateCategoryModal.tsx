@@ -19,7 +19,21 @@ interface CreateCategoryModalProps {
         isLoading: boolean;
     };
     dataroom?: Dataroom;
+    onApplyTemplate?: (names: string[]) => void;
+    isApplyingTemplate?: boolean;
 }
+
+// Jeux de catégories-types selon le type de data room.
+const CATEGORY_TEMPLATES: { label: string; categories: string[] }[] = [
+    {
+        label: 'Levée de fonds',
+        categories: ['Pitch Deck', 'Financials', 'Cap Table', 'Juridique', 'Équipe', 'Produit & Tech', 'Marché'],
+    },
+    {
+        label: 'Due diligence',
+        categories: ['Corporate', 'Financier', 'Juridique', 'Fiscal', 'RH', 'Commercial', 'Propriété intellectuelle'],
+    },
+];
 
 export const CreateCategoryModal = ({
     isOpen,
@@ -31,6 +45,8 @@ export const CreateCategoryModal = ({
     handleCreateCategory,
     createCategoryMutation,
     dataroom,
+    onApplyTemplate,
+    isApplyingTemplate = false,
 }: CreateCategoryModalProps) => {
     const handleClose = () => {
         setCategoryError("");
@@ -92,6 +108,31 @@ export const CreateCategoryModal = ({
                                     hint={categoryError}
                                     isRequired
                                 />
+
+                                {onApplyTemplate && (
+                                    <div className="mt-5 border-t border-gray-100 pt-4">
+                                        <p className="text-xs font-medium text-tertiary mb-2">
+                                            Ou partez d&apos;un modèle
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {CATEGORY_TEMPLATES.map((tpl) => (
+                                                <Button
+                                                    key={tpl.label}
+                                                    color="secondary"
+                                                    size="sm"
+                                                    isDisabled={isApplyingTemplate || createCategoryMutation.isLoading}
+                                                    onClick={() => onApplyTemplate(tpl.categories)}
+                                                >
+                                                    {tpl.label} ({tpl.categories.length})
+                                                </Button>
+                                            ))}
+                                        </div>
+                                        {isApplyingTemplate && (
+                                            <p className="mt-2 text-xs text-tertiary">Application du modèle…</p>
+                                        )}
+                                    </div>
+                                )}
+
                                 <div className="z-10 flex flex-1 flex-col-reverse gap-3 p-4 pt-6 *:grow sm:grid sm:grid-cols-2 sm:px-0 sm:pt-8 sm:pb-6">
                                     <Button
                                         color="secondary"

@@ -5,7 +5,7 @@ import OnefiveLogo from '@/images/onefiveLogo.png';
 import { Button } from "@/components/base/buttons/button";
 import Navbar from '@/components/navbar';
 import { Skeleton } from "@/components/base/skeleton/skeleton";
-import { getDataroom, getDataroomFiles, getSignedUrl, deleteFile as deleteFileApi } from "@/queries/dataroom";
+import { getDataroom, getDataroomFiles, getSignedUrl, deleteFile as deleteFileApi, createCategory } from "@/queries/dataroom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import "@cyntler/react-doc-viewer/dist/index.css";
@@ -320,6 +320,34 @@ const DataroomPage = () => {
             onSuccess: () => { modals.setIsCreateCategoryModalOpen(false); modals.resetCategoryForm(); },
             onError: () => modals.setCategoryError("Erreur lors de la création"),
         });
+    };
+
+    // Modèle de data room : crée en une fois un jeu de catégories-types de
+    // levée (celles qui n'existent pas déjà).
+    const [isApplyingTemplate, setIsApplyingTemplate] = useState(false);
+    const handleApplyCategoryTemplate = async (names: string[]) => {
+        const existing = new Set(
+            categories.map((c) => (c.name || '').toLowerCase()),
+        );
+        const toCreate = names.filter((n) => !existing.has(n.toLowerCase()));
+        if (toCreate.length === 0) {
+            toast.info('Ces catégories existent déjà');
+            return;
+        }
+        setIsApplyingTemplate(true);
+        try {
+            for (const name of toCreate) {
+                await createCategory({ dataroomId, name });
+            }
+            queryClient.invalidateQueries({ queryKey: ["dataroom", dataroomId] });
+            queryClient.invalidateQueries({ queryKey: ["dataroom-files", dataroomId] });
+            toast.success(`${toCreate.length} catégorie${toCreate.length > 1 ? 's' : ''} ajoutée${toCreate.length > 1 ? 's' : ''}`);
+            modals.setIsCreateCategoryModalOpen(false);
+        } catch {
+            toast.error("Erreur lors de l'application du modèle");
+        } finally {
+            setIsApplyingTemplate(false);
+        }
     };
 
     // --- Group handlers ---
@@ -770,6 +798,8 @@ const DataroomPage = () => {
                 handleCreateCategory={handleCreateCategory}
                 createCategoryMutation={mutations.createCategory}
                 dataroom={adaptedDataroom}
+                onApplyTemplate={handleApplyCategoryTemplate}
+                isApplyingTemplate={isApplyingTemplate}
             />
 
             <CreateGroupWithStepsModal
