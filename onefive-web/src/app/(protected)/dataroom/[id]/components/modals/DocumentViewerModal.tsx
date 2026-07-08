@@ -2,6 +2,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/base/dialog/dialog";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { DataroomWatermark } from "@/components/dataroom/DataroomWatermark";
 
 interface DocumentViewerModalProps {
     isOpen: boolean;
@@ -24,7 +25,8 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                 <DialogHeader>
                     <DialogTitle>{currentDocument?.fileName}</DialogTitle>
                 </DialogHeader>
-                <div className="ph-no-capture flex-1 h-full">
+                <div className="ph-no-capture relative flex-1 h-full">
+                    {currentDocument && currentDocument.uri && <DataroomWatermark />}
                     {currentDocument && currentDocument.uri && (
                         <DocViewer
                             documents={[{

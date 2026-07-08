@@ -13,6 +13,7 @@ import {
 } from "@/utils/file-utils";
 import { useFileSecurity } from "@/hooks/useFileSecurity";
 import { useKeyboardShortcuts, type KeyboardShortcut } from "@/hooks/useKeyboardShortcuts";
+import { DataroomWatermark } from "@/components/dataroom/DataroomWatermark";
 import PDFViewer from "@/viewers/PDFViewer";
 import DocxViewer from "@/viewers/DocxViewer";
 import ImageViewer from "@/viewers/ImageViewer";
@@ -376,6 +377,8 @@ const FileViewerPage = () => {
                 categoryName={file?.category?.name}
                 onBackToDataroom={handleBackToDataroom}
             />
+            <div className="relative">
+            <DataroomWatermark />
             {isPDFFile(document.mimetype) ? (
                 <PDFViewer {...sharedViewerProps} />
             ) : isDocxFile(document.mimetype) ? (
@@ -402,6 +405,7 @@ const FileViewerPage = () => {
                     </div>
                 </div>
             )}
+            </div>
             <SecurityAlert />
         </div>
     );
