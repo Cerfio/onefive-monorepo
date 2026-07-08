@@ -249,12 +249,29 @@ const Spotlight = () => {
   const [distanceFilter, setDistanceFilter] = useState(() => searchParams.get('distance') || '25');
   
   // États d'interaction
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set();
+    try {
+      const raw = localStorage.getItem('spotlight-favorites');
+      return raw ? new Set<string>(JSON.parse(raw)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
   const [_savedSearches, setSavedSearches] = useState<Set<string>>(new Set());
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [hoveredSpotId, setHoveredSpotId] = useState<string | null>(null);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(true);
+
+  // Persist favorites across refreshes (per-device; upgradeable to a backend list later).
+  useEffect(() => {
+    try {
+      localStorage.setItem('spotlight-favorites', JSON.stringify([...favorites]));
+    } catch {
+      // ignore storage errors (quota / private mode)
+    }
+  }, [favorites]);
   
   const [mapCenter, setMapCenter] = useState<MapCenter>({
     lat: searchParams.get('lat') ? parseFloat(searchParams.get('lat') as string) : 48.833395046212416,
