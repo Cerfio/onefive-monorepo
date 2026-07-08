@@ -422,6 +422,9 @@ const DataroomPage = () => {
                     categoryAccess: data.permissions?.reduce((acc: Record<string, boolean>, p: any) => {
                         acc[p.categoryId] = p.canView; return acc;
                     }, {}) || {},
+                    categoryPermissions: data.permissions?.reduce((acc: Record<string, { canView: boolean; canDownload: boolean; canComment: boolean }>, p: any) => {
+                        acc[p.categoryId] = { canView: !!p.canView, canDownload: !!p.canDownload, canComment: !!p.canComment }; return acc;
+                    }, {}) || {},
                     files: [],
                 });
                 modals.setIsGroupDetailsModalOpen(true);
@@ -430,13 +433,18 @@ const DataroomPage = () => {
         });
     };
 
-    const handleUpdatePermissions = (groupId: string, permissions: Record<string, boolean>) => {
-        const formatted = Object.entries(permissions).map(([categoryId, hasAccess]) => ({
-            categoryId, canView: hasAccess, canDownload: hasAccess, canComment: hasAccess,
+    const handleUpdatePermissions = (
+        groupId: string,
+        permissions: Record<string, { canView: boolean; canDownload: boolean; canComment: boolean }>,
+    ) => {
+        const formatted = Object.entries(permissions).map(([categoryId, p]) => ({
+            categoryId, canView: p.canView, canDownload: p.canDownload, canComment: p.canComment,
         }));
         mutations.updateGroupPermissions.mutate({ groupId, permissions: formatted });
         setGroups(prev => prev.map(g =>
-            g.id === groupId ? { ...g, categoryAccess: permissions } : g
+            g.id === groupId
+                ? { ...g, categoryAccess: Object.fromEntries(Object.entries(permissions).map(([k, p]) => [k, p.canView])) }
+                : g
         ));
     };
 

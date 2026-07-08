@@ -55,6 +55,8 @@ export interface Group {
     members: Member[];
     invitations: Invitation[];
     categoryAccess: Record<string, boolean>;
+    // Granular per-category permissions (optional; falls back to categoryAccess for view).
+    categoryPermissions?: Record<string, { canView: boolean; canDownload: boolean; canComment: boolean }>;
     files: DataroomFile[];
 }
 

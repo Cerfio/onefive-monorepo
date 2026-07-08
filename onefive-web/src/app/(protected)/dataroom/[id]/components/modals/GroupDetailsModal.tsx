@@ -24,15 +24,35 @@ import { CloseButton } from "@/components/base/buttons/close-button";
 import { useSearchProfiles } from '@/hooks/useSearchProfiles';
 import { toast } from 'sonner';
 
+// Granular per-category access: view is the base, download/comment require view.
+type CatPerm = { canView: boolean; canDownload: boolean; canComment: boolean };
+const emptyPerm = (): CatPerm => ({ canView: false, canDownload: false, canComment: false });
+
+// Build the 3-flag permission map from the group (falls back to the legacy
+// view-only categoryAccess for backwards compatibility).
+const normalizePerms = (
+    g: (Group & { categoryPermissions?: Record<string, CatPerm> }) | null,
+): Record<string, CatPerm> => {
+    if (g?.categoryPermissions) {
+        return Object.fromEntries(
+            Object.entries(g.categoryPermissions).map(([k, v]) => [k, { ...v }]),
+        );
+    }
+    const acc = g?.categoryAccess || {};
+    return Object.fromEntries(
+        Object.entries(acc).map(([k, v]) => [k, { canView: !!v, canDownload: false, canComment: false }]),
+    );
+};
+
 interface GroupDetailsModalProps {
     isOpen: boolean;
     onClose: () => void;
-    group: Group | null;
+    group: (Group & { categoryPermissions?: Record<string, CatPerm> }) | null;
     onInvite: (groupId: string, email: string, name?: string) => void;
     onInvitationResponse: (groupId: string, invitationId: string, status: 'accepted' | 'refused') => void;
     onRemoveMember?: (groupId: string, memberId: string) => void;
     onCancelInvitation?: (groupId: string, invitationId: string) => void;
-    onUpdatePermissions?: (groupId: string, permissions: { [categoryId: string]: boolean }) => void;
+    onUpdatePermissions?: (groupId: string, permissions: Record<string, CatPerm>) => void;
     categories?: Array<{
         id: string;
         name: string;
@@ -63,8 +83,8 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
     
     const [selectedTab, setSelectedTab] = useState('members');
     
-    const [permissions, setPermissions] = useState<{ [categoryId: string]: boolean }>(
-        group?.categoryAccess || {}
+    const [permissions, setPermissions] = useState<Record<string, CatPerm>>(
+        () => normalizePerms(group)
     );
 
     const [permissionsSaved, setPermissionsSaved] = useState(false);
@@ -80,11 +100,10 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
     const { data: searchResults, isLoading: isSearching } = useSearchProfiles(searchValue, 5);
 
     useEffect(() => {
-        if (group?.categoryAccess) {
-            setPermissions(group.categoryAccess);
-            setPermissionsSaved(false);
-        }
-    }, [group?.categoryAccess]);
+        setPermissions(normalizePerms(group));
+        setPermissionsSaved(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [group?.categoryAccess, group?.categoryPermissions]);
 
     if (!group) return null;
 
@@ -137,8 +156,16 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
         setShowInviteForm(false);
     };
 
-    const handlePermissionChange = (categoryId: string, hasAccess: boolean) => {
-        setPermissions(prev => ({ ...prev, [categoryId]: hasAccess }));
+    const handlePermissionChange = (categoryId: string, flag: keyof CatPerm, value: boolean) => {
+        setPermissions(prev => {
+            const cur = prev[categoryId] || emptyPerm();
+            let next: CatPerm = { ...cur, [flag]: value };
+            // View is the base access: removing it clears download & comment;
+            // enabling download/comment implies view.
+            if (flag === 'canView' && !value) next = emptyPerm();
+            if ((flag === 'canDownload' || flag === 'canComment') && value) next.canView = true;
+            return { ...prev, [categoryId]: next };
+        });
         setPermissionsSaved(false);
     };
 
@@ -150,25 +177,25 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
     };
 
     const handleSelectAllPermissions = () => {
-        const allPermissions: { [categoryId: string]: boolean } = { ...permissions };
+        const allPermissions: Record<string, CatPerm> = { ...permissions };
         categories.forEach(category => {
-            if (category.id !== 'all') allPermissions[category.id] = true;
+            if (category.id !== 'all') allPermissions[category.id] = { canView: true, canDownload: true, canComment: true };
         });
         setPermissions(allPermissions);
         setPermissionsSaved(false);
     };
 
     const handleDeselectAllPermissions = () => {
-        const noPermissions: { [categoryId: string]: boolean } = { ...permissions };
+        const noPermissions: Record<string, CatPerm> = { ...permissions };
         categories.forEach(category => {
-            if (category.id !== 'all') noPermissions[category.id] = false;
+            if (category.id !== 'all') noPermissions[category.id] = emptyPerm();
         });
         setPermissions(noPermissions);
         setPermissionsSaved(false);
     };
 
     const pendingInvitations = group.invitations?.filter(inv => inv.status === InvitationStatus.PENDING) || [];
-    const enabledPermissionsCount = Object.values(permissions).filter(Boolean).length;
+    const enabledPermissionsCount = Object.values(permissions).filter((p) => p.canView).length;
     const totalCategories = categories.filter(cat => cat.id !== 'all').length;
 
     const tabs = [
@@ -542,12 +569,25 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
                                                                 </p>
                                                             </div>
                                                         </div>
-                                                        <Checkbox 
-                                                            isSelected={permissions[category.id] || false}
-                                                            onChange={(checked) => 
-                                                                handlePermissionChange(category.id, checked)
-                                                            }
-                                                        />
+                                                        <div className="flex flex-wrap gap-x-4 gap-y-1 justify-end shrink-0">
+                                                            {([
+                                                                { flag: 'canView' as const, label: 'Voir' },
+                                                                { flag: 'canDownload' as const, label: 'Télécharger' },
+                                                                { flag: 'canComment' as const, label: 'Commenter' },
+                                                            ]).map(({ flag, label }) => {
+                                                                const perm = permissions[category.id] || emptyPerm();
+                                                                const disabled = flag !== 'canView' && !perm.canView;
+                                                                return (
+                                                                    <Checkbox
+                                                                        key={flag}
+                                                                        isSelected={perm[flag]}
+                                                                        isDisabled={disabled}
+                                                                        onChange={(checked) => handlePermissionChange(category.id, flag, checked)}
+                                                                        label={label}
+                                                                    />
+                                                                );
+                                                            })}
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
