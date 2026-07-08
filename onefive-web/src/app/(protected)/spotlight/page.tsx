@@ -2,7 +2,12 @@
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
+import {
+  listSpotlightFavorites,
+  toggleSpotlightFavorite,
+  getSpotlightSocialProof,
+} from '@/queries/spotlightFavorites';
 import { toast } from 'sonner';
 import { LoadScript } from '@react-google-maps/api';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -264,7 +269,7 @@ const Spotlight = () => {
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(true);
 
-  // Persist favorites across refreshes (per-device; upgradeable to a backend list later).
+  // Persist favorites across refreshes (localStorage = cache instantané).
   useEffect(() => {
     try {
       localStorage.setItem('spotlight-favorites', JSON.stringify([...favorites]));
@@ -272,6 +277,18 @@ const Spotlight = () => {
       // ignore storage errors (quota / private mode)
     }
   }, [favorites]);
+
+  // Source de vérité = backend (persistance cross-device + preuve sociale).
+  const { data: serverFavorites } = useQuery({
+    queryKey: ['spotlight-favorites'],
+    queryFn: listSpotlightFavorites,
+    staleTime: 1000 * 60 * 5,
+  });
+  useEffect(() => {
+    if (serverFavorites) setFavorites(new Set(serverFavorites));
+  }, [serverFavorites]);
+
+  const toggleFavoriteMut = useMutation({ mutationFn: toggleSpotlightFavorite });
   
   const [mapCenter, setMapCenter] = useState<MapCenter>({
     lat: searchParams.get('lat') ? parseFloat(searchParams.get('lat') as string) : 48.833395046212416,
@@ -534,7 +551,9 @@ const Spotlight = () => {
       }
       return newSet;
     });
-  }, []);
+    // Persistance backend (toggle idempotent côté serveur).
+    toggleFavoriteMut.mutate(spotId);
+  }, [toggleFavoriteMut]);
 
   const handleSaveSearch = useCallback(() => {
     const searchKey = `${search}-${dateFilter}-${pricingFilter}-${typeFilter}-${sectorFilter}`;
@@ -616,6 +635,18 @@ const Spotlight = () => {
 
     return filtered;
   }, [data?.pages, typeFilter, sortBy, search]);
+
+  // Preuve sociale réseau : combien de mes connexions ont mis chaque spot visible en favori.
+  const visibleSpotIds = useMemo(
+    () => filteredData.map((s: any) => s.id),
+    [filteredData],
+  );
+  const { data: socialProof = {} } = useQuery({
+    queryKey: ['spotlight-social-proof', visibleSpotIds],
+    queryFn: () => getSpotlightSocialProof(visibleSpotIds),
+    enabled: visibleSpotIds.length > 0,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const spotsOnMap = useMemo(() =>
     filteredData.filter((spot: any) => spot.location?.lat && spot.location?.lng).length,
@@ -907,7 +938,7 @@ const Spotlight = () => {
                         }}
                         onMouseEnter={() => setHoveredSpotId(spot.id)}
                         onMouseLeave={() => setHoveredSpotId(null)}
-                        className={`transform transition-all duration-200 rounded-xl ${
+                        className={`relative transform transition-all duration-200 rounded-xl ${
                           selectedSpotId === spot.id
                             ? 'ring-2 ring-[#5E6AD2] ring-offset-2'
                             : ''
@@ -915,6 +946,11 @@ const Spotlight = () => {
                         role="article"
                         aria-labelledby={`spot-title-${spot.id}`}
                       >
+                        {socialProof[spot.id] > 0 && (
+                          <div className="absolute left-2 top-2 z-10 flex items-center gap-1 rounded-full bg-[#5E6AD2] px-2 py-0.5 text-xs font-medium text-white shadow-sm">
+                            {socialProof[spot.id]} de ton réseau
+                          </div>
+                        )}
                         {spot.spot === SpotType.INCUBATOR || spot.spot === SpotType.ACCELERATOR ? (
                           <CardIncubator
                             spot={spot}

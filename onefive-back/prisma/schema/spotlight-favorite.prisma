@@ -1,0 +1,11 @@
+// Favoris Spotlight persistés côté serveur (par profil) — remplace le
+// localStorage et alimente la preuve sociale réseau ("X de ton réseau y sont").
+
+model SpotlightFavorite {
+  profileId String
+  spotId    String
+  createdAt DateTime @default(now())
+
+  @@id([profileId, spotId])
+  @@index([spotId])
+}
