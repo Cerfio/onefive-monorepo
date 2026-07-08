@@ -69,6 +69,11 @@ export const AboutCard = ({ profileData, currentUser, onEdit }: { profileData: a
                                 </div>
                             </div>
                         ))
+                    ) : currentUser ? (
+                        <button onClick={onEdit} className="flex items-center gap-2 py-4 text-sm font-medium text-[#5E6AD2] hover:text-[#4149A8] transition-colors">
+                            <Briefcase className="h-4 w-4 shrink-0" />
+                            Ajoutez votre expérience professionnelle
+                        </button>
                     ) : (
                         <div className="flex items-center gap-2 py-4 text-gray-400">
                             <Briefcase className="h-4 w-4 shrink-0" />
@@ -90,6 +95,11 @@ export const AboutCard = ({ profileData, currentUser, onEdit }: { profileData: a
                                 </div>
                             </div>
                         ))
+                    ) : currentUser ? (
+                        <button onClick={onEdit} className="flex items-center gap-2 py-4 text-sm font-medium text-[#5E6AD2] hover:text-[#4149A8] transition-colors">
+                            <GraduationCap className="h-4 w-4 shrink-0" />
+                            Ajoutez votre formation
+                        </button>
                     ) : (
                         <div className="flex items-center gap-2 py-4 text-gray-400">
                             <GraduationCap className="h-4 w-4 shrink-0" />

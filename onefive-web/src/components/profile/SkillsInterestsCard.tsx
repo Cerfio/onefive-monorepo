@@ -67,6 +67,11 @@ export const SkillsInterestsCard = ({ profileData, currentUser, onEdit }: { prof
                           </Badge>
                         ))}
                     </div>
+                ) : currentUser ? (
+                    <button onClick={onEdit} className="flex items-center gap-2 py-3 mb-4 text-sm font-medium text-[#5E6AD2] hover:text-[#4149A8] transition-colors">
+                        <Sparkles className="h-4 w-4 shrink-0" />
+                        Ajoutez vos compétences pour être mieux trouvé
+                    </button>
                 ) : (
                     <div className="flex items-center gap-2 py-3 mb-4 text-gray-400">
                         <Sparkles className="h-4 w-4 shrink-0" />
@@ -89,6 +94,11 @@ export const SkillsInterestsCard = ({ profileData, currentUser, onEdit }: { prof
                           );
                         })}
                     </div>
+                ) : currentUser ? (
+                    <button onClick={onEdit} className="flex items-center gap-2 py-3 text-sm font-medium text-[#5E6AD2] hover:text-[#4149A8] transition-colors">
+                        <Sparkles className="h-4 w-4 shrink-0" />
+                        Ajoutez vos centres d'intérêt
+                    </button>
                 ) : (
                     <div className="flex items-center gap-2 py-3 text-gray-400">
                         <Sparkles className="h-4 w-4 shrink-0" />
