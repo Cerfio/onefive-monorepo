@@ -40,7 +40,7 @@ export function PostAuthSwitch({
   return (
     <>
       {children}
-      <SignupWallModal open={showModal} onOpenChange={setShowModal} />
+      <SignupWallModal open={showModal} onOpenChange={setShowModal} context="post" />
     </>
   );
 }

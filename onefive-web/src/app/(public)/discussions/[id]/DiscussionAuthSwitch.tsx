@@ -38,7 +38,7 @@ export function DiscussionAuthSwitch({
   return (
     <>
       {children}
-      <SignupWallModal open={showModal} onOpenChange={setShowModal} />
+      <SignupWallModal open={showModal} onOpenChange={setShowModal} context="discussion" />
     </>
   );
 }

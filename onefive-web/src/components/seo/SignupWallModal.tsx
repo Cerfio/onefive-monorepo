@@ -7,12 +7,39 @@ import { Separator } from '@/components/base/separator/separator';
 import { SocialButton } from '@/components/base/buttons/social-button';
 import OnefiveLogo from '@/assets/images/onefiveLogo.png';
 
+type SignupWallContext =
+  | 'profile'
+  | 'post'
+  | 'discussion'
+  | 'startup'
+  | 'feed';
+
 interface SignupWallModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Surface qui a déclenché le mur — adapte la proposition de valeur. */
+  context?: SignupWallContext;
 }
 
-export function SignupWallModal({ open, onOpenChange }: SignupWallModalProps) {
+const CONTEXT_COPY: Record<SignupWallContext, string> = {
+  profile:
+    'Voyez le profil complet — expériences, réseau et connexions communes — et contactez-le directement.',
+  post: 'Lisez ce post en entier, réagissez et rejoignez la conversation.',
+  discussion:
+    'Suivez toute la discussion, répondez et connectez-vous aux participants.',
+  startup:
+    'Explorez cette startup : équipe, levées, réalisations et data room.',
+  feed: "Accédez au feed complet des founders et à tout l'écosystème.",
+};
+
+export function SignupWallModal({
+  open,
+  onOpenChange,
+  context,
+}: SignupWallModalProps) {
+  const description = context
+    ? CONTEXT_COPY[context]
+    : "Accédez aux profils complets, contactez les founders et explorez l'écosystème.";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] p-8">
@@ -29,10 +56,7 @@ export function SignupWallModal({ open, onOpenChange }: SignupWallModalProps) {
           <h2 className="mt-6 text-xl font-semibold text-gray-900 text-center sm:text-2xl">
             Rejoignez 5 000+ founders
           </h2>
-          <p className="mt-2 text-sm text-gray-500 text-center">
-            Accédez aux profils complets, contactez les founders et explorez
-            l&apos;écosystème.
-          </p>
+          <p className="mt-2 text-sm text-gray-500 text-center">{description}</p>
 
           <div className="mt-6 flex gap-3 w-full justify-center">
             <div className="hover:scale-105 transition-transform">
