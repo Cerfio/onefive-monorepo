@@ -24,6 +24,7 @@ interface PostInteractionsProps {
   reactionCount: number;
   commentCount: number;
   repostCount: number;
+  viewCount?: number;
   toggleComment: () => void;
   onOpenReactions?: () => void;
   disabled?: boolean;
@@ -33,6 +34,7 @@ const PostInteractions: React.FC<PostInteractionsProps> = ({
   reactions,
   reactionCount,
   commentCount,
+  viewCount = 0,
   repostCount,
   toggleComment,
   onOpenReactions = () => {},
@@ -122,6 +124,12 @@ const PostInteractions: React.FC<PostInteractionsProps> = ({
             <button className="hover:underline" disabled={disabled}>
               {repostCount === 0 ? 'aucun repost' : `${repostCount} reposts`}
             </button>
+            {viewCount > 0 && (
+              <>
+                <span>•</span>
+                <span>{viewCount} {viewCount === 1 ? 'vue' : 'vues'}</span>
+              </>
+            )}
           </>
         )}
       </div>

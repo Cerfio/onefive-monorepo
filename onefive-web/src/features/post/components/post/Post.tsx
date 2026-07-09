@@ -251,6 +251,7 @@ const Post: React.FC<PostProps> = ({
                 reactionCount={post.reactionCount ?? 0}
                 commentCount={post.commentCount ?? 0}
                 repostCount={post.repostCount ?? 0}
+                viewCount={(post as any).viewsCount ?? 0}
                 toggleComment={toggleComments}
                 onOpenReactions={() => canOpenReactions && realPostId && setOpenPostReactions(true)}
                 disabled={isPending}
