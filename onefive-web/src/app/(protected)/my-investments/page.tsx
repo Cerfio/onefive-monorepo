@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   TrendingUp,
   Calendar,
+  FolderOpen,
 } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
 import { Card, CardContent } from '@/components/base/card/card';
@@ -161,6 +162,17 @@ function InvestmentCard({ investment }: { investment: MyInvestment }) {
               </span>
               <span>{formatAmount(investment.fundingHistory.amountRaised)}</span>
             </div>
+
+            {/* Docs liés : data room accessible */}
+            {investment.dataroom && (
+              <button
+                onClick={() => router.push(`/dataroom/${investment.dataroom!.id}`)}
+                className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-violet-600 hover:text-violet-700 hover:underline"
+              >
+                <FolderOpen size={13} />
+                Voir la data room
+              </button>
+            )}
 
             {/* Actions */}
             {isPending && (

@@ -1899,20 +1899,51 @@ export class StartupService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return investments.map((inv) => ({
-      id: inv.id,
-      invitationStatus: inv.invitationStatus,
-      isVisible: inv.isVisible,
-      isLead: inv.isLead,
-      respondedAt: inv.respondedAt?.toISOString() || null,
-      createdAt: inv.createdAt.toISOString(),
-      fundingHistory: {
-        id: inv.fundingHistory.id,
-        date: inv.fundingHistory.date.toISOString(),
-        amountRaised: inv.fundingHistory.amountRaised,
-        round: inv.fundingHistory.round,
-      },
-      startup: inv.fundingHistory.startup,
-    }));
+    // Docs liés : data room de la startup accessible à l'investisseur (s'il en
+    // est membre). Dataroom.startupId est unique → 1 data room par startup.
+    const startupIds = Array.from(
+      new Set(investments.map((i) => i.fundingHistory.startupId)),
+    );
+    const datarooms = startupIds.length
+      ? await this.prisma.dataroom.findMany({
+          where: { startupId: { in: startupIds } },
+          select: { id: true, startupId: true },
+        })
+      : [];
+    const dataroomByStartup = new Map(
+      datarooms.map((d) => [d.startupId, d.id]),
+    );
+    const dataroomIds = datarooms.map((d) => d.id);
+    const memberships = dataroomIds.length
+      ? await this.prisma.member.findMany({
+          where: { dataroomId: { in: dataroomIds }, profileId: profile.id },
+          select: { dataroomId: true },
+        })
+      : [];
+    const accessibleDataroomIds = new Set(
+      memberships.map((m) => m.dataroomId),
+    );
+
+    return investments.map((inv) => {
+      const drId = dataroomByStartup.get(inv.fundingHistory.startupId);
+      const dataroom =
+        drId && accessibleDataroomIds.has(drId) ? { id: drId } : null;
+      return {
+        id: inv.id,
+        invitationStatus: inv.invitationStatus,
+        isVisible: inv.isVisible,
+        isLead: inv.isLead,
+        respondedAt: inv.respondedAt?.toISOString() || null,
+        createdAt: inv.createdAt.toISOString(),
+        fundingHistory: {
+          id: inv.fundingHistory.id,
+          date: inv.fundingHistory.date.toISOString(),
+          amountRaised: inv.fundingHistory.amountRaised,
+          round: inv.fundingHistory.round,
+        },
+        startup: inv.fundingHistory.startup,
+        dataroom,
+      };
+    });
   }
 }

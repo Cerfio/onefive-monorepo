@@ -1709,6 +1709,7 @@ export interface MyInvestment {
     logo: string | null;
     tagline: string | null;
   };
+  dataroom?: { id: string } | null;
 }
 
 export const getInvestorInvitationByToken = async (
