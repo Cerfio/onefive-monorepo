@@ -11,7 +11,7 @@ import {
 import { toast } from 'sonner';
 import { LoadScript } from '@react-google-maps/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Share2, Filter, Loader2, Bookmark, Map, List, X } from 'lucide-react';
+import { Search, MapPin, Share2, Filter, Loader2, Bookmark, Map, List, LayoutGrid, X } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
@@ -268,6 +268,8 @@ const Spotlight = () => {
   const [hoveredSpotId, setHoveredSpotId] = useState<string | null>(null);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(true);
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [searchOnMapMove, setSearchOnMapMove] = useState(true);
 
   // Persist favorites across refreshes (localStorage = cache instantané).
   useEffect(() => {
@@ -483,13 +485,14 @@ const Spotlight = () => {
         const { lat, lng } = newCenter;
 
         if (
-          Math.abs(mapCenter.lat - lat) > 0.0001 ||
-          Math.abs(mapCenter.lng - lng) > 0.0001
+          searchOnMapMove &&
+          (Math.abs(mapCenter.lat - lat) > 0.0001 ||
+            Math.abs(mapCenter.lng - lng) > 0.0001)
         ) {
           setMapCenter({ lat, lng });
         }
       }, 500),
-    [mapCenter.lat, mapCenter.lng]
+    [mapCenter.lat, mapCenter.lng, searchOnMapMove]
   );
 
   const handleShareLocation = useCallback(() => {
@@ -887,7 +890,33 @@ const Spotlight = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Liste des résultats */}
           <div className={`flex-1 ${showMap ? 'hidden lg:block' : ''}`}>
-            <motion.div 
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <label className="flex items-center gap-2 text-xs text-[#475467]">
+                <input
+                  type="checkbox"
+                  checked={searchOnMapMove}
+                  onChange={(e) => setSearchOnMapMove(e.target.checked)}
+                />
+                Chercher quand je déplace la carte
+              </label>
+              <div className="flex items-center gap-1 rounded-lg bg-gray-100 p-0.5">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`rounded-md px-2 py-1 ${viewMode === 'list' ? 'bg-white shadow-sm' : ''}`}
+                  aria-label="Vue liste"
+                >
+                  <List className="h-4 w-4 text-gray-600" />
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`rounded-md px-2 py-1 ${viewMode === 'grid' ? 'bg-white shadow-sm' : ''}`}
+                  aria-label="Vue grille"
+                >
+                  <LayoutGrid className="h-4 w-4 text-gray-600" />
+                </button>
+              </div>
+            </div>
+            <motion.div
               variants={containerVariants}
               className="space-y-6"
             >
@@ -919,7 +948,7 @@ const Spotlight = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="space-y-6"
+                    className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4' : 'space-y-6'}
                     role="region"
                     aria-label="Résultats de recherche"
                   >
