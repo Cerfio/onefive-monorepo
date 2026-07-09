@@ -2,6 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
 import { NotificationHelperService } from './notification-helper.service';
+import { NotificationEventsService } from './notification-events.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { LoggerProvider } from '../common/logger/logger.provider';
 import { StorageModule } from '../storage/storage.module';
@@ -20,6 +21,7 @@ import { DeleteNotificationHandler } from './handlers/delete-notification.handle
   providers: [
     NotificationService,
     NotificationHelperService,
+    NotificationEventsService,
     LoggerProvider,
 
     // Handlers

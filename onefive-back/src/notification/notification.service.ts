@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationCategory, NotificationType, Prisma } from '@prisma/client';
+import { NotificationEventsService } from './notification-events.service';
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly events: NotificationEventsService,
+  ) {}
 
   async findByProfileId(
     profileId: string,
@@ -65,7 +69,7 @@ export class NotificationService {
     entityType?: string;
     data?: Prisma.JsonValue;
   }) {
-    return this.prisma.notification.create({
+    const notification = await this.prisma.notification.create({
       data: {
         profileId: data.profileId,
         type: data.type,
@@ -78,6 +82,9 @@ export class NotificationService {
         data: data.data,
       },
     });
+    // Push temps réel (SSE) — le client rafraîchit instantanément.
+    this.events.emit(data.profileId, 'notification:new', notification);
+    return notification;
   }
 
   async markAsRead(id: string, profileId: string) {

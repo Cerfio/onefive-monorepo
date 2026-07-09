@@ -1,5 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { api } from '@/utils/kyInstance';
+
+const NOTIF_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:50050';
 
 // Types
 export interface NotificationItem {
@@ -244,4 +247,33 @@ export const useNotificationsDropdown = () => {
     // Refresh manuel
     refresh: () => queryClient.invalidateQueries({ queryKey: notificationKeys.all }),
   };
+};
+
+/**
+ * Abonnement temps réel (SSE) aux notifications : ouvre un EventSource vers
+ * l'endpoint push du backend et invalide les queries de notifs dès qu'une
+ * nouvelle arrive — au lieu d'attendre le polling 30s. À monter une fois
+ * (layout protégé). EventSource gère la reconnexion automatiquement.
+ */
+export const useNotificationsRealtime = () => {
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let es: EventSource | null = null;
+    try {
+      es = new EventSource(`${NOTIF_API_URL}/notifications/events`, {
+        withCredentials: true,
+      });
+    } catch {
+      return;
+    }
+    const handler = () => {
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    };
+    es.addEventListener('notification:new', handler);
+    return () => {
+      es?.removeEventListener('notification:new', handler);
+      es?.close();
+    };
+  }, [queryClient]);
 };

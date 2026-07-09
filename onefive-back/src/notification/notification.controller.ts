@@ -6,7 +6,11 @@ import {
   Param,
   Query,
   Req,
+  Sse,
+  MessageEvent,
 } from '@nestjs/common';
+import { Observable, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { FastifyRequest } from 'fastify';
 import { FastifyRequestUserId } from '../types/fastify-request-user-id';
 import { ListNotificationsHandler } from './handlers/list-notifications.handler';
@@ -14,6 +18,8 @@ import { GetNotificationCountsHandler } from './handlers/get-notification-counts
 import { MarkNotificationReadHandler } from './handlers/mark-notification-read.handler';
 import { MarkAllNotificationsReadHandler } from './handlers/mark-all-notifications-read.handler';
 import { DeleteNotificationHandler } from './handlers/delete-notification.handler';
+import { NotificationEventsService } from './notification-events.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { NotificationCategory } from '@prisma/client';
 
 @Controller('notifications')
@@ -24,7 +30,27 @@ export class NotificationController {
     private readonly markNotificationReadHandler: MarkNotificationReadHandler,
     private readonly markAllNotificationsReadHandler: MarkAllNotificationsReadHandler,
     private readonly deleteNotificationHandler: DeleteNotificationHandler,
+    private readonly events: NotificationEventsService,
+    private readonly prisma: PrismaService,
   ) {}
+
+  /**
+   * GET /notifications/events — stream SSE temps réel des notifications.
+   * Le cookie de session authentifie (EventSource withCredentials).
+   */
+  @Sse('events')
+  streamEvents(
+    @Req() req: FastifyRequest & FastifyRequestUserId,
+  ): Observable<MessageEvent> {
+    return from(
+      this.prisma.profile.findUnique({
+        where: { userId: req.userId },
+        select: { id: true },
+      }),
+    ).pipe(
+      switchMap((profile) => this.events.subscribe(profile?.id ?? req.userId)),
+    );
+  }
 
   /**
    * GET /notifications
