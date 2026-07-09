@@ -311,7 +311,7 @@ const Onboarding = () => {
           />
         )}
         {currentStep !== 6 && (
-          <div className="flex justify-center mt-4 sm:mt-6 px-4">
+          <div className="flex flex-col items-center gap-3 mt-4 sm:mt-6 px-4">
             <Button
               isDisabled={buttonDisabled || isSubmitting}
               size="lg"
@@ -325,6 +325,16 @@ const Onboarding = () => {
             >
               {t('continue')}
             </Button>
+            {/* Étapes de suivi optionnelles : permission explicite de passer. */}
+            {(currentStep === 3 || currentStep === 4) && (
+              <button
+                type="button"
+                onClick={() => setCurrentStep(currentStep + 1)}
+                className="text-sm text-gray-500 underline hover:text-gray-700"
+              >
+                Passer cette étape
+              </button>
+            )}
           </div>
         )}
       </div>
