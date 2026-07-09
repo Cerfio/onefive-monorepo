@@ -272,6 +272,22 @@ const Onboarding = () => {
           }}
           currentStep={currentStep}
         />
+        {(() => {
+          const stepNames = [
+            'Votre profil',
+            'Votre rôle',
+            "Vos centres d'intérêt",
+            'Profils à suivre',
+            'Startups à suivre',
+            'Vérification',
+          ];
+          const name = stepNames[currentStep];
+          return name ? (
+            <p className="mt-2 text-center text-xs font-medium text-[#5E6AD2]">
+              Étape {currentStep + 1} sur {stepNames.length} · {name}
+            </p>
+          ) : null;
+        })()}
       </div>
       <div className="mt-6 sm:mt-8 flex-1 flex flex-col items-center justify-start gap-4 sm:gap-6 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {currentStep === 0 ? (

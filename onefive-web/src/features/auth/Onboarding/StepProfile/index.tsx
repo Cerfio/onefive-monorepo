@@ -781,6 +781,9 @@ const StepProfile = () => {
                 }
               }}
             />
+            <p className="mt-1 text-xs text-gray-400">
+              🔒 Cette information reste privée — elle ne sert qu&apos;à vérifier votre éligibilité et n&apos;est jamais affichée sur votre profil.
+            </p>
             {errors.dateOfBirth && touched.dateOfBirth && (
               <motion.p
                 initial={{ opacity: 0, y: -10 }}
