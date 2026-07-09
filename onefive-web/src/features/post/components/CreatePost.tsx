@@ -36,7 +36,7 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
     setValue,
     formState: { errors },
   } = useForm<CreatePostType>({
-    resolver: zodResolver(createPostSchema),
+    resolver: zodResolver(createPostSchema as any),
     mode: 'onChange',
     defaultValues: {
       content: '',

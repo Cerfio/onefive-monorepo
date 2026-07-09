@@ -50,7 +50,7 @@ interface DetailsStepProps {
 
 export const DetailsStep = ({ onNext, onBack, data, onDataChange }: DetailsStepProps) => {
   const form = useForm<DetailsForm>({
-    resolver: zodResolver(detailsSchema),
+    resolver: zodResolver(detailsSchema as any),
     mode: 'onTouched',
     defaultValues: {
       website: data?.website || '',

@@ -85,7 +85,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     reset,
     formState: { errors },
   } = useForm<CreatePostType>({
-    resolver: zodResolver(createPostSchema),
+    resolver: zodResolver(createPostSchema as any),
     mode: 'onChange',
     defaultValues: {
       content: '',

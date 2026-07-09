@@ -37,7 +37,7 @@ export const EditPost: React.FC<EditPostProps> = ({ post, onCancel, onSave }) =>
     setValue,
     formState: { errors },
   } = useForm<EditPostFormValues>({
-    resolver: zodResolver(editPostSchema),
+    resolver: zodResolver(editPostSchema as any),
     mode: 'onChange',
     defaultValues: {
       content: post.content,

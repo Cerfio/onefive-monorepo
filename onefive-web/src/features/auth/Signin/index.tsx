@@ -63,7 +63,7 @@ const Signin = ({ returnUrl = '/feed' }: SigninProps) => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<LoginFormType>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema as any),
     mode: 'onTouched',
   });
 

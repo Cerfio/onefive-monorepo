@@ -23,7 +23,7 @@ interface SectorsStepProps {
 
 export const SectorsStep = ({ onNext, onBack, data, onDataChange }: SectorsStepProps) => {
   const form = useForm<SectorsForm>({
-    resolver: zodResolver(sectorsSchema),
+    resolver: zodResolver(sectorsSchema as any),
     mode: 'onTouched',
     defaultValues: {
       categories: data?.categories || [],

@@ -40,7 +40,7 @@ export const IdentityStep = ({ onNext, data, onDataChange, onImport }: IdentityS
   const [isImporting, setIsImporting] = useState(false);
   
   const form = useForm<IdentityForm>({
-    resolver: zodResolver(identitySchema),
+    resolver: zodResolver(identitySchema as any),
     mode: 'onTouched',
     defaultValues: {
       name: data?.name || '',

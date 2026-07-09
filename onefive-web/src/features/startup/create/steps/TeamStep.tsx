@@ -83,7 +83,7 @@ export const TeamStep = ({ onNext, onBack, data, onDataChange }: TeamStepProps) 
   };
 
   const form = useForm<TeamForm>({
-    resolver: zodResolver(teamStepSchema),
+    resolver: zodResolver(teamStepSchema as any),
     mode: 'onTouched',
     defaultValues: {
       members: data?.members || [getDefaultMember()],

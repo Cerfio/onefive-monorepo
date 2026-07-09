@@ -59,7 +59,7 @@ export const CreateBuildInPublicModal: React.FC<CreateBuildInPublicModalProps> =
     reset,
     formState: { errors },
   } = useForm<CreatePostType>({
-    resolver: zodResolver(createPostSchema),
+    resolver: zodResolver(createPostSchema as any),
     mode: 'onChange',
     defaultValues: {
       content: '',

@@ -37,7 +37,7 @@ interface BasicInfoStepProps {
 
 export const BasicInfoStep = ({ onNext, data, onDataChange }: BasicInfoStepProps) => {
   const form = useForm<BasicInfoForm>({
-    resolver: zodResolver(basicInfoSchema),
+    resolver: zodResolver(basicInfoSchema as any),
     mode: 'onBlur', // Changé de 'onChange' à 'onBlur' pour éviter les problèmes
     defaultValues: {
       name: data?.name || '',

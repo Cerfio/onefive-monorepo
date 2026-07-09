@@ -108,7 +108,7 @@ export const EditAllFoundersModal: React.FC<EditAllFoundersModalProps> = ({
   };
 
   const form = useForm<EditAllFoundersForm>({
-    resolver: zodResolver(editAllFoundersSchema),
+    resolver: zodResolver(editAllFoundersSchema as any),
     mode: 'onChange',
     defaultValues: {
       founders: getDefaultFounders(),

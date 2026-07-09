@@ -61,7 +61,7 @@ const Signup = () => {
     watch,
     formState: { errors, isValid },
   } = useForm<SignupFormType>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema as any),
     mode: 'onTouched',
   });
 

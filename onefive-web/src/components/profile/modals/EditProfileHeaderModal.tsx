@@ -100,7 +100,7 @@ const EditProfileHeaderModal = ({ open, onOpenChange, profileData, onSave: _onSa
     setValue,
     formState: { errors, isValid },
   } = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(profileSchema as any),
     defaultValues: {
       firstName: nameParts[0] || '',
       lastName: nameParts.slice(1).join(' ') || '',
