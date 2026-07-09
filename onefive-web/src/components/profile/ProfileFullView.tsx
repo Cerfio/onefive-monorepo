@@ -9,6 +9,7 @@ import { getCountryName } from '@/lib/country';
 
 import EditProfileHeaderModal from '@/components/profile/modals/EditProfileHeaderModal';
 import { ProfileCompletionCard } from '@/components/profile/ProfileCompletionCard';
+import { ProfileHighlightsCard } from '@/components/profile/ProfileHighlightsCard';
 import EditAboutModal from '@/components/profile/modals/EditAboutModal';
 import EditSkillsInterestsModal from '@/components/profile/modals/EditSkillsInterestsModal';
 import EditAchievementsModal from '@/components/profile/modals/EditAchievementsModal';
@@ -471,6 +472,10 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
                   <ProfileAnalyticsCard analytics={profileData.profileAnalytics} profileName={profileData.name} />
                 </motion.div>
               )}
+
+              <motion.div variants={cardVariants}>
+                <ProfileHighlightsCard profileData={profileData} />
+              </motion.div>
 
               {currentUser && (
                 <motion.div variants={cardVariants}>
