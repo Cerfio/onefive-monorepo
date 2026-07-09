@@ -63,6 +63,23 @@ export class SignedUrlHandler {
           'You do not have permission to access this file',
         );
       }
+
+      // View-only réel : un membre sans droit de téléchargement ne reçoit
+      // jamais le PDF brut (il serait sinon récupérable et exfiltrable). Il
+      // doit passer par le rendu serveur rasterisé + filigrané.
+      const isPdf =
+        file.mimetype === 'application/pdf' ||
+        (typeof file.name === 'string' &&
+          file.name.toLowerCase().endsWith('.pdf'));
+      if (isPdf && input.action !== 'download' && !permission.canDownload) {
+        this.logger.info('Raw PDF view blocked for view-only member', {
+          transactionId: input.transactionId,
+          dataroomId: input.dataroomId,
+          fileId: input.fileId,
+          groupId: member.groupId,
+        });
+        throw new ForbiddenException('VIEW_ONLY_RENDER_REQUIRED');
+      }
     }
 
     // Générer l'URL signée

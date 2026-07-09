@@ -244,6 +244,42 @@ export class StorageService {
     }
   }
 
+  /**
+   * Télécharge les octets bruts d'un objet S3/R2 (par bucket + clé) en Buffer.
+   * Utilisé par le rendu serveur des PDF (rasterisation view-only) : on récupère
+   * le PDF côté serveur pour ne jamais l'exposer tel quel au client.
+   */
+  @Log()
+  async getObjectBuffer({
+    transactionId,
+    bucket,
+    key,
+  }: {
+    transactionId: string;
+    bucket: string;
+    key: string;
+  }): Promise<Buffer> {
+    try {
+      const response = await this.s3Client.send(
+        new GetObjectCommand({ Bucket: bucket, Key: key }),
+      );
+      const body = response.Body as Readable;
+      const chunks: Buffer[] = [];
+      for await (const chunk of body) {
+        chunks.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk));
+      }
+      return Buffer.concat(chunks);
+    } catch (error) {
+      StorageGetException.throw(this.logger, {
+        transactionId,
+        key,
+        bucket,
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
   @Log()
   async getFileInfo({
     transactionId,

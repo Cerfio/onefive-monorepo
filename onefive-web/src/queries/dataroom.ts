@@ -172,6 +172,26 @@ export const getSignedUrl = async (dataroomId: string, fileId: string, action?: 
   }
 };
 
+const renderInfoSchema = z.object({
+  success: z.literal(true),
+  data: z.object({
+    renderable: z.boolean(),
+    numPages: z.number(),
+    viewOnly: z.boolean(),
+  }),
+});
+
+/**
+ * Métadonnées de rendu serveur d'un PDF : renderable (PDF ?), nb de pages, et
+ * viewOnly (= pas de droit de téléchargement → on sert des images rasterisées
+ * filigranées plutôt que le PDF brut).
+ */
+export const getRenderInfo = async (dataroomId: string, fileId: string) => {
+  const response = await api.get(`dataroom/${dataroomId}/file/${fileId}/render`);
+  const parsed = renderInfoSchema.parse(await response.json());
+  return parsed.data;
+};
+
 export const getDataroomFiles = async ({ dataroomId, categoryId }: { dataroomId: string; categoryId?: string }) => {
   try {
     const searchParams = new URLSearchParams();

@@ -14,6 +14,7 @@ import { TimelineService } from './services/timeline.service';
 import { MemberService } from './services/member.service';
 import { FileModule } from './file/file.module';
 import { DataroomFileSignedUrlModule } from './dataroom-file-signed-url/dataroom-file-signed-url.module';
+import { DataroomFileRenderModule } from './dataroom-file-render/dataroom-file-render.module';
 import { DataroomCategoryModule } from './dataroom-category/dataroom-category.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { SessionsModule } from '../sessions/sessions.module';
@@ -28,6 +29,7 @@ import { DataroomOwnerGuard } from './guards/dataroom-owner.guard';
     SessionsModule,
     FileModule,
     DataroomFileSignedUrlModule,
+    DataroomFileRenderModule,
     DataroomCategoryModule,
     NotificationModule,
   ],

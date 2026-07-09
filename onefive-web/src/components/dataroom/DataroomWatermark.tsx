@@ -6,8 +6,10 @@ import { useMe } from '@/hooks/useUser';
 /**
  * Filigrane dynamique (nom + heure) répété en diagonale, posé en overlay sur
  * un viewer de data room. `pointer-events-none` pour ne pas gêner la lecture.
- * Dissuasif contre captures/fuites — NB : côté client. Un anti-fuite
- * inaltérable nécessiterait un rendu serveur des pages (item backlog dédié).
+ * Dissuasif contre captures/fuites — côté client. Overlay utilisé pour les
+ * PDF téléchargeables et les autres types de fichiers. Pour les PDF view-only
+ * (sans droit de téléchargement), le vrai anti-fuite passe par le rendu serveur
+ * rasterisé avec filigrane baké (cf. ServerRenderedPDFViewer / endpoint render).
  * Le conteneur parent doit être `relative`.
  */
 export const DataroomWatermark = () => {

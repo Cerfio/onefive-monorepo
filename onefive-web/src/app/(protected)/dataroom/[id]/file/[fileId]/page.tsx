@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getSignedUrl, getFile, getDataroom } from "@/queries/dataroom";
+import { getSignedUrl, getFile, getDataroom, getRenderInfo } from "@/queries/dataroom";
 import { useQuery } from "@tanstack/react-query";
 import type { FileDocument, FileMetadata } from "@/types/file-viewer";
 import { 
@@ -15,6 +15,7 @@ import { useFileSecurity } from "@/hooks/useFileSecurity";
 import { useKeyboardShortcuts, type KeyboardShortcut } from "@/hooks/useKeyboardShortcuts";
 import { DataroomWatermark } from "@/components/dataroom/DataroomWatermark";
 import PDFViewer from "@/viewers/PDFViewer";
+import ServerRenderedPDFViewer from "@/viewers/ServerRenderedPDFViewer";
 import DocxViewer from "@/viewers/DocxViewer";
 import ImageViewer from "@/viewers/ImageViewer";
 import VideoViewer from "@/viewers/VideoViewer";
@@ -209,10 +210,29 @@ const FileViewerPage = () => {
         },
     });
 
+    const isPdf = file ? isPDFFile(file.mimetype) : false;
+
+    // Pour les PDF, on interroge le rendu serveur : s'il est view-only (pas de
+    // droit de téléchargement), on sert des images rasterisées filigranées et on
+    // n'expose jamais le PDF brut. Erreur → repli sur le viewer natif.
+    const { data: renderInfo, isError: renderInfoErrored } = useQuery({
+        queryKey: ["render-info", dataroomId, fileId, retryCount] as const,
+        queryFn: () => getRenderInfo(dataroomId, fileId),
+        enabled: !!fileId && !!dataroomId && !!file && isPdf,
+        retry: (failureCount, error: any) => {
+            if (error?.response?.status === 403 || error?.response?.status === 404) return false;
+            return failureCount < 2;
+        },
+    });
+
+    const renderInfoSettled = !isPdf || renderInfo !== undefined || renderInfoErrored;
+    const useServerRender = !!(isPdf && renderInfo?.renderable && renderInfo?.viewOnly);
+
     const { data: signedUrl, error: signedUrlError, refetch: refetchSignedUrl } = useQuery({
         queryKey: ["signed-url", dataroomId, fileId, retryCount] as const,
         queryFn: () => getSignedUrl(dataroomId, fileId, 'view'),
-        enabled: !!fileId && !!dataroomId && !!file,
+        // Pas d'URL brute pour un PDF view-only : on attend la décision de rendu.
+        enabled: !!fileId && !!dataroomId && !!file && renderInfoSettled && !useServerRender,
         retry: (failureCount, error: any) => {
             if (error?.response?.status === 403 || error?.response?.status === 404) {
                 return false;
@@ -348,6 +368,41 @@ const FileViewerPage = () => {
             default:
                 return <GenericErrorView onRetry={handleRetry} onBack={handleBackToDataroom} />;
         }
+    }
+
+    // PDF : attendre la décision de rendu (serveur view-only vs natif).
+    if (isPdf && !renderInfoSettled) {
+        return <LoadingSkeleton />;
+    }
+
+    // Rendu serveur view-only : pages rasterisées + filigrane baké. Pas de
+    // watermark client (redondant), pas d'URL PDF brute exposée.
+    if (useServerRender && file && renderInfo) {
+        return (
+            <div className="ph-no-capture min-h-screen bg-white">
+                <FileBreadcrumb
+                    fileName={file.name}
+                    dataroomName={dataroom?.name}
+                    categoryName={file.category?.name}
+                    onBackToDataroom={handleBackToDataroom}
+                />
+                <ServerRenderedPDFViewer
+                    document={{ uri: '', fileName: file.name, mimetype: file.mimetype }}
+                    fileName={file.name}
+                    fileMetadata={fileMetadata}
+                    dataroomId={dataroomId}
+                    fileId={fileId}
+                    numPages={renderInfo.numPages}
+                    onPrevFile={prevFile ? handlePrevFile : undefined}
+                    onNextFile={nextFile ? handleNextFile : undefined}
+                    hasPrevFile={!!prevFile}
+                    hasNextFile={!!nextFile}
+                    viewCount={currentFileViewCount}
+                    shortcuts={allShortcuts}
+                />
+                <SecurityAlert />
+            </div>
+        );
     }
 
     if (!document) {
