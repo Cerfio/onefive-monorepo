@@ -79,8 +79,10 @@ export const getDisplayReasons = (person: Person, networkView: 'discover' | 'net
     const reasons: string[] = [];
   
     if (mutuals.count > 0) {
-        if (mutuals.count === 1) reasons.push(`${mutuals.names[0]} en commun`);
-        else if (mutuals.count === 2) reasons.push(`${mutuals.names[0]} et ${mutuals.names[1]} en commun`);
+        const hasNames = mutuals.names.length > 0 && !!mutuals.names[0];
+        if (!hasNames) reasons.push(`${mutuals.count} connexion${mutuals.count > 1 ? 's' : ''} en commun`);
+        else if (mutuals.count === 1) reasons.push(`${mutuals.names[0]} en commun`);
+        else if (mutuals.count === 2 && mutuals.names[1]) reasons.push(`${mutuals.names[0]} et ${mutuals.names[1]} en commun`);
         else reasons.push(`${mutuals.names[0]} et ${mutuals.count - 1} autre${mutuals.count > 2 ? 's' : ''} en commun`);
     }
   

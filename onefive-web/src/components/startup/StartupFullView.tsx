@@ -9,6 +9,7 @@ import { getCountryName } from '@/lib/country';
 
 import { StartupHeader } from '@/components/startup/StartupHeader';
 import { TeamSection } from '@/components/startup/TeamSection';
+import { StartupPostsSection } from '@/components/startup/StartupPostsSection';
 import { FundingCard } from '@/components/startup/FundingCard';
 import { AchievementsCard } from '@/components/startup/AchievementsCard';
 import { EditStartupHeaderModal } from '@/components/startup/modals/EditStartupHeaderModal';
@@ -239,6 +240,7 @@ export function StartupFullView({ startupId }: { startupId: string }) {
                   leaveModalOpen={isLeaveModalOpen}
                   onLeaveModalOpenChange={setIsLeaveModalOpen}
                 />
+                <StartupPostsSection startupId={startupId} />
               </motion.div>
 
               {/* Sidebar sticky - 1/3 */}

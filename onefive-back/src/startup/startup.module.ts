@@ -8,6 +8,7 @@ import { SearchProfilesHandler } from './handlers/search-profiles.handler';
 import { SearchInvestorsHandler } from './handlers/search-investors.handler';
 import { GetStartupHandler } from './handlers/get-startup.handler';
 import { GetStartupMembersHandler } from './handlers/get-startup-members.handler';
+import { GetStartupPostsHandler } from './handlers/get-startup-posts.handler';
 import { UpdateStartupHandler } from './handlers/update-startup.handler';
 import { GetFundingHandler } from './handlers/get-funding.handler';
 import { UpdateFundingHandler } from './handlers/update-funding.handler';
@@ -62,6 +63,7 @@ import { DataroomModule } from '../dataroom/dataroom.module';
     SearchInvestorsHandler,
     GetStartupHandler,
     GetStartupMembersHandler,
+    GetStartupPostsHandler,
     UpdateStartupHandler,
     GetFundingHandler,
     UpdateFundingHandler,

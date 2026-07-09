@@ -92,6 +92,8 @@ export default function ProfileActions({
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
+  const [connectMessage, setConnectMessage] = useState('');
 
   // Utiliser isFollowing depuis profileData si disponible, sinon la prop
   const actualIsFollowing = profileData?.isFollowing ?? isFollowing;
@@ -279,7 +281,7 @@ export default function ProfileActions({
               size="md"
               className="border-[#5E6AD2] text-[#5E6AD2] hover:bg-[#5E6AD2] hover:text-white gap-2"
               iconLeading={<UsersCheck data-icon />}
-              onClick={() => sendConnectionRequest.mutate(profileId)}
+              onClick={() => setIsConnectModalOpen(true)}
               isDisabled={sendConnectionRequest.isPending || isLoadingConnectionStatus}
             >
               {sendConnectionRequest.isPending ? '...' : 'Se connecter'}
@@ -483,6 +485,62 @@ export default function ProfileActions({
                       </Button>
                       <Button color="primary" size="md" onClick={handleSaveNote} isDisabled={!noteContent.trim()}>
                         Sauvegarder
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Dialog>
+          </Modal>
+        </ModalOverlay>
+      </AriaDialogTrigger>
+
+      {/* Modal de demande de connexion avec message de contexte optionnel */}
+      <AriaDialogTrigger isOpen={isConnectModalOpen} onOpenChange={setIsConnectModalOpen}>
+        <ModalOverlay isDismissable>
+          <Modal>
+            <Dialog>
+              <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-primary shadow-xl">
+                <CloseButton onClick={() => setIsConnectModalOpen(false)} theme="light" size="lg" className="absolute top-3 right-3" />
+                <div className="flex flex-col gap-5 px-4 py-6 md:px-6 md:pt-8">
+                  <AriaHeading slot="title" className="text-lg font-semibold text-primary">
+                    Se connecter avec {profileName}
+                  </AriaHeading>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-secondary">Message de contexte (optionnel)</p>
+                      <TextArea
+                        placeholder="Ex: On s'est croisés à l'event X, j'aimerais échanger sur…"
+                        value={connectMessage}
+                        onChange={(e) => setConnectMessage(e.target.value)}
+                        rows={4}
+                        maxLength={500}
+                      />
+                      <p className="text-xs text-tertiary">Aide {profileName} à comprendre pourquoi vous vous connectez.</p>
+                    </div>
+
+                    <div className="flex justify-end gap-2">
+                      <Button color="secondary" size="md" onClick={() => setIsConnectModalOpen(false)}>
+                        Annuler
+                      </Button>
+                      <Button
+                        color="primary"
+                        size="md"
+                        isDisabled={sendConnectionRequest.isPending}
+                        onClick={() => {
+                          sendConnectionRequest.mutate(
+                            { profileId, message: connectMessage.trim() || undefined },
+                            {
+                              onSuccess: () => {
+                                setIsConnectModalOpen(false);
+                                setConnectMessage('');
+                              },
+                            },
+                          );
+                        }}
+                      >
+                        {sendConnectionRequest.isPending ? 'Envoi…' : 'Envoyer la demande'}
                       </Button>
                     </div>
                   </div>

@@ -29,8 +29,8 @@ interface PersonCardProps {
 }
 
 const PersonCard = React.memo(({ person, networkView, pendingRequests, followedProfiles: _followedProfiles, handleConnect, handleFollow, searchQuery, intentionFilter, roleFilter, locationFilter }: PersonCardProps) => {
-    // Note: Mutual connections non affichées pour le moment (nécessite backend update)
-    const mutualsInfo = { names: [], count: 0 };
+    // Connexions communes fournies par le backend (list-network-people).
+    const mutualsInfo = { names: [], count: (person as any).mutualConnectionsCount ?? 0 };
     const displayReasons = getDisplayReasons(person, networkView, mutualsInfo, searchQuery, intentionFilter, roleFilter, locationFilter);
 
     // Extraire prénom et nom pour la génération automatique d'initiales

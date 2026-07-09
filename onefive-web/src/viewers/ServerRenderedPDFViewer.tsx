@@ -76,7 +76,6 @@ const ServerRenderedPDFViewer: React.FC<ServerRenderedPDFViewerProps> = ({
             fileName: fileName || document.fileName,
             rendering: 'server',
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadPage = useCallback(async (page: number) => {
@@ -303,7 +302,6 @@ const ServerRenderedPDFViewer: React.FC<ServerRenderedPDFViewerProps> = ({
                                         }}
                                     >
                                         {url && url !== 'error' ? (
-                                            // eslint-disable-next-line @next/next/no-img-element
                                             <img
                                                 src={url}
                                                 alt={`Page ${page}`}

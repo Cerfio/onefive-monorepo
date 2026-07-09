@@ -262,6 +262,7 @@ model Relationship {
   requesterId String
   accepterId  String
   status      RelationshipStatus @default(ACCEPTED)
+  message     String?            // Note de contexte laissée par le demandeur
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
   accepter    Profile            @relation("accepter", fields: [accepterId], references: [id], onDelete: Cascade)

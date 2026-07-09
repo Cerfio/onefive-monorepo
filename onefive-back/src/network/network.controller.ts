@@ -7,6 +7,7 @@ import {
   Query,
   Req,
   Param,
+  Body,
   ValidationPipe,
 } from '@nestjs/common';
 import { ListNetworkActivityHandler } from './handlers/list-network-activity.handler';
@@ -91,11 +92,13 @@ export class NetworkController {
   async connect(
     @Req() req: FastifyRequestUserId,
     @Param('profileId') profileId: string,
+    @Body() body?: { message?: string },
   ): Promise<ApiResponseDto<unknown>> {
     const result = await this.connectProfileHandler.execute({
       transactionId: req.id,
       userId: req.userId,
       profileId,
+      message: body?.message,
     });
     return { success: true, data: result };
   }

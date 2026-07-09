@@ -433,6 +433,36 @@ export const useProfileStartups = (profileId: string | undefined) => {
   });
 };
 
+export interface StartupPost {
+  id: string;
+  content: string;
+  createdAt: string;
+  mediasCount: number;
+  author: { id: string; name: string; avatar?: string | null };
+  reactionsCount: number;
+  commentsCount: number;
+  viewsCount: number;
+}
+
+// Publications de l'équipe d'une startup (posts des profils membres).
+export const getStartupPosts = async (
+  startupId: string,
+  limit = 10,
+): Promise<StartupPost[]> => {
+  const response = await api.get(`startup/${startupId}/posts?limit=${limit}`);
+  const json = (await response.json()) as { success: boolean; data: StartupPost[] };
+  return json.success ? json.data ?? [] : [];
+};
+
+export const useStartupPosts = (startupId: string | undefined, limit = 10) => {
+  return useQuery({
+    queryKey: ['startup-posts', startupId, limit],
+    queryFn: () => getStartupPosts(startupId!, limit),
+    enabled: !!startupId,
+    staleTime: 2 * 60 * 1000,
+  });
+};
+
 export const useCreateStartup = () => {
   const queryClient = useQueryClient();
 

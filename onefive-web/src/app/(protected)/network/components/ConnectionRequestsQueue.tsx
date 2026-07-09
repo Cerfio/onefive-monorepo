@@ -12,6 +12,7 @@ import {
 
 interface PendingRequest {
   requesterId: string;
+  message?: string | null;
   requester?: {
     id: string;
     firstName?: string;
@@ -52,39 +53,46 @@ export const ConnectionRequestsQueue = () => {
           const id = p?.id ?? req.requesterId;
           const name = p ? `${p.firstName ?? ''} ${p.lastName ?? ''}`.trim() : 'Membre';
           return (
-            <div key={id} className="flex items-center gap-3 rounded-lg border border-gray-100 p-3">
-              <Link href={`/profile/${id}`}>
-                <Avatar
-                  src={p?.avatarId ? `${process.env.NEXT_PUBLIC_API_URL}/file/${p.avatarId}` : undefined}
-                  alt={name}
-                  firstName={p?.firstName}
-                  lastName={p?.lastName}
-                  size="sm"
-                />
-              </Link>
-              <div className="min-w-0 flex-1">
-                <Link href={`/profile/${id}`} className="truncate text-sm font-medium text-[#101828] hover:underline">
-                  {name}
+            <div key={id} className="rounded-lg border border-gray-100 p-3">
+              <div className="flex items-center gap-3">
+                <Link href={`/profile/${id}`}>
+                  <Avatar
+                    src={p?.avatarId ? `${process.env.NEXT_PUBLIC_API_URL}/file/${p.avatarId}` : undefined}
+                    alt={name}
+                    firstName={p?.firstName}
+                    lastName={p?.lastName}
+                    size="sm"
+                  />
                 </Link>
-                {p?.highlight && (
-                  <p className="truncate text-xs text-gray-500">{p.highlight}</p>
-                )}
+                <div className="min-w-0 flex-1">
+                  <Link href={`/profile/${id}`} className="truncate text-sm font-medium text-[#101828] hover:underline">
+                    {name}
+                  </Link>
+                  {p?.highlight && (
+                    <p className="truncate text-xs text-gray-500">{p.highlight}</p>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => accept.mutate(id)}
+                  isDisabled={accept.isPending}
+                >
+                  Accepter
+                </Button>
+                <Button
+                  size="sm"
+                  color="secondary"
+                  onClick={() => reject.mutate(id)}
+                  isDisabled={reject.isPending}
+                >
+                  Ignorer
+                </Button>
               </div>
-              <Button
-                size="sm"
-                onClick={() => accept.mutate(id)}
-                isDisabled={accept.isPending}
-              >
-                Accepter
-              </Button>
-              <Button
-                size="sm"
-                color="secondary"
-                onClick={() => reject.mutate(id)}
-                isDisabled={reject.isPending}
-              >
-                Ignorer
-              </Button>
+              {req.message && (
+                <p className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-600">
+                  <span className="mr-1">💬</span>{req.message}
+                </p>
+              )}
             </div>
           );
         })}

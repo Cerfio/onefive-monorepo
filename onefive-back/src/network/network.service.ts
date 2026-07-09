@@ -173,6 +173,45 @@ export class NetworkService {
         },
       });
 
+      // Connexions communes (mutuals) — batch : mon set de connexions acceptées
+      // ∩ celui de chaque personne listée. 1 requête pour toute la page.
+      const myConnectionIds = new Set<string>();
+      for (const r of outgoingRequests) {
+        if (r.status === RelationshipStatus.ACCEPTED)
+          myConnectionIds.add(r.accepterId);
+      }
+      for (const r of incomingRequests) {
+        if (r.status === RelationshipStatus.ACCEPTED)
+          myConnectionIds.add(r.requesterId);
+      }
+      const personIds = people.map((p) => p.id);
+      const theirRelationships =
+        personIds.length > 0
+          ? await this.prisma.relationship.findMany({
+              where: {
+                status: RelationshipStatus.ACCEPTED,
+                OR: [
+                  { requesterId: { in: personIds } },
+                  { accepterId: { in: personIds } },
+                ],
+              },
+              select: { requesterId: true, accepterId: true },
+            })
+          : [];
+      const theirConnections = new Map<string, Set<string>>();
+      for (const id of personIds) theirConnections.set(id, new Set());
+      for (const r of theirRelationships) {
+        theirConnections.get(r.requesterId)?.add(r.accepterId);
+        theirConnections.get(r.accepterId)?.add(r.requesterId);
+      }
+      const mutualCountFor = (personId: string): number => {
+        const set = theirConnections.get(personId);
+        if (!set) return 0;
+        let count = 0;
+        for (const id of set) if (myConnectionIds.has(id)) count++;
+        return count;
+      };
+
       // Process people with avatars in parallel
       const peopleWithAvatars = await Promise.all(
         people.map(async (person) => {
@@ -260,6 +299,7 @@ export class NetworkService {
           return {
             id: person.id,
             name: `${person.firstName} ${person.lastName}`,
+            mutualConnectionsCount: mutualCountFor(person.id),
             avatar: person.avatar?.id
               ? await this.fileUrlUtils.getFileUrl(
                   person.avatar.id,
@@ -812,10 +852,12 @@ export class NetworkService {
     transactionId,
     userId,
     profileId,
+    message,
   }: {
     transactionId: string;
     userId: string;
     profileId: string;
+    message?: string;
   }) {
     try {
       // Get requester's profile
@@ -902,6 +944,7 @@ export class NetworkService {
           requesterId: requesterId,
           accepterId: profileId,
           status: RelationshipStatus.PENDING,
+          message: message?.trim() ? message.trim().slice(0, 500) : null,
         },
       });
 

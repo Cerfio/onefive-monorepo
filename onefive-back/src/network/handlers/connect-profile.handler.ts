@@ -19,10 +19,12 @@ export class ConnectProfileHandler {
     transactionId,
     userId,
     profileId,
+    message,
   }: {
     transactionId: string;
     userId: string;
     profileId: string;
+    message?: string;
   }) {
     this.logger.info('Creating connection request', {
       transactionId,
@@ -34,6 +36,7 @@ export class ConnectProfileHandler {
       transactionId,
       userId,
       profileId,
+      message,
     });
 
     // Si la connexion a été acceptée automatiquement (connexion simultanée)

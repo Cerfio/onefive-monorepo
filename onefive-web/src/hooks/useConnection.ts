@@ -58,9 +58,14 @@ export const useSendConnectionRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (profileId: string) => {
+    mutationFn: async (arg: string | { profileId: string; message?: string }) => {
+      const profileId = typeof arg === 'string' ? arg : arg.profileId;
+      const message = typeof arg === 'string' ? undefined : arg.message?.trim();
       try {
-        const response = await api.post(`network/connect/${profileId}`);
+        const response = await api.post(
+          `network/connect/${profileId}`,
+          message ? { json: { message } } : undefined,
+        );
         const result = await response.json() as ApiResponse;
 
         if (!result.success) {

@@ -22,6 +22,7 @@ import { SearchProfilesHandler } from './handlers/search-profiles.handler';
 import { SearchInvestorsHandler } from './handlers/search-investors.handler';
 import { GetStartupHandler } from './handlers/get-startup.handler';
 import { GetStartupMembersHandler } from './handlers/get-startup-members.handler';
+import { GetStartupPostsHandler } from './handlers/get-startup-posts.handler';
 import { UpdateStartupHandler } from './handlers/update-startup.handler';
 import { GetFundingHandler } from './handlers/get-funding.handler';
 import { UpdateFundingHandler } from './handlers/update-funding.handler';
@@ -74,6 +75,7 @@ export class StartupController {
     private readonly searchInvestorsHandler: SearchInvestorsHandler,
     private readonly getStartupHandler: GetStartupHandler,
     private readonly getStartupMembersHandler: GetStartupMembersHandler,
+    private readonly getStartupPostsHandler: GetStartupPostsHandler,
     private readonly updateStartupHandler: UpdateStartupHandler,
     private readonly getFundingHandler: GetFundingHandler,
     private readonly updateFundingHandler: UpdateFundingHandler,
@@ -273,6 +275,20 @@ export class StartupController {
     const result = await this.getStartupMembersHandler.execute({
       transactionId: req.id,
       startupId,
+    });
+    return { success: true, data: result };
+  }
+
+  @Get(':id/posts')
+  async getStartupPosts(
+    @Req() req: FastifyRequestUserId,
+    @Param('id') startupId: string,
+    @Query('limit') limit?: string,
+  ): Promise<ApiResponseDto<unknown>> {
+    const result = await this.getStartupPostsHandler.execute({
+      transactionId: req.id,
+      startupId,
+      limit: limit ? parseInt(limit, 10) : undefined,
     });
     return { success: true, data: result };
   }
