@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
 
@@ -12,9 +13,9 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service (e.g., Sentry)
+    // Remonter à Sentry (no-op si le DSN n'est pas configuré).
+    Sentry.captureException(error);
     if (process.env.NODE_ENV !== 'production') {
-      // Only log in development
       console.error('Application Error:', error);
     }
   }, [error]);

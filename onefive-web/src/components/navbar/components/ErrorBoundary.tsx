@@ -1,5 +1,6 @@
 'use client';
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/base/buttons/button';
 
@@ -24,6 +25,7 @@ export class NavbarErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    Sentry.captureException(error, { extra: { componentStack: errorInfo.componentStack } });
     if (process.env.NODE_ENV !== 'production') {
       console.error('Navbar Error Boundary caught an error:', error, errorInfo);
     }

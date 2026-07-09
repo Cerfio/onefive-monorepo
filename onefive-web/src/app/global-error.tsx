@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 export default function GlobalError({
@@ -11,9 +12,9 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service (e.g., Sentry)
+    // Remonter à Sentry (no-op si le DSN n'est pas configuré).
+    Sentry.captureException(error);
     if (process.env.NODE_ENV !== 'production') {
-      // Only log in development
       console.error('Global Error:', error);
     }
   }, [error]);
