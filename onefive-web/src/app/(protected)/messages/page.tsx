@@ -1178,6 +1178,39 @@ const MessagesPage = () => {
                       isDisabled={uploadAttachment.isPending}
                       aria-label="Joindre un fichier"
                     />
+                    <div className="relative">
+                      <Button
+                        type="button"
+                        iconLeading={FaceSmile}
+                        color="tertiary"
+                        onClick={() => setShowEmojiPicker((v) => !v)}
+                        aria-label="Emoji"
+                      />
+                      {showEmojiPicker && (
+                        <div className="absolute bottom-full left-0 z-30 mb-2 grid w-64 grid-cols-8 gap-1 rounded-xl border border-secondary bg-primary p-2 shadow-lg">
+                          {['😀','😁','😂','🤣','😊','😍','😎','🤩','🥳','😉','🙌','👏','👍','🙏','💪','🔥','🚀','✨','⭐','💡','❤️','🎉','🎯','✅','💯','🤝','👀','🙈','😴','🤔'].map((emoji) => (
+                            <button
+                              key={emoji}
+                              type="button"
+                              className="rounded-md p-1 text-lg hover:bg-secondary"
+                              onClick={(e) => {
+                                const form = (e.currentTarget as HTMLElement).closest('form');
+                                const inp = form?.querySelector('[name="message"]') as HTMLInputElement | null;
+                                if (inp) {
+                                  const s = inp.selectionStart ?? inp.value.length;
+                                  const en = inp.selectionEnd ?? s;
+                                  inp.value = inp.value.slice(0, s) + emoji + inp.value.slice(en);
+                                  inp.focus();
+                                }
+                                setShowEmojiPicker(false);
+                              }}
+                            >
+                              {emoji}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <Input
                       name="message"
                       placeholder={
