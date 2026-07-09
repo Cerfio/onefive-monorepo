@@ -4,6 +4,7 @@ import { Post, FeedSkeleton } from '@/features/post/components/post';
 import { CreatePostButton } from '@/components/feed/CreatePostButton';
 import { CreatePostModal } from '@/components/feed/CreatePostModal';
 import { UnifiedComposerModal } from '@/components/feed/UnifiedComposerModal';
+import { FeedPollsSection } from '@/components/feed/FeedPollsSection';
 import { CreateBuildInPublicModal } from '@/components/feed/CreateBuildInPublicModal';
 import CreatePostSkeleton from '@/features/post/components/CreatePostSkeleton';
 import { useFeed } from '@/features/post/hooks/queries';
@@ -624,6 +625,8 @@ export default function FeedPage() {
                 <CreatePostButton onClick={handleCreatePostClick} />
               )}
             </div>
+
+            <FeedPollsSection />
 
             {/* Modale de création de post */}
             <UnifiedComposerModal
