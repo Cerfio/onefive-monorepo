@@ -15,6 +15,7 @@ import { allIntentionOptions, roleOptions, sortOptions } from './lib/constants';
 import type { Person, Startup } from './types';
 
 import PersonCard from './components/PersonCard';
+import { ConnectionRequestsQueue } from './components/ConnectionRequestsQueue';
 import StartupCard from './components/StartupCard';
 import ActivityFeed from './components/ActivityFeed';
 import CardSkeleton from './components/CardSkeleton';
@@ -165,6 +166,8 @@ const NetworkPage = () => {
                         </Tabs>
                     </div>
                 )}
+
+                {filters.activeTab === 'people' && <ConnectionRequestsQueue />}
 
                 <div className={filters.networkView === 'network' && filters.activeTab === 'people' && filters.networkSubView === 'feed' ? 'w-full' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'}>
                     {networkApi.loading ? (
