@@ -21,6 +21,7 @@ import { useReaction } from '../../hooks/mutations';
 import { useRepost } from '../../hooks/mutations/useRepost';
 import { useToggleBookmark } from '@/hooks/useFeedExtra';
 import { ReportModal } from '@/components/modals/ReportModal';
+import { toast } from 'sonner';
 
 interface PostControlsProps {
   currentReaction: Reaction | null;
@@ -71,6 +72,26 @@ const PostControls: React.FC<PostControlsProps> = ({
       setIsRepost(!isRepost);
     }, 250);
   }, [postId, repost, isRepost, disabled]);
+
+  const handleShare = useCallback(async () => {
+    if (disabled) return;
+    const url = `${window.location.origin}/post/${postId}`;
+    // Share natif (mobile) si dispo, sinon copie du lien.
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ url });
+        return;
+      } catch {
+        /* annulé ou non supporté → fallback copie */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success('Lien copié');
+    } catch {
+      toast.error('Impossible de copier le lien');
+    }
+  }, [postId, disabled]);
 
   const handleBookmarkToggle = useCallback(async () => {
     try {
@@ -235,7 +256,18 @@ const PostControls: React.FC<PostControlsProps> = ({
           </Dropdown.Menu>
         </Dropdown.Popover>
       </Dropdown.Root>
-      {/* Actions principales seulement : Like, Comment, Repost, More */}
+      <button
+        className={cn(
+          'flex-1 flex items-center justify-center py-1 text-gray-500 rounded',
+          disabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50',
+        )}
+        onClick={disabled ? undefined : handleShare}
+        disabled={disabled}
+      >
+        <Share className="h-4 w-4 mr-2" />
+        <span className="text-sm">Partager</span>
+      </button>
+      {/* Actions principales seulement : Like, Comment, Repost, Share, More */}
       <Dropdown.Root>
         <Dropdown.DotsButton />
         
@@ -261,12 +293,13 @@ const PostControls: React.FC<PostControlsProps> = ({
                 </Dropdown.Item>
               )}
               
-              {/* Share Action */}
+              {/* Copy link (le bouton Partager de la barre gère le share natif) */}
               <Dropdown.Item icon={Share} onAction={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/post/${postId}`);
-                // Vous pouvez ajouter un toast ici
+                navigator.clipboard.writeText(`${window.location.origin}/post/${postId}`)
+                  .then(() => toast.success('Lien copié'))
+                  .catch(() => toast.error('Impossible de copier le lien'));
               }}>
-                Copy link to post
+                Copier le lien du post
               </Dropdown.Item>
             </Dropdown.Section>
             

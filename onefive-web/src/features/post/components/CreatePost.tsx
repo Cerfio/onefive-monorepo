@@ -14,7 +14,7 @@ import { Avatar } from '@/components/base/avatar/avatar';
 import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
 import { TextArea } from '@/components/base/textarea/textarea';
-import { FileText, ImageIcon, Plus, Video, X } from 'lucide-react';
+import { FileText, ImageIcon, Plus, Video, X, Smile } from 'lucide-react';
 import { CreateBuildInPublicPost } from '@/components/feed/CreateBuildInPublicPost';
 import { BuildInPublicData } from '@/components/feed/BuildInPublicPost';
 import { encodeBuildInPublicData } from '@/utils/buildInPublic';
@@ -34,6 +34,13 @@ import { Avatar as MentionAvatar } from '@/components/base/avatar/avatar';
 interface CreatePostProps {
   onSuccess?: () => void;
 }
+
+// Jeu d'emojis courants pour le picker léger du composer.
+const COMMON_EMOJIS = [
+  '😀','😁','😂','🤣','😊','😍','😎','🤩','🥳','😉',
+  '🙌','👏','👍','🙏','💪','🔥','🚀','✨','⭐','💡',
+  '❤️','🧡','💚','💙','💜','🎉','🎯','📈','✅','💯',
+];
 
 export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
   const { data: user, isLoading } = useMe();
@@ -152,6 +159,20 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
       setMentionQuery(null);
     },
     [contentValue, mentionStart, setValue],
+  );
+
+  // Emoji picker léger (sans dépendance) : insère l'emoji au curseur.
+  const [showEmoji, setShowEmoji] = useState(false);
+  const insertEmoji = useCallback(
+    (emoji: string) => {
+      const el = composerRef.current?.querySelector('textarea') ?? null;
+      const value = contentValue ?? '';
+      const pos = el?.selectionStart ?? value.length;
+      const newValue = value.slice(0, pos) + emoji + value.slice(pos);
+      setValue('content', newValue, { shouldValidate: true });
+      setShowEmoji(false);
+    },
+    [contentValue, setValue],
   );
 
   const hasContent = contentValue && contentValue.trim().length > 0;
@@ -460,6 +481,32 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
             >
               Media
             </Button>
+            <div className="relative">
+              <Button
+                type="button"
+                color="secondary"
+                size="sm"
+                className="text-gray-600 hover:text-gray-800"
+                onClick={() => setShowEmoji((v) => !v)}
+                iconLeading={<Smile data-icon />}
+              >
+                Emoji
+              </Button>
+              {showEmoji && (
+                <div className="absolute bottom-full left-0 z-30 mb-2 grid w-64 grid-cols-8 gap-1 rounded-xl border border-gray-200 bg-white p-2 shadow-lg">
+                  {COMMON_EMOJIS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => insertEmoji(emoji)}
+                      className="rounded-md p-1 text-lg hover:bg-gray-100"
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <Button 
             type="submit" 
