@@ -83,6 +83,11 @@ const discussionListItemSchema = z.object({
   createdAt: z.string(),
   saas: saasSchema.optional(),
   profile: discussionProfileSchema,
+  // Sondages : type + options + résultats/état vote (pour le rendu inline feed)
+  type: z.string().optional(),
+  options: z.array(z.string()).optional(),
+  pollResults: z.record(z.string(), z.number()).optional(),
+  hasVoted: z.boolean().optional(),
 });
 
 const fetchDiscussionsResponseSchema = z.object({

@@ -140,6 +140,13 @@ export class ListDiscussionHandler {
             profileId: true,
           },
         },
+        // Votes du sondage — pour afficher résultats + état "déjà voté" inline
+        pollVotes: {
+          select: {
+            option: true,
+            profileId: true,
+          },
+        },
         _count: {
           select: {
             views: true,
@@ -213,6 +220,19 @@ export class ListDiscussionHandler {
             ? followingSet.has(profile.id)
             : false;
 
+        // Résultats de sondage + état "déjà voté" (parité avec get-discussion)
+        const pollVotes = (discussion.pollVotes || []) as Array<{
+          option: string;
+          profileId: string;
+        }>;
+        const pollResults: Record<string, number> = {};
+        for (const vote of pollVotes) {
+          pollResults[vote.option] = (pollResults[vote.option] || 0) + 1;
+        }
+        const hasVoted = pollVotes.some(
+          (vote) => vote.profileId === currentUserProfile.id,
+        );
+
         return {
           id: discussion.id,
           question: discussion.question,
@@ -227,6 +247,8 @@ export class ListDiscussionHandler {
           hasUpvote: discussion.upvotes && discussion.upvotes.length > 0,
           answerCount: discussion._count?.answers || 0,
           viewCount: discussion._count?.views || 0,
+          pollResults,
+          hasVoted,
           reactions: discussion.reactions || [],
           profile: profile
             ? {

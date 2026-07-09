@@ -6,6 +6,7 @@ import { X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/utils/kyInstance';
 import { useProfile } from '@/queries/profile';
+import { useProfileStartups } from '@/queries/startup';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { Button } from '@/components/base/buttons/button';
 
@@ -43,6 +44,11 @@ export const ConversationContextPanel = ({ profileId, open, onClose }: Conversat
     enabled: open && !!profileId,
     staleTime: 1000 * 60 * 5,
   });
+
+  // Startup(s) de l'interlocuteur — savoir « à quelle boîte je parle ».
+  const { data: startups } = useProfileStartups(
+    open && profileId ? profileId : undefined,
+  );
 
   const p = profile as any;
   const intentions: string[] = useMemo(() => p?.intentions ?? [], [p]);
@@ -87,6 +93,29 @@ export const ConversationContextPanel = ({ profileId, open, onClose }: Conversat
               <p className="mt-3 text-xs text-tertiary">
                 {mutuals.count} connexion{mutuals.count > 1 ? 's' : ''} en commun
               </p>
+            )}
+
+            {Array.isArray(startups) && startups.length > 0 && (
+              <div className="mt-4 w-full space-y-2">
+                <p className="text-left text-xs font-medium uppercase tracking-wide text-tertiary">
+                  Startup{startups.length > 1 ? 's' : ''}
+                </p>
+                {startups.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => router.push(`/startup/${s.id}`)}
+                    className="flex w-full items-center gap-2 rounded-lg border border-secondary p-2 text-left transition-colors hover:bg-secondary/40"
+                  >
+                    <Avatar src={s.logo ?? undefined} alt={s.name} size="sm" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-primary">{s.name}</span>
+                      {(s.position || s.tagline) && (
+                        <span className="block truncate text-xs text-tertiary">{s.position || s.tagline}</span>
+                      )}
+                    </span>
+                  </button>
+                ))}
+              </div>
             )}
 
             {p.bio && (

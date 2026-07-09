@@ -293,6 +293,8 @@ const Spotlight = () => {
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(true);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  // Onglet « Sauvegardés » : n'afficher que les spots mis en favori.
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [searchOnMapMove, setSearchOnMapMove] = useState(true);
 
   // Persist favorites across refreshes (localStorage = cache instantané).
@@ -650,8 +652,9 @@ const Spotlight = () => {
         (spot.name || '').toLowerCase().includes(searchValue) ||
         (spot.highlight || '').toLowerCase().includes(searchValue) ||
         (spot.address || '').toLowerCase().includes(searchValue);
+      const matchesFavorite = !showFavoritesOnly || favorites.has(spot.id);
 
-      return matchesType && matchesSearch;
+      return matchesType && matchesSearch && matchesFavorite;
     });
 
     // Tri
@@ -676,7 +679,7 @@ const Spotlight = () => {
     }
 
     return filtered;
-  }, [data?.pages, typeFilter, sortBy, search]);
+  }, [data?.pages, typeFilter, sortBy, search, showFavoritesOnly, favorites]);
 
   // Preuve sociale réseau : combien de mes connexions ont mis chaque spot visible en favori.
   const visibleSpotIds = useMemo(
@@ -965,6 +968,19 @@ const Spotlight = () => {
                 />
                 Chercher quand je déplace la carte
               </label>
+              <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowFavoritesOnly((v) => !v)}
+                className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${
+                  showFavoritesOnly
+                    ? 'border-[#5E6AD2] bg-[#EDEEFB] text-[#4149A8]'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                }`}
+                aria-pressed={showFavoritesOnly}
+              >
+                <Bookmark className={`h-3.5 w-3.5 ${showFavoritesOnly ? 'fill-[#5E6AD2] text-[#5E6AD2]' : ''}`} />
+                Sauvegardés{favorites.size > 0 ? ` (${favorites.size})` : ''}
+              </button>
               <div className="flex items-center gap-1 rounded-lg bg-gray-100 p-0.5">
                 <button
                   onClick={() => setViewMode('list')}
@@ -980,6 +996,7 @@ const Spotlight = () => {
                 >
                   <LayoutGrid className="h-4 w-4 text-gray-600" />
                 </button>
+              </div>
               </div>
             </div>
             <motion.div
