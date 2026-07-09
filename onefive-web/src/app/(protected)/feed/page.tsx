@@ -632,6 +632,7 @@ export default function FeedPage() {
             <UnifiedComposerModal
               open={isCreatePostModalOpen}
               onOpenChange={setIsCreatePostModalOpen}
+              onBuildInPublic={() => setIsBuildInPublicModalOpen(true)}
             />
             {/* Modale de création de post Build in Public */}
             <CreateBuildInPublicModal

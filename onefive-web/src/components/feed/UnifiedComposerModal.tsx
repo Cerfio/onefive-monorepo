@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { FileText, Image as ImageIcon, BarChart2, HelpCircle, Plus, X } from 'lucide-react';
+import { FileText, Image as ImageIcon, BarChart2, HelpCircle, Rocket, Plus, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/base/dialog/dialog';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
@@ -13,25 +13,27 @@ import { CreatePost } from '@/features/post/components/CreatePost';
 import { createDiscussion } from '@/queries/discussion';
 import { DiscussionType, Tags } from '@/enums';
 
-type ComposerTab = 'text' | 'media' | 'poll' | 'question';
+type ComposerTab = 'text' | 'media' | 'poll' | 'question' | 'bip';
 
 const TABS: { key: ComposerTab; label: string; Icon: React.ComponentType<{ className?: string }> }[] = [
   { key: 'text', label: 'Texte', Icon: FileText },
   { key: 'media', label: 'Média', Icon: ImageIcon },
   { key: 'poll', label: 'Sondage', Icon: BarChart2 },
   { key: 'question', label: 'Question', Icon: HelpCircle },
+  { key: 'bip', label: 'Build in Public', Icon: Rocket },
 ];
 
 interface UnifiedComposerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onBuildInPublic?: () => void;
 }
 
 /**
  * Composer unifié à onglets : Texte / Média créent un post (feed), Sondage /
  * Question créent une discussion. Un seul point d'entrée pour toute la création.
  */
-export const UnifiedComposerModal = ({ open, onOpenChange }: UnifiedComposerModalProps) => {
+export const UnifiedComposerModal = ({ open, onOpenChange, onBuildInPublic }: UnifiedComposerModalProps) => {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<ComposerTab>('text');
 
@@ -95,7 +97,22 @@ export const UnifiedComposerModal = ({ open, onOpenChange }: UnifiedComposerModa
           ))}
         </div>
 
-        {!isDiscussionTab ? (
+        {tab === 'bip' ? (
+          <div className="space-y-4 py-6 text-center">
+            <Rocket className="mx-auto h-10 w-10 text-[#5E6AD2]" />
+            <p className="text-sm text-gray-600">
+              Partagez une update, une métrique ou un lancement de votre startup — Build in Public.
+            </p>
+            <Button
+              onClick={() => {
+                onOpenChange(false);
+                onBuildInPublic?.();
+              }}
+            >
+              Continuer
+            </Button>
+          </div>
+        ) : !isDiscussionTab ? (
           <CreatePost onSuccess={() => onOpenChange(false)} />
         ) : (
           <div className="space-y-4">
