@@ -30,6 +30,7 @@ import {
 } from '@/queries/postDrafts';
 import { useSearchProfiles } from '@/hooks/useSearchProfiles';
 import { Avatar as MentionAvatar } from '@/components/base/avatar/avatar';
+import { useDismissable } from '@/hooks/useDismissable';
 
 interface CreatePostProps {
   onSuccess?: () => void;
@@ -163,6 +164,10 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
 
   // Emoji picker léger (sans dépendance) : insère l'emoji au curseur.
   const [showEmoji, setShowEmoji] = useState(false);
+  const emojiRef = useRef<HTMLDivElement>(null);
+  const draftsRef = useRef<HTMLDivElement>(null);
+  useDismissable(emojiRef, showEmoji, () => setShowEmoji(false));
+  useDismissable(draftsRef, showDrafts, () => setShowDrafts(false));
   const insertEmoji = useCallback(
     (emoji: string) => {
       const el = composerRef.current?.querySelector('textarea') ?? null;
@@ -336,7 +341,7 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
         )}
         <div className="flex-1">
           {drafts.length > 0 && (
-            <div className="mb-2">
+            <div className="mb-2" ref={draftsRef}>
               <button
                 type="button"
                 onClick={() => setShowDrafts((v) => !v)}
@@ -481,7 +486,7 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
             >
               Media
             </Button>
-            <div className="relative">
+            <div className="relative" ref={emojiRef}>
               <Button
                 type="button"
                 color="secondary"

@@ -175,6 +175,24 @@ const MessagesPage = () => {
   const [pendingAttachment, setPendingAttachment] = useState<UploadedAttachment | null>(null);
   const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  // Fermer le picker emoji au clic extérieur / Échap (2 composers desktop+mobile).
+  useEffect(() => {
+    if (!showEmojiPicker) return;
+    const onPointer = (e: MouseEvent) => {
+      if (!(e.target as Element)?.closest('[data-emoji-popover]')) {
+        setShowEmojiPicker(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowEmojiPicker(false);
+    };
+    document.addEventListener('mousedown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onPointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [showEmojiPicker]);
   const [showContextPanel, setShowContextPanel] = useState(false);
 
   // Refs
@@ -1089,7 +1107,7 @@ const MessagesPage = () => {
                         isDisabled={uploadAttachment.isPending}
                         aria-label="Joindre un fichier"
                       />
-                      <div className="relative">
+                      <div className="relative" data-emoji-popover>
                         <Button
                           type="button"
                           iconLeading={FaceSmile}
@@ -1178,7 +1196,7 @@ const MessagesPage = () => {
                       isDisabled={uploadAttachment.isPending}
                       aria-label="Joindre un fichier"
                     />
-                    <div className="relative">
+                    <div className="relative" data-emoji-popover>
                       <Button
                         type="button"
                         iconLeading={FaceSmile}
