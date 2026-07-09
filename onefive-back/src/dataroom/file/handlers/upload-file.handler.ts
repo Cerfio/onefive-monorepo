@@ -12,6 +12,7 @@ import {
   generateSafeStorageKey,
 } from '../../../common/utils/file-validation.utils';
 import { PostHogService } from 'src/posthog/posthog.service';
+import { NotificationHelperService } from '../../../notification/notification-helper.service';
 
 interface UploadedFile {
   buffer: Buffer;
@@ -29,6 +30,7 @@ export class UploadFileHandler {
     private readonly fileService: FileService,
     private readonly prisma: PrismaService,
     private readonly posthogService: PostHogService,
+    private readonly notificationHelper: NotificationHelperService,
   ) {}
 
   async execute({
@@ -196,6 +198,52 @@ export class UploadFileHandler {
       dataroom_id: dataroomId,
       file_count: createdFiles.length,
     });
+
+    // Notifier les membres de la dataroom (sauf l'uploader) qu'un document a été ajouté.
+    if (createdFiles.length > 0) {
+      try {
+        const uploaderProfile = await this.prisma.profile.findUnique({
+          where: { userId },
+          select: { id: true },
+        });
+        const dataroom = await this.prisma.dataroom.findUnique({
+          where: { id: dataroomId },
+          select: { startup: { select: { name: true } } },
+        });
+        const members = await this.prisma.member.findMany({
+          where: {
+            dataroomId,
+            ...(uploaderProfile
+              ? { profileId: { not: uploaderProfile.id } }
+              : {}),
+          },
+          select: { profileId: true },
+          distinct: ['profileId'],
+        });
+        const dataroomName = dataroom?.startup?.name || 'une dataroom';
+        const detail =
+          createdFiles.length === 1
+            ? createdFiles[0].name
+            : `${createdFiles.length} documents`;
+        await Promise.all(
+          members.map((m) =>
+            this.notificationHelper.notifyDataroomUpdate({
+              profileId: m.profileId,
+              dataroomId,
+              dataroomName,
+              updateType: 'document_added',
+              details: detail,
+            }),
+          ),
+        );
+      } catch (error) {
+        this.logger.error('Failed to notify dataroom members of upload', {
+          transactionId,
+          dataroomId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
 
     return {
       data: {

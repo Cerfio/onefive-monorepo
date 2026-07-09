@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { EmailService } from '../../../email/email.service';
+import { NotificationHelperService } from '../../../notification/notification-helper.service';
 
 @Injectable()
 export class DataroomInvitationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly emailService: EmailService,
+    private readonly notificationHelper: NotificationHelperService,
   ) {}
 
   async create({
@@ -70,6 +72,33 @@ export class DataroomInvitationService {
         newUserInvitationId,
       },
     });
+
+    // Notification in-app pour un utilisateur déjà inscrit qui est invité.
+    if (existingUser) {
+      try {
+        const inviterProfile = await this.prisma.profile.findUnique({
+          where: { userId },
+          select: { id: true, firstName: true, lastName: true },
+        });
+        const dataroom = await this.prisma.dataroom.findUnique({
+          where: { id: dataroomId },
+          select: { startup: { select: { name: true } } },
+        });
+        const inviterName =
+          inviterProfile?.firstName && inviterProfile?.lastName
+            ? `${inviterProfile.firstName} ${inviterProfile.lastName}`
+            : 'Un membre';
+        await this.notificationHelper.notifyDataroomInvitation({
+          invitedProfileId: existingUser.profileInvitedId,
+          inviterProfileId: inviterProfile?.id,
+          inviterName,
+          dataroomId,
+          dataroomName: dataroom?.startup?.name || 'une dataroom',
+        });
+      } catch {
+        // notification non bloquante
+      }
+    }
 
     if (newUser) {
       const inviterProfile = await this.prisma.profile.findUnique({

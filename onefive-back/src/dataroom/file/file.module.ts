@@ -9,9 +9,16 @@ import { PrismaModule } from '../../prisma/prisma.module';
 import { StorageModule } from '../../storage/storage.module';
 import { SessionsModule } from '../../sessions/sessions.module';
 import { LoggerProvider } from '../../common/logger/logger.provider';
+import { NotificationModule } from '../../notification/notification.module';
 
 @Module({
-  imports: [PrismaModule, StorageModule, SessionsModule, ConfigModule],
+  imports: [
+    PrismaModule,
+    StorageModule,
+    SessionsModule,
+    ConfigModule,
+    NotificationModule,
+  ],
   controllers: [FileController, UploadFileController],
   providers: [FileHandler, UploadFileHandler, FileService, LoggerProvider],
   exports: [FileService],

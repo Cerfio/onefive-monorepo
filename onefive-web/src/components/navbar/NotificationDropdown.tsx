@@ -45,6 +45,8 @@ const getNotificationIcon = (type: string) => {
       return <Building07 className="w-4 h-4 text-purple-600" />;
     case 'CONNECTION_REQUEST':
       return <UserPlus01 className="w-4 h-4 text-blue-600" />;
+    case 'CONNECTION_ACCEPTED':
+      return <UserPlus01 className="w-4 h-4 text-green-600" />;
     case 'REFERRAL_ACCEPTED':
       return <UserPlus01 className="w-4 h-4 text-emerald-500" />;
     case 'SYSTEM_ANNOUNCEMENT':

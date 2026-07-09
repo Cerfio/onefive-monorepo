@@ -772,13 +772,42 @@ export class NotificationHelperService {
   }) {
     return this.notificationService.create({
       profileId: requesterProfileId,
-      type: NotificationType.CONNECTION_REQUEST,
+      type: NotificationType.CONNECTION_ACCEPTED,
       category: NotificationCategory.INVITATIONS,
       title: accepterName,
       message: 'a accepté votre demande de connexion',
       actorId: accepterProfileId,
       entityId: accepterProfileId,
       entityType: 'PROFILE',
+    });
+  }
+
+  /**
+   * Notification quand un utilisateur est invité à rejoindre une dataroom.
+   * Destinataire : la personne invitée (invitedProfileId).
+   */
+  async notifyDataroomInvitation({
+    invitedProfileId,
+    inviterProfileId,
+    inviterName,
+    dataroomId,
+    dataroomName,
+  }: {
+    invitedProfileId: string;
+    inviterProfileId?: string;
+    inviterName: string;
+    dataroomId: string;
+    dataroomName: string;
+  }) {
+    return this.notificationService.create({
+      profileId: invitedProfileId,
+      type: NotificationType.DATAROOM_INVITATION,
+      category: NotificationCategory.INVITATIONS,
+      title: inviterName,
+      message: `vous a invité·e à rejoindre la dataroom « ${dataroomName} »`,
+      actorId: inviterProfileId,
+      entityId: dataroomId,
+      entityType: 'DATAROOM',
     });
   }
 
