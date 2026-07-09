@@ -1,0 +1,13 @@
+// Brouillons de post persistés côté serveur (par profil) — remplace le
+// localStorage pour une persistance cross-device + une vraie liste de brouillons.
+
+model PostDraft {
+  id        String   @id @default(cuid())
+  profileId String
+  content   String   @db.VarChar(3000)
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId, updatedAt])
+}

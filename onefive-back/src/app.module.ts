@@ -64,6 +64,7 @@ import { MessagingModule } from './messaging/messaging.module';
 import { CrmModule } from './crm/crm.module';
 import { SpotlightFavoriteModule } from './spotlight-favorite/spotlight-favorite.module';
 import { SavedSearchModule } from './saved-search/saved-search.module';
+import { PostDraftModule } from './post-draft/post-draft.module';
 import { NotificationModule } from './notification/notification.module';
 import { ReferralModule } from './referral/referral.module';
 import { LinkedInSyncModule } from './linkedin-sync/linkedin-sync.module';
@@ -162,6 +163,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     CrmModule,
     SpotlightFavoriteModule,
     SavedSearchModule,
+    PostDraftModule,
     NotificationModule,
     ReferralModule,
     LinkedInSyncModule,

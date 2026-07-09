@@ -19,6 +19,15 @@ import { CreateBuildInPublicPost } from '@/components/feed/CreateBuildInPublicPo
 import { BuildInPublicData } from '@/components/feed/BuildInPublicPost';
 import { encodeBuildInPublicData } from '@/utils/buildInPublic';
 import { VALIDATION_LIMITS } from '@/constants/validation-limits';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { FileEdit } from 'lucide-react';
+import {
+  listDrafts,
+  createDraft,
+  updateDraft,
+  deleteDraft,
+  type PostDraft,
+} from '@/queries/postDrafts';
 
 interface CreatePostProps {
   onSuccess?: () => void;
@@ -55,31 +64,60 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
   const contentValue = watch('content');
   const mediaFiles = watch('medias');
 
-  // Brouillon persistant (par appareil) : on restaure le texte au montage puis
-  // on l'enregistre à chaque frappe. Nettoyé à la publication (resetForm).
-  const draftRestored = useRef(false);
-  useEffect(() => {
-    if (draftRestored.current) return;
-    draftRestored.current = true;
-    try {
-      const saved = localStorage.getItem('post-draft');
-      if (saved && saved.trim()) setValue('content', saved);
-    } catch {
-      /* localStorage indisponible */
-    }
-  }, [setValue]);
+  // Brouillons persistés côté serveur (cross-device) : autosave débounce du
+  // composer + liste de brouillons pour reprendre. Nettoyé à la publication.
+  const queryClient = useQueryClient();
+  const currentDraftId = useRef<string | null>(null);
+  const [showDrafts, setShowDrafts] = useState(false);
+  const { data: drafts = [] } = useQuery({
+    queryKey: ['post-drafts'],
+    queryFn: listDrafts,
+    staleTime: 1000 * 30,
+  });
 
   useEffect(() => {
-    try {
-      if (contentValue && contentValue.trim()) {
-        localStorage.setItem('post-draft', contentValue);
-      } else {
-        localStorage.removeItem('post-draft');
+    const content = (contentValue ?? '').trim();
+    if (!content) return;
+    const timer = setTimeout(async () => {
+      try {
+        if (currentDraftId.current) {
+          await updateDraft(currentDraftId.current, contentValue, selectedTags);
+        } else {
+          const created = await createDraft(contentValue, selectedTags);
+          currentDraftId.current = created.id;
+        }
+        queryClient.invalidateQueries({ queryKey: ['post-drafts'] });
+      } catch {
+        /* autosave best-effort */
       }
-    } catch {
-      /* localStorage indisponible */
-    }
-  }, [contentValue]);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [contentValue, selectedTags, queryClient]);
+
+  const resumeDraft = useCallback(
+    (d: PostDraft) => {
+      setValue('content', d.content);
+      setSelectedTags(d.tags as Tags[]);
+      setValue('tags', d.tags as Tags[]);
+      currentDraftId.current = d.id;
+      setIsInputFocused(true);
+      setShowDrafts(false);
+    },
+    [setValue],
+  );
+
+  const removeDraft = useCallback(
+    async (id: string) => {
+      try {
+        await deleteDraft(id);
+        if (currentDraftId.current === id) currentDraftId.current = null;
+        queryClient.invalidateQueries({ queryKey: ['post-drafts'] });
+      } catch {
+        /* ignore */
+      }
+    },
+    [queryClient],
+  );
 
   const hasContent = contentValue && contentValue.trim().length > 0;
   const isSubmitDisabled = isCreatingPost || !hasContent;
@@ -203,6 +241,12 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
         ...data,
         content: finalContent,
       });
+      // Publié → supprimer le brouillon associé.
+      if (currentDraftId.current) {
+        deleteDraft(currentDraftId.current).catch(() => {});
+        currentDraftId.current = null;
+        queryClient.invalidateQueries({ queryKey: ['post-drafts'] });
+      }
       resetForm();
       setBuildInPublicData(null);
       setIsInputFocused(false);
@@ -235,6 +279,42 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
           />
         )}
         <div className="flex-1">
+          {drafts.length > 0 && (
+            <div className="mb-2">
+              <button
+                type="button"
+                onClick={() => setShowDrafts((v) => !v)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-600 hover:border-[#5E6AD2] hover:text-[#5E6AD2]"
+              >
+                <FileEdit className="h-3.5 w-3.5" />
+                Brouillons ({drafts.length})
+              </button>
+              {showDrafts && (
+                <div className="mt-2 space-y-1.5 rounded-lg border border-gray-200 bg-white p-2">
+                  {drafts.map((d) => (
+                    <div key={d.id} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-gray-50">
+                      <button
+                        type="button"
+                        onClick={() => resumeDraft(d)}
+                        className="min-w-0 flex-1 truncate text-left text-sm text-gray-700"
+                        title={d.content}
+                      >
+                        {d.content.trim().slice(0, 80) || 'Brouillon vide'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeDraft(d.id)}
+                        className="text-gray-300 hover:text-red-500"
+                        aria-label="Supprimer le brouillon"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           <TextArea
             {...register('content')}
             onFocus={() => setIsInputFocused(true)}
