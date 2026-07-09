@@ -392,6 +392,7 @@ export class PostService {
             reactionCount: p._count?.reactions ?? 0,
             commentCount: p._count?.comments ?? 0,
             repostCount: p._count?.reposts ?? 0,
+            viewsCount: p._count?.views ?? 0,
             isReposted: false,
             isBookmarked: false,
             userReaction: null,
@@ -781,6 +782,7 @@ export class PostService {
           reactionCount: p._count?.reactions ?? 0,
           commentCount: p._count?.comments ?? 0,
           repostCount: p._count?.reposts ?? 0,
+          viewsCount: p._count?.views ?? 0,
           isReposted: p.reposts && p.reposts.length > 0,
           isBookmarked: p.bookmarks && p.bookmarks.length > 0,
           userReaction,
@@ -1265,6 +1267,7 @@ export class PostService {
         reactionCount: post._count?.reactions ?? 0,
         commentCount: post._count?.comments ?? 0,
         repostCount: post._count?.reposts ?? 0,
+        viewsCount: post._count?.views ?? 0,
         isReposted: (post as any).reposts && (post as any).reposts.length > 0,
         isBookmarked:
           (post as any).bookmarks && (post as any).bookmarks.length > 0,
