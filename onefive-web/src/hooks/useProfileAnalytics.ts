@@ -154,6 +154,33 @@ export interface UseEngagementAnalyticsOptions {
   sortOrder?: 'asc' | 'desc';
 }
 
+// Fetch direct (hors hook) — utilisé pour l'export CSV complet (tout le dataset).
+export const fetchEngagementAnalytics = async (
+  options: UseEngagementAnalyticsOptions = {},
+): Promise<EngagementAnalyticsData> => {
+  const {
+    timeRange = '30d',
+    skip = 0,
+    limit = 10,
+    search,
+    sortBy = 'date',
+    sortOrder = 'desc',
+  } = options;
+  const params = new URLSearchParams();
+  params.append('timeRange', timeRange);
+  params.append('skip', skip.toString());
+  params.append('limit', limit.toString());
+  if (search) params.append('search', search);
+  params.append('sortBy', sortBy);
+  params.append('sortOrder', sortOrder);
+  const response = await api.get(`profile-analytics/engagement?${params}`);
+  const result = (await response.json()) as ApiResponse<EngagementAnalyticsData>;
+  if (!result.success) {
+    throw new Error(result.error || 'Failed to fetch engagement analytics');
+  }
+  return result.data;
+};
+
 export const useEngagementAnalytics = (options: UseEngagementAnalyticsOptions = {}) => {
   const {
     timeRange = '30d',

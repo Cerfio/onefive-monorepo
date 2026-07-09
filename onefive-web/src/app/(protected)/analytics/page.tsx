@@ -34,7 +34,7 @@ import {
 } from '@untitledui/icons';
 import { PostAnalyticsModal } from '@/components/analytics/PostAnalyticsModal';
 import { NativeSelect } from '@/components/base/select/select-native';
-import { useVisitorsAnalytics, useEngagementAnalytics, useOverviewAnalytics, type TimeRange, type PostEngagementStats } from '@/hooks/useProfileAnalytics';
+import { useVisitorsAnalytics, useEngagementAnalytics, fetchEngagementAnalytics, useOverviewAnalytics, type TimeRange, type PostEngagementStats } from '@/hooks/useProfileAnalytics';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { decodeBuildInPublicData } from '@/utils/buildInPublic';
 
@@ -612,27 +612,41 @@ const EngagementTab = ({
             <Button
               color="secondary"
               size="sm"
-              onClick={() => {
-                const header = ['Type', 'Titre', 'Date', 'Vues', 'Likes', 'Commentaires', 'Partages'];
-                const rows = posts.map((p) => [
-                  p.type === 'discussion' ? 'Discussion' : 'Post',
-                  decodeBuildInPublicData(p.title).visibleContent || 'Sans titre',
-                  p.date,
-                  p.views,
-                  p.likes,
-                  p.comments,
-                  p.shares,
-                ]);
-                const escape = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
-                const csv = [header, ...rows].map((r) => r.map(escape).join(',')).join('\n');
-                const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `onefive-analytics-${timeRange}.csv`;
-                a.click();
-                URL.revokeObjectURL(url);
-                toast.success(`${posts.length} ligne${posts.length > 1 ? 's' : ''} exportée${posts.length > 1 ? 's' : ''}`);
+              onClick={async () => {
+                try {
+                  // Export du dataset COMPLET (pas seulement la page courante).
+                  const all = await fetchEngagementAnalytics({
+                    timeRange,
+                    skip: 0,
+                    limit: engagementData.totalContent || posts.length,
+                    search: search || undefined,
+                    sortBy: sort,
+                    sortOrder: order,
+                  });
+                  const allPosts = all.posts || [];
+                  const header = ['Type', 'Titre', 'Date', 'Vues', 'Likes', 'Commentaires', 'Partages'];
+                  const rows = allPosts.map((p) => [
+                    p.type === 'discussion' ? 'Discussion' : 'Post',
+                    decodeBuildInPublicData(p.title).visibleContent || 'Sans titre',
+                    p.date,
+                    p.views,
+                    p.likes,
+                    p.comments,
+                    p.shares,
+                  ]);
+                  const escape = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
+                  const csv = [header, ...rows].map((r) => r.map(escape).join(',')).join('\n');
+                  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `onefive-analytics-${timeRange}.csv`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  toast.success(`${allPosts.length} ligne${allPosts.length > 1 ? 's' : ''} exportée${allPosts.length > 1 ? 's' : ''}`);
+                } catch {
+                  toast.error("Échec de l'export CSV");
+                }
               }}
               isDisabled={posts.length === 0}
               iconLeading={<Download01 className="h-4 w-4" data-icon />}

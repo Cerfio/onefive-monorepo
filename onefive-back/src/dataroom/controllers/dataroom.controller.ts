@@ -13,6 +13,7 @@ import {
   UseGuards,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { LogService } from 'logstash-winston-3';
@@ -490,6 +491,7 @@ export class DataroomController {
         groupId: true,
         isRevoked: true,
         expiresAt: true,
+        requireEmail: true,
       },
     });
     if (!link || link.isRevoked) {
@@ -497,6 +499,20 @@ export class DataroomController {
     }
     if (link.expiresAt && link.expiresAt.getTime() < Date.now()) {
       throw new BadRequestException('Ce lien a expiré');
+    }
+
+    // Email-gate : si le lien exige un email, le redeemer doit avoir un email
+    // vérifié (le propriétaire capture ainsi une identité fiable, façon DocSend).
+    if (link.requireEmail) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: req.userId },
+        select: { isEmailVerified: true },
+      });
+      if (!user?.isEmailVerified) {
+        throw new ForbiddenException(
+          'Ce lien exige un email vérifié. Vérifiez votre adresse email avant d’y accéder.',
+        );
+      }
     }
 
     const profileId = await this.getProfileIdFromUserId(req.userId);
