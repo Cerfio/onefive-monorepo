@@ -16,6 +16,10 @@ import { FastifyRequest } from 'fastify';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { PostHogService } from 'src/posthog/posthog.service';
+import { NotificationHelperService } from '../../notification/notification-helper.service';
+
+// Tokens de mention insérés par le composer : @[Nom Prénom](profileId)
+const MENTION_REGEX = /@\[[^\]]+\]\(([a-zA-Z0-9_-]+)\)/g;
 
 @Injectable()
 export class CreatePostHandler {
@@ -26,6 +30,7 @@ export class CreatePostHandler {
     private readonly storageService: StorageService,
     @Inject('Logger') private readonly logger: LogService,
     private readonly posthogService: PostHogService,
+    private readonly notificationHelper: NotificationHelperService,
   ) {}
 
   @Log()
@@ -171,7 +176,7 @@ export class CreatePostHandler {
     // Get user profile for author ID only
     const profile = await this.prisma.profile.findUnique({
       where: { userId },
-      select: { id: true },
+      select: { id: true, firstName: true, lastName: true },
     });
 
     if (!profile) {
@@ -226,6 +231,37 @@ export class CreatePostHandler {
         },
       })
       .catch(() => {});
+
+    // Mentions : notifier chaque profil mentionné dans le contenu.
+    const mentionedIds = new Set<string>();
+    for (const match of (createPostDto.content || '').matchAll(MENTION_REGEX)) {
+      if (match[1] && match[1] !== profile.id) mentionedIds.add(match[1]);
+    }
+    if (mentionedIds.size > 0) {
+      const actorName = `${profile.firstName} ${profile.lastName}`.trim();
+      const context = (createPostDto.content || '')
+        .replace(MENTION_REGEX, (_m, _id) => _m.replace(/@\[([^\]]+)\].*/, '@$1'))
+        .slice(0, 140);
+      // Ne notifier que des profils réels.
+      const existing = await this.prisma.profile.findMany({
+        where: { id: { in: Array.from(mentionedIds) } },
+        select: { id: true },
+      });
+      await Promise.all(
+        existing.map((p) =>
+          this.notificationHelper
+            .notifyMention({
+              mentionedProfileId: p.id,
+              actorProfileId: profile.id,
+              actorName,
+              entityId: post.id,
+              entityType: 'POST',
+              context,
+            })
+            .catch(() => null),
+        ),
+      );
+    }
 
     return {
       id: post.id,

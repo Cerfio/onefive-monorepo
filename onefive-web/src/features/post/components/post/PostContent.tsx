@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { CardContent } from '@/components/ui';
 import { BuildInPublicPost } from '@/components/feed/BuildInPublicPost';
 import { decodeBuildInPublicData, hasBuildInPublicData } from '@/utils/buildInPublic';
+import { MentionText } from '@/features/post/components/post/MentionText';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -205,7 +206,7 @@ const PostContent: React.FC<Props> = ({
     <CardContent className="mb-3 px-4">
       {/* Contenu du repost (commentaire de l'utilisateur qui reposte) */}
       {content && content.trim().length > 0 && (
-        <p className="text-sm whitespace-pre-line mb-3">{visibleContent || content}</p>
+        <MentionText className="text-sm whitespace-pre-line mb-3" text={visibleContent || content} />
       )}
       {isBuildInPublic && buildInPublicData && (
         <BuildInPublicPost
@@ -302,9 +303,10 @@ const PostContent: React.FC<Props> = ({
                 </div>
               </div>
               
-              <p className="text-sm text-gray-800 whitespace-pre-line mb-3">
-                {repostedContentData.visibleContent || repostedPost.content}
-              </p>
+              <MentionText
+                className="text-sm text-gray-800 whitespace-pre-line mb-3"
+                text={repostedContentData.visibleContent || repostedPost.content}
+              />
               
               {isRepostedBuildInPublic && repostedContentData.buildInPublicData && (
                 <BuildInPublicPost

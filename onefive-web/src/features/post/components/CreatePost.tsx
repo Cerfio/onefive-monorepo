@@ -28,6 +28,8 @@ import {
   deleteDraft,
   type PostDraft,
 } from '@/queries/postDrafts';
+import { useSearchProfiles } from '@/hooks/useSearchProfiles';
+import { Avatar as MentionAvatar } from '@/components/base/avatar/avatar';
 
 interface CreatePostProps {
   onSuccess?: () => void;
@@ -117,6 +119,39 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
       }
     },
     [queryClient],
+  );
+
+  // Mentions : autocomplete @ dans le composer.
+  const composerRef = useRef<HTMLDivElement>(null);
+  const contentReg = register('content');
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null);
+  const [mentionStart, setMentionStart] = useState(0);
+  const { data: mentionResults } = useSearchProfiles(mentionQuery ?? '', 6);
+
+  const detectMention = useCallback((el: HTMLTextAreaElement) => {
+    const pos = el.selectionStart ?? el.value.length;
+    const before = el.value.slice(0, pos);
+    const m = before.match(/(?:^|\s)@([\p{L}0-9_]{0,30})$/u);
+    if (m) {
+      setMentionQuery(m[1]);
+      setMentionStart(pos - m[1].length - 1); // position du '@'
+    } else {
+      setMentionQuery(null);
+    }
+  }, []);
+
+  const selectMention = useCallback(
+    (profile: { id: string; firstName: string; lastName?: string }) => {
+      const el = composerRef.current?.querySelector('textarea') ?? null;
+      const value = contentValue ?? '';
+      const pos = el?.selectionStart ?? value.length;
+      const fullName = `${profile.firstName}${profile.lastName ? ' ' + profile.lastName : ''}`.trim();
+      const token = `@[${fullName}](${profile.id}) `;
+      const newValue = value.slice(0, mentionStart) + token + value.slice(pos);
+      setValue('content', newValue, { shouldValidate: true });
+      setMentionQuery(null);
+    },
+    [contentValue, mentionStart, setValue],
   );
 
   const hasContent = contentValue && contentValue.trim().length > 0;
@@ -315,14 +350,48 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
               )}
             </div>
           )}
-          <TextArea
-            {...register('content')}
-            onFocus={() => setIsInputFocused(true)}
-            disabled={isCreatingPost}
-            placeholder="What's on your mind?"
-            maxLength={VALIDATION_LIMITS.POST.CONTENT_MAX}
-            className="min-h-[40px] bg-gray-50 rounded-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-          />
+          <div className="relative" ref={composerRef}>
+            <TextArea
+              {...contentReg}
+              onChange={(e) => {
+                contentReg.onChange(e);
+                detectMention(e.target as HTMLTextAreaElement);
+              }}
+              onKeyUp={(e) => detectMention(e.currentTarget as HTMLTextAreaElement)}
+              onClick={(e) => detectMention(e.currentTarget as HTMLTextAreaElement)}
+              onFocus={() => setIsInputFocused(true)}
+              disabled={isCreatingPost}
+              placeholder="What's on your mind? Tapez @ pour mentionner"
+              maxLength={VALIDATION_LIMITS.POST.CONTENT_MAX}
+              className="min-h-[40px] bg-gray-50 rounded-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+            {mentionQuery !== null && (mentionResults?.length ?? 0) > 0 && (
+              <div className="absolute left-0 right-0 top-full z-30 mt-1 max-h-56 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+                {mentionResults!.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      selectMention(p);
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-gray-50"
+                  >
+                    <MentionAvatar
+                      size="xs"
+                      src={(p as any).avatar}
+                      alt={`${p.firstName} ${p.lastName ?? ''}`}
+                      firstName={p.firstName}
+                      lastName={p.lastName}
+                    />
+                    <span className="text-sm text-gray-800">
+                      {p.firstName} {p.lastName}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {errors.content && (
             <p className="text-red-500 text-sm mt-2">
               {errors.content.message}
