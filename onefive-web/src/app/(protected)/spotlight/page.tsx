@@ -263,7 +263,31 @@ const Spotlight = () => {
       return new Set();
     }
   });
-  const [_savedSearches, setSavedSearches] = useState<Set<string>>(new Set());
+  type SavedSearch = {
+    id: string;
+    label: string;
+    search: string;
+    dateFilter: string;
+    pricingFilter: string;
+    typeFilter: string;
+    sectorFilter: string;
+  };
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem('spotlight-saved-searches');
+      return raw ? (JSON.parse(raw) as SavedSearch[]) : [];
+    } catch {
+      return [];
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem('spotlight-saved-searches', JSON.stringify(savedSearches));
+    } catch {
+      /* ignore */
+    }
+  }, [savedSearches]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [hoveredSpotId, setHoveredSpotId] = useState<string | null>(null);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
@@ -559,19 +583,34 @@ const Spotlight = () => {
   }, [toggleFavoriteMut]);
 
   const handleSaveSearch = useCallback(() => {
-    const searchKey = `${search}-${dateFilter}-${pricingFilter}-${typeFilter}-${sectorFilter}`;
+    const parts = [
+      search.trim(),
+      typeFilter !== 'all' ? typeFilter : '',
+      sectorFilter !== 'all' ? sectorFilter : '',
+      pricingFilter !== 'all' ? pricingFilter : '',
+    ].filter(Boolean);
+    const label = parts.length > 0 ? parts.join(' · ') : 'Tous les spots';
     setSavedSearches(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(searchKey)) {
-        newSet.delete(searchKey);
-        toast.success('Recherche retirée des sauvegardes');
-      } else {
-        newSet.add(searchKey);
-        toast.success('Recherche sauvegardée');
+      if (prev.some(s => s.label === label)) {
+        toast.info('Recherche déjà sauvegardée');
+        return prev;
       }
-      return newSet;
+      toast.success('Recherche sauvegardée');
+      return [
+        { id: Date.now().toString(), label, search, dateFilter, pricingFilter, typeFilter, sectorFilter },
+        ...prev,
+      ].slice(0, 10);
     });
   }, [search, dateFilter, pricingFilter, typeFilter, sectorFilter]);
+
+  const applySavedSearch = useCallback((s: SavedSearch) => {
+    setSearch(s.search);
+    setDateFilter(s.dateFilter);
+    setPricingFilter(s.pricingFilter);
+    setTypeFilter(s.typeFilter);
+    setSectorFilter(s.sectorFilter);
+    toast.success('Recherche appliquée');
+  }, []);
 
   const clearFilters = useCallback(() => {
     setDateFilter('all');
@@ -769,9 +808,36 @@ const Spotlight = () => {
                   </button>
                 </div>
               )}
+              {savedSearches.length > 0 && (
+                <div className="mt-3">
+                  <p className="mb-1 text-xs font-medium text-[#98A2B3]">Mes recherches</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {savedSearches.map((s) => (
+                      <span
+                        key={s.id}
+                        className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs"
+                      >
+                        <button
+                          onClick={() => applySavedSearch(s)}
+                          className="font-medium text-[#475467] hover:text-[#5E6AD2]"
+                        >
+                          {s.label}
+                        </button>
+                        <button
+                          onClick={() => setSavedSearches((prev) => prev.filter((x) => x.id !== s.id))}
+                          className="text-gray-300 hover:text-gray-500"
+                          aria-label="Retirer la recherche sauvegardée"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }} 
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }} 
               transition={{ delay: 0.3, duration: 0.6 }} 
               className="flex items-center gap-4"
