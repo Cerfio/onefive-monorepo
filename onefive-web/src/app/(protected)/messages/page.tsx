@@ -14,6 +14,7 @@ import {
   Paperclip,
   File02,
   InfoCircle,
+  FaceSmile,
 } from '@untitledui/icons';
 import { ListBox, ListBoxItem, type ListBoxItemProps } from 'react-aria-components';
 import { ContentDivider } from '@/components/content-divider/content-divider';
@@ -173,6 +174,7 @@ const MessagesPage = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [pendingAttachment, setPendingAttachment] = useState<UploadedAttachment | null>(null);
   const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showContextPanel, setShowContextPanel] = useState(false);
 
   // Refs
@@ -1077,15 +1079,51 @@ const MessagesPage = () => {
                     onBlur={handleTypingStop}
                   />
                   <div className="mt-3 flex items-center justify-between">
-                    <Button
-                      type="button"
-                      iconLeading={Paperclip}
-                      size="md"
-                      color="tertiary"
-                      onClick={() => fileInputRef.current?.click()}
-                      isDisabled={uploadAttachment.isPending}
-                      aria-label="Joindre un fichier"
-                    />
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        iconLeading={Paperclip}
+                        size="md"
+                        color="tertiary"
+                        onClick={() => fileInputRef.current?.click()}
+                        isDisabled={uploadAttachment.isPending}
+                        aria-label="Joindre un fichier"
+                      />
+                      <div className="relative">
+                        <Button
+                          type="button"
+                          iconLeading={FaceSmile}
+                          size="md"
+                          color="tertiary"
+                          onClick={() => setShowEmojiPicker((v) => !v)}
+                          aria-label="Emoji"
+                        />
+                        {showEmojiPicker && (
+                          <div className="absolute bottom-full left-0 z-30 mb-2 grid w-64 grid-cols-8 gap-1 rounded-xl border border-secondary bg-primary p-2 shadow-lg">
+                            {['😀','😁','😂','🤣','😊','😍','😎','🤩','🥳','😉','🙌','👏','👍','🙏','💪','🔥','🚀','✨','⭐','💡','❤️','🎉','🎯','✅','💯','🤝','👀','🙈','😴','🤔'].map((emoji) => (
+                              <button
+                                key={emoji}
+                                type="button"
+                                className="rounded-md p-1 text-lg hover:bg-secondary"
+                                onClick={(e) => {
+                                  const form = (e.currentTarget as HTMLElement).closest('form');
+                                  const ta = form?.querySelector('textarea[name="message"]') as HTMLTextAreaElement | null;
+                                  if (ta) {
+                                    const s = ta.selectionStart ?? ta.value.length;
+                                    const en = ta.selectionEnd ?? s;
+                                    ta.value = ta.value.slice(0, s) + emoji + ta.value.slice(en);
+                                    ta.focus();
+                                  }
+                                  setShowEmojiPicker(false);
+                                }}
+                              >
+                                {emoji}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <Button
                       type="submit"
                       size="md"
