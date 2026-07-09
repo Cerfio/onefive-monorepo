@@ -1,0 +1,12 @@
+// Recherches Spotlight sauvegardées côté serveur (par profil) — remplace le
+// localStorage pour une persistance cross-device.
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  profileId String
+  label     String
+  filters   Json
+  createdAt DateTime @default(now())
+
+  @@index([profileId])
+}

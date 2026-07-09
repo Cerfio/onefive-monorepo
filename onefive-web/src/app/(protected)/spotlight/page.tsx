@@ -2,7 +2,14 @@
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
-import { useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  listSavedSearches,
+  createSavedSearch,
+  deleteSavedSearch,
+  type SavedSearchRecord,
+  type SavedSearchFilters,
+} from '@/queries/savedSearches';
 import {
   listSpotlightFavorites,
   toggleSpotlightFavorite,
@@ -263,31 +270,26 @@ const Spotlight = () => {
       return new Set();
     }
   });
-  type SavedSearch = {
-    id: string;
-    label: string;
-    search: string;
-    dateFilter: string;
-    pricingFilter: string;
-    typeFilter: string;
-    sectorFilter: string;
-  };
-  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>(() => {
-    if (typeof window === 'undefined') return [];
-    try {
-      const raw = localStorage.getItem('spotlight-saved-searches');
-      return raw ? (JSON.parse(raw) as SavedSearch[]) : [];
-    } catch {
-      return [];
-    }
+  const queryClient = useQueryClient();
+  // Recherches sauvegardées : persistées côté serveur (cross-device).
+  const { data: savedSearches = [] } = useQuery({
+    queryKey: ['spotlight-saved-searches'],
+    queryFn: listSavedSearches,
+    staleTime: 1000 * 60,
   });
-  useEffect(() => {
-    try {
-      localStorage.setItem('spotlight-saved-searches', JSON.stringify(savedSearches));
-    } catch {
-      /* ignore */
-    }
-  }, [savedSearches]);
+  const saveSearchMut = useMutation({
+    mutationFn: ({ label, filters }: { label: string; filters: SavedSearchFilters }) =>
+      createSavedSearch(label, filters),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['spotlight-saved-searches'] });
+      toast.success('Recherche sauvegardée');
+    },
+    onError: () => toast.error('Erreur lors de la sauvegarde'),
+  });
+  const deleteSearchMut = useMutation({
+    mutationFn: (id: string) => deleteSavedSearch(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['spotlight-saved-searches'] }),
+  });
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [hoveredSpotId, setHoveredSpotId] = useState<string | null>(null);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
@@ -592,25 +594,22 @@ const Spotlight = () => {
       pricingFilter !== 'all' ? pricingFilter : '',
     ].filter(Boolean);
     const label = parts.length > 0 ? parts.join(' · ') : 'Tous les spots';
-    setSavedSearches(prev => {
-      if (prev.some(s => s.label === label)) {
-        toast.info('Recherche déjà sauvegardée');
-        return prev;
-      }
-      toast.success('Recherche sauvegardée');
-      return [
-        { id: Date.now().toString(), label, search, dateFilter, pricingFilter, typeFilter, sectorFilter },
-        ...prev,
-      ].slice(0, 10);
+    if (savedSearches.some((s) => s.label === label)) {
+      toast.info('Recherche déjà sauvegardée');
+      return;
+    }
+    saveSearchMut.mutate({
+      label,
+      filters: { search, dateFilter, pricingFilter, typeFilter, sectorFilter },
     });
-  }, [search, dateFilter, pricingFilter, typeFilter, sectorFilter]);
+  }, [search, dateFilter, pricingFilter, typeFilter, sectorFilter, savedSearches, saveSearchMut]);
 
-  const applySavedSearch = useCallback((s: SavedSearch) => {
-    setSearch(s.search);
-    setDateFilter(s.dateFilter);
-    setPricingFilter(s.pricingFilter);
-    setTypeFilter(s.typeFilter);
-    setSectorFilter(s.sectorFilter);
+  const applySavedSearch = useCallback((s: SavedSearchRecord) => {
+    setSearch(s.filters.search);
+    setDateFilter(s.filters.dateFilter);
+    setPricingFilter(s.filters.pricingFilter);
+    setTypeFilter(s.filters.typeFilter);
+    setSectorFilter(s.filters.sectorFilter);
     toast.success('Recherche appliquée');
   }, []);
 
@@ -827,7 +826,7 @@ const Spotlight = () => {
                           {s.label}
                         </button>
                         <button
-                          onClick={() => setSavedSearches((prev) => prev.filter((x) => x.id !== s.id))}
+                          onClick={() => deleteSearchMut.mutate(s.id)}
                           className="text-gray-300 hover:text-gray-500"
                           aria-label="Retirer la recherche sauvegardée"
                         >
