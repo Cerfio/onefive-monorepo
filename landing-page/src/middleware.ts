@@ -1,6 +1,7 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { getWebOrigin, shouldProxyToWeb } from './lib/onefive-gateway';
+import { routing } from './i18n/routing';
 
 export default function middleware(request: NextRequest) {
   // PostHog proxy: Safari (and others) may send OPTIONS preflight for /ingest.
@@ -48,14 +49,14 @@ export default function middleware(request: NextRequest) {
     }
   }
 
-  return createMiddleware({
-    locales: ['en', 'fr'],
-    defaultLocale: 'en',
-    localePrefix: 'always',
-  })(request);
+  // Single source of truth: locales + defaultLocale + localePrefix live in
+  // src/i18n/routing.ts (they were previously duplicated here and diverged).
+  return createMiddleware(routing)(request);
 }
 
 export const config = {
   // Run on app routes and on /_next assets (excluded from the dot rule below).
-  matcher: ['/_next/:path*', '/((?!api|_vercel|.*\\..*).*)'],
+  // `sitemaps` is excluded so /sitemaps/:type reaches its route handler instead
+  // of being locale-prefixed by next-intl (which 404'd every child sitemap).
+  matcher: ['/_next/:path*', '/((?!api|_vercel|sitemaps|.*\\..*).*)'],
 }; 

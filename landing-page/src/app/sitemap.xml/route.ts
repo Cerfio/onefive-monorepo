@@ -1,5 +1,11 @@
+import { SITE_URL } from "@/lib/site";
+
+// Regenerate on every request so <lastmod> and newly published blog posts are
+// reflected without a redeploy (the route was previously frozen at build time).
+export const dynamic = "force-dynamic";
+
 export async function GET() {
-  const baseUrl = "https://onefive.app";
+  const baseUrl = SITE_URL;
   const currentDate = new Date().toISOString().split("T")[0];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -10,10 +16,6 @@ export async function GET() {
   </sitemap>
   <sitemap>
     <loc>${baseUrl}/sitemaps/blog</loc>
-    <lastmod>${currentDate}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemaps/press</loc>
     <lastmod>${currentDate}</lastmod>
   </sitemap>
 </sitemapindex>`;

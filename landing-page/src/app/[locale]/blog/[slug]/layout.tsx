@@ -1,30 +1,6 @@
 import { getArticle } from "@/utils/api";
-
-// type Post = {
-//   title: string;
-//   description: string;
-//   featuredImage: {
-//     url: string;
-//     width: number;
-//     height: number;
-//     alt: string;
-//   };
-//   author: {
-//     name: string;
-//     image: {
-//       url: string;
-//     };
-//   };
-//   category: {
-//     name: string;
-//   };
-//   seo: {
-//     title: string | null;
-//     description: string | null;
-//     keywords: string | null;
-//     ogImage: string | null;
-//   };
-// };
+import { setRequestLocale } from "next-intl/server";
+import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -32,15 +8,16 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  
+
   try {
     // Récupérer l'article
     const post = await getArticle(slug, locale);
-    
+
     if (!post) {
       return {
         title: "Article non trouvé",
-        description: "L'article demandé n'existe pas."
+        description: "L'article demandé n'existe pas.",
+        robots: { index: false, follow: true },
       };
     }
 
@@ -55,8 +32,10 @@ export async function generateMetadata({
         ? `${process.env.NEXT_PUBLIC_CDN_URL}/${post.featuredImage.filename}`
         : "";
 
+    const canonical = `${SITE_URL}/${locale}/blog/${slug}`;
+
     return {
-      metadataBase: new URL("https://onefive.app"),
+      metadataBase: new URL(SITE_URL),
       title,
       description,
       openGraph: {
@@ -65,7 +44,7 @@ export async function generateMetadata({
         type: "article",
         locale: locale === "fr" ? "fr_FR" : "en_US",
         siteName: "Onefive Blog",
-        url: `https://onefive.app/${locale}/blog/${slug}`,
+        url: canonical,
         images: [
           {
             url: ogImage,
@@ -93,12 +72,9 @@ export async function generateMetadata({
           },
         ],
       },
-      authors: [
-        {
-          name: post.author?.name || "Onefive",
-          url: `https://onefive.app/${locale}/author/${(post.author?.name || "onefive").toLowerCase().replace(/\s+/g, "-")}`,
-        },
-      ],
+      // Author name only — the previous `/author/<slug>` URL pointed at a route
+      // that doesn't exist (404). Re-add a url here once real author pages ship.
+      authors: [{ name: post.author?.name || "Onefive" }],
       keywords: post.seo?.keywords?.split(",") || [
         post.category?.name || "blog",
         "startup",
@@ -106,10 +82,11 @@ export async function generateMetadata({
         "onefive",
       ],
       alternates: {
-        canonical: `https://onefive.app/${locale}/blog/${slug}`,
+        canonical,
         languages: {
-          "fr-FR": `https://onefive.app/fr/blog/${slug}`,
-          "en-US": `https://onefive.app/en/blog/${slug}`,
+          en: `${SITE_URL}/en/blog/${slug}`,
+          fr: `${SITE_URL}/fr/blog/${slug}`,
+          "x-default": `${SITE_URL}/en/blog/${slug}`,
         },
       },
       robots: {
@@ -128,16 +105,20 @@ export async function generateMetadata({
     console.error("Error generating blog metadata:", error);
     return {
       title: "Onefive Blog",
-      description: "Découvrez nos articles sur l'entrepreneuriat et les startups."
+      description:
+        "Découvrez nos articles sur l'entrepreneuriat et les startups.",
     };
   }
 }
 
 export default async function BlogLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
   params: Promise<{ locale: string; slug: string }>;
 }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   return <article className="blog-post">{children}</article>;
 }

@@ -1,100 +1,115 @@
 import { routing } from "@/i18n/routing";
 import Article from "@/types/article.interface";
 import { getArticles } from "@/utils/blog-api";
+import { SITE_URL } from "@/lib/site";
 
+// Regenerate on request: picks up newly published posts and keeps <lastmod>
+// honest instead of freezing at build time.
+export const dynamic = "force-dynamic";
+
+// x-default target — kept as "en" to match the canonical/x-default emitted by
+// [locale]/layout.tsx and the HTTP Link header.
+const X_DEFAULT_LOCALE = "en";
+
+// Real, public marketing + legal pages (verified to exist). Extend as new
+// public routes ship. `priority`/`changefreq` are omitted on purpose — Google
+// ignores them.
 const pages = [
-  { path: "", priority: 1.0, changefreq: "daily" },
-  { path: "/about", priority: 0.8, changefreq: "monthly" },
+  "",
+  "/about",
+  "/blog",
+  "/careers",
+  "/careers/senior-full-stack-engineer",
+  "/careers/spontaneous",
+  "/press",
+  "/methodology",
+  "/media-kit",
+  "/contact",
+  "/help-center",
+  "/changelog",
+  "/terms",
+  "/privacy",
 ];
+
+function alternates(path: string, baseUrl: string): string {
+  const localized = routing.locales
+    .map(
+      (altLocale) =>
+        `<xhtml:link rel="alternate" hreflang="${altLocale}" href="${baseUrl}/${altLocale}${path}"/>`
+    )
+    .join("");
+  const xDefault = `<xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/${X_DEFAULT_LOCALE}${path}"/>`;
+  return localized + xDefault;
+}
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ type: string }> }
 ) {
   const para = await params;
-  const baseUrl = "https://onefive.app";
+  const baseUrl = SITE_URL;
   const currentDate = new Date().toISOString();
 
   try {
     switch (para.type) {
-      case "pages":
-        const pagesSitemap = `<?xml version="1.0" encoding="UTF-8"?>
-          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-                  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-            ${pages
-              .map((page) =>
-                routing.locales
-                  .map(
-                    (locale) => `
-                <url>
-                  <loc>${baseUrl}/${locale}${page.path}</loc>
-                  <lastmod>${currentDate}</lastmod>
-                  <changefreq>${page.changefreq}</changefreq>
-                  <priority>${page.priority}</priority>
-                  ${routing.locales
-                    .map(
-                      (altLocale) => `
-                    <xhtml:link 
-                      rel="alternate" 
-                      hreflang="${altLocale}" 
-                      href="${baseUrl}/${altLocale}${page.path}"
-                    />`
-                    )
-                    .join("")}
-                </url>
-              `
-                  )
-                  .join("")
+      case "pages": {
+        const urls = pages
+          .map((path) =>
+            routing.locales
+              .map(
+                (locale) => `
+  <url>
+    <loc>${baseUrl}/${locale}${path}</loc>
+    <lastmod>${currentDate}</lastmod>
+    ${alternates(path, baseUrl)}
+  </url>`
               )
-              .join("")}
-          </urlset>`;
+              .join("")
+          )
+          .join("");
+
+        const pagesSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls}
+</urlset>`;
+
         return new Response(pagesSitemap, {
           headers: {
             "Content-Type": "application/xml",
             "Cache-Control": "public, max-age=3600",
           },
         });
+      }
 
-      case "blog":
+      case "blog": {
         const response = await getArticles({ locale: routing.defaultLocale });
         const posts = response.docs;
 
-        const blogSitemap = `<?xml version="1.0" encoding="UTF-8"?>
-          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-                  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-            ${posts
-              .map((post: Article) =>
-                routing.locales
-                  .map(
-                    (locale) => `
-                <url>
-                  <loc>${baseUrl}/${locale}/blog/${post.slug}</loc>
-                  <lastmod>${new Date(post.publishedAt).toISOString()}</lastmod>
-                  <changefreq>weekly</changefreq>
-                  <priority>0.8</priority>
-                  ${routing.locales
-                    .map(
-                      (altLocale) => `
-                    <xhtml:link 
-                      rel="alternate" 
-                      hreflang="${altLocale}" 
-                      href="${baseUrl}/${altLocale}/blog/${post.slug}"
-                    />`
-                    )
-                    .join("")}
-                </url>
-              `
-                  )
-                  .join("")
+        const urls = posts
+          .map((post: Article) =>
+            routing.locales
+              .map(
+                (locale) => `
+  <url>
+    <loc>${baseUrl}/${locale}/blog/${post.slug}</loc>
+    <lastmod>${new Date(post.publishedAt).toISOString()}</lastmod>
+    ${alternates(`/blog/${post.slug}`, baseUrl)}
+  </url>`
               )
-              .join("")}
-          </urlset>`;
+              .join("")
+          )
+          .join("");
+
+        const blogSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls}
+</urlset>`;
+
         return new Response(blogSitemap, {
           headers: {
             "Content-Type": "application/xml",
             "Cache-Control": "public, max-age=3600",
           },
         });
+      }
 
       default:
         return new Response("Sitemap not found", { status: 404 });

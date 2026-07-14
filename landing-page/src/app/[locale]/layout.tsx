@@ -5,9 +5,10 @@ import { NavbarArticlesProvider } from "@/contexts/NavbarArticlesContext";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import localFont from "next/font/local";
 import { OrganizationSchema, WebsiteSchema } from "@/components/structured-data";
+import { SITE_URL } from "@/lib/site";
 import "../globals.css";
 
 const geistSans = localFont({
@@ -22,12 +23,18 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+// Enable static rendering of the locale segments (next-intl requires the
+// locales to be known at build time via generateStaticParams + setRequestLocale).
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export function generateViewport() {
   return {
     width: "device-width",
     initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
+    // NB: no maximumScale / userScalable:false — blocking pinch-zoom fails
+    // WCAG 1.4.4 and is flagged by Lighthouse. Users must be able to zoom.
     viewportFit: "cover",
   };
 }
@@ -38,10 +45,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   return {
-    metadataBase: new URL("https://onefive.app"),
+    metadataBase: new URL(SITE_URL),
     title: t("title"),
     description: t("description"),
     openGraph: {
@@ -50,7 +58,7 @@ export async function generateMetadata({
       type: "website",
       locale: locale === "fr" ? "fr_FR" : "en_US",
       siteName: "Onefive",
-      url: `https://onefive.app/${locale}`,
+      url: `${SITE_URL}/${locale}`,
       images: [
         {
           url: "/og-image.png",
@@ -86,12 +94,7 @@ export async function generateMetadata({
         "max-snippet": -1,
       },
     },
-    // themeColor: [
-    //   { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    //   { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-    //   { media: "(prefers-color-scheme: dark)", color: "#5E6AD2" },
-    // ],
-    authors: [{ name: "Onefive", url: "https://onefive.app" }],
+    authors: [{ name: "Onefive", url: SITE_URL }],
     generator: "Next.js",
     applicationName: "Onefive",
     referrer: "origin-when-cross-origin",
@@ -103,15 +106,18 @@ export async function generateMetadata({
       address: false,
       telephone: false,
     },
+    // Default alternates for the locale root. Child routes override `canonical`
+    // via their own generateMetadata; the language map + x-default is aligned
+    // with the host that next-intl emits in the HTTP `Link` header (www, en/fr).
     alternates: {
-      canonical: `https://onefive.app/${locale}`,
+      canonical: `${SITE_URL}/${locale}`,
       languages: {
-        "fr-FR": "https://onefive.app/fr",
-        "en-US": "https://onefive.app/en",
+        en: `${SITE_URL}/en`,
+        fr: `${SITE_URL}/fr`,
+        "x-default": `${SITE_URL}/en`,
       },
     },
     category: "technology",
-    // colorScheme: "light dark",
     manifest: "/manifest.json",
     icons: {
       icon: [
@@ -140,7 +146,9 @@ export async function generateMetadata({
       "application-name": "Onefive",
       "msapplication-TileColor": "#5E6AD2",
       "msapplication-config": "/browserconfig.xml",
-      sitemap: "https://onefive.app/api/sitemap.xml",
+      // Legacy non-standard `<meta name="sitemap">` removed — the sitemap is
+      // declared in robots.txt (see P1-9). It pointed at the duplicate
+      // /api/sitemap.xml tree which is being deleted.
     },
     appLinks: {
       ios: {
@@ -152,13 +160,13 @@ export async function generateMetadata({
         app_name: "Onefive",
       },
       web: {
-        url: "https://onefive.app",
+        url: SITE_URL,
         should_fallback: true,
       },
     },
-    archives: ["https://onefive.app/blog"],
-    assets: ["https://onefive.app/assets"],
-    bookmarks: ["https://onefive.app/features"],
+    archives: [`${SITE_URL}/blog`],
+    assets: [`${SITE_URL}/assets`],
+    bookmarks: [`${SITE_URL}/features`],
   };
 }
 
@@ -174,6 +182,8 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  setRequestLocale(locale);
 
   let messages;
   try {

@@ -3,6 +3,21 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin();
 
+// Baseline security headers applied to every response.
+// NB: no Content-Security-Policy here on purpose — a strict CSP needs to be
+// authored and tested against PostHog, Mapbox, next inline scripts and the
+// JSON-LD <script> tags, so it's deferred rather than shipped blind and broken.
+// HSTS is intentionally omitted too: Vercel already sends it on this domain.
+const securityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
+  },
+];
+
 const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   eslint: {
@@ -26,9 +41,16 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+      // Was '**.onefive.app**' — the trailing '**' after the TLD made this match
+      // arbitrary hosts containing the substring (e.g. x.onefive.app.attacker.com),
+      // turning /_next/image into an open proxy (SSRF). Scoped to the real hosts.
       {
         protocol: 'https',
-        hostname: '**.onefive.app**',
+        hostname: 'onefive.app',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.onefive.app',
       },
       {
         protocol: 'https',
@@ -51,11 +73,11 @@ const nextConfig: NextConfig = {
         destination: '/favicon-192x192.png',
         permanent: true,
       },
-      // Redirection favicon.ico vers le PNG si problème avec ICO
+      // Redirection favicon.ico vers le PNG
       {
         source: '/favicon.ico',
         destination: '/favicon-32x32.png',
-        permanent: false, // temporaire pour tester
+        permanent: true,
       },
       // Redirection ancienne URL mediakit → media-kit
       {
@@ -80,6 +102,11 @@ const nextConfig: NextConfig = {
             value: 'image/png',
           },
         ],
+      },
+      // Baseline security headers on every route.
+      {
+        source: '/(.*)',
+        headers: securityHeaders,
       },
     ];
   },
