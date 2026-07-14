@@ -72,7 +72,7 @@ export async function generateMetadata({
   if (!profile) return { title: 'Profil' };
 
   const fullName = `${profile.firstName} ${profile.lastName}`.trim();
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
 
   // Title: keep under 60 chars for Google (truncates after). No "| Onefive" here — layout template adds it.
   const rawTitle = `${fullName} — ${profile.highlight || 'Profil'}`;

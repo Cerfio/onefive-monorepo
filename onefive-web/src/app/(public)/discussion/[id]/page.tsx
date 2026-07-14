@@ -79,11 +79,12 @@ export async function generateMetadata({
     discussion.question.slice(0, 160) ||
     'Discussion sur Onefive';
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
 
   return {
     title: pageTitle,
     description,
+    alternates: { canonical: `${baseUrl}/discussion/${id}` },
     openGraph: {
       title: fullTitle,
       description,
@@ -148,7 +149,7 @@ export default async function DiscussionPublicPage({
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
   const jsonLd = buildJsonLd(discussion, baseUrl);
 
   const truncatedContent =

@@ -228,7 +228,7 @@ export async function generateMetadata({
   const description =
     spot.highlight || spot.description?.slice(0, 160) || `Découvrez ${spot.name} sur Onefive`;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
 
   return {
     title: pageTitle,
@@ -250,7 +250,7 @@ export async function generateMetadata({
 }
 
 function buildJsonLd(spot: SpotSeoData) {
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
   const beginDate = spot.event?.beginDate ?? spot.contest?.beginDate ?? spot.accelerator?.date;
   const endDate = spot.event?.endDate ?? spot.contest?.endDate;
   const spotUrl = `${baseUrl}/spotlight/${spot.id}`;

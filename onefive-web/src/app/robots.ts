@@ -27,6 +27,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://onefive.app/sitemap.xml',
+    sitemap: `${process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app'}/sitemap.xml`,
   };
 }

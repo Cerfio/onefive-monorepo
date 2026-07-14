@@ -66,11 +66,12 @@ export async function generateMetadata({
   const fullTitle = `${authorName} sur Onefive`;
   const description = contentPreview;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
 
   return {
     title: pageTitle,
     description,
+    alternates: { canonical: `${baseUrl}/post/${id}` },
     openGraph: {
       title: fullTitle,
       description,
@@ -146,7 +147,7 @@ export default async function PostPublicPage({
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
   const jsonLd = buildJsonLd(post, baseUrl);
   const apiUrl = API_URL;
 

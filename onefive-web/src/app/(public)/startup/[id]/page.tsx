@@ -70,11 +70,12 @@ export async function generateMetadata({
     startup.description?.slice(0, 160) ||
     `Découvrez ${startup.name} sur Onefive`;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
 
   return {
     title: pageTitle,
     description,
+    alternates: { canonical: `${baseUrl}/startup/${id}` },
     openGraph: {
       title: fullTitle,
       description,
@@ -133,7 +134,7 @@ export default async function StartupPublicPage({
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://onefive.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
   const jsonLd = buildJsonLd(startup, baseUrl);
 
   const truncatedDescription = startup.description

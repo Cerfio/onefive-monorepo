@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://onefive.app';
+const BASE_URL = process.env.NEXT_PUBLIC_URL_PUBLIC || 'https://www.onefive.app';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:50050';
 
 async function fetchSitemapData(endpoint: string) {
