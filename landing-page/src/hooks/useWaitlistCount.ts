@@ -8,6 +8,11 @@ interface WaitlistCountData {
   success: boolean;
 }
 
+// Baseline shown before/without the live count. The real total sits on top of a
+// +800 base, so we never render "0" — which non-JS crawlers would otherwise
+// read (and quote) as a literal fact on the homepage.
+const DEFAULT_COUNT = 800;
+
 export function useWaitlistCount() {
   const [data, setData] = useState<WaitlistCountData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,10 +33,10 @@ export function useWaitlistCount() {
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
-        // En cas d'erreur, fallback à 0 (évite un chiffre trompeur)
+        // Fallback to the base count, never 0.
         setData({
-          count: 0,
-          formattedCount: "0",
+          count: DEFAULT_COUNT,
+          formattedCount: String(DEFAULT_COUNT),
           success: false,
         });
       } finally {
@@ -43,8 +48,8 @@ export function useWaitlistCount() {
   }, []);
 
   return {
-    count: data?.count ?? 0,
-    formattedCount: data?.formattedCount ?? "0",
+    count: data?.count ?? DEFAULT_COUNT,
+    formattedCount: data?.formattedCount ?? String(DEFAULT_COUNT),
     loading,
     error,
   };

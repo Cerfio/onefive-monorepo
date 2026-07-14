@@ -19,6 +19,7 @@ import {
 import { useWaitlistCount } from "@/hooks/useWaitlistCount";
 import { LazySection, useLazyComponent } from "@/components/lazy-section";
 import NumberFlow from "@number-flow/react";
+import FaqSection from "@/components/faq-section";
 
 // Composants lazy loaded
 const FeaturesSection = useLazyComponent(() =>
@@ -591,6 +592,7 @@ export default function Home({
           <IntegrationsSection />
         </LazySection>
       </div>
+      <FaqSection locale={language} />
       <div className="mt-20">
         <Footer />
       </div>
