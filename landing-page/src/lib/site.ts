@@ -4,7 +4,8 @@
  * Production is served on the `www` host — the apex `onefive.app` issues a 308
  * redirect to it. Every SEO signal (canonical, hreflang, OpenGraph, JSON-LD,
  * sitemaps) MUST therefore use this value, otherwise the signals point at a URL
- * that redirects, which Google penalises.
+ * that redirects, which Google penalises. The apex→www redirect is also
+ * enforced at the Cloudflare DNS level.
  */
 export const SITE_URL = "https://www.onefive.app";
 
