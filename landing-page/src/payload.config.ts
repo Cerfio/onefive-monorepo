@@ -24,6 +24,7 @@ import { Categories } from './collections/Categories'
 import { Tags } from './collections/Tags'
 import { MediaArticles } from './collections/MediaArticles'
 import { ArticleSuggestions } from './collections/ArticleSuggestions'
+import { Jobs } from './collections/Jobs'
 import { buildConfig } from 'payload'
 import { s3Storage } from '@payloadcms/storage-s3'
 
@@ -76,6 +77,7 @@ export default buildConfig({
     // Was never registered — /suggest-article POSTed to a collection Payload
     // did not know about, so the form had been failing silently.
     ArticleSuggestions,
+    Jobs,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
