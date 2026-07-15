@@ -191,10 +191,12 @@ export function NavigationMenuDemo() {
                 <MobileMenuItem href="/dataroom">
                   {t("dataroomShort")}
                 </MobileMenuItem>
+                {/* Not a link, matching the desktop menu: the feature is
+                    announced, there is no page behind it yet. */}
                 <div className="flex items-center gap-2 px-2 py-2">
-                  <MobileMenuItem href="/methodology">
+                  <span className="block text-lg font-medium text-muted-foreground">
                     {t("methodology")}
-                  </MobileMenuItem>
+                  </span>
                   <Badge className="bg-gray-100 text-gray-500 text-[10px] px-1.5 py-0 h-4">
                     {t("comingSoon")}
                   </Badge>

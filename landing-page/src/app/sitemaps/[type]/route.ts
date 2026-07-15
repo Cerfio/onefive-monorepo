@@ -20,7 +20,6 @@ const pages = [
   "/blog",
   "/careers",
   "/careers/spontaneous",
-  "/methodology",
   "/media-kit",
   "/contact",
   "/help-center",
