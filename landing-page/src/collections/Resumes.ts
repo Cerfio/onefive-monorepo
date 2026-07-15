@@ -1,4 +1,9 @@
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+// __dirname does not exist in ES module scope; the package is "type": "module"
+// so the Payload CLI loads this file as ESM. Mirrors src/payload.config.ts.
+const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const Resumes: any = {
   slug: 'resumes',
@@ -15,7 +20,7 @@ const Resumes: any = {
     delete: ({ req }: { req: any }) => Boolean(req.user?.role === 'admin'),
   },
   upload: {
-    staticDir: path.resolve(__dirname, '../public/uploads/resumes'),
+    staticDir: path.resolve(dirname, '../public/uploads/resumes'),
     staticURL: '/uploads/resumes',
     adminThumbnail: 'thumbnail',
     mimeTypes: [

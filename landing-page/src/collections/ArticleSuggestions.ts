@@ -64,14 +64,10 @@ export const ArticleSuggestions: any = {
       ],
       admin: {
         initCollapsed: true,
-        components: {
-          RowLabel: {
-            Component: ({ data = {} }: { data: any }) => {
-              if (!data) return 'Tag'
-              return data.value || 'Tag'
-            },
-          },
-        },
+        // A custom RowLabel used to be declared here as an inline function —
+        // Payload 2 syntax. v3 resolves components by path through the import
+        // map, so it crashed generation with `path` undefined. The default row
+        // label is enough for an inbox collection.
       },
     },
     {
