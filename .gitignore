@@ -39,4 +39,6 @@ coverage/
 .vercel
 bun.lock
 bun.lockb
-.env*
+# NB: `.env*` here used to re-shadow the `!.env.example` negation on line 17 —
+# the last matching rule wins, so every .env.example in the monorepo was
+# ignored. The rules on lines 15-17 already cover env files.
