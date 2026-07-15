@@ -131,7 +131,8 @@
       "title": "Un écosystème pour tous les profils",
       "description": "Que vous soyez fondateur, investisseur, mentor ou prestataire, trouvez votre place dans notre communauté.",
       "stats": "pour représenter tous les acteurs de l'écosystème startup"
-    }
+    },
+    "ecosystemOrbitLabel": "L'écosystème startup pour lequel onefive est conçu"
   },
   "about": {
     "mission": {

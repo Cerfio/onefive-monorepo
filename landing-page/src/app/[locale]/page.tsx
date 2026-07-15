@@ -35,9 +35,6 @@ const RolesSection = useLazyComponent(() =>
 const CTASection = useLazyComponent(() =>
   import("@/components/sections/cta-section")
 );
-const TestimonialsSection = useLazyComponent(() =>
-  import("@/components/sections/testimonials-section")
-);
 const IntegrationsSection = useLazyComponent(() =>
   import("@/components/sections/integrations-section")
 );
@@ -571,6 +568,14 @@ export default function Home({
                   </p>
                   <ButtonJoinWaitlist text={t("joinWaitlist")} icon={true} />
                 </div>
+                {/* Names the logos orbiting the hero (Station F, BPI, French
+                    Tech, Y Combinator, The Family, Stripe). Unlabelled, a ring
+                    of well-known marks reads as backing or partnership; none of
+                    them are. This says the only true thing: it is the world the
+                    product is for. */}
+                <p className="text-xs text-[#98A2B3]">
+                  {t("ecosystemOrbitLabel")}
+                </p>
               </div>
             </div>
           </div>
@@ -590,9 +595,6 @@ export default function Home({
           <CTASection />
         </LazySection>
 
-        <LazySection rootMargin="100px">
-          <TestimonialsSection locale={language as Language} />
-        </LazySection>
         <LazySection rootMargin="100px">
           <IntegrationsSection />
         </LazySection>
