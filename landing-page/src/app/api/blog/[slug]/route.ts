@@ -8,7 +8,9 @@ const getArticleBySlug = cache(
 
     const data = await payload.find({
       collection: "articles",
-      where: { slug: { equals: slug } },
+      where: {
+        and: [{ slug: { equals: slug } }, { status: { equals: "published" } }],
+      },
       depth: 2,
       locale: locale as never,
       limit: 1,

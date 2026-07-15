@@ -7,7 +7,12 @@ export const getArticle = cache(
 
     const data = await payload.find({
       collection: "articles",
-      where: { slug: { equals: slug } },
+      // The listing filters on status but this did not, so a draft was fully
+      // readable at its URL — rendered, with indexable metadata. Not linked
+      // anywhere, but a guessed or shared URL was enough.
+      where: {
+        and: [{ slug: { equals: slug } }, { status: { equals: "published" } }],
+      },
       locale: locale as never,
       depth: 2,
       limit: 1,

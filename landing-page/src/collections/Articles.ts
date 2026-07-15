@@ -142,25 +142,28 @@ export const Articles: any = {
       hooks: {
         beforeChange: [
           ({ data }: { data: any }) => {
-            // Calcul automatique du temps de lecture basé sur le contenu
-            // Il s'agit d'une estimation simple - vous pourriez l'affiner
-            if (data.content) {
-              // Supposons qu'un adulte lit environ 200-250 mots par minute
-              const textContent = data.content.root.children
-              let wordCount = 0
-              for (const child of textContent) {
-                if (child.children) {
-                  for (const grandChild of child.children) {
-                    if (grandChild.text) {
-                      wordCount += grandChild.text.split(/\s+/).length
-                    }
+            // `data` holds the incoming payload only — Payload never merges it
+            // with the stored doc before running field hooks, yet it runs the
+            // hooks of every field regardless. So a partial update (the view
+            // counter sends `{ views }` alone) arrives here with no `content`.
+            // Returning a default then would overwrite the real read time; only
+            // `undefined` leaves the stored value alone.
+            if (!data?.content) return undefined
+
+            // Supposons qu'un adulte lit environ 200-250 mots par minute
+            const textContent = data.content.root.children
+            let wordCount = 0
+            for (const child of textContent) {
+              if (child.children) {
+                for (const grandChild of child.children) {
+                  if (grandChild.text) {
+                    wordCount += grandChild.text.split(/\s+/).length
                   }
                 }
               }
-              const minutes = Math.ceil(wordCount / 200)
-              return `${minutes} min`
             }
-            return data.readTime || '5 min' // Valeur par défaut
+            const minutes = Math.ceil(wordCount / 200)
+            return `${minutes} min`
           },
         ],
       },

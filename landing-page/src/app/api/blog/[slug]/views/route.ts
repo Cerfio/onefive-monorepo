@@ -12,7 +12,9 @@ export async function POST(
     // 1. Récupérer l'article par son slug
     const data = await payload.find({
       collection: "articles",
-      where: { slug: { equals: slug } },
+      where: {
+        and: [{ slug: { equals: slug } }, { status: { equals: "published" } }],
+      },
       limit: 1,
       depth: 0,
     });
