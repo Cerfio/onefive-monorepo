@@ -231,20 +231,23 @@ const Footer = ({ className }: { className?: string }) => {
                 {t("company")}
               </div>
               <div className="flex flex-col gap-3 items-center md:items-start">
+                {/* Paths are explicit, not derived from the translation key:
+                    `"mediaKit".toLowerCase()` produced /mediakit — a 404 in the
+                    footer, so on every page of the site — and the space that
+                    .replace() looked for never existed. */}
                 {[
-                  "about",
-                  "careers",
-                  "press",
-                  "newsletter",
-                  "mediaKit",
-                  "contact",
-                ].map((item) => (
+                  { key: "about", href: "/about" },
+                  { key: "careers", href: "/careers" },
+                  { key: "newsletter", href: "/newsletter" },
+                  { key: "mediaKit", href: "/media-kit" },
+                  { key: "contact", href: "/contact" },
+                ].map(({ key, href }) => (
                   <Link
-                    key={item}
-                    href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    key={key}
+                    href={href}
                     className="text-[#475467] text-base font-semibold leading-6 hover:text-[#5E6AD2] transition-colors"
                   >
-                    {t(item)}
+                    {t(key)}
                   </Link>
                 ))}
               </div>

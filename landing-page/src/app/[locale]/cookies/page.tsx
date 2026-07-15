@@ -13,6 +13,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// The revision date of this text, updated by hand when the text changes. It was
+// `new Date()` in a client component, so it silently rendered "today" on every
+// view — a legal document that always claimed to have just been revised, and a
+// hydration mismatch waiting on a midnight boundary. Last real edit: 2026-04-12.
+const LAST_UPDATED = "April 12, 2026";
+
 const CookiesPage = () => {
   return (
     <>
@@ -32,12 +38,7 @@ const CookiesPage = () => {
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">Cookie Policy</h1>
           <p className="text-muted-foreground">
-            Last updated:{" "}
-            {new Date().toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
+            Last updated: {LAST_UPDATED}
           </p>
         </div>
 
