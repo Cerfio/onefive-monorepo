@@ -20,12 +20,11 @@ const pages = [
   "/blog",
   "/careers",
   "/careers/spontaneous",
-  "/media-kit",
   "/contact",
-  "/help-center",
   "/changelog",
   "/terms",
   "/privacy",
+  "/cookies",
 ];
 
 function alternates(path: string, baseUrl: string): string {

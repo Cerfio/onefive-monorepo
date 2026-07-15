@@ -238,8 +238,6 @@ const Footer = ({ className }: { className?: string }) => {
                 {[
                   { key: "about", href: "/about" },
                   { key: "careers", href: "/careers" },
-                  { key: "newsletter", href: "/newsletter" },
-                  { key: "mediaKit", href: "/media-kit" },
                   { key: "contact", href: "/contact" },
                 ].map(({ key, href }) => (
                   <Link
@@ -291,18 +289,6 @@ const Footer = ({ className }: { className?: string }) => {
                   className="text-[#475467] text-base font-semibold leading-6 hover:text-[#5E6AD2] transition-colors"
                 >
                   {t("blog")}
-                </Link>
-                <Link
-                  href="/events"
-                  className="text-[#475467] text-base font-semibold leading-6 hover:text-[#5E6AD2] transition-colors"
-                >
-                  {t("events")}
-                </Link>
-                <Link
-                  href="/help-center"
-                  className="text-[#475467] text-base font-semibold leading-6 hover:text-[#5E6AD2] transition-colors"
-                >
-                  {t("helpCenter")}
                 </Link>
               </div>
             </div>

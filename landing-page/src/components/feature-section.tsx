@@ -17,7 +17,10 @@ export default function FeatureSection({
 }: {
   title: string;
   description: string;
-  linkHref: string;
+  // Optional: a coming-soon feature has no page to point at, and keeping a
+  // href for one that was deleted is how a dead link comes back the day
+  // someone flips linkEnabled to true.
+  linkHref?: string;
   linkText: string;
   linkEnabled: boolean;
   children: React.ReactNode;
@@ -35,7 +38,7 @@ export default function FeatureSection({
           {description}
         </p>
         <div className="flex justify-center lg:justify-start">
-          {linkEnabled ? (
+          {linkEnabled && linkHref ? (
             <Link className="w-fit" href={linkHref}>
               <Button
                 variant="outline"

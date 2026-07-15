@@ -71,7 +71,13 @@ export default function FaqSection({ locale }: { locale: string }) {
   };
 
   return (
-    <section className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <section
+      // The FAQPage schema below declares @id `<url>#faq`, so the fragment has
+      // to resolve to something — it did not. It is also what /terms links to,
+      // there being no standalone FAQ page.
+      id="faq"
+      className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}

@@ -106,7 +106,6 @@ export default function FeaturesSection({ language }: FeaturesSectionProps) {
         <FeatureSection
           title={t("spotlight")}
           description={t("spotlightDescription")}
-          linkHref="/spotlight"
           linkText={t("comingSoon")}
           linkEnabled={false}
           className="mt-[400px] lg:mt-0"
@@ -119,7 +118,6 @@ export default function FeaturesSection({ language }: FeaturesSectionProps) {
         <FeatureSection
           title={t("methodology")}
           description={t("methodologyDescription")}
-          linkHref="/methodology"
           linkText={t("comingSoon")}
           linkEnabled={false}
           reverseLayout={true}
@@ -131,7 +129,6 @@ export default function FeaturesSection({ language }: FeaturesSectionProps) {
         <FeatureSection
           title={t("investment")}
           description={t("investmentDescription")}
-          linkHref="/investment"
           linkText={t("comingSoon")}
           linkEnabled={false}
           className="mt-[240px] lg:mt-0"

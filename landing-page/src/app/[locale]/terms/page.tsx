@@ -121,8 +121,8 @@ const TermsPage = () => {
             >
               Contact Support
             </Link>
-            <Link 
-              href="/faq" 
+            <Link
+              href="/#faq"
               className="text-[#5E6AD2] hover:underline"
             >
               Visit FAQ

@@ -210,23 +210,11 @@ export function NavigationMenuDemo() {
                 <MobileMenuItem href="/changelog">
                   {t("productUpdates")}
                 </MobileMenuItem>
-                <MobileMenuItem href="/media-kit">
-                  {t("pressMedia")}
-                </MobileMenuItem>
               </MobileMenuGroup>
 
               {/* Resources Group */}
               <MobileMenuGroup title={t("resources")}>
                 <MobileMenuItem href="/blog">{t("blog")}</MobileMenuItem>
-                <MobileMenuItem href="/guides/getting-started">
-                  {t("gettingStarted")}
-                </MobileMenuItem>
-                <MobileMenuItem href="/setup-101">
-                  {t("setup101")}
-                </MobileMenuItem>
-                <MobileMenuItem href="/adding-users">
-                  {t("addingUsers")}
-                </MobileMenuItem>
               </MobileMenuGroup>
 
               {/* Pricing */}
@@ -236,17 +224,11 @@ export function NavigationMenuDemo() {
 
               {/* Support Group */}
               <MobileMenuGroup title={t("support")}>
-                <MobileMenuItem href="/help-center">
-                  {t("helpCenter")}
-                </MobileMenuItem>
                 <MobileMenuItem href="/contact">
                   {t("contactUs")}
                 </MobileMenuItem>
                 <MobileMenuItem href="/report-bug">
                   {t("reportBug")}
-                </MobileMenuItem>
-                <MobileMenuItem href="/community-support">
-                  {t("communitySupport")}
                 </MobileMenuItem>
                 <MobileMenuItem href="/feedback">
                   {t("feedback")}
@@ -415,9 +397,6 @@ export function NavigationMenuDemo() {
                       <ListItem href="/changelog" title={t("productUpdates")}>
                         {t("latestUpdates")}
                       </ListItem>
-                      <ListItem href="/media-kit" title={t("pressMedia")}>
-                        {t("latestNews")}
-                      </ListItem>
                     </ul>
                   </div>
 
@@ -470,13 +449,6 @@ export function NavigationMenuDemo() {
                         color="#FF0000"
                       />
                     </div>
-                    <Link
-                      href={withLocale("/socials")}
-                      className="flex items-center justify-center gap-2 mt-4 py-2 text-sm text-muted-foreground hover:text-[#5E6AD2] transition-colors group"
-                    >
-                      <span>{t("viewAllSocialNetworks")}</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
                   </div>
                 </div>
               </NavigationMenuContent>
@@ -667,20 +639,11 @@ export function NavigationMenuDemo() {
               <NavigationMenuTrigger>{t("support")}</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[700px] lg:grid-cols-[.75fr_1fr]">
-                  <ListItem href="/help-center" title={t("helpCenter")}>
-                    {t("accessComprehensive")}
-                  </ListItem>
                   <ListItem href="/contact" title={t("contactUs")}>
                     {t("personalizedAssistance")}
                   </ListItem>
                   <ListItem href="/report-bug" title={t("reportBug")}>
                     {t("foundSomething")}
-                  </ListItem>
-                  <ListItem
-                    href="/community-support"
-                    title={t("communitySupport")}
-                  >
-                    {t("connectFellow")}
                   </ListItem>
                   <ListItem href="/feedback" title={t("feedback")}>
                     {t("yourOpinion")}
