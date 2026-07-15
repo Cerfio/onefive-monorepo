@@ -107,8 +107,8 @@ export default function FeaturesSection({ language }: FeaturesSectionProps) {
           title={t("spotlight")}
           description={t("spotlightDescription")}
           linkHref="/spotlight"
-          linkText={t("findOpportunities")}
-          linkEnabled={true}
+          linkText={t("comingSoon")}
+          linkEnabled={false}
           className="mt-[400px] lg:mt-0"
         >
           <div className="relative p-4 h-[400px] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">

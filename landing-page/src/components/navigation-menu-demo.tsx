@@ -188,23 +188,12 @@ export function NavigationMenuDemo() {
                 <MobileMenuItem href="/community">
                   {t("community")}
                 </MobileMenuItem>
-                <MobileMenuItem href="/spotlight">
-                  {t("spotlight")}
-                </MobileMenuItem>
                 <MobileMenuItem href="/dataroom">
                   {t("dataroomShort")}
                 </MobileMenuItem>
                 <div className="flex items-center gap-2 px-2 py-2">
                   <MobileMenuItem href="/methodology">
                     {t("methodology")}
-                  </MobileMenuItem>
-                  <Badge className="bg-gray-100 text-gray-500 text-[10px] px-1.5 py-0 h-4">
-                    {t("comingSoon")}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2 px-2 py-2">
-                  <MobileMenuItem href="/investment">
-                    {t("investment")}
                   </MobileMenuItem>
                   <Badge className="bg-gray-100 text-gray-500 text-[10px] px-1.5 py-0 h-4">
                     {t("comingSoon")}
@@ -342,21 +331,6 @@ export function NavigationMenuDemo() {
                               </h3>
                               <p className="text-xs text-muted-foreground line-clamp-2">
                                 {t("showcaseStartup")}
-                              </p>
-                            </div>
-                          </Link>
-
-                          {/* Feature 3 */}
-                          <Link
-                            href={withLocale("/spotlight")}
-                            className="group flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
-                          >
-                            <div>
-                              <h3 className="font-medium mb-1 group-hover:text-amber-600 transition-colors">
-                                {t("spotlight")}
-                              </h3>
-                              <p className="text-xs text-muted-foreground line-clamp-2">
-                                {t("findIncubators")}
                               </p>
                             </div>
                           </Link>
@@ -681,7 +655,7 @@ export function NavigationMenuDemo() {
                   </p>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" />
-                    <span>{t("join", { count: loading ? "..." : formattedCount })}</span>
+                    <span>{t("join", { count: formattedCount ?? "..." })}</span>
                   </div>
                 </div>
               </NavigationMenuContent>
