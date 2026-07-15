@@ -1,24 +1,18 @@
 import { NextResponse } from "next/server";
 import { unstable_cache as cache } from "next/cache";
+import { getPayloadClient } from "@/lib/payload";
 
 const getArticleBySlug = cache(
   async (slug: string, locale: string) => {
-    const response = await fetch(
-      `${process.env.PAYLOAD_URL}/api/articles?where[slug][equals]=${encodeURIComponent(slug)}&depth=2&locale=${locale}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-        },
-        next: { revalidate: 3600 },
-      }
-    );
+    const payload = await getPayloadClient();
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch article with slug: ${slug}`);
-    }
-
-    const data = await response.json();
+    const data = await payload.find({
+      collection: "articles",
+      where: { slug: { equals: slug } },
+      depth: 2,
+      locale: locale as never,
+      limit: 1,
+    });
 
     if (!data.docs || data.docs.length === 0) {
       return null;

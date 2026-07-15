@@ -1,24 +1,11 @@
 import { NextResponse } from "next/server";
 import { unstable_cache as cache } from "next/cache";
+import { getPayloadClient } from "@/lib/payload";
 
 const getBlogCategories = cache(
   async () => {
-    const response = await fetch(
-      `${process.env.PAYLOAD_URL}/api/categories?limit=100`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-        },
-        next: { revalidate: 86400 }, // Revalider une fois par jour
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch categories from PayloadCMS");
-    }
-
-    return response.json();
+    const payload = await getPayloadClient();
+    return payload.find({ collection: "categories", limit: 100 });
   },
   ["blog-categories"],
   { revalidate: 86400 } // Revalider une fois par jour
@@ -35,4 +22,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-} 
+}

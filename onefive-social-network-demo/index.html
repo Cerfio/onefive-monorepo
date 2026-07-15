@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="fr" data-composition-variables='[{"id":"mode","type":"string","label":"Mode de boucle (reseed|ambient)","default":"reseed"}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #fafafa; font-family: system-ui, -apple-system, sans-serif; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: radial-gradient(120% 90% at 50% 42%, #ffffff 0%, #fafaff 48%, #f3f0fb 100%); }
+      #camera { position: absolute; inset: 0; width: 1920px; height: 1080px; transform-origin: 50% 50%; }
+
+      /* Fond */
+      .mesh { position: absolute; border-radius: 50%; filter: blur(95px); pointer-events: none; }
+      .mesh-a { width: 920px; height: 920px; background: rgba(158, 119, 237, 0.20); top: -220px; right: -120px; }
+      .mesh-b { width: 760px; height: 760px; background: rgba(127, 86, 217, 0.12); bottom: -200px; left: 80px; }
+      .mesh-c { width: 560px; height: 560px; background: rgba(214, 187, 251, 0.45); top: 38%; left: 40%; }
+      #grid { position: absolute; inset: -40px; background-image: radial-gradient(circle, rgba(127, 86, 217, 0.14) 1.3px, transparent 1.6px); background-size: 48px 48px; -webkit-mask-image: radial-gradient(70% 60% at 50% 48%, #000 0%, transparent 78%); mask-image: radial-gradient(70% 60% at 50% 48%, #000 0%, transparent 78%); opacity: 0.55; pointer-events: none; }
+      .bokeh { position: absolute; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(180, 145, 246, 0.55), rgba(127, 86, 217, 0) 70%); filter: blur(6px); pointer-events: none; }
+
+      /* Réseau */
+      #network { position: absolute; inset: 0; width: 1920px; height: 1080px; transform-origin: 50% 50%; }
+      #wires { position: absolute; inset: 0; width: 1920px; height: 1080px; pointer-events: none; z-index: 2; overflow: visible; }
+      .link { fill: none; stroke: #b692f6; stroke-width: 2.2; stroke-linecap: round; opacity: 0.55; }
+      .link-strong { stroke: #7f56d9; stroke-width: 2.6; opacity: 0.7; }
+      .link-soft { stroke: #cbb4f5; stroke-width: 1.8; opacity: 0.45; }
+      .pulse { fill: none; stroke: #6d28d9; stroke-width: 5; stroke-linecap: round; opacity: 0; filter: drop-shadow(0 0 6px rgba(127, 86, 217, 0.95)) drop-shadow(0 0 13px rgba(158, 119, 237, 0.55)); }
+      .node { position: absolute; border-radius: 50%; border: 3px solid #fff; overflow: hidden; z-index: 10; background: #f4ebff; box-shadow: 0 14px 28px rgba(24, 29, 39, 0.16), 0 0 0 1px rgba(127, 86, 217, 0.10); }
+      .node img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .node.anon { background: linear-gradient(140deg, #b692f6 0%, #7f56d9 100%); }
+      .node.anon::after { content: ""; position: absolute; inset: 26%; border-radius: 50%; opacity: 0.85; background: radial-gradient(circle at 50% 38%, rgba(255,255,255,0.95) 0 30%, transparent 32%), radial-gradient(circle at 50% 96%, rgba(255,255,255,0.95) 0 42%, transparent 44%); }
+      .node-ring { position: absolute; border-radius: 50%; border: 2px solid rgba(127, 86, 217, 0.5); opacity: 0; pointer-events: none; z-index: 9; }
+      /* badges de type (fondateur / expert / investisseur) */
+      .ntag { position: absolute; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; z-index: 11; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(24,29,39,0.22); }
+      .ntag svg { width: 15px; height: 15px; }
+      .ntag.founder { background: #7f56d9; } .ntag.expert { background: #f79009; } .ntag.investor { background: #17b26a; }
+
+      /* Hub = logo */
+      #hub { position: absolute; left: 50%; top: 50%; width: 132px; height: 132px; margin: -66px 0 0 -66px; border-radius: 30px; overflow: hidden; z-index: 30; box-shadow: 0 26px 54px rgba(127, 86, 217, 0.32), 0 0 0 1px rgba(127, 86, 217, 0.14); }
+      #hub img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #hub-halo { position: absolute; left: 50%; top: 50%; width: 132px; height: 132px; margin: -66px 0 0 -66px; border-radius: 50%; border: 2px solid rgba(127, 86, 217, 0.45); z-index: 28; opacity: 0; pointer-events: none; }
+      #hub-glow { position: absolute; left: 50%; top: 50%; width: 360px; height: 360px; margin: -180px 0 0 -180px; border-radius: 50%; z-index: 27; opacity: 0; pointer-events: none; background: radial-gradient(circle, rgba(127, 86, 217, 0.28) 0%, rgba(127, 86, 217, 0) 68%); }
+
+      /* Réactions + stats */
+      #fx { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
+      .chip { position: absolute; height: 40px; min-width: 40px; padding: 0 12px; border-radius: 20px; background: #fff; border: 1px solid #eceaf4; box-shadow: 0 10px 22px rgba(24, 29, 39, 0.14); display: flex; align-items: center; justify-content: center; gap: 6px; opacity: 0; }
+      .chip svg { width: 20px; height: 20px; display: block; }
+      .chip .n { font-size: 14px; font-weight: 700; color: #414651; font-variant-numeric: tabular-nums; }
+      .stat { position: absolute; height: 60px; padding: 0 22px 0 14px; border-radius: 16px; background: rgba(255,255,255,0.97); border: 1px solid #ece9f5; box-shadow: 0 18px 38px rgba(24,29,39,0.16); display: flex; align-items: center; gap: 13px; opacity: 0; z-index: 26; }
+      .stat .si { width: 36px; height: 36px; border-radius: 10px; background: #f4ebff; display: flex; align-items: center; justify-content: center; }
+      .stat .si svg { width: 19px; height: 19px; }
+      .stat .sv { font-size: 25px; font-weight: 800; color: #181d27; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; }
+
+      /* Cartes */
+      .card { position: absolute; padding: 18px; border-radius: 18px; background: #fff; border: 1px solid #e9eaeb; z-index: 24; box-shadow: 0 28px 56px rgba(24, 29, 39, 0.16), 0 6px 16px rgba(24, 29, 39, 0.06); }
+      .card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+      .mini { border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f4ebff; }
+      .mini img { width: 100%; height: 100%; object-fit: cover; }
+      .meta { flex: 1; }
+      .badge { width: 22px; height: 22px; border-radius: 50%; background: #7f56d9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .skeleton { border-radius: 6px; background: linear-gradient(90deg, #f1eef9 0%, #e7e1f6 50%, #f1eef9 100%); background-size: 200% 100%; }
+      .sk-line { height: 11px; margin-bottom: 7px; }
+      .sk-line.w70 { width: 68%; } .sk-line.w45 { width: 42%; } .sk-line.w85 { width: 85%; } .sk-line.w55 { width: 55%; } .sk-line.w35 { width: 35%; }
+      .card-actions { display: flex; gap: 10px; align-items: center; }
+      .icon-btn { width: 40px; height: 40px; border-radius: 11px; background: #fafafa; border: 1px solid #e9eaeb; display: flex; align-items: center; justify-content: center; }
+      .icon-btn svg { width: 20px; height: 20px; }
+      .counter { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 15px; color: #717680; min-width: 34px; }
+      .counter.liked { color: #f04438; }
+      .card-likers { display: flex; }
+      .card-likers .lk { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; margin-left: -10px; background: #f4ebff; opacity: 0; }
+      .card-likers .lk img { width: 100%; height: 100%; object-fit: cover; }
+      .pill { height: 44px; border-radius: 12px; background: #7f56d9; box-shadow: 0 6px 16px rgba(127, 86, 217, 0.35); display: flex; align-items: center; justify-content: center; position: relative; }
+      .pill svg { width: 20px; height: 20px; }
+      .pill .ic-check { position: absolute; opacity: 0; }
+
+      /* Suggestion */
+      .card-suggest { width: 344px; }
+      .suggest-head { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+      .suggest-head .reco { width: 26px; height: 26px; border-radius: 8px; background: #f4ebff; display: flex; align-items: center; justify-content: center; }
+      .suggest-head .reco svg { width: 16px; height: 16px; }
+      .suggest-profile { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+      .suggest-profile .mini { width: 56px; height: 56px; position: relative; }
+      .mutual { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+      .mutual .mlk { display: flex; }
+      .mutual .mlk div { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; overflow: hidden; margin-left: -9px; background: #f4ebff; }
+      .mutual .mlk div:first-child { margin-left: 0; }
+      .mutual .mlk div img { width: 100%; height: 100%; object-fit: cover; }
+
+      /* Profil populaire */
+      .card-profile { width: 320px; text-align: center; }
+      .profile-top { display: flex; justify-content: center; margin-bottom: 12px; position: relative; }
+      .profile-top .mini { width: 70px; height: 70px; }
+      .profile-top .badge { position: absolute; right: calc(50% - 44px); bottom: -2px; border: 2px solid #fff; }
+      .card-profile .skeleton { margin-left: auto; margin-right: auto; }
+      .followers { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px 0 16px; }
+      .followers svg { width: 19px; height: 19px; }
+      .followers .fv { font-size: 19px; font-weight: 800; color: #181d27; font-variant-numeric: tabular-nums; }
+      .followers .fl { width: 54px; height: 9px; border-radius: 5px; }
+
+      /* Post */
+      .card-post { width: 384px; }
+      .card-post .mini { width: 46px; height: 46px; }
+      .card-media { height: 196px; border-radius: 14px; margin-bottom: 14px; overflow: hidden; background: #f4ebff; }
+      .card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .ripple { position: absolute; width: 50px; height: 50px; margin-left: -25px; margin-top: -25px; border-radius: 50%; border: 2px solid rgba(127, 86, 217, 0.55); background: rgba(127, 86, 217, 0.12); z-index: 45; opacity: 0; pointer-events: none; }
+      #burst { position: absolute; z-index: 46; opacity: 0; pointer-events: none; margin-left: -24px; margin-top: -24px; }
+      #burst svg { width: 48px; height: 48px; filter: drop-shadow(0 6px 16px rgba(240, 68, 56, 0.4)); }
+
+      /* Pitch deck */
+      .card-deck { width: 360px; }
+      .card-deck .mini { width: 46px; height: 46px; }
+      .deck { height: 176px; border-radius: 12px; background: linear-gradient(135deg, #f4ebff, #ece4fb); padding: 16px; margin-bottom: 14px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+      .deck .accent { width: 54px; height: 8px; border-radius: 4px; background: #7f56d9; margin-bottom: 10px; }
+      .deck .dl { height: 9px; border-radius: 5px; background: rgba(127, 86, 217, 0.22); margin-bottom: 7px; }
+      .deck .dl.w70 { width: 70%; } .deck .dl.w45 { width: 45%; }
+      .deck .chart { margin-top: auto; display: flex; align-items: flex-end; gap: 9px; height: 64px; }
+      .deck .chart i { display: block; width: 26px; border-radius: 6px 6px 0 0; background: linear-gradient(#9e77ed, #7f56d9); transform-origin: 50% 100%; }
+      .deck .dots { position: absolute; bottom: 12px; right: 14px; display: flex; gap: 6px; }
+      .deck .dots b { width: 7px; height: 7px; border-radius: 50%; background: rgba(127, 86, 217, 0.3); }
+      .deck .dots b.on { background: #7f56d9; }
+
+      /* Thread */
+      .card-thread { width: 416px; }
+      .thread { display: flex; flex-direction: column; gap: 13px; margin-bottom: 14px; }
+      .thread .row { display: flex; gap: 11px; align-items: flex-start; opacity: 0; }
+      .thread .row .ra { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f4ebff; }
+      .thread .row .ra img { width: 100%; height: 100%; object-fit: cover; }
+      .thread .row .rl { flex: 1; padding-top: 4px; }
+
+      #cursor { position: absolute; width: 30px; height: 30px; z-index: 50; pointer-events: none; filter: drop-shadow(0 2px 5px rgba(24, 29, 39, 0.3)); opacity: 0; left: 0; top: 0; }
+      #flash { position: absolute; inset: 0; z-index: 40; opacity: 0; pointer-events: none; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.95) 0%, rgba(244,235,255,0.6) 45%, rgba(244,235,255,0) 75%); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="40" data-width="1920" data-height="1080">
+      <div id="camera">
+        <div class="mesh mesh-a" data-layout-ignore></div>
+        <div class="mesh mesh-b" data-layout-ignore></div>
+        <div class="mesh mesh-c" data-layout-ignore></div>
+        <div id="grid" data-layout-ignore></div>
+        <div class="bokeh" data-layout-ignore style="width: 120px; height: 120px; left: 1380px; top: 740px"></div>
+        <div class="bokeh" data-layout-ignore style="width: 80px; height: 80px; left: 520px; top: 180px"></div>
+        <div class="bokeh" data-layout-ignore style="width: 150px; height: 150px; left: 1620px; top: 320px"></div>
+        <div class="bokeh" data-layout-ignore style="width: 90px; height: 90px; left: 240px; top: 640px"></div>
+        <div class="bokeh" data-layout-ignore style="width: 110px; height: 110px; left: 110px; top: 150px"></div>
+        <div class="bokeh" data-layout-ignore style="width: 130px; height: 130px; left: 1700px; top: 880px"></div>
+        <div class="bokeh" data-layout-ignore style="width: 70px; height: 70px; left: 200px; top: 920px"></div>
+
+        <div id="network">
+          <svg id="wires" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="node" data-cx="700"  data-cy="330" data-r="50"><img src="assets/avatars/isobel-fuller.jpg" alt="" crossorigin="anonymous" /></div>
+          <div class="node" data-cx="1230" data-cy="320" data-r="52"><img src="assets/avatars/alec-whitten.png" alt="" crossorigin="anonymous" /></div>
+          <div class="node" data-cx="1330" data-cy="600" data-r="46"><img src="assets/avatars/katy-fuller.png" alt="" crossorigin="anonymous" /></div>
+          <div class="node" data-cx="980"  data-cy="852" data-r="48"><img src="assets/avatars/jordan-burgess.png" alt="" crossorigin="anonymous" /></div>
+          <div class="node" data-cx="560"  data-cy="762" data-r="46"><img src="assets/avatars/franklin-mays.jpg" alt="" crossorigin="anonymous" /></div>
+          <div class="node" data-cx="470"  data-cy="486" data-r="50"><img src="assets/avatars/katy-fuller.png" alt="" crossorigin="anonymous" /></div>
+          <div class="node" data-cx="1556" data-cy="232" data-r="34"><img src="assets/avatars/jordan-burgess.png" alt="" crossorigin="anonymous" /></div>
+          <div class="node anon" data-cx="1690" data-cy="540" data-r="30"></div>
+          <div class="node" data-cx="1520" data-cy="868" data-r="34"><img src="assets/avatars/isobel-fuller.jpg" alt="" crossorigin="anonymous" /></div>
+          <div class="node anon" data-cx="1130" data-cy="958" data-r="28"></div>
+          <div class="node" data-cx="268"  data-cy="852" data-r="32"><img src="assets/avatars/alec-whitten.png" alt="" crossorigin="anonymous" /></div>
+          <div class="node anon" data-cx="184" data-cy="372" data-r="30"></div>
+          <div class="node anon" data-cx="1402" data-cy="150" data-r="26"></div>
+          <div class="node" data-cx="772"  data-cy="138" data-r="32"><img src="assets/avatars/franklin-mays.jpg" alt="" crossorigin="anonymous" /></div>
+        </div>
+
+        <div id="hub-glow" data-layout-ignore></div>
+        <div id="hub-halo" data-layout-ignore></div>
+        <div id="hub"><img src="assets/logo.png" alt="" crossorigin="anonymous" /></div>
+
+        <div id="fx"></div>
+
+        <!-- SUGGESTION (reco + connecter) -->
+        <div class="card card-suggest" id="card-suggest" style="left: 232px; top: 348px">
+          <div class="suggest-head"><div class="reco"><svg viewBox="0 0 24 24" fill="#7f56d9"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z" /></svg></div><div class="skeleton sk-line w45" style="margin:0"></div></div>
+          <div class="suggest-profile">
+            <div class="mini"><img src="assets/avatars/alec-whitten.png" alt="" crossorigin="anonymous" /></div>
+            <div class="meta"><div class="skeleton sk-line w70"></div><div class="skeleton sk-line w45"></div></div>
+            <div class="badge" style="background:#17b26a"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg></div>
+          </div>
+          <div class="mutual">
+            <div class="mlk"><div><img src="assets/avatars/isobel-fuller.jpg" crossorigin="anonymous" /></div><div><img src="assets/avatars/katy-fuller.png" crossorigin="anonymous" /></div><div><img src="assets/avatars/jordan-burgess.png" crossorigin="anonymous" /></div></div>
+            <div class="skeleton sk-line w35" style="margin:0"></div>
+          </div>
+          <div class="pill" id="btn-connect">
+            <svg class="ic-plus" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M19 8v6M22 11h-6" /></svg>
+            <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M20 6 9 17l-5-5" /></svg>
+          </div>
+        </div>
+
+        <!-- PROFIL POPULAIRE (suivre) -->
+        <div class="card card-profile" id="card-profile" style="left: 1320px; top: 322px">
+          <div class="profile-top">
+            <div class="mini"><img src="assets/avatars/isobel-fuller.jpg" alt="" crossorigin="anonymous" /></div>
+            <div class="badge" style="background:#f79009"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.4 7.4H22l-6 4.3 2.3 7.3L12 16.6 5.7 21l2.3-7.3-6-4.3h7.6z" /></svg></div>
+          </div>
+          <div class="skeleton sk-line w70"></div>
+          <div class="skeleton sk-line w45"></div>
+          <div class="followers"><svg viewBox="0 0 24 24" fill="none" stroke="#7f56d9" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg><span class="fv" id="follow-count">2 845</span><span class="skeleton fl"></span></div>
+          <div class="pill" id="btn-follow">
+            <svg class="ic-plus" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 5v14M5 12h14" /></svg>
+            <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M20 6 9 17l-5-5" /></svg>
+          </div>
+        </div>
+
+        <!-- POST -->
+        <div class="card card-post" id="card-post" style="left: 232px; top: 300px">
+          <div class="card-head">
+            <div class="mini"><img src="assets/avatars/franklin-mays.jpg" alt="" crossorigin="anonymous" /></div>
+            <div class="meta"><div class="skeleton sk-line w70"></div><div class="skeleton sk-line w45"></div></div>
+            <div class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M20 6 9 17l-5-5" /></svg></div>
+          </div>
+          <div class="card-media"><img src="assets/avatars/katy-fuller.png" alt="" crossorigin="anonymous" /></div>
+          <div class="card-actions">
+            <div class="icon-btn" id="like-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" /></svg></div>
+            <div class="counter" id="like-count">128</div>
+            <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg></div>
+            <div class="counter" id="comment-count">56</div>
+            <div class="card-likers" id="likers" style="margin-left:auto">
+              <div class="lk"><img src="assets/avatars/isobel-fuller.jpg" crossorigin="anonymous" /></div>
+              <div class="lk"><img src="assets/avatars/alec-whitten.png" crossorigin="anonymous" /></div>
+              <div class="lk"><img src="assets/avatars/jordan-burgess.png" crossorigin="anonymous" /></div>
+            </div>
+          </div>
+          <div class="ripple" id="ripple" style="left: 38px; top: 300px"></div>
+          <div id="burst" style="left: 38px; top: 300px"><svg viewBox="0 0 24 24" fill="#F04438"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" /></svg></div>
+        </div>
+
+        <!-- PITCH DECK -->
+        <div class="card card-deck" id="card-deck" style="left: 1300px; top: 250px">
+          <div class="card-head">
+            <div class="mini"><img src="assets/avatars/alec-whitten.png" alt="" crossorigin="anonymous" /></div>
+            <div class="meta"><div class="skeleton sk-line w70"></div><div class="skeleton sk-line w45"></div></div>
+            <div class="badge" style="background: #ec4a0a"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z" /></svg></div>
+          </div>
+          <div class="deck">
+            <div class="accent"></div><div class="dl w70"></div><div class="dl w45"></div>
+            <div class="chart"><i style="height: 28px"></i><i style="height: 46px"></i><i style="height: 34px"></i><i style="height: 60px"></i><i style="height: 50px"></i></div>
+            <div class="dots"><b class="on"></b><b></b><b></b><b></b></div>
+          </div>
+          <div class="card-actions">
+            <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></div>
+            <div class="counter" id="view-count">1.2k</div>
+            <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><path d="M16 6l-4-4-4 4" /><path d="M12 2v13" /></svg></div>
+          </div>
+        </div>
+
+        <!-- THREAD -->
+        <div class="card card-thread" id="card-thread" style="left: 736px; top: 558px">
+          <div class="card-head">
+            <div class="badge" style="width: 40px; height: 40px; border-radius: 11px; background: #f4ebff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7f56d9" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg></div>
+            <div class="meta" style="margin-left:2px"><div class="skeleton sk-line w85"></div><div class="skeleton sk-line w55"></div></div>
+          </div>
+          <div class="thread">
+            <div class="row"><div class="ra"><img src="assets/avatars/isobel-fuller.jpg" crossorigin="anonymous" /></div><div class="rl"><div class="skeleton sk-line w85"></div><div class="skeleton sk-line w45"></div></div></div>
+            <div class="row"><div class="ra"><img src="assets/avatars/jordan-burgess.png" crossorigin="anonymous" /></div><div class="rl"><div class="skeleton sk-line w70"></div><div class="skeleton sk-line w55"></div></div></div>
+            <div class="row"><div class="ra"><img src="assets/avatars/katy-fuller.png" crossorigin="anonymous" /></div><div class="rl"><div class="skeleton sk-line w55"></div></div></div>
+          </div>
+          <div class="card-actions">
+            <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#717680" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg></div>
+            <div class="counter" id="thread-count">23</div>
+          </div>
+        </div>
+
+        <div id="cursor"><svg width="30" height="30" viewBox="0 0 24 24" fill="#181D27"><path d="M5 3l14 9-6.5 1.5L11 21 5 3z" /></svg></div>
+      </div>
+      <div id="flash"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const SVGNS = "http://www.w3.org/2000/svg";
+      const HUB = { cx: 960, cy: 540 };
+      const SEG = 42;
+      const fmt = (n) => Math.round(n).toLocaleString("fr-FR");
+
+      let MODE = "reseed";
+      try { const v = window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables(); if (v && v.mode === "ambient") MODE = "ambient"; } catch (e) {}
+
+      // Nœuds
+      const nodeEls = Array.from(document.querySelectorAll("#network .node"));
+      const N = nodeEls.map((el) => {
+        const cx = +el.dataset.cx, cy = +el.dataset.cy, r = +el.dataset.r;
+        el.style.width = el.style.height = r * 2 + "px";
+        el.style.left = cx - r + "px"; el.style.top = cy - r + "px";
+        const ring = document.createElement("div");
+        ring.className = "node-ring";
+        el.parentElement.insertBefore(ring, el);
+        ring.style.left = cx - r - 9 + "px"; ring.style.top = cy - r - 9 + "px";
+        ring.style.width = ring.style.height = r * 2 + 18 + "px";
+        return { el, ring, cx, cy, r };
+      });
+
+      // Badges de type (fondateur / expert / investisseur)
+      const network = document.getElementById("network");
+      const TAGS = {
+        founder: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M12 3l7 7-3 1-1 3-1.5-3.5L9 13z"/><path d="M12 3c-3 1-5 4-5 7l3 3c3 0 6-2 7-5z"/></svg>',
+        expert: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.4 7.4H22l-6 4.3 2.3 7.3L12 16.6 5.7 21l2.3-7.3-6-4.3h7.6z"/></svg>',
+        investor: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+      };
+      const TAGMAP = { 0: "founder", 1: "expert", 2: "investor", 3: "founder", 5: "expert", 6: "investor", 8: "investor", 9: "expert" };
+      Object.keys(TAGMAP).forEach((k) => {
+        const i = +k, n = N[i], t = TAGMAP[k];
+        const tag = document.createElement("div");
+        tag.className = "ntag " + t; tag.innerHTML = TAGS[t];
+        const off = n.r * 0.66;
+        tag.style.left = n.cx + off - 14 + "px";
+        tag.style.top = n.cy + off - 14 + "px";
+        network.appendChild(tag);
+      });
+
+      // Liens (dessinés dès t=0)
+      const svg = document.getElementById("wires");
+      function ptOf(ref) { return ref === "H" ? HUB : N[ref]; }
+      function makeLink(a, b, cls, curve) {
+        const A = ptOf(a), B = ptOf(b);
+        const mx = (A.cx + B.cx) / 2, my = (A.cy + B.cy) / 2;
+        const dx = B.cx - A.cx, dy = B.cy - A.cy;
+        const len = Math.hypot(dx, dy) || 1;
+        const nx = -dy / len, ny = dx / len, off = len * curve;
+        const d = `M ${A.cx} ${A.cy} Q ${mx + nx * off} ${my + ny * off} ${B.cx} ${B.cy}`;
+        const p = document.createElementNS(SVGNS, "path");
+        p.setAttribute("d", d); p.setAttribute("class", cls); svg.appendChild(p);
+        const L = p.getTotalLength();
+        gsap.set(p, { strokeDasharray: L, strokeDashoffset: 0 });
+        const pulse = document.createElementNS(SVGNS, "path");
+        pulse.setAttribute("d", d); pulse.setAttribute("class", "pulse"); svg.appendChild(pulse);
+        gsap.set(pulse, { strokeDasharray: SEG + " " + L, strokeDashoffset: SEG, autoAlpha: 0 });
+        return { p, pulse, L };
+      }
+      const spokes = [0, 1, 2, 3, 4, 5].map((i, k) => makeLink("H", i, "link link-strong", k % 2 ? 0.06 : -0.06));
+      const ring = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]].map(([a, b], k) => makeLink(a, b, "link", k % 2 ? 0.14 : -0.14));
+      const growth = [[1,6],[6,7],[7,2],[2,12],[12,13],[13,0],[0,11],[11,5],[5,10],[4,9],[3,8],[8,7],[1,13],[3,9]]
+        .map(([a, b], k) => makeLink(a, b, "link link-soft", k % 2 ? 0.10 : -0.10));
+      const allLinks = spokes.concat(ring, growth);
+      const coreLinks = spokes.concat(ring);
+
+      // Mesures des cibles curseur (repère canvas)
+      const camRect = document.getElementById("camera").getBoundingClientRect();
+      function center(id) { const r = document.getElementById(id).getBoundingClientRect(); return { x: r.left - camRect.left + r.width / 2, y: r.top - camRect.top + r.height / 2 }; }
+      const tgtConnect = center("btn-connect");
+      const tgtFollow = center("btn-follow");
+      const tgtLike = center("like-btn");
+      const postRect = document.getElementById("card-post").getBoundingClientRect();
+      const lb = document.getElementById("like-btn").getBoundingClientRect();
+      gsap.set(["#ripple", "#burst"], { left: lb.left - postRect.left + lb.width / 2, top: lb.top - postRect.top + lb.height / 2 });
+
+      // États initiaux (= état boucle t=0 == t=40)
+      gsap.set(nodeEls, { autoAlpha: 1, scale: 1, x: 0, y: 0, transformOrigin: "50% 50%" });
+      gsap.set("#network", { autoAlpha: 1 });
+      gsap.set(["#card-suggest", "#card-profile", "#card-post", "#card-deck", "#card-thread"], { autoAlpha: 0, scale: 0.9, y: 24, transformOrigin: "50% 50%" });
+      gsap.set("#likers .lk", { autoAlpha: 0, x: -8 });
+      gsap.set(".thread .row", { autoAlpha: 0, x: -10 });
+      gsap.set(".deck .chart i", { scaleY: 0.18 });
+      gsap.set(["#btn-connect .ic-check", "#btn-follow .ic-check"], { autoAlpha: 0 });
+      gsap.set("#hub", { scale: 1, autoAlpha: 1, transformOrigin: "50% 50%" });
+      gsap.set("#hub-halo", { scale: 1, autoAlpha: 0 });
+      gsap.set("#hub-glow", { scale: 0.85, autoAlpha: 0.18 });
+
+      // Helpers
+      const fx = document.getElementById("fx");
+      function firePulse(link, at, dur) {
+        tl.set(link.pulse, { autoAlpha: 1 }, at);
+        tl.fromTo(link.pulse, { strokeDashoffset: SEG }, { strokeDashoffset: -link.L, duration: dur, ease: "power1.inOut", immediateRender: false }, at);
+        tl.to(link.pulse, { autoAlpha: 0, duration: 0.22 }, at + dur - 0.1);
+      }
+      function nodeRing(i, at) {
+        tl.fromTo(N[i].ring, { autoAlpha: 0.9, scale: 0.85 }, { autoAlpha: 0, scale: 1.6, duration: 0.85, ease: "power2.out", immediateRender: false, transformOrigin: "50% 50%" }, at);
+      }
+      function rippleAt(x, y, at) {
+        const r = document.createElement("div"); r.className = "ripple"; r.style.left = x + "px"; r.style.top = y + "px"; fx.appendChild(r);
+        gsap.set(r, { autoAlpha: 0, scale: 0.3 });
+        tl.fromTo(r, { scale: 0.3, autoAlpha: 0.85 }, { scale: 2.0, autoAlpha: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, at);
+      }
+      const ICONS = {
+        heart: '<svg viewBox="0 0 24 24" fill="#F04438"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+        chat: '<svg viewBox="0 0 24 24" fill="none" stroke="#7f56d9" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+        spark: '<svg viewBox="0 0 24 24" fill="#7f56d9"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg>',
+      };
+      function chipAt(x, y, type, at) {
+        const el = document.createElement("div"); el.className = "chip"; el.innerHTML = ICONS[type];
+        el.style.left = x - 20 + "px"; el.style.top = y - 20 + "px"; fx.appendChild(el);
+        gsap.set(el, { autoAlpha: 0, scale: 0.4, y: 6, transformOrigin: "50% 100%" });
+        tl.to(el, { autoAlpha: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(2.2)" }, at);
+        tl.to(el, { y: -54, duration: 1.0, ease: "power1.out" }, at + 0.05);
+        tl.to(el, { autoAlpha: 0, duration: 0.4, ease: "power2.in" }, at + 0.72);
+      }
+      function chip(i, type, at) { chipAt(N[i].cx, N[i].cy - N[i].r - 26, type, at); }
+      function counter(obj, to, el, at, dur, suffix) {
+        tl.to(obj, { v: to, duration: dur, ease: "power2.out", onUpdate: () => (el.textContent = suffix ? obj.v.toFixed(1) + suffix : fmt(obj.v)) }, at);
+      }
+
+      // Vie de fond (yoyo, revient à la base à t=40)
+      tl.to(".mesh-a", { x: 34, y: 24, duration: 20, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+      tl.to(".mesh-b", { x: -26, y: -16, duration: 20, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+      tl.to(".mesh-c", { x: 22, y: -14, scale: 1.08, duration: 20, ease: "sine.inOut", repeat: 1, yoyo: true }, 0);
+      document.querySelectorAll(".bokeh").forEach((b, i) => tl.to(b, { y: (i % 2 ? -1 : 1) * 28, x: (i % 2 ? 1 : -1) * 18, duration: 10, ease: "sine.inOut", repeat: 3, yoyo: true }, 0));
+
+      // ============ 0–4 : RÉSEAU VIVANT ============
+      tl.fromTo("#hub-glow", { scale: 0.85, autoAlpha: 0.18 }, { scale: 1.15, autoAlpha: 0.55, duration: 0.5, ease: "power2.out", immediateRender: false }, 0.15);
+      tl.to("#hub-glow", { scale: 0.95, autoAlpha: 0.22, duration: 1.2, ease: "sine.inOut" }, 0.65);
+      tl.fromTo("#hub-halo", { scale: 0.9, autoAlpha: 0.7 }, { scale: 2.2, autoAlpha: 0, duration: 1.1, ease: "power2.out", immediateRender: false }, 0.2);
+      tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: 2.0, ease: "power3.out", immediateRender: false }, 0);
+      spokes.forEach((s, i) => firePulse(s, 0.3 + i * 0.08, 1.0));
+      ring.forEach((r, i) => firePulse(r, 0.7 + i * 0.1, 1.0));
+      for (let k = 0; k < 7; k++) firePulse(coreLinks[(k * 5 + 2) % coreLinks.length], 1.9 + k * 0.32, 1.0);
+      chip(1, "heart", 1.9); chip(4, "chat", 2.7); nodeRing(0, 1.4); nodeRing(3, 2.8);
+
+      // ============ 4–10 : GRANDIR LE RÉSEAU (reco → connecter, profil → suivre) ============
+      tl.to("#network", { autoAlpha: 0.4, duration: 0.7, ease: "power2.inOut" }, 4.0);
+      tl.to("#hub-glow", { autoAlpha: 0.1, duration: 0.7 }, 4.0);
+
+      // — Suggestion / Connecter —
+      tl.to("#card-suggest", { autoAlpha: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.5)" }, 4.3);
+      tl.to("#cursor", { autoAlpha: 1, left: tgtConnect.x, top: tgtConnect.y, duration: 1.0, ease: "power3.inOut" }, 4.7);
+      rippleAt(tgtConnect.x, tgtConnect.y, 5.85);
+      tl.to("#btn-connect", { backgroundColor: "#17b26a", duration: 0.3 }, 5.9);
+      tl.to("#btn-connect", { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1, transformOrigin: "50% 50%" }, 5.9);
+      tl.to("#btn-connect .ic-plus", { autoAlpha: 0, duration: 0.15 }, 5.9);
+      tl.to("#btn-connect .ic-check", { autoAlpha: 1, duration: 0.2 }, 5.95);
+      nodeRing(7, 6.0); firePulse(growth[2], 6.05, 0.8); firePulse(growth[1], 6.1, 0.8); chip(7, "spark", 6.2);
+      tl.to("#cursor", { autoAlpha: 0, duration: 0.35 }, 6.5);
+      tl.to("#card-suggest", { autoAlpha: 0, scale: 0.94, y: -16, duration: 0.45, ease: "power2.in" }, 7.0);
+
+      // — Profil populaire / Suivre —
+      tl.to("#card-profile", { autoAlpha: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.5)" }, 6.7);
+      tl.to("#cursor", { autoAlpha: 1, left: tgtFollow.x, top: tgtFollow.y, duration: 0.9, ease: "power3.inOut" }, 7.3);
+      rippleAt(tgtFollow.x, tgtFollow.y, 8.35);
+      tl.to("#btn-follow", { backgroundColor: "#17b26a", duration: 0.3 }, 8.4);
+      tl.to("#btn-follow", { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1, transformOrigin: "50% 50%" }, 8.4);
+      tl.to("#btn-follow .ic-plus", { autoAlpha: 0, duration: 0.15 }, 8.4);
+      tl.to("#btn-follow .ic-check", { autoAlpha: 1, duration: 0.2 }, 8.45);
+      const folObj = { v: 2845 }, folEl = document.getElementById("follow-count");
+      counter(folObj, 2863, folEl, 8.45, 1.0);
+      nodeRing(1, 8.5); chipAt(1490, 380, "heart", 8.6);
+      tl.to("#cursor", { autoAlpha: 0, duration: 0.35 }, 9.2);
+      tl.to("#card-profile", { autoAlpha: 0, scale: 0.94, y: -16, duration: 0.45, ease: "power2.in" }, 9.5);
+
+      // ============ 10–20 : FEED (post / deck / thread) ============
+      tl.to("#camera", { scale: 1.04, duration: 1.4, ease: "power2.inOut" }, 9.8);
+      // POST
+      tl.to("#card-post", { autoAlpha: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.5)" }, 10.2);
+      tl.to("#cursor", { autoAlpha: 1, left: tgtLike.x, top: tgtLike.y, duration: 0.95, ease: "power3.inOut" }, 11.0);
+      tl.fromTo("#ripple", { scale: 0.3, autoAlpha: 0.85 }, { scale: 2.1, autoAlpha: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, 12.0);
+      tl.to("#like-btn svg", { fill: "#F04438", stroke: "#F04438", duration: 0.2 }, 12.1);
+      tl.to("#like-btn", { scale: 1.25, duration: 0.16, yoyo: true, repeat: 1, ease: "power2.out", transformOrigin: "50% 50%" }, 12.1);
+      tl.fromTo("#burst", { autoAlpha: 1, scale: 0.5, y: 0 }, { scale: 1.2, duration: 0.32, ease: "back.out(2.4)", immediateRender: false }, 12.05);
+      tl.to("#burst", { y: -40, autoAlpha: 0, duration: 0.7, ease: "power2.in" }, 12.4);
+      const likeObj = { v: 128 }, likeEl = document.getElementById("like-count");
+      counter(likeObj, 342, likeEl, 12.15, 1.2);
+      tl.to("#like-count", { color: "#F04438", duration: 0.3 }, 12.15);
+      const comObj = { v: 56 }, comEl = document.getElementById("comment-count");
+      counter(comObj, 71, comEl, 13.0, 1.0);
+      tl.to("#likers .lk", { autoAlpha: 1, x: 0, duration: 0.4, stagger: 0.12, ease: "back.out(1.8)" }, 12.8);
+      chipAt(420, 360, "heart", 12.6); chipAt(360, 300, "spark", 13.4);
+      tl.to("#cursor", { autoAlpha: 0, duration: 0.35 }, 13.6);
+      // DECK
+      tl.to("#card-deck", { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 11.6);
+      tl.to(".deck .chart i", { scaleY: 1, duration: 0.6, ease: "power2.out", stagger: 0.08 }, 12.2);
+      const viewObj = { v: 1.2 }, viewEl = document.getElementById("view-count");
+      counter(viewObj, 3.4, viewEl, 12.8, 1.1, "k");
+      chipAt(1470, 300, "spark", 13.0); chipAt(1410, 250, "heart", 13.8);
+      // THREAD
+      tl.to("#card-thread", { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 13.6);
+      tl.to(".thread .row", { autoAlpha: 1, x: 0, duration: 0.45, stagger: 0.22, ease: "power2.out" }, 14.0);
+      const thrObj = { v: 23 }, thrEl = document.getElementById("thread-count");
+      counter(thrObj, 48, thrEl, 14.4, 1.4);
+      chipAt(900, 600, "chat", 14.6); chipAt(1120, 640, "chat", 15.4); chipAt(820, 560, "heart", 16.0);
+      for (let k = 0; k < 5; k++) firePulse(coreLinks[(k * 4 + 1) % coreLinks.length], 13.0 + k * 0.6, 1.1);
+      // repli
+      tl.to("#card-deck", { autoAlpha: 0, scale: 0.94, y: -16, duration: 0.5, ease: "power2.in" }, 16.6);
+      tl.to("#card-post", { autoAlpha: 0, scale: 0.94, y: -16, duration: 0.5, ease: "power2.in" }, 17.0);
+      tl.to("#card-thread", { autoAlpha: 0, scale: 0.94, y: -16, duration: 0.5, ease: "power2.in" }, 17.6);
+      tl.to("#network", { autoAlpha: 1, duration: 1.0, ease: "power2.inOut" }, 17.8);
+      tl.to("#hub-glow", { autoAlpha: 0.22, duration: 1.0 }, 17.8);
+      tl.to("#camera", { scale: 1, duration: 1.4, ease: "power2.inOut" }, 18.0);
+
+      // ============ 19–28 : CROISSANCE + SCALE INTERNATIONAL ============
+      for (let k = 0; k < 20; k++) firePulse(allLinks[(k * 5 + 2) % allLinks.length], 19.2 + k * 0.32, 0.95);
+      tl.to(".link, .link-soft", { opacity: "+=0.14", duration: 2.0, ease: "sine.inOut" }, 19.4);
+      tl.to(".link, .link-soft", { opacity: "-=0.14", duration: 2.0, ease: "sine.inOut" }, 26.4);
+      [6, 8, 11, 7, 9, 13].forEach((i, k) => nodeRing(i, 19.6 + k * 0.5));
+      chip(7, "heart", 20.2); chip(9, "chat", 21.0); chip(11, "spark", 23.4); chip(13, "heart", 24.0);
+
+      // compteurs scale (membres / publications / pays)
+      const ICN = {
+        people: '<svg viewBox="0 0 24 24" fill="none" stroke="#7f56d9" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+        doc: '<svg viewBox="0 0 24 24" fill="none" stroke="#7f56d9" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>',
+        globe: '<svg viewBox="0 0 24 24" fill="none" stroke="#7f56d9" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>',
+      };
+      [
+        { l: 472, t: 176, ic: ICN.people, from: 8600, to: 12480 },
+        { l: 858, t: 162, ic: ICN.doc, from: 1840, to: 3240 },
+        { l: 1276, t: 176, ic: ICN.globe, from: 31, to: 47 },
+      ].forEach((s, i) => {
+        const el = document.createElement("div"); el.className = "stat";
+        el.style.left = s.l + "px"; el.style.top = s.t + "px";
+        el.innerHTML = '<div class="si">' + s.ic + '</div><div class="sv">' + fmt(s.from) + "</div>";
+        fx.appendChild(el);
+        const sv = el.querySelector(".sv"), o = { v: s.from };
+        gsap.set(el, { autoAlpha: 0, scale: 0.8, y: 10, transformOrigin: "50% 50%" });
+        tl.to(el, { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(1.6)" }, 21.4 + i * 0.18);
+        tl.to(o, { v: s.to, duration: 1.9, ease: "power2.out", onUpdate: () => (sv.textContent = fmt(o.v)) }, 21.7 + i * 0.18);
+        tl.to(el, { autoAlpha: 0, scale: 0.9, duration: 0.5, ease: "power2.in" }, 26.2 + i * 0.12);
+      });
+      tl.to("#hub-glow", { scale: 1.1, autoAlpha: 0.4, duration: 2.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 22.0);
+
+      // pic : onde synchrone
+      spokes.forEach((s) => firePulse(s, 26.6, 1.1));
+      ring.forEach((r) => firePulse(r, 26.8, 1.1));
+      tl.fromTo("#hub-halo", { scale: 0.9, autoAlpha: 0.85 }, { scale: 2.6, autoAlpha: 0, duration: 1.5, ease: "power2.out", immediateRender: false }, 26.7);
+      tl.to("#hub", { scale: 1.08, duration: 0.5, ease: "back.out(2)", yoyo: true, repeat: 1 }, 26.8);
+
+      // ============ 28–40 : SORTIE (branche selon mode) ============
+      if (MODE === "reseed") {
+        allLinks.forEach((lk, i) => tl.to(lk.p, { strokeDashoffset: lk.L, duration: 1.4, ease: "power2.in" }, 28.6 + (i % 6) * 0.05));
+        tl.to(nodeEls, { autoAlpha: 0, scale: 0.4, x: (i, el) => (HUB.cx - +el.dataset.cx) * 0.6, y: (i, el) => (HUB.cy - +el.dataset.cy) * 0.6, duration: 1.9, ease: "power3.in", stagger: { each: 0.03, from: "edges" } }, 28.6);
+        tl.to("#network", { autoAlpha: 0.0, duration: 1.4, ease: "power2.in" }, 29.4);
+        tl.to("#hub-glow", { scale: 1.3, autoAlpha: 0.6, duration: 1.2, ease: "power2.out" }, 29.6);
+        tl.to("#flash", { opacity: 0.55, duration: 0.4, ease: "power2.out" }, 30.2);
+        tl.to("#flash", { opacity: 0, duration: 0.9, ease: "power2.in" }, 30.7);
+        tl.fromTo("#hub", { scale: 0.86 }, { scale: 1, duration: 0.9, ease: "back.out(1.8)", immediateRender: false, transformOrigin: "50% 50%" }, 30.4);
+        tl.fromTo("#hub-halo", { scale: 0.9, autoAlpha: 0.7 }, { scale: 2.0, autoAlpha: 0, duration: 1.3, ease: "power2.out", immediateRender: false }, 30.5);
+        tl.to("#network", { autoAlpha: 1, duration: 0.6, ease: "power2.out" }, 31.6);
+        allLinks.forEach((lk, i) => tl.to(lk.p, { strokeDashoffset: 0, duration: 1.3, ease: "power2.out" }, 31.8 + (i % 6) * 0.06));
+        tl.to(nodeEls, { autoAlpha: 1, scale: 1, x: 0, y: 0, duration: 1.5, ease: "back.out(1.5)", stagger: { each: 0.04, from: "center" } }, 32.0);
+        tl.to("#hub-glow", { scale: 0.85, autoAlpha: 0.18, duration: 1.6, ease: "power2.inOut" }, 32.2);
+      } else {
+        for (let k = 0; k < 10; k++) firePulse(allLinks[(k * 7 + 3) % allLinks.length], 28.6 + k * 0.6, 1.1);
+        nodeRing(0, 29.0); nodeRing(3, 30.6); nodeRing(1, 32.2);
+        tl.to("#hub-glow", { scale: 1.05, autoAlpha: 0.34, duration: 2.2, ease: "sine.inOut" }, 28.8);
+        tl.to("#hub-glow", { scale: 0.85, autoAlpha: 0.18, duration: 2.6, ease: "sine.inOut" }, 33.2);
+        tl.fromTo("#hub-halo", { scale: 0.9, autoAlpha: 0.5 }, { scale: 2.2, autoAlpha: 0, duration: 1.6, ease: "power2.out", immediateRender: false }, 31.2);
+      }
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

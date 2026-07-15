@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
+import { getPayloadClient } from "@/lib/payload";
 
 export async function POST(request: Request) {
   try {
-    const { 
-      title, 
-      category, 
-      priority, 
-      steps, 
-      expected, 
-      actual, 
-      additional 
-    } = await request.json();
+    const { title, category, priority, steps, expected, actual, additional } =
+      await request.json();
 
     // Validate required fields
     if (!title || !category || !priority || !steps || !expected || !actual) {
@@ -20,37 +14,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // Submit to PayloadCMS via HTTP request
-    const payloadResponse = await fetch(
-      `${process.env.PAYLOAD_URL}/api/bug-reports`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`, // Si une authentification est nécessaire
-        },
-        body: JSON.stringify({
-          title,
-          category,
-          priority,
-          stepsToReproduce: steps,
-          expectedBehavior: expected,
-          actualBehavior: actual,
-          additionalInformation: additional || "",
-          status: "new",
-          submittedAt: new Date().toISOString(),
-        }),
-      }
-    );
+    const payload = await getPayloadClient();
 
-    if (!payloadResponse.ok) {
-      const errorData = await payloadResponse.json();
-      throw new Error(
-        errorData.message || "Erreur lors de la soumission à PayloadCMS"
-      );
-    }
+    await payload.create({
+      collection: "bug-reports",
+      data: {
+        title,
+        category,
+        priority,
+        stepsToReproduce: steps,
+        expectedBehavior: expected,
+        actualBehavior: actual,
+        additionalInformation: additional || "",
+        status: "new",
+        submittedAt: new Date().toISOString(),
+      } as never,
+    });
 
-    // Log the submission
     console.log(`Bug report received: ${title}`);
 
     return NextResponse.json({ success: true });
@@ -61,4 +41,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+}

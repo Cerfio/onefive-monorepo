@@ -2,6 +2,7 @@ import React from "react";
 import Builder from "@/components/builder";
 import { Users, Rocket, Heart, Target } from "lucide-react";
 import TeamSection from "./TeamSection";
+import { getPayloadClient } from "@/lib/payload";
 
 const mission = {
   title: "Empowering the Next Generation of Startups",
@@ -44,11 +45,14 @@ const values = [
 // Fonction pour récupérer les données de l'équipe côté serveur
 async function getTeamData() {
   try {
-    const res = await fetch(`${process.env.PAYLOAD_URL}/api/team?limit=100`, {
-      // next: { revalidate: 3600 } // 1 heure de cache
+    const payload = await getPayloadClient();
+
+    const data = await payload.find({
+      collection: "team",
+      limit: 100,
+      depth: 1,
     });
 
-    const data = await res.json();
     return data.docs || [];
   } catch (error) {
     console.error("Error fetching team data:", error);

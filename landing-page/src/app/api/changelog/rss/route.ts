@@ -1,25 +1,21 @@
 import { NextResponse } from "next/server";
+import { getPayloadClient } from "@/lib/payload";
+import { SITE_URL } from "@/lib/site";
 
 export async function GET() {
   try {
+    const payload = await getPayloadClient();
+
     // Récupérer toutes les releases
-    const response = await fetch(
-      `${process.env.PAYLOAD_URL}/api/releases?limit=100&sort=-date`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch releases");
-    }
-
-    const data = await response.json();
+    const data = await payload.find({
+      collection: "releases",
+      limit: 100,
+      sort: "-date",
+      depth: 1,
+    });
 
     // Générer le XML du feed RSS
-    const host = process.env.NEXT_PUBLIC_SITE_URL || "https://yourwebsite.com";
+    const host = SITE_URL;
 
     let rss = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -35,7 +31,7 @@ export async function GET() {
     // Ajouter chaque release comme un item
     data.docs.forEach((release: any) => {
       const pubDate = new Date(release.date).toUTCString();
-      const changesContent = release.changes
+      const changesContent = (release.changes || [])
         .map(
           (change: any) =>
             `<p><strong>${change.type.charAt(0).toUpperCase() + change.type.slice(1)}:</strong> ${change.title}</p>

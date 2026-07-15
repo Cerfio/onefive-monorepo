@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getPayloadClient } from "@/lib/payload";
 
 // Cache simple en mémoire pour éviter les changements trop fréquents
 let cachedData: { count: number; timestamp: number } | null = null;
@@ -7,27 +8,19 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures en millisecondes
 function shouldUpdateCache(): boolean {
   if (!cachedData) return true;
   const now = Date.now();
-  return (now - cachedData.timestamp) > CACHE_DURATION;
+  return now - cachedData.timestamp > CACHE_DURATION;
 }
 
 export async function GET() {
   try {
     // Récupérer le nombre total d'utilisateurs dans la waitlist
-    const response = await fetch(
-      `${process.env.PAYLOAD_URL}/api/waitlist?limit=1&depth=0`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-        },
-      }
-    );
+    const payload = await getPayloadClient();
+    const data = await payload.find({
+      collection: "waitlist",
+      limit: 1,
+      depth: 0,
+    });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch waitlist count");
-    }
-
-    const data = await response.json();
     const realCount = data.totalDocs || 0;
 
     // Vérifier si on doit mettre à jour le cache
@@ -41,7 +34,7 @@ export async function GET() {
       // Mettre à jour le cache
       cachedData = {
         count: displayedCount,
-        timestamp: now
+        timestamp: now,
       };
     } else {
       // Utiliser les données en cache
@@ -69,11 +62,11 @@ export async function GET() {
       });
     }
 
-    // Fallback final
-    const fallbackCount = 750;
+    // Fallback final — aligné sur la base de 800 utilisée plus haut.
+    const fallbackCount = 800;
     return NextResponse.json({
       count: fallbackCount,
-      formattedCount: fallbackCount.toString(),
+      formattedCount: fallbackCount.toLocaleString(),
       success: false,
       error: "Failed to fetch count",
     });

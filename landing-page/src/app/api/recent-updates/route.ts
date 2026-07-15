@@ -1,28 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_cache as cache } from "next/cache";
+import { getPayloadClient } from "@/lib/payload";
 
-const getRecentUpdates = cache(async (limit: string) => {
-  const fetchOptions = {
-    next: {
-      revalidate: 3600,
-    },
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
+const getRecentUpdates = cache(
+  async (limit: string) => {
+    const payload = await getPayloadClient();
 
-  const response = await fetch(
-    `${process.env.PAYLOAD_URL}/api/recent-updates?limit=${limit}&sort=order`,
-    fetchOptions
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch recent updates");
-  }
-
-  const data = await response.json();
-  return data;
-});
+    return payload.find({
+      collection: "recent-updates",
+      limit: parseInt(limit, 10),
+      sort: "order",
+      depth: 1,
+    });
+  },
+  ["recent-updates"],
+  { revalidate: 3600 }
+);
 
 export async function GET(request: NextRequest) {
   try {

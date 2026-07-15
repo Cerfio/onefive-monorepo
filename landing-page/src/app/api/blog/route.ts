@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { unstable_cache as cache } from "next/cache";
+import type { Where } from "payload";
+import { getPayloadClient } from "@/lib/payload";
 
 function buildBlogArticlesCacheKey(params: {
   category?: string;
@@ -40,40 +42,40 @@ const getBlogArticles = (
     params;
 
   const fetchArticles = async () => {
-    let url = `${process.env.PAYLOAD_URL}/api/articles?limit=${limit}&locale=${locale}&page=${page}&sort=-publishedAt&where[status][equals]=published&depth=2`;
+    const payload = await getPayloadClient();
+
+    const where: Where = { status: { equals: "published" } };
 
     if (category && category !== "All") {
-      url += `&where[category.slug][equals]=${encodeURIComponent(category)}`;
+      where["category.slug"] = { equals: category };
     }
 
     if (tag) {
-      url += `&where[tags.slug][in]=${encodeURIComponent(tag)}`;
+      where["tags.slug"] = { in: [tag] };
     }
 
     if (author) {
-      url += `&where[author.id][equals]=${encodeURIComponent(author)}`;
+      where["author.id"] = { equals: author };
     }
 
     if (featured) {
-      url += `&where[isFeatured][equals]=true`;
+      where.isFeatured = { equals: true };
     }
 
     if (navbar) {
-      url += `&where[displayOnNavbar][equals]=true`;
+      where.displayOnNavbar = { equals: true };
     }
 
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-      },
-      next: { revalidate: 60 },
+    // Same shape as the old REST response ({ docs, totalDocs, … }).
+    return payload.find({
+      collection: "articles",
+      where,
+      limit,
+      page,
+      locale: (locale ?? "fr") as never,
+      sort: "-publishedAt",
+      depth: 2,
     });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch articles from PayloadCMS");
-    }
-    return response.json();
   };
 
   return cache(fetchArticles, buildBlogArticlesCacheKey(params), {
