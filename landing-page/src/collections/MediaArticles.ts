@@ -1,6 +1,9 @@
 // collections/Media.js
 export const MediaArticles: any = {
   slug: 'media-articles',
+  admin: {
+    group: 'Content',
+  },
   upload: {
     staticURL: '/media-articles',
     staticDir: 'media-articles',

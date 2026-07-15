@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const Team: CollectionConfig = {
   slug: 'team',
   admin: {
+    group: 'Site',
     useAsTitle: 'name',
   },
   access: {

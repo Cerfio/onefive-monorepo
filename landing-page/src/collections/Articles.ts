@@ -6,6 +6,7 @@
 export const Articles: any = {
   slug: 'articles',
   admin: {
+    group: 'Content',
     useAsTitle: 'title',
     defaultColumns: [
       'title',
@@ -16,6 +17,10 @@ export const Articles: any = {
       'views',
       'displayOnNavbar',
     ],
+    // The blog is served under /:locale/blog/:slug; unsaved/slug-less docs have
+    // nothing to point at, so the button is hidden rather than 404ing.
+    preview: (doc: { slug?: string }, { locale }: { locale?: string }) =>
+      doc?.slug ? `https://www.onefive.app/${locale || 'fr'}/blog/${doc.slug}` : null,
   },
   access: {
     read: () => true,

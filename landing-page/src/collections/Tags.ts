@@ -1,6 +1,7 @@
 export const Tags: any = {
   slug: 'tags',
   admin: {
+    group: 'Content',
     useAsTitle: 'name',
   },
   access: {

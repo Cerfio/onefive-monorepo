@@ -23,6 +23,7 @@ import { Articles } from './collections/Articles'
 import { Categories } from './collections/Categories'
 import { Tags } from './collections/Tags'
 import { MediaArticles } from './collections/MediaArticles'
+import { ArticleSuggestions } from './collections/ArticleSuggestions'
 import { buildConfig } from 'payload'
 import { s3Storage } from '@payloadcms/storage-s3'
 
@@ -44,6 +45,16 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    meta: {
+      titleSuffix: '— Onefive Studio',
+      description: 'Onefive content studio',
+      icons: [{ rel: 'icon', type: 'image/png', url: '/favicon.png' }],
+    },
+    components: {
+      // Payload's default dashboard is just the collection list; this puts the
+      // numbers that actually matter (and the "new article" button) above it.
+      beforeDashboard: ['@/components/payload/DashboardStats#DashboardStats'],
+    },
   },
   collections: [
     Users,
@@ -62,6 +73,9 @@ export default buildConfig({
     Categories,
     Tags,
     MediaArticles,
+    // Was never registered — /suggest-article POSTed to a collection Payload
+    // did not know about, so the form had been failing silently.
+    ArticleSuggestions,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

@@ -1,6 +1,7 @@
 export const Categories: any = {
   slug: 'categories',
   admin: {
+    group: 'Content',
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'color'],
   },

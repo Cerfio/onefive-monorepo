@@ -15,6 +15,7 @@ export const Changelog: CollectionConfig = {
     plural: 'Releases',
   },
   admin: {
+    group: 'Site',
     defaultColumns: ['version', 'date', 'summary', 'isLatest'],
     useAsTitle: 'version',
   },

@@ -1,6 +1,7 @@
 const SpontaneousApplications: any = {
   slug: 'spontaneous-applications',
   admin: {
+    group: 'Recruitment',
     useAsTitle: 'fullName',
     description: 'Spontaneous job applications',
   },

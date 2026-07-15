@@ -1,6 +1,7 @@
 const Waitlist: any = {
   slug: 'waitlist',
   admin: {
+    group: 'Growth',
     useAsTitle: 'email',
     defaultColumns: ['email', 'job', 'submittedAt', 'status'],
   },

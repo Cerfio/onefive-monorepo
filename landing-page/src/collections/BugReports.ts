@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const BugReports: CollectionConfig = {
   slug: 'bug-reports',
   admin: {
+    group: 'Inbox',
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'priority', 'status', 'submittedAt'],
     description: 'Bug reports submitted by users or internal team',

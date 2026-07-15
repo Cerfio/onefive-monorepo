@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const Contact: CollectionConfig = {
   slug: 'contact',
   admin: {
+    group: 'Inbox',
     useAsTitle: 'email',
     description: 'Contact form submissions',
   },

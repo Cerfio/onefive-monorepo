@@ -1,6 +1,7 @@
 export const ArticleSuggestions: any = {
   slug: 'article-suggestions',
   admin: {
+    group: 'Inbox',
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'email', 'status', 'createdAt'],
   },

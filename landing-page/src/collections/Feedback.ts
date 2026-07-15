@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const Feedback: CollectionConfig = {
   slug: 'feedback',
   admin: {
+    group: 'Inbox',
     useAsTitle: 'category',
     description: 'User feedback submissions',
   },

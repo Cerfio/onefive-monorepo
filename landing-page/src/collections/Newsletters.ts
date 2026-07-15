@@ -1,6 +1,7 @@
 const Newsletter: any = {
   slug: 'newsletter',
   admin: {
+    group: 'Growth',
     useAsTitle: 'email',
     defaultColumns: ['email', 'status', 'subscribedAt'],
     description: 'Subscribers to the newsletter',

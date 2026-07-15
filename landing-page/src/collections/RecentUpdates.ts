@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 export const RecentUpdates: CollectionConfig = {
   slug: 'recent-updates',
   admin: {
+    group: 'Site',
     useAsTitle: 'title',
     description: 'Recent platform updates to display on the feedback page',
   },
