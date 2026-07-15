@@ -64,6 +64,17 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // The Senior Full-Stack Engineer posting was removed (the role was never
+      // open). Its URL stays indexed for a few weeks, so send those visitors to
+      // /careers — spontaneous applications are what they can actually do —
+      // rather than a 404. Google may read this as a soft 404 and drop the URL,
+      // which is the intent; this redirect is for people, not crawlers.
+      // Removable once the URL falls out of the index.
+      {
+        source: '/:locale(fr|en)/careers/senior-full-stack-engineer',
+        destination: '/:locale/careers',
+        permanent: true,
+      },
       // Redirection favicon.png supprimée - fichier direct maintenant disponible
       // Redirections favicon.png pour les locales (avec pattern pour capturer toutes les locales)
       {
