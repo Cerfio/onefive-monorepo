@@ -86,7 +86,12 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
     },
-    push: true,
+    // `push` auto-syncs the DB schema to this config on boot. It is a dev
+    // convenience: it applies whatever the running code says, with no review,
+    // so a renamed field can drop a column and take its data with it. It was
+    // on in production. Schema changes now go through src/migrations, applied
+    // by `payload migrate` at build time.
+    push: false,
   }),
   sharp: sharp as any,
   plugins: [
