@@ -5,19 +5,22 @@
   "scripts": {
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "dev:back": "pnpm --filter onefive-back start:dev",
+    "mailpit": "docker compose -f onefive-back/docker-compose.yml up -d mailpit && echo '📬 Boîte de réception dev (emails + SMS) : http://localhost:8025'",
+    "mailpit:stop": "docker compose -f onefive-back/docker-compose.yml stop mailpit",
+    "mailpit:ensure": "pnpm mailpit || echo '⚠️  Mailpit non démarré (Docker éteint ?) — les emails et SMS de dev échoueront. Relance-le avec: pnpm mailpit'",
+    "dev:back": "pnpm mailpit:ensure && pnpm --filter onefive-back start:dev",
     "dev:web": "pnpm --filter onefive-web dev",
-    "dev:web-stack": "pnpm --parallel --filter onefive-back --filter onefive-web run dev",
-    "dev:app-with-email": "pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-email run dev",
-    "dev:platform": "pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-backoffice run dev",
-    "dev:platform-with-email": "pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-backoffice --filter onefive-email run dev",
+    "dev:web-stack": "pnpm mailpit:ensure && pnpm --parallel --filter onefive-back --filter onefive-web run dev",
+    "dev:app-with-email": "pnpm mailpit:ensure && pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-email run dev",
+    "dev:platform": "pnpm mailpit:ensure && pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-backoffice run dev",
+    "dev:platform-with-email": "pnpm mailpit:ensure && pnpm --parallel --filter onefive-back --filter onefive-web --filter onefive-backoffice --filter onefive-email run dev",
     "dev:marketing": "pnpm --parallel --filter landing-page --filter onefive-landing-page-bo run dev",
     "dev:landing": "pnpm --filter landing-page dev",
     "dev:backoffice": "pnpm --filter onefive-backoffice dev",
     "dev:bo-landing": "pnpm --filter onefive-landing-page-bo dev",
-    "dev:email": "pnpm --filter onefive-email dev",
+    "dev:email": "pnpm mailpit:ensure && pnpm --filter onefive-email dev",
     "dev:email-transactional": "pnpm --filter onefive-email-transactional dev",
-    "dev:email-stack": "pnpm --parallel --filter onefive-email --filter onefive-email-transactional run dev"
+    "dev:email-stack": "pnpm mailpit:ensure && pnpm --parallel --filter onefive-email --filter onefive-email-transactional run dev"
   },
   "devDependencies": {
     "turbo": "^2.4.4"

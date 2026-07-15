@@ -54,6 +54,28 @@ services:
       timeout: 5s
       retries: 5
 
+  # 📬 Mailpit : boîte mail locale. Attrape tous les emails de dev (et les SMS,
+  # cf. SMS_DEV_SINK) sans rien envoyer pour de vrai. UI : http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.21
+    container_name: onefive-mailpit
+    ports:
+      # SMTP sur 2525 côté hôte, pas 1025 : sur macOS, Synology Drive (FinderSync.appex)
+      # écoute déjà sur 127.0.0.1:1025. Ce bind spécifique l'emporte sur le wildcard de
+      # Docker, donc toute connexion IPv4 vers 1025 atterrit chez Synology et bloque
+      # ("Greeting never received"). 2525 est le port alt-SMTP usuel et est libre.
+      - "2525:1025"  # SMTP  - cible de MAILPIT_HOST/MAILPIT_PORT
+      - "8025:8025"  # Web UI
+    environment:
+      - MP_MAX_MESSAGES=500          # rétention : purge auto au-delà
+      - MP_SMTP_AUTH_ACCEPT_ANY=1    # dev : pas d'auth SMTP
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # 🚀 Application OneFive Backend (optionnel pour le développement)
   onefive-back:
     build: .
@@ -67,8 +89,15 @@ services:
       - SESSION_SECRET=dev-session-secret-12345
       - KEY_AUTHENTICATION=dev-key-12345
       - FRONTEND_URL=http://localhost:3000
-      - ONEFIVE_MICROSERVICE_EMAIL_URL=http://localhost:3001
+      # onefive-email tourne sur 3009 (pas 3001), et sur l'hôte, pas dans le compose :
+      # "localhost" depuis un conteneur désigne le conteneur lui-même, d'où host.docker.internal.
+      - ONEFIVE_MICROSERVICE_EMAIL_URL=http://host.docker.internal:3009
       - ONEFIVE_MICROSERVICE_EMAIL_API_KEY=dev-email-key
+      # SMS de dev -> Mailpit. Ici on vise le service par son nom et son port interne (1025),
+      # pas le port publié 2525 qui n'existe que côté hôte.
+      - SMS_DEV_SINK=true
+      - MAILPIT_HOST=mailpit
+      - MAILPIT_PORT=1025
       # Redis
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -85,6 +114,8 @@ services:
       redis:
         condition: service_healthy
       localstack:
+        condition: service_healthy
+      mailpit:
         condition: service_healthy
     volumes:
       - ./uploads:/app/uploads

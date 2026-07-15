@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { LogService } from 'logstash-winston-3';
 import { Log } from '../common/logger/logger.decorator';
 import { Prisma } from '@prisma/client';
-import { Twilio } from 'twilio';
 import {
   SmsVerificationCreateException,
   SmsVerificationGetException,
@@ -14,18 +12,10 @@ import {
 
 @Injectable()
 export class SmsVerificationService {
-  private twilioClient: Twilio;
-
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
     @Inject('Logger') private readonly logger: LogService,
-  ) {
-    this.twilioClient = new Twilio(
-      this.configService.get('TWILIO_ACCOUNT_SID'),
-      this.configService.get('TWILIO_AUTH_TOKEN'),
-    );
-  }
+  ) {}
 
   @Log()
   async create({
