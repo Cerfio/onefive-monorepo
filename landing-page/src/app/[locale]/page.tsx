@@ -3,6 +3,7 @@ import Image from "next/image";
 import * as React from "react";
 import { motion, useScroll } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { RotatingBadge } from "@/components/hero/rotating-badge";
 import { ParticleEffect } from "@/components/particle-effect";
 import { Navbar } from "@/components/navbar";
 import ButtonJoinWaitlist from "@/components/ui/button-join-wailist";
@@ -521,9 +522,13 @@ export default function Home({
 
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="max-w-2xl text-center flex flex-col items-center p-12">
-                <Badge className="bg-[#5E6AD2]/10 text-[#5E6AD2] border-0 font-medium px-4 py-1.5">
-                  ✨ Onefive social network ✨
-                </Badge>
+                <RotatingBadge
+                  slides={[
+                    { key: "brand", text: "Onefive social network" },
+                    { key: "audience", text: "Built for founders" },
+                    { key: "product", text: "Atlas · Dataroom · Spotlight" },
+                  ]}
+                />
                 <div className="relative overflow-hidden">
                   <ParticleEffect />
                   <motion.h1

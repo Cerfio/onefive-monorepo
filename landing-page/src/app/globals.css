@@ -251,3 +251,9 @@ input[type="search"]::-webkit-search-cancel-button {
     transition-duration: inherit;
     transition-timing-function: inherit;
 }
+/* Hero badge dot (src/components/hero/rotating-badge.tsx). Kept here rather
+   than in @theme: it's a one-off keyframe, not a design token. */
+@keyframes onefive-pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.16); }
+  50%      { box-shadow: 0 0 0 6px rgba(52, 199, 89, 0.08); }
+}
