@@ -1,24 +1,24 @@
-export async function getArticle(slug: string, locale = "fr") {
-  const response = await fetch(
-    `${process.env.PAYLOAD_URL}/api/articles?where[slug][equals]=${encodeURIComponent(slug)}&depth=2&locale=${locale}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-      },
-      next: { revalidate: 3600 },
+import { unstable_cache as cache } from "next/cache";
+import { getPayloadClient } from "@/lib/payload";
+
+export const getArticle = cache(
+  async (slug: string, locale = "fr") => {
+    const payload = await getPayloadClient();
+
+    const data = await payload.find({
+      collection: "articles",
+      where: { slug: { equals: slug } },
+      locale: locale as never,
+      depth: 2,
+      limit: 1,
+    });
+
+    if (!data.docs || data.docs.length === 0) {
+      return null;
     }
-  );
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch article: ${slug}`);
-  }
-
-  const data = await response.json();
-
-  if (!data.docs || data.docs.length === 0) {
-    return null;
-  }
-
-  return data.docs[0];
-}
+    return data.docs[0];
+  },
+  ["article-by-slug"],
+  { revalidate: 3600 }
+);

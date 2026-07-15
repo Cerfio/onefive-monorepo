@@ -58,10 +58,11 @@ export const config = {
   // Run on app routes and on /_next assets (excluded from the dot rule below).
   // `sitemaps` is excluded so /sitemaps/:type reaches its route handler instead
   // of being locale-prefixed by next-intl (which 404'd every child sitemap).
-  // `admin` + `payload-api` are the embedded Payload CMS: they must be served by
-  // this app directly — never locale-prefixed, never proxied to onefive-web.
+  // `studio-9k4x2m` + `payload-api` are the embedded Payload CMS: they must be
+  // served by this app directly — never locale-prefixed, never proxied to
+  // onefive-web. Keep in sync with `routes` in src/payload.config.ts.
   matcher: [
     '/_next/:path*',
-    '/((?!api|payload-api|admin|_vercel|sitemaps|.*\\..*).*)',
+    '/((?!api|payload-api|studio-9k4x2m|_vercel|sitemaps|.*\\..*).*)',
   ],
 }; 

@@ -35,6 +35,9 @@ export default buildConfig({
   // Must stay in sync with the folder name: src/app/(payload)/payload-api.
   routes: {
     api: '/payload-api',
+    // Non-guessable admin path: keeps the CMS login out of scanners' /admin
+    // sweeps and off the landing page's public route surface.
+    admin: '/studio-9k4x2m',
   },
   admin: {
     user: Users.slug,
