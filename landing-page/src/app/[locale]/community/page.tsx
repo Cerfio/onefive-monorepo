@@ -20,53 +20,7 @@ import Link from "next/link";
 import ButtonJoinWaitlist from "@/components/ui/button-join-wailist";
 
 // Featured community members
-const featuredMembers = [
-  {
-    name: "Emma Dubois",
-    avatar: "/isobel-fuller.jpg",
-    role: "CEO at Innovatech",
-    testimonial: "Onefive completely transformed the way we network.",
-    activity: "Active 2h ago",
-  },
-  {
-    name: "Louis Morel",
-    avatar: "/franklin-mays.jpg",
-    role: "CFO at GreenPulse",
-    testimonial: "Thanks to Onefive, we found investors within weeks!",
-    activity: "Active 5h ago",
-  },
-  {
-    name: "Chloé Lefèvre",
-    avatar: "/speakers/sarah.jpg",
-    role: "Marketing Manager at StartupBoost",
-    testimonial: "It has become our go-to platform to track startup trends.",
-    activity: "Active yesterday",
-  },
-];
 
-// Community stats
-const communityStats = [
-  {
-    value: "∞",
-    label: "Entrepreneurs",
-    description: "Active community members",
-  },
-  {
-    value: "∞",
-    label: "Daily Interactions",
-    description: "Messages, comments, and posts",
-  },
-  {
-    value: "∞",
-    label: "Weekly Events",
-    description: "Virtual and in-person meetups",
-  },
-  {
-    value: "∞",
-    label: "Countries",
-    description: "Global reach and presence",
-  },
-];
 
 // Featured discussions
 const featuredDiscussions = [
@@ -251,24 +205,6 @@ const Body = () => {
         </div>
       </div>
 
-      {/* Community Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {communityStats.map((stat, index) => (
-          <div
-            key={index}
-            className="border rounded-xl p-6 hover:border-[#5E6AD2] transition-all text-center"
-          >
-            <div className="text-3xl font-bold text-[#5E6AD2] mb-2">
-              {stat.value}
-            </div>
-            <div className="font-medium mb-1">{stat.label}</div>
-            <div className="text-sm text-muted-foreground">
-              {stat.description}
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Key Features Section */}
       <div className="space-y-6">
         <h2 className="text-3xl font-bold text-center mb-10">
@@ -318,39 +254,6 @@ const Body = () => {
         </div>
       </div>
 
-      {/* Featured Members */}
-      <div className="space-y-8">
-        <h2 className="text-3xl font-bold text-center">
-          Featured Community Members
-        </h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {featuredMembers.map((member, index) => (
-            <div
-              key={index}
-              className="border rounded-lg p-6 hover:shadow-md transition-all"
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <Image
-                  src={member.avatar}
-                  alt={member.name}
-                  width={60}
-                  height={60}
-                  className="rounded-full"
-                />
-                <div>
-                  <h3 className="font-medium">{member.name}</h3>
-                  <p className="text-sm text-gray-600">{member.role}</p>
-                  <p className="text-xs text-[#5E6AD2]">{member.activity}</p>
-                </div>
-              </div>
-              <p className="text-gray-700 italic">
-                &quot;{member.testimonial}&quot;
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Featured Discussions Section */}
       <div className="space-y-8">
         <div className="flex w-full items-center justify-between">
@@ -372,8 +275,8 @@ const Body = () => {
           Ready to Connect with Your Startup Community?
         </h2>
         <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-          Join thousands of entrepreneurs who are building, growing, and scaling
-          their startups with the support of the Onefive community.
+          Onefive is where founders, investors and mentors build, grow and scale
+          together. Join the waitlist to be part of it.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <ButtonJoinWaitlist text="Join Now" />
