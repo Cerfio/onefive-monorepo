@@ -1,3 +1,4 @@
+import type { Access } from 'payload'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -14,10 +15,13 @@ const Resumes: any = {
     group: 'Recruitment', // Groupe dans l'interface admin
   },
   access: {
-    read: ({ req }: { req: any }) => Boolean(req.user?.role === 'admin'), // Seuls les admins peuvent voir tous les CV
-    create: () => true, // Tout le monde peut télécharger un CV
-    update: ({ req }: { req: any }) => Boolean(req.user?.role === 'admin'),
-    delete: ({ req }: { req: any }) => Boolean(req.user?.role === 'admin'),
+    // `Users` n'a pas de champ `role` : tester req.user.role === 'admin' était
+    // toujours faux, y compris pour un admin connecté — les CV étaient écrits
+    // par l'API et invisibles dans le studio.
+    read: ((({ req }) => Boolean(req.user)) as Access),
+    create: ((({ req }) => Boolean(req.user)) as Access),
+    update: ((({ req }) => Boolean(req.user)) as Access),
+    delete: ((({ req }) => Boolean(req.user)) as Access),
   },
   upload: {
     staticDir: path.resolve(dirname, '../public/uploads/resumes'),

@@ -8,8 +8,9 @@ export const Contact: CollectionConfig = {
     description: 'Contact form submissions',
   },
   access: {
-    read: () => true,
-    create: () => true,
+    // Les messages arrivent par /api/contact via la Local API.
+    read: ({ req }) => Boolean(req.user),
+    create: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

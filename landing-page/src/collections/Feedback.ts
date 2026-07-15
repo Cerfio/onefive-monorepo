@@ -8,8 +8,9 @@ export const Feedback: CollectionConfig = {
     description: 'User feedback submissions',
   },
   access: {
-    read: () => true,
-    create: () => true,
+    // Les retours arrivent par /api/feedback via la Local API.
+    read: ({ req }) => Boolean(req.user),
+    create: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

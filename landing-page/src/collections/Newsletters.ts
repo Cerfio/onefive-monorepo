@@ -1,3 +1,4 @@
+import type { Access } from 'payload'
 const Newsletter: any = {
   slug: 'newsletter',
   admin: {
@@ -7,8 +8,9 @@ const Newsletter: any = {
     description: 'Subscribers to the newsletter',
   },
   access: {
-    read: () => true,
-    create: () => true,
+    // Les inscriptions arrivent par /api/newsletter via la Local API.
+    read: ((({ req }) => Boolean(req.user)) as Access),
+    create: ((({ req }) => Boolean(req.user)) as Access),
   },
   fields: [
     {

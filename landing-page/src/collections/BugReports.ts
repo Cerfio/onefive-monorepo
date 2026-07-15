@@ -9,8 +9,9 @@ export const BugReports: CollectionConfig = {
     description: 'Bug reports submitted by users or internal team',
   },
   access: {
-    read: () => true,
-    create: () => true,
+    // Les rapports arrivent par /api/bug-report via la Local API.
+    read: ({ req }) => Boolean(req.user),
+    create: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

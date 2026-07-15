@@ -1,3 +1,4 @@
+import type { Access } from 'payload'
 // The import statement is causing an error due to the module not being found.
 
 // import { BlocksFeature } from 'payload'
@@ -25,7 +26,9 @@ export const Articles: any = {
       doc?.slug ? `https://www.onefive.app/${locale || 'fr'}/blog/${doc.slug}` : null,
   },
   access: {
-    read: () => true,
+    // Le blog passe par la Local API, donc cette règle ne gouverne que le REST
+    // public : un article publié y reste lisible, un brouillon non.
+    read: ((({ req }) => (req.user ? true : { status: { equals: 'published' } })) as Access),
   },
   fields: [
     {

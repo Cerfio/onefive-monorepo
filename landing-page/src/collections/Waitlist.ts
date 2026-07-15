@@ -1,4 +1,5 @@
-const Waitlist: any = {
+import type { CollectionConfig } from 'payload'
+const Waitlist: CollectionConfig = {
   slug: 'waitlist',
   admin: {
     group: 'Growth',
@@ -6,8 +7,10 @@ const Waitlist: any = {
     defaultColumns: ['email', 'job', 'submittedAt', 'status'],
   },
   access: {
-    read: () => true,
-    create: () => true,
+    // Les inscriptions arrivent par /api/waitlist, qui passe par la Local API
+    // (overrideAccess: true) — ces règles ne gouvernent que le REST public.
+    read: ({ req }) => Boolean(req.user),
+    create: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

@@ -1,3 +1,4 @@
+import type { Access } from 'payload'
 const SpontaneousApplications: any = {
   slug: 'spontaneous-applications',
   admin: {
@@ -104,6 +105,10 @@ const SpontaneousApplications: any = {
       name: 'resume',
       type: 'upload',
       label: 'Resume / CV',
+      // FIXME: /api/careers/spontaneous écrit ici un id de `resumes`, pas de
+      // `media` — le lien pointe vers la mauvaise collection. Le corriger
+      // change une FK : migration requise, à faire une fois le garde
+      // VERCEL_ENV en place. Sans effet aujourd'hui (0 candidature).
       relationTo: 'media',
       required: true,
     },
@@ -154,8 +159,9 @@ const SpontaneousApplications: any = {
     ],
   },
   access: {
-    read: () => true,
-    create: () => true, // Anyone can create an application
+    // Les candidatures arrivent par /api/careers/spontaneous via la Local API.
+    read: ((({ req }) => Boolean(req.user)) as Access),
+    create: ((({ req }) => Boolean(req.user)) as Access),
   },
 }
 
