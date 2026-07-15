@@ -267,12 +267,30 @@
     "description": "Contactez notre équipe support. Nous sommes là pour vous aider !",
     "badge": "Contact",
     "categories": {
-      "technical": { "label": "Support technique", "description": "Problèmes avec la plateforme, bugs ou difficultés techniques" },
-      "account": { "label": "Aide compte", "description": "Questions sur votre compte, paramètres ou profil" },
-      "feature": { "label": "Demande de fonctionnalité", "description": "Suggestions pour de nouvelles fonctionnalités ou améliorations" },
-      "billing": { "label": "Question facturation", "description": "Questions sur les tarifs, paiements ou abonnements" },
-      "partnership": { "label": "Opportunités de partenariat", "description": "Discuter de collaborations ou partenariats potentiels" },
-      "other": { "label": "Autre", "description": "Autres demandes non listées ci-dessus" }
+      "technical": {
+        "label": "Support technique",
+        "description": "Problèmes avec la plateforme, bugs ou difficultés techniques"
+      },
+      "account": {
+        "label": "Aide compte",
+        "description": "Questions sur votre compte, paramètres ou profil"
+      },
+      "feature": {
+        "label": "Demande de fonctionnalité",
+        "description": "Suggestions pour de nouvelles fonctionnalités ou améliorations"
+      },
+      "billing": {
+        "label": "Question facturation",
+        "description": "Questions sur les tarifs, paiements ou abonnements"
+      },
+      "partnership": {
+        "label": "Opportunités de partenariat",
+        "description": "Discuter de collaborations ou partenariats potentiels"
+      },
+      "other": {
+        "label": "Autre",
+        "description": "Autres demandes non listées ci-dessus"
+      }
     },
     "selectCategory": "Veuillez sélectionner une catégorie",
     "firstName": "Prénom",
@@ -384,5 +402,11 @@
     "ctaTitle": "Prêt à rejoindre la révolution entrepreneuriale ?",
     "ctaSubtitle": "Rejoignez {count}+ entrepreneurs visionnaires déjà sur notre liste d'attente et soyez parmi les premiers à explorer Onefive.",
     "learnMore": "En savoir plus"
+  },
+  "notFound": {
+    "title": "Cette page n'est pas dans le réseau.",
+    "description": "Le lien est peut-être périmé, ou la page a été déplacée. Le reste de onefive est toujours là.",
+    "backHome": "Retour à l'accueil",
+    "readBlog": "Lire le blog"
   }
 }

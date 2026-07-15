@@ -267,12 +267,30 @@
     "description": "Get in touch with our support team. We're here to help!",
     "badge": "Contact",
     "categories": {
-      "technical": { "label": "Technical Support", "description": "Issues with the platform, bugs, or technical difficulties" },
-      "account": { "label": "Account Help", "description": "Questions about your account, settings, or profile" },
-      "feature": { "label": "Feature Request", "description": "Suggestions for new features or improvements" },
-      "billing": { "label": "Billing Inquiry", "description": "Questions about pricing, payments, or subscriptions" },
-      "partnership": { "label": "Partnership Opportunities", "description": "Discuss potential collaborations or partnerships" },
-      "other": { "label": "Other", "description": "Other inquiries not listed above" }
+      "technical": {
+        "label": "Technical Support",
+        "description": "Issues with the platform, bugs, or technical difficulties"
+      },
+      "account": {
+        "label": "Account Help",
+        "description": "Questions about your account, settings, or profile"
+      },
+      "feature": {
+        "label": "Feature Request",
+        "description": "Suggestions for new features or improvements"
+      },
+      "billing": {
+        "label": "Billing Inquiry",
+        "description": "Questions about pricing, payments, or subscriptions"
+      },
+      "partnership": {
+        "label": "Partnership Opportunities",
+        "description": "Discuss potential collaborations or partnerships"
+      },
+      "other": {
+        "label": "Other",
+        "description": "Other inquiries not listed above"
+      }
     },
     "selectCategory": "Please select a category",
     "firstName": "First Name",
@@ -384,5 +402,11 @@
     "ctaTitle": "Ready to join the entrepreneurial revolution?",
     "ctaSubtitle": "Join {count}+ visionary entrepreneurs already on our waitlist and be among the first to explore Onefive.",
     "learnMore": "Learn more"
+  },
+  "notFound": {
+    "title": "This page isn't in the network.",
+    "description": "The link may be out of date, or the page may have moved. The rest of onefive is still here.",
+    "backHome": "Back to home",
+    "readBlog": "Read the blog"
   }
 }
