@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 const withNextIntl = createNextIntlPlugin();
 
@@ -20,6 +21,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
+  // Payload's server-side CLI tooling has optional peer deps (cli-color) that are
+  // missing at build time — keep it external so Next doesn't try to bundle it.
+  serverExternalPackages: ["json-schema-to-typescript"],
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -112,4 +116,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default withPayload(withNextIntl(nextConfig));

@@ -1,24 +1,11 @@
 import { NextResponse } from "next/server";
 import { unstable_cache as cache } from "next/cache";
+import { getPayloadClient } from "@/lib/payload";
 
 const getBlogTags = cache(
   async () => {
-    const response = await fetch(
-      `${process.env.PAYLOAD_URL}/api/tags?limit=100`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-        },
-        next: { revalidate: 86400 }, // Revalider une fois par jour
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch tags from PayloadCMS");
-    }
-
-    return response.json();
+    const payload = await getPayloadClient();
+    return payload.find({ collection: "tags", limit: 100 });
   },
   ["blog-tags"],
   { revalidate: 86400 } // Revalider une fois par jour
@@ -30,9 +17,6 @@ export async function GET() {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching blog tags:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch tags" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch tags" }, { status: 500 });
   }
-} 
+}

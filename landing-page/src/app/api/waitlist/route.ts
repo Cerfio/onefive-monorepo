@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { getPayloadClient } from "@/lib/payload";
 
 // Schéma de validation avec Zod
 const waitlistSchema = z.object({
@@ -28,62 +29,43 @@ export async function POST(request: Request) {
     }
 
     const { email, job, source, goal } = result.data;
+    const payload = await getPayloadClient();
 
     // Vérifier si l'email existe déjà dans la liste d'attente
-    const checkExisting = await fetch(
-      `${process.env.PAYLOAD_URL}/api/waitlist?where[email][equals]=${encodeURIComponent(email)}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-        },
-      }
-    );
-
-    const existingData = await checkExisting.json();
+    const existingData = await payload.find({
+      collection: "waitlist",
+      where: { email: { equals: email } },
+      limit: 1,
+      depth: 0,
+    });
 
     // Si l'email existe déjà, on renvoie quand même un succès
     // mais on inclut une propriété cachée pour le client
     if (existingData.docs && existingData.docs.length > 0) {
-      return NextResponse.json({ 
+      return NextResponse.json({
         success: true,
         message: "Merci pour votre inscription à notre liste d'attente !",
         // Cette propriété sera utilisée côté client pour gérer l'UI sans révéler d'info sensible
-        _alreadyExists: true
+        _alreadyExists: true,
       });
     }
 
-    // Envoyer les données à PayloadCMS
-    const payloadResponse = await fetch(
-      `${process.env.PAYLOAD_URL}/api/waitlist`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`,
-        },
-        body: JSON.stringify({
-          email,
-          job,
-          source,
-          goal,
-          status: "pending",
-          submittedAt: new Date().toISOString(),
-        }),
-      }
-    );
+    // Enregistrer dans Payload
+    await payload.create({
+      collection: "waitlist",
+      data: {
+        email,
+        job,
+        source,
+        goal,
+        status: "pending",
+        submittedAt: new Date().toISOString(),
+      } as never,
+    });
 
-    if (!payloadResponse.ok) {
-      const errorData = await payloadResponse.json();
-      throw new Error(
-        errorData.message ||
-          "Erreur lors de l'enregistrement à la liste d'attente"
-      );
-    }
-
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
-      message: "Merci pour votre inscription à notre liste d'attente !"
+      message: "Merci pour votre inscription à notre liste d'attente !",
     });
   } catch (error) {
     console.error("Waitlist submission error:", error);

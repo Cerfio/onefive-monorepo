@@ -1,22 +1,17 @@
 import { NextResponse } from "next/server";
+import { getPayloadClient } from "@/lib/payload";
 
 export async function GET() {
   try {
+    const payload = await getPayloadClient();
+
     // Récupérer toutes les releases
-    const response = await fetch(
-      `${process.env.PAYLOAD_URL}/api/releases?limit=100&sort=-date`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch releases");
-    }
-
-    const data = await response.json();
+    const data = await payload.find({
+      collection: "releases",
+      limit: 100,
+      sort: "-date",
+      depth: 1,
+    });
 
     // Transformer au format souhaité pour l'export
     const formattedData = data.docs.map((release: any) => ({

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getPayloadClient } from "@/lib/payload";
 
 export async function POST(request: Request) {
   try {
@@ -12,34 +13,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Submit to PayloadCMS via HTTP request
-    const payloadResponse = await fetch(
-      `${process.env.PAYLOAD_URL}/api/feedback`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${process.env.PAYLOAD_API_KEY}`, // Si une authentification est nécessaire
-        },
-        body: JSON.stringify({
-          category,
-          feedbackText,
-          userEmail,
-          status: "new",
-          priority: "medium",
-          submittedAt: new Date().toISOString(),
-        }),
-      }
-    );
+    const payload = await getPayloadClient();
 
-    if (!payloadResponse.ok) {
-      const errorData = await payloadResponse.json();
-      throw new Error(
-        errorData.message || "Erreur lors de la soumission à PayloadCMS"
-      );
-    }
+    await payload.create({
+      collection: "feedback",
+      data: {
+        category,
+        feedbackText,
+        userEmail,
+        status: "new",
+        priority: "medium",
+        submittedAt: new Date().toISOString(),
+      } as never,
+    });
 
-    // Optionnellement, vous pouvez journaliser les soumissions ou envoyer des notifications
     console.log(`Feedback received: ${category}`);
 
     return NextResponse.json({ success: true });

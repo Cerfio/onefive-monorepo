@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { getPayloadClient } from "@/lib/payload";
 
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, email, category, message } = await request.json();
+    const { firstName, lastName, email, category, message } =
+      await request.json();
 
     // Validate required fields
     if (!firstName || !lastName || !email || !category || !message) {
@@ -12,28 +14,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Submit to PayloadCMS via HTTP request
-    const payloadResponse = await fetch(`${process.env.PAYLOAD_URL}/api/contact`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `JWT ${process.env.PAYLOAD_API_KEY}`, // Si une authentification est nécessaire
-      },
-      body: JSON.stringify({
+    const payload = await getPayloadClient();
+
+    await payload.create({
+      collection: "contact",
+      data: {
         firstName,
         lastName,
         email,
         category,
         message,
-        status: 'new',
+        status: "new",
         submittedAt: new Date().toISOString(),
-      }),
+      } as never,
     });
-
-    if (!payloadResponse.ok) {
-      const errorData = await payloadResponse.json();
-      throw new Error(errorData.message || 'Erreur lors de la soumission à PayloadCMS');
-    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
