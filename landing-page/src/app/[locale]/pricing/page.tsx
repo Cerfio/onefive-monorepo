@@ -16,7 +16,7 @@ import { useWaitlistCount } from "@/hooks/useWaitlistCount";
 const PricingPage = () => {
   const t = useTranslations("pricing");
   const tNav = useTranslations("nav");
-  const { formattedCount, loading } = useWaitlistCount();
+  const { formattedCount } = useWaitlistCount();
   const { scrollY } = useScroll();
   const [hasScrolled, setHasScrolled] = useState(false);
 
@@ -175,7 +175,7 @@ const PricingPage = () => {
             {t("ctaTitle")}
           </h2>
           <p className="text-lg text-[#344054] text-muted-foreground mb-8">
-            {t("ctaSubtitle", { count: loading ? "..." : formattedCount })}
+            {t("ctaSubtitle", { count: formattedCount ?? "..." })}
           </p>
           <div className="flex gap-3 justify-center">
             <Button variant="outline" size="lg">

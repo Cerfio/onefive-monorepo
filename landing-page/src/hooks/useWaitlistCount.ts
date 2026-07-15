@@ -8,11 +8,10 @@ interface WaitlistCountData {
   success: boolean;
 }
 
-// Baseline shown before/without the live count. The real total sits on top of a
-// +800 base, so we never render "0" — which non-JS crawlers would otherwise
-// read (and quote) as a literal fact on the homepage.
-const DEFAULT_COUNT = 800;
-
+// `count` is null until the real total arrives, and stays null if it never
+// does. Callers keep showing the skeleton in that case: an unavailable count
+// renders nothing rather than a stand-in number, because whatever appears here
+// is read as a factual claim about how many people signed up.
 export function useWaitlistCount() {
   const [data, setData] = useState<WaitlistCountData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,16 +28,11 @@ export function useWaitlistCount() {
         }
 
         const result = await response.json();
-        setData(result);
-        setError(null);
+        setData(result.success ? result : null);
+        setError(result.success ? null : "Count unavailable");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
-        // Fallback to the base count, never 0.
-        setData({
-          count: DEFAULT_COUNT,
-          formattedCount: String(DEFAULT_COUNT),
-          success: false,
-        });
+        setData(null);
       } finally {
         setLoading(false);
       }
@@ -48,9 +42,10 @@ export function useWaitlistCount() {
   }, []);
 
   return {
-    count: data?.count ?? DEFAULT_COUNT,
-    formattedCount: data?.formattedCount ?? String(DEFAULT_COUNT),
-    loading,
+    count: data?.count ?? null,
+    formattedCount: data?.formattedCount ?? null,
+    // True whenever there is no real number to show — still in flight, or failed.
+    loading: loading || data === null,
     error,
   };
 }

@@ -28,8 +28,9 @@ export async function GET() {
     let displayedCount: number;
 
     if (!cachedData || shouldUpdateCache()) {
-      // Base fixe + nombre réel d'inscrits (800 + realCount)
-      displayedCount = 800 + realCount;
+      // Le nombre réel d'inscrits, et rien d'autre : ce compteur est affiché
+      // comme un fait, et /payload-api/waitlist expose le même total.
+      displayedCount = realCount;
 
       // Mettre à jour le cache
       cachedData = {
@@ -62,11 +63,10 @@ export async function GET() {
       });
     }
 
-    // Fallback final — aligné sur la base de 800 utilisée plus haut.
-    const fallbackCount = 800;
+    // Pas de repli chiffré : mieux vaut ne rien afficher qu'un nombre inventé.
     return NextResponse.json({
-      count: fallbackCount,
-      formattedCount: fallbackCount.toLocaleString(),
+      count: null,
+      formattedCount: null,
       success: false,
       error: "Failed to fetch count",
     });
