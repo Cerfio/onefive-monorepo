@@ -11,7 +11,7 @@ import { useWaitlistCount } from "@/hooks/useWaitlistCount";
 
 const Footer = ({ className }: { className?: string }) => {
   const t = useTranslations("footer");
-  const { formattedCount } = useWaitlistCount();
+  const { formattedCount, loading } = useWaitlistCount();
   // États du formulaire
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -131,7 +131,7 @@ const Footer = ({ className }: { className?: string }) => {
             </div>
             <div className="text-[#475467] text-sm md:text-base font-normal leading-6 max-w-md">
               {t("getWeeklyInsightsOnEntrepreneurshipTechAndInnovation", {
-                count: formattedCount ?? "...",
+                count: loading ? "..." : formattedCount,
               })}
             </div>
             <div className="flex items-center gap-2 text-xs md:text-sm text-[#667085] justify-center md:justify-start">

@@ -16,7 +16,7 @@ export function AnimatedWaitlistCount() {
       )}
       <span className={loading ? "invisible" : ""}>
         <NumberFlow
-          value={count ?? 0}
+          value={count}
           format={{ useGrouping: true }}
           transformTiming={{ duration: 750, easing: "ease-out" }}
           willChange

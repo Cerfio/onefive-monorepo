@@ -20,7 +20,7 @@ import {
 import { useWaitlistCount } from "@/hooks/useWaitlistCount";
 
 const NewsletterPage = () => {
-  const { formattedCount } = useWaitlistCount();
+  const { formattedCount, loading } = useWaitlistCount();
   const features = [
     {
       icon: Star,
@@ -71,7 +71,7 @@ const NewsletterPage = () => {
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <Badge className="mb-4">{formattedCount ?? "..."}+ Subscribers</Badge>
+          <Badge className="mb-4">{loading ? "..." : formattedCount}+ Subscribers</Badge>
           <h1 className="text-5xl font-bold mb-6">
             Your Weekly Dose of Startup Insights
           </h1>
@@ -98,7 +98,7 @@ const NewsletterPage = () => {
                 Subscribe Now
               </Button>
               <p className="text-sm text-muted-foreground">
-                Join {formattedCount ?? "..."}+ subscribers. Unsubscribe anytime.
+                Join {loading ? "..." : formattedCount}+ subscribers. Unsubscribe anytime.
               </p>
             </form>
           </div>
