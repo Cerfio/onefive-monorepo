@@ -84,6 +84,7 @@ export interface Config {
     tags: Tag;
     'media-articles': MediaArticle;
     'article-suggestions': ArticleSuggestion;
+    jobs: Job;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -108,6 +109,7 @@ export interface Config {
     tags: TagsSelect<false> | TagsSelect<true>;
     'media-articles': MediaArticlesSelect<false> | MediaArticlesSelect<true>;
     'article-suggestions': ArticleSuggestionsSelect<false> | ArticleSuggestionsSelect<true>;
+    jobs: JobsSelect<false> | JobsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -786,6 +788,65 @@ export interface ArticleSuggestion {
   createdAt: string;
 }
 /**
+ * Publier une offre la met dans Google for Jobs — de vraies personnes candidateront. Ne publier que des postes réellement ouverts.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobs".
+ */
+export interface Job {
+  id: number;
+  /**
+   * L'intitulé du poste (ex : Senior Full-Stack Engineer)
+   */
+  title: string;
+  /**
+   * L'URL : /careers/<slug>. Dérivé du titre si laissé vide.
+   */
+  slug: string;
+  /**
+   * Seules les offres « Publiée » sont visibles et indexées.
+   */
+  status: 'draft' | 'published' | 'closed';
+  /**
+   * Le descriptif envoyé à Google for Jobs.
+   */
+  description: string;
+  /**
+   * La VRAIE date de publication — Google affiche « publiée il y a N jours ».
+   */
+  datePosted: string;
+  /**
+   * Date d'expiration. Google retire l'offre tout seul après.
+   */
+  validThrough: string;
+  employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACTOR' | 'INTERN' | 'TEMPORARY';
+  addressLocality: string;
+  /**
+   * Code pays ISO (FR, BE, …)
+   */
+  addressCountry: string;
+  jobLocationType?: ('TELECOMMUTE' | 'ONSITE') | null;
+  /**
+   * Ex : Europe. Uniquement si télétravail.
+   */
+  applicantLocationRequirements?: string | null;
+  /**
+   * Ex : React, Node.js, TypeScript
+   */
+  skills?: string | null;
+  /**
+   * Renseigner la fourchette réelle. Une offre sans salaire est moins bien classée par Google — et un montant inventé se paie plus cher qu'un champ vide.
+   */
+  salary?: {
+    min?: number | null;
+    max?: number | null;
+    currency?: ('EUR' | 'USD' | 'GBP') | null;
+    unitText?: ('HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR') | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -876,6 +937,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'article-suggestions';
         value: number | ArticleSuggestion;
+      } | null)
+    | ({
+        relationTo: 'jobs';
+        value: number | Job;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1316,6 +1381,34 @@ export interface ArticleSuggestionsSelect<T extends boolean = true> {
       };
   status?: T;
   adminNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobs_select".
+ */
+export interface JobsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  description?: T;
+  datePosted?: T;
+  validThrough?: T;
+  employmentType?: T;
+  addressLocality?: T;
+  addressCountry?: T;
+  jobLocationType?: T;
+  applicantLocationRequirements?: T;
+  skills?: T;
+  salary?:
+    | T
+    | {
+        min?: T;
+        max?: T;
+        currency?: T;
+        unitText?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
