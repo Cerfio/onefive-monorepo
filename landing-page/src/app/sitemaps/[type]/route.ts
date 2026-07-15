@@ -19,7 +19,6 @@ const pages = [
   "/about",
   "/blog",
   "/careers",
-  "/careers/senior-full-stack-engineer",
   "/careers/spontaneous",
   "/press",
   "/methodology",
