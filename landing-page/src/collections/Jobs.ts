@@ -104,6 +104,12 @@ export const Jobs: any = {
         { label: 'Télétravail possible (TELECOMMUTE)', value: 'TELECOMMUTE' },
         { label: 'Sur site uniquement', value: 'ONSITE' },
       ],
+      admin: {
+        description:
+          "Sur site = l'adresse ci-dessus fait foi. TELECOMMUTE est la seule " +
+          'valeur que schema.org connaît : « sur site » se dit en ne la ' +
+          "publiant pas, pas en publiant « ONSITE » — d'où le choix ici.",
+      },
     },
     {
       name: 'applicantLocationRequirements',

@@ -203,6 +203,14 @@ interface JobPostingSchemaProps {
     applicantLocationRequirements?: string;
     identifier?: string;
     skills?: string;
+    /** Omit rather than guess: an invented range is worse than no range. */
+    baseSalary?: {
+      min?: number | null;
+      max?: number | null;
+      currency?: string | null;
+      /** "HOUR" | "DAY" | "WEEK" | "MONTH" | "YEAR" */
+      unitText?: string | null;
+    } | null;
   };
 }
 
@@ -244,7 +252,13 @@ export function JobPostingSchema({ job }: JobPostingSchemaProps) {
         "addressCountry": job.addressCountry ?? "FR",
       },
     },
-    ...(job.jobLocationType ? { jobLocationType: job.jobLocationType } : {}),
+    // TELECOMMUTE is the only value schema.org defines. An onsite role is
+    // expressed by having a jobLocation and no jobLocationType — passing
+    // "ONSITE" through produced markup Google discards, taking the whole
+    // posting with it.
+    ...(job.jobLocationType === "TELECOMMUTE"
+      ? { jobLocationType: "TELECOMMUTE" }
+      : {}),
     ...(job.applicantLocationRequirements
       ? {
           applicantLocationRequirements: {
@@ -254,6 +268,32 @@ export function JobPostingSchema({ job }: JobPostingSchemaProps) {
         }
       : {}),
     ...(job.skills ? { skills: job.skills } : {}),
+    // The collection collects a salary and its admin copy says an opening
+    // without one ranks worse — but nothing emitted it, so the field was
+    // decorative and Search Console's "baseSalary missing" warning was always
+    // going to come back. Emitted only when there is a real number: value and
+    // unitText are both required by Google, and a partial baseSalary is itself
+    // a warning.
+    ...(job.baseSalary?.unitText &&
+    (typeof job.baseSalary.min === "number" ||
+      typeof job.baseSalary.max === "number")
+      ? {
+          baseSalary: {
+            "@type": "MonetaryAmount",
+            currency: job.baseSalary.currency ?? "EUR",
+            value: {
+              "@type": "QuantitativeValue",
+              ...(typeof job.baseSalary.min === "number"
+                ? { minValue: job.baseSalary.min }
+                : {}),
+              ...(typeof job.baseSalary.max === "number"
+                ? { maxValue: job.baseSalary.max }
+                : {}),
+              unitText: job.baseSalary.unitText,
+            },
+          },
+        }
+      : {}),
   };
 
   return (
