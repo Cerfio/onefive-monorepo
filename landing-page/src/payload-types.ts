@@ -458,7 +458,7 @@ export interface SpontaneousApplication {
     github?: string | null;
   };
   message: string;
-  resume: number | Media;
+  resume: number | Resume;
   status?: ('new' | 'under_review' | 'contacted' | 'interview_scheduled' | 'rejected' | 'hired') | null;
   /**
    * Notes for internal team review (not visible to applicants)

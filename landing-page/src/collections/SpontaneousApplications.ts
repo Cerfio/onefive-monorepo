@@ -105,11 +105,11 @@ const SpontaneousApplications: any = {
       name: 'resume',
       type: 'upload',
       label: 'Resume / CV',
-      // FIXME: /api/careers/spontaneous écrit ici un id de `resumes`, pas de
-      // `media` — le lien pointe vers la mauvaise collection. Le corriger
-      // change une FK : migration requise, à faire une fois le garde
-      // VERCEL_ENV en place. Sans effet aujourd'hui (0 candidature).
-      relationTo: 'media',
+      // /api/careers/spontaneous creates the file in `resumes` and stores that
+      // id here, so pointing at `media` linked the CV to the wrong collection
+      // entirely — and `media` is world-readable, which would have handed out
+      // what the admin-only guard on `resumes` exists to protect.
+      relationTo: 'resumes',
       required: true,
     },
     {
