@@ -1,7 +1,28 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
-import { getWebOrigin, shouldProxyToWeb } from './lib/onefive-gateway';
+import {
+  getWebOrigin,
+  resolveWebTarget,
+  shouldProxyToWeb,
+} from './lib/onefive-gateway';
 import { routing } from './i18n/routing';
+
+// Falling through to next-intl when ONEFIVE_WEB_ORIGIN is missing is silent and
+// total: /profile, /post, /startup, /spotlight/<id> and /discussion stop being
+// proxied, get locale-prefixed, and 404 — the app's entire public surface, with
+// nothing in the logs. That is the failure 2c1063d fixed; it should not be able
+// to come back through an unset variable. Logged once per cold start rather
+// than per request.
+let warnedMissingOrigin = false;
+function warnMissingWebOrigin(pathname: string) {
+  if (warnedMissingOrigin) return;
+  warnedMissingOrigin = true;
+  console.error(
+    `[gateway] ONEFIVE_WEB_ORIGIN is unset — "${pathname}" should proxy to ` +
+      'onefive-web but will be served by the landing page and 404. Set it in ' +
+      'the Vercel project environment.',
+  );
+}
 
 export default function middleware(request: NextRequest) {
   // PostHog proxy: Safari (and others) may send OPTIONS preflight for /ingest.
@@ -27,12 +48,15 @@ export default function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/_next/')) {
     if (shouldProxyToWeb(request)) {
       const webOrigin = getWebOrigin();
-      if (webOrigin) {
-        const target = new URL(
-          `${request.nextUrl.pathname}${request.nextUrl.search}`,
+      if (!webOrigin) {
+        warnMissingWebOrigin(request.nextUrl.pathname);
+      } else {
+        const target = resolveWebTarget(
+          request.nextUrl.pathname,
+          request.nextUrl.search,
           webOrigin,
         );
-        return NextResponse.rewrite(target);
+        if (target) return NextResponse.rewrite(target);
       }
     }
     return NextResponse.next();
@@ -40,12 +64,17 @@ export default function middleware(request: NextRequest) {
 
   if (shouldProxyToWeb(request)) {
     const webOrigin = getWebOrigin();
-    if (webOrigin) {
-      const target = new URL(
-        `${request.nextUrl.pathname}${request.nextUrl.search}`,
+    if (!webOrigin) {
+      warnMissingWebOrigin(request.nextUrl.pathname);
+    } else {
+      const target = resolveWebTarget(
+        request.nextUrl.pathname,
+        request.nextUrl.search,
         webOrigin,
       );
-      return NextResponse.rewrite(target);
+      if (target) return NextResponse.rewrite(target);
+      // Resolved off-origin: the path is not ours to proxy. Fall through to the
+      // landing, which will 404 it.
     }
   }
 

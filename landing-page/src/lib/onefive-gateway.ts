@@ -7,6 +7,31 @@ export function getWebOrigin(): string | undefined {
   return origin.replace(/\/$/, '');
 }
 
+/**
+ * Resolves a request path against the onefive-web origin, or returns undefined
+ * if the result would leave that origin.
+ *
+ * `new URL(pathname, origin)` treats a leading `//` as an authority, so
+ * `//2130706433/x` resolves to https://127.0.0.1/x — a different host, which a
+ * rewrite would then hand the incoming cookies to. The middleware matcher drops
+ * anything containing a dot, which stops `//evil.com/x` and `//127.0.0.1/x` but
+ * not the same address in decimal. Comparing the resolved origin does not care
+ * how the host was spelled.
+ */
+export function resolveWebTarget(
+  pathname: string,
+  search: string,
+  webOrigin: string,
+): URL | undefined {
+  let target: URL;
+  try {
+    target = new URL(`${pathname}${search}`, webOrigin);
+  } catch {
+    return undefined;
+  }
+  return target.origin === new URL(webOrigin).origin ? target : undefined;
+}
+
 const LOCALE_PREFIX = /^\/(en|fr)(\/|$)/;
 const LANDING_API_PREFIX = /^\/api(\/|$)/;
 const INGEST_PREFIX = /^\/ingest(\/|$)/;
