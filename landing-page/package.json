@@ -11,7 +11,8 @@
     "lint": "next lint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
-    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types"
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "create-article": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/create-article.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.775.0",
@@ -95,6 +96,7 @@
     "@types/react-dom": "19.2.3",
     "eslint": "^8",
     "eslint-config-next": "15.4.11",
+    "gray-matter": "^4.0.3",
     "postcss": "^8",
     "tailwindcss": "^4.1.18",
     "typescript": "^5"
