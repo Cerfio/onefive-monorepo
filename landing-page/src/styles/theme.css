@@ -1,7 +1,13 @@
 @theme {
     /* FONT FAMILY */
-    --font-body: var(--font-inter, "Inter"), -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    --font-display: var(--font-inter, "Inter"), -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    /* Marianne is the brand font: globals.css declares 12 @font-face weights
+       for it and they were all downloaded but never applied. Its only rule
+       lived in `@layer base`, and unlayered CSS (`html, body` further down
+       globals.css) always wins over layered CSS whatever the order — so
+       --font-body decided the page font, and it pointed at Inter, which
+       nothing loads either. The page fell through to -apple-system. */
+    --font-body: "Marianne", var(--font-inter, "Inter"), -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-display: "Marianne", var(--font-inter, "Inter"), -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     --font-mono: ui-monospace, "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
  
     /* FONT SIZE */

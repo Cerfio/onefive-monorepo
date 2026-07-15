@@ -186,7 +186,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Marianne', 'Inter', Arial, sans-serif;
+    /* The font is set by --font-body in styles/theme.css. Declaring it here
+       too did nothing: this rule is layered, and the unlayered `html, body`
+       rule below always beat it. */
   }
 }
 
