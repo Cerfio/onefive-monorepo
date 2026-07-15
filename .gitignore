@@ -39,3 +39,4 @@ coverage/
 .vercel
 bun.lock
 bun.lockb
+.env*
