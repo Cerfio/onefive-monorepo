@@ -1,3 +1,5 @@
+import { slugFrom } from '../lib/slugify'
+
 export const Tags: any = {
   slug: 'tags',
   admin: {
@@ -25,16 +27,7 @@ export const Tags: any = {
         description: "L'identifiant unique pour le tag",
       },
       hooks: {
-        beforeValidate: [
-          ({ data }: { data: any }) => {
-            return data?.name
-              ? data.name
-                  .toLowerCase()
-                  .replace(/ /g, '-')
-                  .replace(/[^\w-]+/g, '')
-              : ''
-          },
-        ],
+        beforeValidate: [slugFrom('name')],
       },
     },
     {

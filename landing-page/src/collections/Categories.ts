@@ -1,3 +1,5 @@
+import { slugFrom } from '../lib/slugify'
+
 export const Categories: any = {
   slug: 'categories',
   admin: {
@@ -26,16 +28,7 @@ export const Categories: any = {
         description: "L'identifiant unique pour la catégorie",
       },
       hooks: {
-        beforeValidate: [
-          ({ data }: { data: any }) => {
-            return data?.name
-              ? data.name
-                  .toLowerCase()
-                  .replace(/ /g, '-')
-                  .replace(/[^\w-]+/g, '')
-              : ''
-          },
-        ],
+        beforeValidate: [slugFrom('name')],
       },
     },
     {

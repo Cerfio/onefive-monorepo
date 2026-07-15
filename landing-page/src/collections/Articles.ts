@@ -3,6 +3,8 @@
 // import { BlocksFeature } from 'payload'
 
 // Removing the import statement to fix the issue.
+import { slugFrom } from '../lib/slugify'
+
 export const Articles: any = {
   slug: 'articles',
   admin: {
@@ -53,16 +55,7 @@ export const Articles: any = {
         description: "L'identifiant unique utilisé dans l'URL (ex: ai-startup-guide)",
       },
       hooks: {
-        beforeValidate: [
-          ({ data }: { data: any }) => {
-            return data?.title
-              ? data.title
-                  .toLowerCase()
-                  .replace(/ /g, '-')
-                  .replace(/[^\w-]+/g, '')
-              : ''
-          },
-        ],
+        beforeValidate: [slugFrom('title')],
       },
     },
     {
