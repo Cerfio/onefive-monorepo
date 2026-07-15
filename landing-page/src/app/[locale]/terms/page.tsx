@@ -91,7 +91,7 @@ const TermsPage = () => {
 
           <h2>8. Termination</h2>
           <p>
-            We reserve the right to terminate or suspend access to our Platform immediately, without prior notice or liability, for any reason whatsoever.
+            We may suspend or terminate access to the Platform where you breach these Terms, where required by law, or where continuing to provide the service would expose Onefive or its users to a security or legal risk. Except where a breach makes immediate action necessary, we will tell you beforehand and give you a reasonable opportunity to respond. You may close your account at any time.
           </p>
 
           <h2>9. Changes to Terms</h2>
@@ -99,12 +99,53 @@ const TermsPage = () => {
             We reserve the right to modify these terms at any time. We will notify users of any material changes via email or through the Platform.
           </p>
 
-          <h2>10. Contact Us</h2>
+          <h2>10. Governing Law</h2>
+          <p>
+            These Terms are governed by French law. If you are a consumer, you keep the protection of the mandatory provisions of the law of your country of residence, and you may bring proceedings before the courts of your place of residence. Before going to court you may use the European Commission&apos;s{' '}
+            <a
+              href="https://ec.europa.eu/consumers/odr"
+              className="text-[#5E6AD2] hover:underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              online dispute resolution platform
+            </a>.
+          </p>
+
+          <h2>11. Contact Us</h2>
           <p>
             If you have any questions about these Terms, please contact us at{' '}
             <a href="mailto:legal@onefive.app" className="text-[#5E6AD2] hover:underline">
               legal@onefive.app
             </a>
+          </p>
+
+          <h2>12. Legal Notice</h2>
+          <p>
+            Onefive is published by <strong>YC STRATEGIC VENTURES</strong>, a
+            société par actions simplifiée (SAS) with share capital of €1,000,
+            registered with the Paris Trade and Companies Register under number
+            103&nbsp;274&nbsp;072 (RCS Paris).
+          </p>
+          <ul>
+            <li><strong>Registered office:</strong> 229 rue Saint-Honoré, 75001 Paris, France</li>
+            <li><strong>SIRET:</strong> 10327407200018 — <strong>APE:</strong> 62.01Z</li>
+            <li><strong>Intra-community VAT:</strong> FR57103274072</li>
+            <li><strong>Publication director:</strong> Yannis Coulibaly, President</li>
+            <li><strong>Contact:</strong> legal@onefive.app</li>
+          </ul>
+          <p>
+            The site is hosted by <strong>Vercel Inc.</strong>, 440 N Barranca
+            Avenue #4133, Covina, CA 91723, United States —{' '}
+            <a
+              href="https://vercel.com"
+              className="text-[#5E6AD2] hover:underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              vercel.com
+            </a>. Vercel does not publish a telephone number; it can be reached
+            through the contact channels listed on its site.
           </p>
         </div>
 

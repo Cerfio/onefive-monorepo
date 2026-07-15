@@ -2,7 +2,7 @@
 import React from "react";
 import { NavigationMenuDemo } from "@/components/navigation-menu-demo";
 import Footer from "@/components/footer";
-import { ArrowLeft, Shield, Lock, Eye, UserCheck, Bell, RefreshCw } from "lucide-react";
+import { ArrowLeft, Shield, Lock, Eye, UserCheck, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 // The revision date of this text, updated by hand when the text changes. It was
@@ -115,7 +115,7 @@ const PrivacyPage = () => {
 
           <h2>5. Data Security</h2>
           <p>
-            We implement robust security measures to protect your data, including encryption, secure servers, and regular security audits.
+            Your data is transmitted over HTTPS. Our database is hosted in the United Kingdom (AWS London) and our analytics in the European Union. Access is restricted to what is needed to operate the service.
           </p>
 
           <h2>6. Cookies and Tracking</h2>
@@ -128,7 +128,7 @@ const PrivacyPage = () => {
 
           <h2>7. Children's Privacy</h2>
           <p>
-            Our services are not intended for children under 13. We do not knowingly collect data from children.
+            Our services are not intended for children under 15, the age of digital consent in France. We do not knowingly collect their data, and will delete it if we learn we have.
           </p>
 
           <h2>8. International Data Transfers</h2>
@@ -141,57 +141,57 @@ const PrivacyPage = () => {
             We may update this policy periodically. We will notify you of significant changes via email or platform notifications.
           </p>
 
-          <h2>10. Contact Us</h2>
+          <h2>10. Who is responsible, and how to reach us</h2>
           <p>
-            For privacy-related inquiries, contact our Data Protection Officer at{' '}
+            The data controller is <strong>YC STRATEGIC VENTURES</strong>, a SAS
+            with share capital of €1,000, RCS Paris 103&nbsp;274&nbsp;072,
+            registered office 229 rue Saint-Honoré, 75001 Paris, France.
+          </p>
+          <p>
+            To exercise any of the rights above, or for any question about your
+            data, write to{' '}
             <a href="mailto:privacy@onefive.app" className="text-[#5E6AD2] hover:underline">
               privacy@onefive.app
-            </a>
+            </a>. We answer within one month. We have not appointed a Data
+            Protection Officer — we are not required to — so your request goes
+            to the company directly.
+          </p>
+          <p>
+            If you are not satisfied with our answer, you have the right to
+            lodge a complaint with the{' '}
+            <a
+              href="https://www.cnil.fr/en/plaintes"
+              className="text-[#5E6AD2] hover:underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              CNIL
+            </a>, the French data protection authority, or with the supervisory
+            authority of your country of residence.
           </p>
         </div>
 
-        {/* Privacy Controls */}
+        {/* A self-serve privacy dashboard does not exist yet, and the three
+            links that stood here (/settings/privacy, /data-request,
+            /settings/notifications) all 404'd. A GDPR right that leads nowhere
+            is worse than no link: email is the channel that actually works, so
+            it is the one offered. */}
         <div className="mt-12 p-6 bg-gray-50 rounded-xl">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Privacy Preferences</h3>
-              <p className="text-muted-foreground">
-                Manage your data and privacy settings
-              </p>
-            </div>
+          <div className="flex items-center gap-3 mb-3">
             <RefreshCw className="w-5 h-5 text-[#5E6AD2]" />
+            <h3 className="text-lg font-semibold">Exercising your rights</h3>
           </div>
-          <div className="flex gap-4">
-            <Link 
-              href="/settings/privacy" 
-              className="text-[#5E6AD2] hover:underline"
-            >
-              Manage Settings
-            </Link>
-            <Link 
-              href="/data-request" 
-              className="text-[#5E6AD2] hover:underline"
-            >
-              Request Data Export
-            </Link>
-          </div>
-        </div>
-
-        {/* Notification Settings */}
-        <div className="mt-6 p-6 border rounded-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <Bell className="w-5 h-5 text-[#5E6AD2]" />
-            <h3 className="font-semibold">Stay Informed</h3>
-          </div>
-          <p className="text-sm text-muted-foreground mb-4">
-            We'll notify you about important privacy policy updates and security alerts.
+          <p className="text-muted-foreground mb-4">
+            Access, correction, deletion, portability, objection — email us and
+            we will action it. There is no self-serve privacy dashboard yet;
+            when there is, it will be linked here.
           </p>
-          <Link 
-            href="/settings/notifications" 
-            className="text-[#5E6AD2] hover:underline text-sm"
+          <a
+            href="mailto:privacy@onefive.app"
+            className="text-[#5E6AD2] hover:underline"
           >
-            Manage Notification Preferences
-          </Link>
+            privacy@onefive.app
+          </a>
         </div>
       </div>
 

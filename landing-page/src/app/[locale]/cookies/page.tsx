@@ -56,27 +56,27 @@ const CookiesPage = () => {
           <div className="flex items-start gap-3">
             <Shield className="w-5 h-5 text-[#5E6AD2] mt-1" />
             <div>
-              <h3 className="font-medium mb-1">Your Choice</h3>
+              <h3 className="font-medium mb-1">No advertising</h3>
               <p className="text-sm text-muted-foreground">
-                Control non-essential cookies
+                No ad or targeting cookies, no data sold
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Clock className="w-5 h-5 text-[#5E6AD2] mt-1" />
             <div>
-              <h3 className="font-medium mb-1">Cookie Duration</h3>
+              <h3 className="font-medium mb-1">Two cookies</h3>
               <p className="text-sm text-muted-foreground">
-                Most expire within 30 days
+                One for your language, one for analytics
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Settings className="w-5 h-5 text-[#5E6AD2] mt-1" />
             <div>
-              <h3 className="font-medium mb-1">Cookie Settings</h3>
+              <h3 className="font-medium mb-1">Your browser decides</h3>
               <p className="text-sm text-muted-foreground">
-                Easily manage your preferences
+                Block them and the site still works
               </p>
             </div>
           </div>
@@ -93,55 +93,48 @@ const CookiesPage = () => {
           <ul>
             <li>Remembering your preferences</li>
             <li>Understanding how you use our site</li>
-            <li>Keeping you signed in</li>
-            <li>Protecting your security</li>
           </ul>
 
-          <h2>Types of Cookies We Use</h2>
-
-          <h3>1. Essential Cookies</h3>
+          <h2>The cookies we actually set</h2>
           <p>
-            These cookies are necessary for the website to function properly.
-            They enable core functionality such as security, network management,
-            and accessibility. You may not opt-out of these cookies.
+            Two, and this is the whole list. We do not use advertising or
+            targeting cookies, and we do not sell or share this data.
           </p>
-
-          <h3>2. Performance Cookies</h3>
-          <p>
-            These cookies help us understand how visitors interact with our
-            website by collecting and reporting information anonymously. This
-            helps us improve our website&apos;s functionality.
-          </p>
-
-          <h3>3. Functionality Cookies</h3>
-          <p>
-            These cookies enable the website to provide enhanced functionality
-            and personalization. They may be set by us or by third-party
-            providers whose services we have added to our pages.
-          </p>
-
-          <h3>4. Targeting Cookies</h3>
-          <p>
-            These cookies may be set through our site by our advertising
-            partners. They may be used by those companies to build a profile of
-            your interests and show you relevant adverts on other sites.
-          </p>
-
-          <h2>Cookie Duration</h2>
-          <ul>
-            <li>
-              <strong>Session Cookies:</strong> These cookies are temporary and
-              expire once you close your browser
-            </li>
-            <li>
-              <strong>Persistent Cookies:</strong> These cookies remain on your
-              device for a set period
-            </li>
-            <li>
-              <strong>Third-Party Cookies:</strong> These cookies are placed by
-              third-party services
-            </li>
-          </ul>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Purpose</th>
+                <th>Set by</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <code>NEXT_LOCALE</code>
+                </td>
+                <td>
+                  Remembers whether you are reading the site in English or
+                  French. Strictly necessary — without it every page reverts to
+                  the default language.
+                </td>
+                <td>Onefive</td>
+                <td>Session</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>ph_*_posthog</code>
+                </td>
+                <td>
+                  Audience measurement: which pages are visited and how people
+                  move through the site, so we know what to improve.
+                </td>
+                <td>PostHog (EU servers)</td>
+                <td>1 year</td>
+              </tr>
+            </tbody>
+          </table>
 
           <h2>Managing Cookies</h2>
           <p>
@@ -151,24 +144,26 @@ const CookiesPage = () => {
           </p>
         </div>
 
-        {/* Cookie Controls */}
+        {/* There is no consent banner and no cookie settings screen, so the
+            "Manage Cookie Settings" link here pointed at /settings/cookies —
+            a 404. Offering a control that does not exist is worse than saying
+            so plainly. */}
         <div className="mt-12 p-6 bg-gray-50 rounded-xl">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Cookie Preferences</h3>
-              <p className="text-muted-foreground">
-                Customize your cookie settings
-              </p>
-            </div>
-            {/* <Toggle className="w-5 h-5 text-[#5E6AD2]" /> */}
-          </div>
+          <h3 className="text-lg font-semibold mb-2">Your choices</h3>
+          <p className="text-muted-foreground mb-4">
+            We do not have a cookie settings screen yet. Until we do, your
+            browser is the control: every browser lets you block or delete
+            cookies for a site, and blocking ours costs you nothing but the
+            language preference. You can also email us to ask that your
+            analytics data be deleted.
+          </p>
           <div className="flex gap-4">
-            <Link
-              href="/settings/cookies"
+            <a
+              href="mailto:privacy@onefive.app"
               className="text-[#5E6AD2] hover:underline"
             >
-              Manage Cookie Settings
-            </Link>
+              privacy@onefive.app
+            </a>
             <Link href="/privacy" className="text-[#5E6AD2] hover:underline">
               View Privacy Policy
             </Link>
