@@ -4,7 +4,6 @@ packages:
   - 'onefive-back'
   - 'onefive-web'
   - 'onefive-backoffice'
-  - 'onefive-bo-landing-page'
   - 'onefive-email'
   - 'onefive-email/transactional'
   - 'newsletter/scripts'
