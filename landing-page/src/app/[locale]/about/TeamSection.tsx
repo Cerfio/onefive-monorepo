@@ -69,8 +69,8 @@ const TeamSection: React.FC<TeamSectionProps> = ({
       member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.bio.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.content.some((item: string) =>
-        item.toLowerCase().includes(searchQuery.toLowerCase())
+      (member.content ?? []).some((item: any) =>
+        item.point?.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
     const matchesCategory =

@@ -93,7 +93,13 @@ export function ArticleSchema({ article, locale }: ArticleSchemaProps) {
     "@id": `${SITE_URL}/${locale}/blog/${article.slug}#article`,
     "headline": article.title,
     "description": article.description,
-    "image": `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.filename}`,
+    // Only emit `image` when there's a real file — an empty filename would yield
+    // "https://cdn/" (a trailing-slash URL Google rejects for the field).
+    ...(article.featuredImage.filename
+      ? {
+          image: `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.filename}`,
+        }
+      : {}),
     "author": {
       "@type": "Person",
       "name": article.author.name,

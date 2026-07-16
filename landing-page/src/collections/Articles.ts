@@ -176,8 +176,11 @@ export const Articles: any = {
         description: "Nombre de vues de l'article",
       },
       access: {
+        // Publicly readable (shown on the blog). Writes go through the Local API
+        // (which bypasses field access anyway), so no public update rule — a
+        // `() => true` here would let anon callers rewrite view counts if the
+        // collection's update rule is ever relaxed.
         read: () => true,
-        update: () => true,
       },
     },
     {

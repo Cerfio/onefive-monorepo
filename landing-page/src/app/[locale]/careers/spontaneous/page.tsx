@@ -57,9 +57,29 @@ const Body = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Same limits the server enforces — reject here for instant feedback.
+    const MAX_BYTES = 5 * 1024 * 1024;
+    const ALLOWED_TYPES = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (file.size > MAX_BYTES) {
+      setError("Your CV must be under 5 MB");
+      e.target.value = "";
+      return;
     }
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setError("Your CV must be a PDF, DOC or DOCX file");
+      e.target.value = "";
+      return;
+    }
+
+    setError("");
+    setSelectedFile(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

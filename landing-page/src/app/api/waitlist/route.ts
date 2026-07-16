@@ -28,7 +28,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const { email, job, source, goal } = result.data;
+    const { job, source, goal } = result.data;
+    // Lowercase so A@x.com and a@x.com don't create two rows (mirrors newsletter).
+    const email = result.data.email.toLowerCase();
     const payload = await getPayloadClient();
 
     // Vérifier si l'email existe déjà dans la liste d'attente
@@ -39,14 +41,12 @@ export async function POST(request: Request) {
       depth: 0,
     });
 
-    // Si l'email existe déjà, on renvoie quand même un succès
-    // mais on inclut une propriété cachée pour le client
+    // Si l'email existe déjà, on renvoie quand même un succès (le client ne
+    // distingue pas les deux cas, donc pas de flag exposé).
     if (existingData.docs && existingData.docs.length > 0) {
       return NextResponse.json({
         success: true,
         message: "Merci pour votre inscription à notre liste d'attente !",
-        // Cette propriété sera utilisée côté client pour gérer l'UI sans révéler d'info sensible
-        _alreadyExists: true,
       });
     }
 

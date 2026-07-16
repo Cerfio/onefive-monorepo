@@ -25,7 +25,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const { email } = result.data;
+    // Normaliser la casse : la collection lowercase l'email dans un hook
+    // beforeValidate et le champ est `unique`. Chercher la valeur brute laissait
+    // passer les variantes de casse (Test@x vs test@x) → doublon → 500 au lieu
+    // du chemin "déjà inscrit → succès".
+    const email = result.data.email.toLowerCase();
     const payload = await getPayloadClient();
 
     // Vérifier si l'email existe déjà dans la liste des abonnés

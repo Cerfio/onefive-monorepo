@@ -42,10 +42,7 @@ export async function POST(
   } catch (error) {
     console.error("Error incrementing article views:", error);
     return NextResponse.json(
-      {
-        error: "Failed to increment article views",
-        details: (error as Error).message,
-      },
+      { error: "Failed to increment article views" },
       { status: 500 }
     );
   }

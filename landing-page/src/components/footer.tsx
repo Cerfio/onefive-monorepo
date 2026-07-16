@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Input } from "./ui/input";
 import { ArrowRight, Shield, Check } from "lucide-react";
 import { useState } from "react";
@@ -204,7 +204,7 @@ const Footer = ({ className }: { className?: string }) => {
             {/* Social Links */}
             <div className="flex flex-wrap gap-4">
               {socialLinks.map((link) => (
-                <Link
+                <a
                   key={link.alt}
                   href={link.href}
                   className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -218,7 +218,7 @@ const Footer = ({ className }: { className?: string }) => {
                     width={20}
                     height={20}
                   />
-                </Link>
+                </a>
               ))}
             </div>
           </div>

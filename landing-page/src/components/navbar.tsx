@@ -4,7 +4,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import ButtonJoinWaitlist from "./ui/button-join-wailist";
 import { NavigationMenuDemo } from "./navigation-menu-demo";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";

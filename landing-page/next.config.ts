@@ -94,12 +94,8 @@ const nextConfig: NextConfig = {
         destination: '/favicon-32x32.png',
         permanent: true,
       },
-      // Redirection ancienne URL mediakit → media-kit
-      {
-        source: '/:locale(fr|en)/mediakit',
-        destination: '/:locale/media-kit',
-        permanent: true,
-      },
+      // (Removed the /mediakit → /media-kit redirect: /media-kit doesn't exist,
+      // so it only turned one 404 into a redirect to another 404.)
     ];
   },
   async headers() {

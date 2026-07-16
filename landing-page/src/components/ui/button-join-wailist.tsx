@@ -376,12 +376,7 @@ export default function ButtonJoinWaitlist({
 
           <Button
             onClick={() => {
-              console.log("clicked", {
-                isValid,
-                canContinue,
-                email,
-                touched,
-              });
+              setError("");
               setPage("more");
             }}
             type="button"
@@ -500,6 +495,10 @@ export default function ButtonJoinWaitlist({
               </SelectContent>
             </Select>
           </div>
+
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
 
           <div className="flex gap-3">
             <Button

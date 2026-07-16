@@ -410,7 +410,7 @@ export function NavigationMenuDemo() {
                         icon="/footer/linkedin_footer.svg"
                         platform="LinkedIn"
                         handle="@onefive-social-network"
-                        href="https://www.linkedin.com/company/onefive-social-network"
+                        href="https://www.linkedin.com/company/onefive-social-network-fr"
                         color="#0077B5"
                       />
                       <SocialLink
@@ -423,22 +423,22 @@ export function NavigationMenuDemo() {
                       <SocialLink
                         icon="/footer/instagram_footer.svg"
                         platform="Instagram"
-                        handle="@onefive"
-                        href="https://instagram.com/onefive"
+                        handle="@one_five_app"
+                        href="https://www.instagram.com/one_five_app"
                         color="#E1306C"
                       />
                       <SocialLink
                         icon="/footer/tiktok_footer.svg"
                         platform="TikTok"
-                        handle="@onefive"
-                        href="https://tiktok.com/@onefive"
+                        handle="@onefive.five"
+                        href="https://www.tiktok.com/@onefive.five"
                         color="#000000"
                       />
                       <SocialLink
                         icon="/footer/facebook_footer.svg"
                         platform="Facebook"
-                        handle="@onefive"
-                        href="https://facebook.com/onefive"
+                        handle="@onefiveapp"
+                        href="https://www.facebook.com/onefiveapp"
                         color="#1877F2"
                       />
                       <SocialLink
@@ -491,18 +491,20 @@ export function NavigationMenuDemo() {
                             href={withLocale(`/blog/${article.slug}`)}
                             className="group flex gap-3 hover:bg-accent/50 p-2 rounded-md"
                           >
-                            <div className="relative w-[200px] h-[100px] rounded-md overflow-hidden flex-shrink-0">
-                              <Image
-                                src={
-                                  (article.featuredImage.sizes?.navbar?.filename &&
-                                    `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.sizes.navbar.filename}`) ||
-                                  `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.filename}`
-                                }
-                                alt={article.featuredImage.alt || article.title}
-                                fill
-                                sizes="200px"
-                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
+                            <div className="relative w-[200px] h-[100px] rounded-md overflow-hidden flex-shrink-0 bg-gray-100">
+                              {article.featuredImage?.filename && (
+                                <Image
+                                  src={
+                                    (article.featuredImage.sizes?.navbar?.filename &&
+                                      `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.sizes.navbar.filename}`) ||
+                                    `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.filename}`
+                                  }
+                                  alt={article.featuredImage.alt || article.title}
+                                  fill
+                                  sizes="200px"
+                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                              )}
                               {article.readTime && (
                                 <div className="absolute top-2 left-2">
                                   <Badge className="bg-black/60 text-white text-xs backdrop-blur-sm">
