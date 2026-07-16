@@ -221,10 +221,10 @@ const Body = () => {
             {t("forNonUrgent")}
           </p>
           <a
-            href="mailto:support@onefive.com"
+            href="mailto:support@onefive.app"
             className="text-[#5E6AD2] hover:underline"
           >
-            support@onefive.com
+            support@onefive.app
           </a>
         </div>
 
