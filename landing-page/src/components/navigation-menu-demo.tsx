@@ -494,7 +494,6 @@ export function NavigationMenuDemo() {
                             <div className="relative w-[200px] h-[100px] rounded-md overflow-hidden flex-shrink-0">
                               <Image
                                 src={
-                                  article.featuredImage.sizes?.navbar?.url ||
                                   (article.featuredImage.sizes?.navbar?.filename &&
                                     `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.sizes.navbar.filename}`) ||
                                   `${process.env.NEXT_PUBLIC_CDN_URL}/${article.featuredImage.filename}`

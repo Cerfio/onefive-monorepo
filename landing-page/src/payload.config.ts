@@ -31,6 +31,29 @@ import { s3Storage } from '@payloadcms/storage-s3'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Shared by both s3Storage adapters below. The credentials must be scoped to
+// every bucket they cover: a token that can only reach one of them fails at
+// read time with a 403, which surfaces as a 500 on /payload-api/<slug>/file/*.
+const r2Config = {
+  endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  region: 'auto',
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+  },
+}
+
+// Shared per-collection options for the public image collections. `url` (on the
+// base doc and every image size) is emitted as a public CDN link, and the
+// Payload access-control proxy is turned off so files are never served through
+// /payload-api/<slug>/file/*. Only the public buckets get this — `resumes` must
+// keep its access control.
+const publicMediaOptions = {
+  disablePayloadAccessControl: true as const,
+  generateFileURL: ({ filename }: { filename: string }) =>
+    `${process.env.NEXT_PUBLIC_CDN_URL}/${filename}`,
+}
+
 export default buildConfig({
   // The landing app already owns /api/* (blog, contact, waitlist, …), so Payload's
   // REST + GraphQL API is remapped to /payload-api to avoid a route collision.
@@ -98,21 +121,29 @@ export default buildConfig({
   sharp: sharp as any,
   plugins: [
     payloadCloudPlugin(),
+    // Public site images. This bucket is served straight to the browser by the
+    // custom domain in NEXT_PUBLIC_CDN_URL, which bypasses Payload entirely —
+    // anything stored here is world-readable by URL. We point every generated
+    // `url` (base file and each image size) at that CDN and disable the Payload
+    // access-control proxy, so no reader ever routes an image through
+    // /payload-api/media/file/* (which hits R2 with the app token and 500s when
+    // that token can't reach the bucket).
     s3Storage({
       collections: {
-        media: true,
-        'media-articles': true,
-        resumes: true,
+        media: publicMediaOptions,
+        'media-articles': publicMediaOptions,
       },
       bucket: process.env.R2_BUCKET_NAME || '',
-      config: {
-        endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-        region: 'auto',
-        credentials: {
-          accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
-          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
-        },
+      config: r2Config,
+    }),
+    // Applicant CVs. Kept in a bucket with no custom domain so the `resumes`
+    // access control (logged-in only) is the sole way to reach them.
+    s3Storage({
+      collections: {
+        resumes: true,
       },
+      bucket: process.env.R2_RESUMES_BUCKET_NAME || '',
+      config: r2Config,
     }),
   ],
   localization: {
