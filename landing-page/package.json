@@ -14,7 +14,7 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
-    "create-article": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/create-article.ts"
+    "create-article": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/create-article.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.775.0",

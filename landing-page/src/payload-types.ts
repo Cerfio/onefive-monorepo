@@ -825,6 +825,9 @@ export interface Job {
    * Code pays ISO (FR, BE, …)
    */
   addressCountry: string;
+  /**
+   * Sur site = l'adresse ci-dessus fait foi. TELECOMMUTE est la seule valeur que schema.org connaît : « sur site » se dit en ne la publiant pas, pas en publiant « ONSITE » — d'où le choix ici.
+   */
   jobLocationType?: ('TELECOMMUTE' | 'ONSITE') | null;
   /**
    * Ex : Europe. Uniquement si télétravail.

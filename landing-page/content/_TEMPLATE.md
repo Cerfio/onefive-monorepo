@@ -16,6 +16,11 @@ slug: lever-des-bsa-air # défaut: dérivé du titre (accents translittérés)
 readTime: 8 min # défaut: calculé (~200 mots/min)
 isFeatured: false
 displayOnNavbar: false
+
+# Pour ajouter une traduction à un article déjà publié (au lieu d'en créer un
+# nouveau) : remplace category/author/featuredImage par translationOf, avec
+# l'id Payload de l'article existant (affiché par le script après création).
+# translationOf: 42
 ---
 
 Le corps de l'article, en markdown standard. Il est converti en Lexical, le
