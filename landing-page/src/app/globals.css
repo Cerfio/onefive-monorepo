@@ -262,6 +262,27 @@ input[type="search"]::-webkit-search-cancel-button {
   50%      { box-shadow: 0 0 0 6px rgba(52, 199, 89, 0.08); }
 }
 
+/* Hero orbit ([locale]/page.tsx). The rings and their items used to be two
+   dozen Framer `animate={{ rotate }}` loops — a lot of per-frame JS for motion
+   that never varies. `rotate` is a compositor property, so the same spin in a
+   CSS keyframe runs off the main thread for free. Each element sets its own
+   period through --orbit-duration; the item spin is the ring's mirror image so
+   avatars and wordmarks stay upright. */
+@keyframes orbit-rotate-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes orbit-rotate-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+.orbit-rotate-cw {
+  animation: orbit-rotate-cw var(--orbit-duration, 52s) linear infinite;
+}
+.orbit-rotate-ccw {
+  animation: orbit-rotate-ccw var(--orbit-duration, 52s) linear infinite;
+}
+
 /* The typography plugin wraps inline <code> in literal backticks via ::before
    and ::after. That reads as a typo in the cookie table, where the code is a
    cookie name rather than a snippet quoted mid-sentence. */
