@@ -574,33 +574,6 @@ export default function FeedPage() {
     '200px', // Déclenche le chargement 200px avant la fin
   );
 
-  // Navigation clavier
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Ctrl/Cmd + K pour focus sur la recherche
-      if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-        event.preventDefault();
-        const searchInput = document.querySelector('input[placeholder*="Rechercher"]') as HTMLInputElement;
-        if (searchInput) {
-          searchInput.focus();
-        }
-      }
-
-      // Échap pour fermer les modales
-      // if (event.key === 'Escape') {
-      //   setIsModalOpen(false);
-      // }
-
-      // Flèches pour naviguer dans le feed
-      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-        // Logique de navigation dans le feed
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#FCFCFD]">
       <div className="w-full max-w-screen-xl mx-auto">

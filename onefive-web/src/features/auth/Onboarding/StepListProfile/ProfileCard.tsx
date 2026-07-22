@@ -43,15 +43,15 @@ const ProfileCard = ({
     countryCode: string;
   };
 }) => {
-  const _t = useTranslations("onboarding.profileCard");
+  const t = useTranslations("onboarding.profileCard");
   const fullName = `${profile.firstname} ${profile.lastname}`;
 
   // Mapper les intentions aux configurations
   const getIntentionConfig = (intention: string) => {
     const configs = {
-      cofounder: { text: "Cherche associé(s)", color: "text-blue-600" },
-      mentor: { text: "Propose du mentorat", color: "text-yellow-600" },
-      opportunities: { text: "Cherche opportunités", color: "text-purple-600" }
+      cofounder: { text: t("intention.cofounder"), color: "text-blue-600" },
+      mentor: { text: t("intention.mentor"), color: "text-yellow-600" },
+      opportunities: { text: t("intention.opportunities"), color: "text-purple-600" }
     };
     return configs[intention as keyof typeof configs] || configs.cofounder;
   };
@@ -130,7 +130,7 @@ const ProfileCard = ({
           <div className="w-full">
             <Tooltip
               delay={200}
-              title="Suivre pour voir les actualités de cette personne dans votre feed."
+              title={t("followTooltip")}
             >
               <Button
                 size="sm"
@@ -141,11 +141,11 @@ const ProfileCard = ({
                   e.stopPropagation();
                   callback(profile.id, !isFollow);
                 }}
-                aria-label={`Suivre ${profile.firstname} ${profile.lastname}`}
+                aria-label={t("followAria", { name: fullName })}
                 aria-pressed={isFollow}
               >
                 <UserCheck className="h-3 w-3" />
-                {isFollow ? "Suivi" : "Suivre"}
+                {isFollow ? t("following") : t("follow")}
               </Button>
             </Tooltip>
           </div>

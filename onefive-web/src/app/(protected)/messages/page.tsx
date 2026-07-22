@@ -158,7 +158,7 @@ const ConversationSkeleton = () => (
 // ==================== MAIN COMPONENT ====================
 
 const MessagesPage = () => {
-  const _t = useTranslations('messages');
+  const t = useTranslations('messages');
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -712,7 +712,7 @@ const MessagesPage = () => {
           >
             <div className="flex items-center justify-between gap-4 bg-primary px-6 py-5">
               <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold text-primary">Messages</span>
+                <span className="text-lg font-semibold text-primary">{t('messages')}</span>
                 <Badge size="sm" type="modern" color="gray">
                   {conversations.length}
                 </Badge>
@@ -740,7 +740,7 @@ const MessagesPage = () => {
               <Input
                 icon={SearchLg}
                 shortcut
-                aria-label="Rechercher"
+                aria-label={t('search')}
                 placeholder="Rechercher des conversations..."
                 size="sm"
                 value={searchQuery}
@@ -873,8 +873,8 @@ const MessagesPage = () => {
                           className="hidden sm:inline-flex flex-shrink-0"
                         >
                           {isOnline(selectedParticipant.id)
-                            ? 'En ligne'
-                            : 'Hors ligne'}
+                            ? t('online')
+                            : t('offline')}
                         </BadgeWithDot>
                       )}
                     </div>
@@ -889,7 +889,7 @@ const MessagesPage = () => {
                           router.push(`/profile/${selectedParticipant?.id}`)
                         }
                       >
-                        Voir le profil
+                        {t('viewProfile')}
                       </Button>
                       <Button
                         size="sm"
@@ -1151,7 +1151,7 @@ const MessagesPage = () => {
                         ? 'Envoi...'
                         : replyingTo
                           ? 'Répondre'
-                          : 'Envoyer'}
+                          : t('send')}
                     </Button>
                   </div>
                 </Form>

@@ -1,7 +1,7 @@
 import { Person, Startup, ActivityEvent } from '../types';
 import { toast } from 'sonner';
 import { api } from '@/utils/kyInstance';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -27,6 +27,12 @@ interface UseNetworkApiReturn {
   activity: ActivityEvent[];
   loading: boolean;
   error: string | null;
+  hasMorePeople: boolean;
+  fetchMorePeople: () => void;
+  isFetchingMorePeople: boolean;
+  hasMoreStartups: boolean;
+  fetchMoreStartups: () => void;
+  isFetchingMoreStartups: boolean;
   refetchPeople: () => void;
   refetchStartups: () => void;
   refetchActivity: () => void;
@@ -118,20 +124,28 @@ const fetchNetworkActivity = async (options: UseNetworkApiOptions): Promise<Acti
 };
 
 export const useNetworkApi = (options: UseNetworkApiOptions): UseNetworkApiReturn => {
-  // Query pour les personnes - toujours active
-  const peopleQuery = useQuery({
+  const pageSize = options.limit ?? 20;
+
+  // Query paginée pour les personnes - toujours active
+  const peopleQuery = useInfiniteQuery({
     queryKey: ['network-people', options],
-    queryFn: () => fetchNetworkPeople(options),
+    queryFn: ({ pageParam = 0 }) =>
+      fetchNetworkPeople({ ...options, offset: pageParam }),
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length === pageSize ? allPages.length * pageSize : undefined,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
     refetchOnWindowFocus: false,
     networkMode: 'online', // Ne pas faire de requêtes quand offline
   });
 
-  // Query pour les startups - toujours active
-  const startupsQuery = useQuery({
+  // Query paginée pour les startups - toujours active
+  const startupsQuery = useInfiniteQuery({
     queryKey: ['network-startups', options],
-    queryFn: () => fetchNetworkStartups(options),
+    queryFn: ({ pageParam = 0 }) =>
+      fetchNetworkStartups({ ...options, offset: pageParam }),
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length === pageSize ? allPages.length * pageSize : undefined,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
     refetchOnWindowFocus: false,
@@ -157,11 +171,17 @@ export const useNetworkApi = (options: UseNetworkApiOptions): UseNetworkApiRetur
                (activityQuery.error as Error)?.message || null;
 
   return {
-    people: peopleQuery.data ?? [],
-    startups: startupsQuery.data ?? [],
+    people: peopleQuery.data?.pages.flat() ?? [],
+    startups: startupsQuery.data?.pages.flat() ?? [],
     activity: activityQuery.data ?? [],
     loading: isLoading,
     error,
+    hasMorePeople: peopleQuery.hasNextPage ?? false,
+    fetchMorePeople: peopleQuery.fetchNextPage,
+    isFetchingMorePeople: peopleQuery.isFetchingNextPage,
+    hasMoreStartups: startupsQuery.hasNextPage ?? false,
+    fetchMoreStartups: startupsQuery.fetchNextPage,
+    isFetchingMoreStartups: startupsQuery.isFetchingNextPage,
     refetchPeople: peopleQuery.refetch,
     refetchStartups: startupsQuery.refetch,
     refetchActivity: activityQuery.refetch,

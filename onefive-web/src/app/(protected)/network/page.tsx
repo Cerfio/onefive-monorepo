@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
@@ -21,8 +21,6 @@ import ActivityFeed from './components/ActivityFeed';
 import CardSkeleton from './components/CardSkeleton';
 
 const NetworkPage = () => {
-    const [visibleCount, setVisibleCount] = useState(8);
-    const [loadingMore, setLoadingMore] = useState(false);
     const loadMoreRef = useRef(null);
 
     const filters = useNetworkFilters();
@@ -39,10 +37,6 @@ const NetworkPage = () => {
       offset: 0,
     });
     const _networkActions = useNetworkActions();
-
-    useEffect(() => {
-        setVisibleCount(8);
-    }, [filters.activeTab, filters.networkView, filters.searchQuery, filters.intentionFilter, filters.roleFilter, filters.locationFilter, filters.sortBy]);
 
     const handleClearFilters = () => {
         filters.clearFilters();
@@ -65,6 +59,11 @@ const NetworkPage = () => {
 
     const currentList = filters.activeTab === 'people' ? filteredPeople : filteredStartups;
 
+    // Pagination réelle : on pilote le fetch de la page suivante selon l'onglet actif.
+    const hasMore = filters.activeTab === 'people' ? networkApi.hasMorePeople : networkApi.hasMoreStartups;
+    const fetchMore = filters.activeTab === 'people' ? networkApi.fetchMorePeople : networkApi.fetchMoreStartups;
+    const isFetchingMore = filters.activeTab === 'people' ? networkApi.isFetchingMorePeople : networkApi.isFetchingMoreStartups;
+
     // Nombre réel de connexions acceptées dans la liste chargée. Le Set
     // `interactions.connectedProfiles` est un stub resté vide depuis le retrait
     // de l'endpoint relationships : il affichait toujours 0. (Le total exact
@@ -75,18 +74,16 @@ const NetworkPage = () => {
     );
 
     const handleLoadMore = () => {
-        setLoadingMore(true);
-        setTimeout(() => {
-            setVisibleCount(prev => prev + 8);
-            setLoadingMore(false);
-        }, 1000);
+        if (hasMore && !isFetchingMore) {
+            fetchMore();
+        }
     };
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting && !loadingMore && currentList.length > visibleCount) {
-                    handleLoadMore();
+                if (entries[0].isIntersecting && hasMore && !isFetchingMore) {
+                    fetchMore();
                 }
             },
             { rootMargin: "200px" }
@@ -97,7 +94,7 @@ const NetworkPage = () => {
         return () => {
             if (currentRef) observer.unobserve(currentRef);
         };
-    }, [loadingMore, currentList, visibleCount]);
+    }, [hasMore, isFetchingMore, fetchMore]);
     
     const networkViewTabs = [{ id: 'discover', label: 'Découvrir', icon: SearchLg }, { id: 'network', label: 'Mon réseau', icon: Users }];
     const activeTabTabs = [{ id: 'people', label: 'Personnes', icon: Users }, { id: 'startups', label: 'Startups', icon: Building }];
@@ -186,7 +183,7 @@ const NetworkPage = () => {
                             {filters.networkView === 'network' && filters.activeTab === 'people' && filters.networkSubView === 'feed' ? (
                                 <ActivityFeed activities={networkApi.activity} />
                             ) : (
-                                currentList.slice(0, visibleCount).map((item) => (
+                                currentList.map((item) => (
                                     filters.activeTab === 'people' ? (
                                         <PersonCard key={item.id} person={item as Person} networkView={filters.networkView} pendingRequests={interactions.pendingOutgoing} followedProfiles={interactions.followedProfiles} handleConnect={interactions.handleConnect} handleFollow={interactions.handleFollow} searchQuery={filters.searchQuery} intentionFilter={filters.intentionFilter} roleFilter={filters.roleFilter} locationFilter={filters.locationFilter} />
                                     ) : (
@@ -206,9 +203,9 @@ const NetworkPage = () => {
                     </div>
                 )}
 
-                {!networkApi.loading && currentList.length > visibleCount && (
+                {!networkApi.loading && hasMore && (
                     <div ref={loadMoreRef} className="mt-8">
-                        {loadingMore ? (
+                        {isFetchingMore ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                 {Array.from({ length: 4 }).map((_, i) => (
                                     <CardSkeleton key={`load-more-${i}`} />

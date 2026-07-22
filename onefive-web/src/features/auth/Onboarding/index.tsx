@@ -204,13 +204,15 @@ const Onboarding = () => {
         }
         return;
       }
-      if (currentStep === 5) {
+      if (currentStep === 6) {
         isRequestingRef.current = true;
         try {
-          // Pour le renvoi de code depuis PhoneNumberVerification
+          // Renvoi du code depuis PhoneNumberVerification : on renvoie réellement
+          // un SMS SANS changer d'étape (sinon le wizard part sur une étape 7
+          // fantôme et « Changer de numéro » ne revient plus sur la saisie).
+          // Le toast de confirmation est géré par le composant appelant.
           const fullPhoneNumber = `${dialCode.dialCode}${phoneNumber}`;
           await smsRequest({ phoneNumber: fullPhoneNumber });
-          toast.success('Code de vérification envoyé !');
         } finally {
           isRequestingRef.current = false;
         }

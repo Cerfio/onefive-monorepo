@@ -21,6 +21,7 @@ export interface StartupSuggestion {
   name: string;
   description?: string;
   tagline?: string;
+  logo?: string;
   categories: string[];
   countryCode: string;
   city: string;

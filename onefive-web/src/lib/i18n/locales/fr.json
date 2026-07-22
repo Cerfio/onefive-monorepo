@@ -121,10 +121,31 @@
     },
     "profileCard": {
       "follow": "Suivre",
-      "firstnameAndLastname": "{firstname} {lastname}"
+      "following": "Suivi",
+      "firstnameAndLastname": "{firstname} {lastname}",
+      "followTooltip": "Suivre pour voir les actualités de cette personne dans votre feed.",
+      "followAria": "Suivre {name}",
+      "intention": {
+        "cofounder": "Cherche associé(s)",
+        "mentor": "Propose du mentorat",
+        "opportunities": "Cherche opportunités"
+      }
     },
     "startupCard": {
-      "follow": "Suivre"
+      "follow": "Suivre",
+      "following": "Suivi",
+      "subtitle": "Innovation technologique",
+      "followTooltip": "Suivre pour voir les actualités de cette startup dans votre feed.",
+      "followAria": "Suivre {name}",
+      "intention": {
+        "fundraising": "Lève des fonds",
+        "hiring": "Recrute activement",
+        "cofounder": "Cherche co-fondateur"
+      }
+    },
+    "startupList": {
+      "title": "Découvrez des startups innovantes",
+      "description": "Suivez au moins 2 startups qui vous intéressent pour voir leurs actualités dans votre feed"
     },
     "fillPhoneNumber": {
       "phoneNumber": "Numéro de téléphone",

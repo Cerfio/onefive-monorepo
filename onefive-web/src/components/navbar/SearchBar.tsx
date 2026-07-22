@@ -55,19 +55,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
     ...(data?.discussions || []).map((d) => ({ type: 'discussion' as const, data: d })),
   ];
 
-  // Handle keyboard shortcut ⌘+K / Ctrl+K
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

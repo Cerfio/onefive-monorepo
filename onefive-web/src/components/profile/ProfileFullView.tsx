@@ -6,6 +6,7 @@ import { api } from '@/utils/kyInstance';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/navbar';
 import { getCountryName } from '@/lib/country';
+import { useOverviewAnalytics, useVisitorsAnalytics } from '@/hooks/useProfileAnalytics';
 
 import EditProfileHeaderModal from '@/components/profile/modals/EditProfileHeaderModal';
 import { ProfileCompletionCard } from '@/components/profile/ProfileCompletionCard';
@@ -19,10 +20,8 @@ import ProfileAnalyticsCard from '@/components/profile/ProfileAnalyticsCard';
 import { AboutCard } from '@/components/profile/AboutCard';
 import { SkillsInterestsCard } from '@/components/profile/SkillsInterestsCard';
 import { AchievementsCard } from '@/components/profile/AchievementsCard';
-import { RewardBadgesCard } from '@/components/profile/RewardBadgesCard';
 import { ConnectionsCard } from '@/components/profile/ConnectionsCard';
 import { ProfileStartupsCard } from '@/components/profile/ProfileStartupsCard';
-import { AllBadgesModal } from '@/components/profile/modals/AllBadgesModal';
 import { ProfilePosts } from '@/components/profile/ProfilePosts';
 import { ProfileDiscussions } from '@/components/profile/ProfileDiscussions';
 import { useMeProfile, useProfile, MeProfile, useBatchUpdateExperiences, useBatchUpdateEducations, useUpdateSkillsInterests, useBatchUpdateAchievements } from '@/queries/profile';
@@ -254,6 +253,29 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
     [mutualConns],
   );
 
+  // Analytics réelles du profil courant. Les endpoints profile-analytics sont
+  // scoping sur l'utilisateur de session ; la carte n'est montée que pour
+  // currentUser, mais les hooks tournent toujours (pas de flag enabled dispo).
+  const { data: overviewAnalytics } = useOverviewAnalytics('30d');
+  const { data: visitorsAnalytics } = useVisitorsAnalytics('30d');
+
+  const profileAnalytics = useMemo(
+    () => ({
+      viewsOverTime: (overviewAnalytics?.weeklyData ?? []).map((d) => ({
+        day: d.week,
+        views: d.views,
+      })),
+      totalViews: overviewAnalytics?.profileViews.current ?? 0,
+      previousPeriodViews: overviewAnalytics?.profileViews.previous,
+      weeklyViews: visitorsAnalytics?.thisWeek ?? 0,
+      dailyAverage: overviewAnalytics
+        ? Math.round(overviewAnalytics.profileViews.current / 30)
+        : 0,
+      recentVisitors: visitorsAnalytics?.recentVisitors ?? [],
+    }),
+    [overviewAnalytics, visitorsAnalytics],
+  );
+
   // Hooks pour le batch update des expériences et des éducations
   const batchUpdateExperiencesMutation = useBatchUpdateExperiences();
   const batchUpdateEducationsMutation = useBatchUpdateEducations();
@@ -346,7 +368,6 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
   };
 
   const [profileTags, setProfileTags] = useState<string[]>([]);
-  const [showAllBadges, setShowAllBadges] = useState(false);
   const [isEditHeaderModalOpen, setIsEditHeaderModalOpen] = useState(false);
   const [isEditAboutModalOpen, setIsEditAboutModalOpen] = useState(false);
   const [isEditSkillsModalOpen, setIsEditSkillsModalOpen] = useState(false);
@@ -469,7 +490,7 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
             <div className="lg:col-span-1 space-y-8">
               {currentUser && (
                 <motion.div variants={cardVariants}>
-                  <ProfileAnalyticsCard analytics={profileData.profileAnalytics} profileName={profileData.name} />
+                  <ProfileAnalyticsCard analytics={profileAnalytics} profileName={profileData.name} />
                 </motion.div>
               )}
 
@@ -516,14 +537,6 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
                   profileData={profileData}
                   currentUser={currentUser}
                   onEdit={() => setIsEditAchievementsModalOpen(true)}
-                />
-              </motion.div>
-
-              <motion.div variants={cardVariants}>
-                <RewardBadgesCard
-                  profileData={profileData}
-                  currentUser={currentUser}
-                  onShowAll={() => setShowAllBadges(true)}
                 />
               </motion.div>
 
@@ -606,7 +619,6 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
         </>
       )}
 
-      <AllBadgesModal open={showAllBadges} onOpenChange={setShowAllBadges} profileData={profileData} />
     </div>
   );
 }
