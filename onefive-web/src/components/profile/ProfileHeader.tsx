@@ -7,13 +7,11 @@ import { MapPin, Calendar, Globe, ExternalLink, Edit3, Share2, Eye } from 'lucid
 import LinkedInSquareIcon from '@/components/shared/LinkedInSquareIcon';
 import { Card } from '@/components/base/card/card';
 import { Avatar } from '@/components/base/avatar/avatar';
-import { Tooltip } from '../base/tooltip/tooltip';
 import { Badge } from '../base/badges/badges';
 import { Button } from '../base/buttons/button';
 import { Dropdown } from '../base/dropdown/dropdown';
 import ProfileActions from '@/components/profile/ProfileActions';
 import NumberFlow from '@number-flow/react';
-import OnefiveLogo from '@/images/onefiveLogo.png';
 import { CompanyIcon } from './CompanyIcon';
 import { toast } from 'sonner';
 import ProfilePreviewModal from './modals/ProfilePreviewModal';
@@ -244,7 +242,6 @@ export const ProfileHeader = ({
             <div className="relative flex-shrink-0">
               <Avatar 
                 variant="profile"
-                verified={profileData.badges && profileData.badges.includes('Verified')}
                 size="md" 
                 alt={profileData.name}
                 src={profileData.avatar}
@@ -414,29 +411,15 @@ export const ProfileHeader = ({
             {/* Première ligne : Streak et badges */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Tooltip title={`Record personnel : ${profileData.stats.streak.longest} jours`}>
-                  <Badge
-                    color="success"
-                    className="bg-green-100 text-green-800 hover:bg-green-200 transition-colors flex items-center gap-1"
-                  >
-                    <span>🔥</span>
-                    <NumberFlow value={animateNumbers ? profileData.stats.streak.current : 0} animated trend={1} />
-                    <span>jours</span>
-                  </Badge>
-                </Tooltip>
+                <Badge
+                  color="success"
+                  className="bg-green-100 text-green-800 hover:bg-green-200 transition-colors flex items-center gap-1"
+                >
+                  <span>🔥</span>
+                  <NumberFlow value={animateNumbers ? profileData.stats.streak.current : 0} animated trend={1} />
+                  <span>jours</span>
+                </Badge>
 
-                {/* Badge Early Adopter */}
-                {profileData.badges && profileData.badges.includes('Early Adopter') && (
-                  <Tooltip title="Inscrit avant la v1 publique">
-                    <Badge
-                      color="gray"
-                      className="bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 transition-colors flex items-center gap-1"
-                    >
-                      <Image src={OnefiveLogo} alt="Onefive" width={14} height={14} className="inline-block" />
-                      Early Adopter
-                    </Badge>
-                  </Tooltip>
-                )}
               </div>
 
               {/* Logos des dernières expériences et formations */}

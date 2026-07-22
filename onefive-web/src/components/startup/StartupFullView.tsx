@@ -75,7 +75,6 @@ export function StartupFullView({ startupId }: { startupId: string }) {
     founded: startup.foundedDate ? new Date(startup.foundedDate).getFullYear().toString() : '',
     sectors: startup.categories || [],
     website: startup.website || undefined,
-    employees: `${startup.stats.members}-${startup.stats.members + 5}`, // Estimation basée sur les membres
     funding: funding ? {
       totalRaised: funding.totalRaised,
       lastRound: funding.lastRound || undefined,

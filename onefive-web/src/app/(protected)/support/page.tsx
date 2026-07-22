@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import posthog from 'posthog-js';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
@@ -185,6 +186,7 @@ const SupportPage = () => {
   });
 
   const handleFAQRate = (id: string, helpful: boolean) => {
+    posthog.capture('faq_vote', { helpful, faqId: id });
     toast.success(helpful ? 'Merci pour votre retour positif !' : 'Merci pour votre retour, nous améliorerons cette réponse.');
   };
 

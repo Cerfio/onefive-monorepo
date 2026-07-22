@@ -19,7 +19,7 @@ import { Flag } from '@/components/ui/flag';
 import { ProgressBar } from '@/components/base/progress-indicators/progress-indicators';
 import { PROFILE_ROLE_METADATA, ProfileRole } from '@/sharing-enum/profile';
 import { CustomLineChart } from '@/components/application/charts/line-chart';
-import { MetricsChart03 } from '@/components/application/metrics/metrics';
+import { MetricsChart03, MetricsSimple } from '@/components/application/metrics/metrics';
 import {
   Eye,
   MessageCircle01,
@@ -165,14 +165,15 @@ const OverviewTab = ({ timeRange }: { timeRange: TimeRange }) => {
           chartData={overviewData.engagement.chartData}
           className="flex-1"
         />
-        <MetricsChart03
+        {/* Tuile "Top profil" : sparkline retirée — MetricsChart03 recopiait les
+            vues de profil (aucun historique propre au type de profil). On garde le
+            compte et la tendance (réels) via MetricsSimple, sans courbe trompeuse. */}
+        <MetricsSimple
           title={overviewData.topProfileType.count.toString()}
           subtitle={`Top: ${overviewData.topProfileType.type}`}
-          changeTrend={overviewData.topProfileType.change >= 0 ? 'positive' : 'negative'}
+          type="trend"
+          trend={overviewData.topProfileType.change >= 0 ? 'positive' : 'negative'}
           change={`${overviewData.topProfileType.change >= 0 ? '+' : ''}${overviewData.topProfileType.change}%`}
-          changeDescription={getTimeRangeLabel()}
-          chartCurveType="linear"
-          chartData={overviewData.profileViews.chartData} // Réutilise les données de vues
           className="flex-1"
         />
         {/* Tuile "Qualité réseau" retirée : le backend fabriquait la sparkline
@@ -183,16 +184,17 @@ const OverviewTab = ({ timeRange }: { timeRange: TimeRange }) => {
         {/* Tuile "Apparitions recherche" retirée : le backend la fabriquait
             (profileViews × 1.5), sans vrai tracking d'apparitions en recherche.
             À réintroduire quand un comptage réel existera. */}
-        <MetricsChart03
-          title={`${overviewData.profileCompletion.current}%`}
-          subtitle="Complétion du profil"
-          changeTrend={overviewData.profileCompletion.change >= 0 ? 'positive' : 'negative'}
-          change={`${overviewData.profileCompletion.change >= 0 ? '+' : ''}${overviewData.profileCompletion.change}%`}
-          changeDescription={getTimeRangeLabel()}
-          chartCurveType="linear"
-          chartData={overviewData.profileCompletion.chartData}
-          className="flex-1"
-        />
+        {/* Tuile "Complétion du profil" : sparkline synthétique et tendance +2.1%
+            en dur retirées (fabriquées côté back, sans historique réel du score).
+            MetricsChart03 impose toujours une courbe + une flèche de tendance : on
+            affiche donc juste le score en carte simple. À réintroduire quand un
+            historique du score existera. */}
+        <div className="flex-1 rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset">
+          <div className="flex flex-col gap-2 px-4 py-5 md:px-5">
+            <h3 className="text-sm font-medium text-tertiary">Complétion du profil</h3>
+            <p className="text-display-sm font-semibold text-primary">{overviewData.profileCompletion.current}%</p>
+          </div>
+        </div>
       </div>
       <SimpleChart
         data={overviewData.weeklyData}

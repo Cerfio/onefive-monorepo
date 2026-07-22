@@ -100,6 +100,9 @@ const getNotificationLink = (notification: NotificationItem): string | null => {
         return `/profile/${notification.actorId}`;
       }
       return '/invite';
+    case 'DISCUSSION':
+      // Pour les réponses à une discussion
+      return `/discussions/${entityId}`;
     default:
       return null;
   }

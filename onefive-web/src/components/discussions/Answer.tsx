@@ -334,6 +334,13 @@ const Answer = ({
     setShowDeleteDialog(true);
   };
 
+  const handleShare = () => {
+    navigator.clipboard.writeText(
+      `${process.env.NEXT_PUBLIC_URL_PUBLIC}/discussions/${discussionId}`,
+    );
+    toast.success('Lien copié !');
+  };
+
   const handleConfirmDelete = async () => {
     await deleteAnswerMutation();
   };
@@ -756,7 +763,7 @@ const Answer = ({
                       </>
                     )}
                     <Dropdown.Section>
-                      <Dropdown.Item icon={Share2}>
+                      <Dropdown.Item icon={Share2} onAction={handleShare}>
                         Partager
                       </Dropdown.Item>
                       <Dropdown.Item icon={Flag} onAction={() => setIsReportOpen(true)}>

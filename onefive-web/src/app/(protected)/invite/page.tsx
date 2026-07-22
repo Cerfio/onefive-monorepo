@@ -84,25 +84,16 @@ export default function InvitePage() {
   const acceptedCount = stats?.totalAccepted ?? 0;
   const myRank = stats?.rank ?? 0;
 
+  // Tier + progression come straight from the server (referral/stats).
+  // The local `tiers` array only supplies UI metadata (icon/color/description).
   const currentTierIndex = useMemo(() => {
-    let index = 0;
-    for (let i = tiers.length - 1; i >= 0; i--) {
-      if (acceptedCount >= tiers[i].requirement) {
-        index = i;
-        break;
-      }
-    }
-    return index;
-  }, [acceptedCount]);
+    const idx = tiers.findIndex((t) => t.id === stats?.currentTier);
+    return idx === -1 ? 0 : idx;
+  }, [stats?.currentTier]);
 
   const currentTier = tiers[currentTierIndex];
   const nextTier = tiers[currentTierIndex + 1];
-  const progressToNext = useMemo(() => {
-    if (!nextTier) return 100;
-    const current = acceptedCount - currentTier.requirement;
-    const needed = nextTier.requirement - currentTier.requirement;
-    return Math.min(100, (current / needed) * 100);
-  }, [acceptedCount, currentTier, nextTier]);
+  const progressToNext = stats?.progress ?? (nextTier ? 0 : 100);
 
   if (statsLoading) {
     return (

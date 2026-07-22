@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit3, MapPin, Calendar, Building, ExternalLink, Share2, MoreVertical, DollarSign, ArrowRightLeft, Trash2, LogOut } from 'lucide-react';
+import { Edit3, MapPin, Calendar, ExternalLink, Share2, MoreVertical, DollarSign, ArrowRightLeft, Trash2, LogOut } from 'lucide-react';
 import LinkedInSquareIcon from '@/components/shared/LinkedInSquareIcon';
 import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
@@ -233,10 +233,6 @@ export const StartupHeader = ({
                 <div className="flex items-center gap-1.5">
                   <Calendar size={14}/> 
                   <span>Fondée en {startupData.founded}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Building size={14}/> 
-                  <span>{startupData.employees} employés</span>
                 </div>
                 {startupData.website && (
                   <a

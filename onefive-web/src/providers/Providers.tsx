@@ -3,7 +3,6 @@ import { Toaster } from 'sonner';
 import React from 'react';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ThemeProvider } from './themeProvider';
 import dynamic from 'next/dynamic';
 import { RouteProvider } from '@/providers/router-provider';
 import { Theme } from '@/providers/theme';
@@ -28,17 +27,15 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <PostHogProvider>
       <QueryClientProvider client={client}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {process.env.NODE_ENV === 'development' && (
-            <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-          )}
-          <TranslationProvider>
-            <RouteProvider>
-              <Toaster />
-              <Theme>{children}</Theme>
-            </RouteProvider>
-          </TranslationProvider>
-        </ThemeProvider>
+        {process.env.NODE_ENV === 'development' && (
+          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        )}
+        <TranslationProvider>
+          <RouteProvider>
+            <Toaster />
+            <Theme>{children}</Theme>
+          </RouteProvider>
+        </TranslationProvider>
       </QueryClientProvider>
     </PostHogProvider>
   );

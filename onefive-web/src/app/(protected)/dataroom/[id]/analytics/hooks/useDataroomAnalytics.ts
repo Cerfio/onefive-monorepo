@@ -95,7 +95,7 @@ export function useDataroomAnalytics(dataroomId: string, period: '24h' | '7d' | 
         trend: data.viewersChange ? (data.viewersChange > 0 ? "up" : data.viewersChange < 0 ? "down" : "stable") : "stable"
       },
       {
-        label: "Documents populaires",
+        label: "Documents suivis",
         value: data.topFiles?.length.toString() || "0",
         change: "-",
         trend: "stable"

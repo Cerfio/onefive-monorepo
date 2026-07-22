@@ -192,7 +192,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
       <Input
         {...props}
         ref={inputRef}
-        shortcut
         size="sm"
         aria-label="Search"
         placeholder="Rechercher"

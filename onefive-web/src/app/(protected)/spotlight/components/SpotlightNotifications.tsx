@@ -27,17 +27,20 @@ export const SpotlightNotifications = ({ onNotificationAction }: SpotlightNotifi
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'POST_LIKED':
-      case 'POST_REACTION':
+      case 'LIKE':
         return <Heart className="h-4 w-4 text-pink-500" />;
-      case 'POST_COMMENTED':
+      case 'COMMENT':
       case 'COMMENT_REPLY':
+      case 'MENTION':
         return <MessageSquare className="h-4 w-4 text-blue-500" />;
-      case 'PROFILE_FOLLOWED':
-      case 'NEW_FOLLOWER':
+      case 'FOLLOW':
+      case 'CONNECTION_REQUEST':
+      case 'CONNECTION_ACCEPTED':
+      case 'REFERRAL_ACCEPTED':
         return <UserPlus className="h-4 w-4 text-green-500" />;
-      case 'INVITATION_RECEIVED':
-      case 'INVITATION_ACCEPTED':
+      case 'STARTUP_INVITATION':
+      case 'INVESTOR_INVITATION':
+      case 'DATAROOM_INVITATION':
         return <Send className="h-4 w-4 text-purple-500" />;
       default:
         return <Info className="h-4 w-4 text-blue-500" />;

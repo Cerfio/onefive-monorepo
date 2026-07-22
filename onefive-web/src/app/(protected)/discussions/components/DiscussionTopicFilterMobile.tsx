@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Flame } from 'lucide-react';
 import { tags } from '@/constant';
 import { Tags } from '@/enums';
 
@@ -9,9 +8,6 @@ interface DiscussionTopicFilterMobileProps {
   topic?: Tags;
   onTopicChange: (topic: Tags | undefined) => void;
 }
-
-// Topics populaires
-const hotTopics = [Tags.MARKETING, Tags.FUNDING_AND_INVESTMENT, Tags.TECHNOLOGY];
 
 export const DiscussionTopicFilterMobile = ({ topic, onTopicChange }: DiscussionTopicFilterMobileProps) => {
   return (
@@ -40,7 +36,6 @@ export const DiscussionTopicFilterMobile = ({ topic, onTopicChange }: Discussion
           {/* Liste des topics */}
           {tags.map(tag => {
             const isActive = tag.enum === topic;
-            const isHot = hotTopics.includes(tag.enum);
             
             return (
               <button
@@ -55,9 +50,6 @@ export const DiscussionTopicFilterMobile = ({ topic, onTopicChange }: Discussion
               >
                 <span>{tag.icon}</span>
                 <span>{tag.title}</span>
-                {isHot && !isActive && (
-                  <Flame className="w-3 h-3 text-orange-500" />
-                )}
               </button>
             );
           })}

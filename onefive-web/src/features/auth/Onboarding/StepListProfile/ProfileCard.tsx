@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/base/card/card";
 import Image from "next/image";
-import { UserCheck, Users } from "lucide-react";
+import { UserCheck } from "lucide-react";
 import { Flag } from "@/components/ui/flag";
 import { Tooltip } from "@/components/base/tooltip/tooltip";
 import { Button } from "@/components/base/buttons/button";
@@ -46,18 +46,6 @@ const ProfileCard = ({
   const t = useTranslations("onboarding.profileCard");
   const fullName = `${profile.firstname} ${profile.lastname}`;
 
-  // Mapper les intentions aux configurations
-  const getIntentionConfig = (intention: string) => {
-    const configs = {
-      cofounder: { text: t("intention.cofounder"), color: "text-blue-600" },
-      mentor: { text: t("intention.mentor"), color: "text-yellow-600" },
-      opportunities: { text: t("intention.opportunities"), color: "text-purple-600" }
-    };
-    return configs[intention as keyof typeof configs] || configs.cofounder;
-  };
-
-  const intentionConfig = getIntentionConfig(profile.intention);
-
   return (
     <motion.div
       variants={cardVariants}
@@ -96,31 +84,7 @@ const ProfileCard = ({
             </p>
           </div>
 
-          {/* Social Context Section */}
-          <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1 text-xs text-gray-500 mb-4 h-8">
-            <button
-              className={`flex items-center gap-1.5 hover:underline ${intentionConfig.color}`}
-            >
-              <Users className="h-3.5 w-3.5 flex-shrink-0" />
-              <span>{intentionConfig.text}</span>
-            </button>
-          </div>
-
           <div className="flex-1" />
-
-          {/* Logos des dernières expériences et formations */}
-          <div className="flex gap-2 mb-3 justify-center">
-            <div className="flex items-center gap-1.5 text-xs text-[#475467]">
-              <div className="h-5 w-5 rounded-md flex items-center justify-center bg-gray-100">
-                <div className="w-3 h-3 bg-gray-300 rounded-sm flex items-center justify-center text-xs text-gray-600">
-                  {profile.enterprise.charAt(0).toUpperCase()}
-                </div>
-              </div>
-              <span className="text-xs text-[#475467] truncate max-w-[80px]">
-                {profile.enterprise}
-              </span>
-            </div>
-          </div>
 
           <div className="flex items-center gap-2 text-xs text-[#475467] mb-3">
             <Flag countryCode={profile.countryCode} width={16} height={12} />
