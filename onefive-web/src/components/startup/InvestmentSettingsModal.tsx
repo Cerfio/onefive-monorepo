@@ -12,7 +12,6 @@ import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
 import { Label } from '@/components/base/label/label';
 import { Badge } from '@/components/base/badges/badges';
-import { toast } from 'sonner';
 
 interface InvestmentSettings {
   fundraisingType: 'structured' | 'rolling' | 'none';
@@ -52,7 +51,6 @@ export const InvestmentSettingsModal = ({
 
   const handleSave = () => {
     onSave(currentSettings);
-    toast.success('Paramètres d\'investissement mis à jour !');
     onOpenChange(false);
   };
 

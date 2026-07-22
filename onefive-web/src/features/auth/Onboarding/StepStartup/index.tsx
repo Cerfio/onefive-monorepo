@@ -231,7 +231,7 @@ const StartupCard = ({
             <h3 className="font-semibold text-lg text-[#101828] mb-1 group-hover:text-green-600 transition-colors">
               {startup.name}
             </h3>
-            <p className="text-sm text-[#475467]">{t("subtitle")}</p>
+            <p className="text-sm text-[#475467]">{startup.subtitle}</p>
           </div>
 
           {intentionConfig && (

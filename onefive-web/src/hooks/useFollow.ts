@@ -111,6 +111,7 @@ export const useFollowStartup = () => {
       queryClient.invalidateQueries({ queryKey: ['startup-suggestions'] });
       queryClient.invalidateQueries({ queryKey: ['profile-statistics'] });
       queryClient.invalidateQueries({ queryKey: ['network-startups'] });
+      queryClient.invalidateQueries({ queryKey: ['startup'] });
     },
     onError: (error: any) => {
       toast.error(`Erreur: ${error.message}`);
@@ -138,6 +139,7 @@ export const useUnfollowStartup = () => {
       queryClient.invalidateQueries({ queryKey: ['startup-suggestions'] });
       queryClient.invalidateQueries({ queryKey: ['profile-statistics'] });
       queryClient.invalidateQueries({ queryKey: ['network-startups'] });
+      queryClient.invalidateQueries({ queryKey: ['startup'] });
     },
     onError: (error: any) => {
       toast.error(`Erreur: ${error.message}`);
