@@ -248,4 +248,24 @@ export class MessagingEventsService {
   getOnlineProfiles(): string[] {
     return Array.from(this.streams.keys());
   }
+
+  /**
+   * Snapshot de présence : parmi mes contacts (relationship ACCEPTED), lesquels
+   * ont un stream SSE ouvert *maintenant*. Sert à initialiser l'indicateur de
+   * présence côté client (les events presence:update ne couvrent que les
+   * changements postérieurs à l'ouverture de la page).
+   */
+  async getOnlineConnectionIds(profileId: string): Promise<string[]> {
+    try {
+      const connections =
+        await this.profileConnectionService.getConnections(profileId);
+      const connectedProfileIds = connections.map((conn) =>
+        conn.requesterId === profileId ? conn.accepterId : conn.requesterId,
+      );
+      return connectedProfileIds.filter((id) => this.streams.has(id));
+    } catch (error) {
+      this.logger.error(`Error building presence snapshot: ${error.message}`);
+      return [];
+    }
+  }
 }

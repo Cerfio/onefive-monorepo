@@ -64,8 +64,10 @@ import { TextArea } from "../base/textarea/textarea";
     };
     reactions?: {
       content: ReactNode;
+      emoji?: string;
       count: number;
       users?: string[];
+      reactedByMe?: boolean;
     }[];
     reply?: {
       text: string;
@@ -203,6 +205,7 @@ import { TextArea } from "../base/textarea/textarea";
     onReply?: (message: Message) => void;
     onDelete?: (message: Message) => void;
     onReact?: (emoji: string) => void;
+    onToggleReaction?: (emoji: string, reactedByMe: boolean) => void;
     onAvatarClick?: () => void;
   } & HTMLAttributes<HTMLLIElement>;
   
@@ -216,6 +219,7 @@ import { TextArea } from "../base/textarea/textarea";
     onReply,
     onDelete,
     onReact,
+    onToggleReaction,
     onAvatarClick,
     className,
     ...props
@@ -232,6 +236,7 @@ import { TextArea } from "../base/textarea/textarea";
           onReply={onReply} 
           onDelete={onDelete} 
           onReact={onReact}
+          onToggleReaction={onToggleReaction}
           className={className} 
           {...props} 
         />
@@ -249,6 +254,7 @@ import { TextArea } from "../base/textarea/textarea";
         onReply={onReply} 
         onDelete={onDelete} 
         onReact={onReact}
+        onToggleReaction={onToggleReaction}
         onAvatarClick={onAvatarClick}
         className={className} 
         {...props} 
@@ -299,9 +305,13 @@ import { TextArea } from "../base/textarea/textarea";
   
   const MessageReactions = ({
     reactions,
+    onReactionToggle,
     className,
     ...props
-  }: { reactions: Message["reactions"] } & HTMLAttributes<HTMLUListElement>) => {
+  }: {
+    reactions: Message["reactions"];
+    onReactionToggle?: (emoji: string, reactedByMe: boolean) => void;
+  } & HTMLAttributes<HTMLUListElement>) => {
     if (!reactions || reactions.length === 0) {
       return null;
     }
@@ -312,21 +322,35 @@ import { TextArea } from "../base/textarea/textarea";
         aria-label="Reactions"
         {...props}
       >
-        {reactions.map(({ content, count, users }) => (
-          <li key={`${content}-${count}`}>
-            <Tooltip title={users && users.length > 0 ? users.join(', ') : `${count} réaction${count > 1 ? 's' : ''}`}>
-              <TooltipTrigger>
-                <button
-                  type="button"
-                  className="flex items-center gap-1 rounded-full border border-gray-300 bg-white py-0.5 px-1.5 text-xs text-gray-600"
-                >
-                  <span>{content}</span>
-                  <span className="font-medium">{count}</span>
-                </button>
-              </TooltipTrigger>
-            </Tooltip>
-          </li>
-        ))}
+        {reactions.map(({ content, emoji, count, users, reactedByMe }) => {
+          // L'emoji brut sert de clé de toggle ; `content` peut être un ReactNode.
+          const rawEmoji = emoji ?? (typeof content === "string" ? content : "");
+          return (
+            <li key={`${rawEmoji}-${count}`}>
+              <Tooltip title={users && users.length > 0 ? users.join(', ') : `${count} réaction${count > 1 ? 's' : ''}`}>
+                <TooltipTrigger>
+                  <button
+                    type="button"
+                    onClick={
+                      onReactionToggle && rawEmoji
+                        ? () => onReactionToggle(rawEmoji, Boolean(reactedByMe))
+                        : undefined
+                    }
+                    className={cn(
+                      "flex items-center gap-1 rounded-full border py-0.5 px-1.5 text-xs transition-colors",
+                      reactedByMe
+                        ? "border-blue-500 bg-blue-50 text-blue-600"
+                        : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50",
+                    )}
+                  >
+                    <span>{content}</span>
+                    <span className="font-medium">{count}</span>
+                  </button>
+                </TooltipTrigger>
+              </Tooltip>
+            </li>
+          );
+        })}
       </ul>
     );
   };
@@ -578,12 +602,14 @@ import { TextArea } from "../base/textarea/textarea";
     msg, 
     isEditing,
     onSaveEdit,
-    onCancelEdit 
+    onCancelEdit,
+    onToggleReaction,
   }: { 
     msg: Message;
     isEditing?: boolean;
     onSaveEdit?: (messageId: string, newText: string) => void;
     onCancelEdit?: () => void;
+    onToggleReaction?: (emoji: string, reactedByMe: boolean) => void;
   }) => {
     if (msg.typing) {
       return <MessageTyping />;
@@ -614,7 +640,7 @@ import { TextArea } from "../base/textarea/textarea";
           {msg.image && <MessageImage image={msg.image} />}
         </div>
         {msg.urlPreview && <MessageUrlPreview urlPreview={msg.urlPreview} />}
-        {msg.reactions && <MessageReactions reactions={msg.reactions} />}
+        {msg.reactions && <MessageReactions reactions={msg.reactions} onReactionToggle={onToggleReaction} />}
       </>
     );
   };
@@ -623,12 +649,14 @@ import { TextArea } from "../base/textarea/textarea";
     msg,
     isEditing,
     onSaveEdit,
-    onCancelEdit 
+    onCancelEdit,
+    onToggleReaction,
   }: { 
     msg: Message;
     isEditing?: boolean;
     onSaveEdit?: (messageId: string, newText: string) => void;
     onCancelEdit?: () => void;
+    onToggleReaction?: (emoji: string, reactedByMe: boolean) => void;
   }) => {
     if (isEditing && onSaveEdit && onCancelEdit) {
       return (
@@ -655,7 +683,7 @@ import { TextArea } from "../base/textarea/textarea";
           {msg.image && <MessageImage image={msg.image} />}
         </div>
         {msg.urlPreview && <MessageUrlPreview urlPreview={msg.urlPreview} />}
-        {msg.reactions && <MessageReactions reactions={msg.reactions} />}
+        {msg.reactions && <MessageReactions reactions={msg.reactions} onReactionToggle={onToggleReaction} />}
       </>
     );
   };
@@ -680,6 +708,7 @@ import { TextArea } from "../base/textarea/textarea";
     onReply,
     onDelete,
     onReact,
+    onToggleReaction,
     onAvatarClick,
     className,
     ...props
@@ -693,6 +722,7 @@ import { TextArea } from "../base/textarea/textarea";
     onReply?: (message: Message) => void;
     onDelete?: (message: Message) => void;
     onReact?: (emoji: string) => void;
+    onToggleReaction?: (emoji: string, reactedByMe: boolean) => void;
     onAvatarClick?: () => void;
   } & HTMLAttributes<HTMLLIElement>) => {
     const avatarElement = (
@@ -722,6 +752,7 @@ import { TextArea } from "../base/textarea/textarea";
                 isEditing={isEditing}
                 onSaveEdit={onSaveEdit}
                 onCancelEdit={onCancelEdit}
+                onToggleReaction={onToggleReaction}
               />
             </div>
             {!isEditing && (
@@ -745,6 +776,7 @@ import { TextArea } from "../base/textarea/textarea";
     onReply,
     onDelete,
     onReact,
+    onToggleReaction,
     className,
     ...props
   }: { 
@@ -757,6 +789,7 @@ import { TextArea } from "../base/textarea/textarea";
     onReply?: (message: Message) => void;
     onDelete?: (message: Message) => void;
     onReact?: (emoji: string) => void;
+    onToggleReaction?: (emoji: string, reactedByMe: boolean) => void;
   } & HTMLAttributes<HTMLLIElement>) => {
     return (
       <li
@@ -785,6 +818,7 @@ import { TextArea } from "../base/textarea/textarea";
                 isEditing={isEditing}
                 onSaveEdit={onSaveEdit}
                 onCancelEdit={onCancelEdit}
+                onToggleReaction={onToggleReaction}
               />
             </div>
           </div>

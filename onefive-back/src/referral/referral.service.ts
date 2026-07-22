@@ -67,6 +67,30 @@ export class ReferralService {
   }
 
   /**
+   * Calcule le rang de l'utilisateur dans le classement des parrains.
+   * Rang = nombre de profils ayant strictement plus de parrainages acceptés + 1.
+   * Retourne 0 si l'utilisateur n'a aucun parrainage accepté (hors classement).
+   */
+  async getRank(totalAccepted: number): Promise<number> {
+    if (totalAccepted <= 0) {
+      return 0;
+    }
+
+    const result = await this.prisma.$queryRaw<{ higherCount: number }[]>`
+      SELECT COUNT(*)::int as "higherCount"
+      FROM (
+        SELECT r."referrerId"
+        FROM "Referral" r
+        WHERE r.status = 'ACCEPTED'
+        GROUP BY r."referrerId"
+        HAVING COUNT(r.id) > ${totalAccepted}
+      ) sub
+    `;
+
+    return (result[0]?.higherCount ?? 0) + 1;
+  }
+
+  /**
    * Récupère le leaderboard (dynamiquement via raw query)
    */
   async getLeaderboard(limit: number = 10) {

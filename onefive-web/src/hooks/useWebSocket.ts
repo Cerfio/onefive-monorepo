@@ -364,6 +364,35 @@ export const useWebSocketPresence = (profileId: string | null) => {
   const { on } = useWebSocket(profileId);
   const [onlineProfiles, setOnlineProfiles] = useState<Set<string>>(new Set());
 
+  // Snapshot initial : les events presence:update ne portent que les
+  // changements postérieurs à l'ouverture du stream ; sans snapshot, un contact
+  // déjà en ligne resterait affiché « Hors ligne ». On amorce donc l'état.
+  useEffect(() => {
+    if (!profileId) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await api.get('messaging/presence');
+        const json = (await res.json()) as {
+          success: boolean;
+          data?: { online?: string[] };
+        };
+        if (cancelled || !json.success) return;
+        const online = json.data?.online ?? [];
+        setOnlineProfiles((prev) => {
+          const next = new Set(prev);
+          online.forEach((id) => next.add(id));
+          return next;
+        });
+      } catch {
+        // Présence best-effort : un échec ne doit pas casser la messagerie.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
+
   useEffect(() => {
     const unsubscribe = on<PresenceEvent>('presence:update', (data) => {
       setOnlineProfiles((prev) => {

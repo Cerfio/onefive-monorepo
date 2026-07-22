@@ -114,6 +114,20 @@ export class MessagingController {
     );
   }
 
+  /**
+   * Snapshot de présence : profileId de mes contacts actuellement en ligne.
+   * Le client s'en sert pour initialiser l'indicateur En ligne/Hors ligne à
+   * l'ouverture (les events SSE ne portent que les changements ultérieurs).
+   */
+  @Get('presence')
+  async getPresence(
+    @Req() req: FastifyRequestUserId,
+  ): Promise<ApiResponseDto<{ online: string[] }>> {
+    const profileId = await this.getProfileIdFromUserId(req.userId);
+    const online = await this.events.getOnlineConnectionIds(profileId);
+    return { success: true, data: { online } };
+  }
+
   // ==================== TYPING (client -> server) ====================
 
   @Post('typing')

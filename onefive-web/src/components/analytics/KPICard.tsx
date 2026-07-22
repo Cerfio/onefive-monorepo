@@ -74,12 +74,14 @@ export const KPICard = ({
                     value
                 )}
             </div>
-            <p className={`text-xs font-medium ${
-                trend === 'up' ? 'text-emerald-600' : 
-                trend === 'down' ? 'text-rose-600' : 'text-slate-500'
-            }`}>
-                {change}
-            </p>
+            {change ? (
+                <p className={`text-xs font-medium ${
+                    trend === 'up' ? 'text-emerald-600' : 
+                    trend === 'down' ? 'text-rose-600' : 'text-slate-500'
+                }`}>
+                    {change}
+                </p>
+            ) : null}
         </div>
     );
 }; 

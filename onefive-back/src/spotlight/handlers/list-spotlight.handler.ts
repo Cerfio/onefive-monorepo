@@ -98,7 +98,17 @@ export class ListSpotlightHandler {
         provider: spot.provider,
         accelerator: spot.accelerator || null,
         contest: spot.contest || null,
-        event: spot.event || null,
+        event: spot.event
+          ? {
+              ...spot.event,
+              prices: (spot.event.prices ?? []).map((eventPrice: any) => ({
+                name: eventPrice.plan.name,
+                price: eventPrice.plan.price,
+                currency: eventPrice.plan.currency,
+                fee: eventPrice.plan.fee,
+              })),
+            }
+          : null,
         incubator: spot.incubator || null,
         coworkingSpace: spot.coworkingSpace || null,
       }));

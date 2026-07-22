@@ -99,6 +99,9 @@ export class GetDiscussionHandler {
             profileId: true,
             // if answer liked by user
             upvotes: {
+              where: {
+                profileId: profile.id,
+              },
               select: {
                 id: true,
               },

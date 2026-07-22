@@ -20,6 +20,7 @@ export interface StartupSuggestionResponseDto {
   id: string;
   name: string;
   description?: string;
+  logo?: string;
   categories: string[];
   countryCode: string;
   city: string;

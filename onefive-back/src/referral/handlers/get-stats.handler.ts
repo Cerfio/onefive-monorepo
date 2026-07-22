@@ -38,6 +38,9 @@ export class GetReferralStatsHandler {
     // Récupérer les statistiques (calculées dynamiquement)
     const stats = await this.referralService.getReferralStats(profile.id);
 
+    // Calculer le rang dans le classement (0 = hors classement)
+    const rank = await this.referralService.getRank(stats.totalAccepted);
+
     // Calculer les paliers
     const tiers = REFERRAL_TIERS.map((t) => ({
       name: t.id,
@@ -74,6 +77,7 @@ export class GetReferralStatsHandler {
       totalAccepted: stats.totalAccepted,
       totalPending: stats.totalPending,
       currentTier: stats.currentTier,
+      rank,
       progress,
       nextTier: nextTier?.name || null,
       referralsToNextTier,

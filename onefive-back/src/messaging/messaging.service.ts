@@ -633,7 +633,7 @@ export class MessagingService {
           size: att.file.size,
           mimeType: att.file.mimeType,
         })),
-        reactions: this.groupReactions(msg.reactions),
+        reactions: this.groupReactions(msg.reactions, currentProfileId),
         isRead: msg.readBy.some((r) => r.profileId !== msg.senderId),
         readCount: msg.readBy.length,
       }));
@@ -1171,23 +1171,31 @@ export class MessagingService {
       profileId: string;
       profile: { firstName: string; lastName: string };
     }>,
+    currentProfileId?: string,
   ) {
-    const grouped: Record<string, { count: number; users: string[] }> = {};
+    const grouped: Record<
+      string,
+      { count: number; users: string[]; reactedByMe: boolean }
+    > = {};
 
     reactions.forEach((reaction) => {
       if (!grouped[reaction.emoji]) {
-        grouped[reaction.emoji] = { count: 0, users: [] };
+        grouped[reaction.emoji] = { count: 0, users: [], reactedByMe: false };
       }
       grouped[reaction.emoji].count++;
       grouped[reaction.emoji].users.push(
         `${reaction.profile.firstName} ${reaction.profile.lastName}`,
       );
+      if (currentProfileId && reaction.profileId === currentProfileId) {
+        grouped[reaction.emoji].reactedByMe = true;
+      }
     });
 
     return Object.entries(grouped).map(([emoji, data]) => ({
       emoji,
       count: data.count,
       users: data.users,
+      reactedByMe: data.reactedByMe,
     }));
   }
 

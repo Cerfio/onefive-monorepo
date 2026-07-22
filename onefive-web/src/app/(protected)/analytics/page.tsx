@@ -175,16 +175,11 @@ const OverviewTab = ({ timeRange }: { timeRange: TimeRange }) => {
           chartData={overviewData.profileViews.chartData} // Réutilise les données de vues
           className="flex-1"
         />
-        <MetricsChart03
-          title={`${overviewData.networkQuality.current}/100`}
-          subtitle="Qualité réseau"
-          changeTrend={overviewData.networkQuality.change >= 0 ? 'positive' : 'negative'}
-          change={`${overviewData.networkQuality.change >= 0 ? '+' : ''}${overviewData.networkQuality.change}%`}
-          changeDescription={getTimeRangeLabel()}
-          chartCurveType="linear"
-          chartData={overviewData.networkQuality.chartData}
-          className="flex-1"
-        />
+        {/* Tuile "Qualité réseau" retirée : le backend fabriquait la sparkline
+            (Math.random) et le % de tendance (+5.2% en dur), sans historique réel
+            du score. Le composant MetricsChart03 impose toujours une courbe + une
+            flèche de tendance, impossible d'afficher le score /100 seul sans fausse
+            tendance. À réintroduire quand un historique du score existera. */}
         {/* Tuile "Apparitions recherche" retirée : le backend la fabriquait
             (profileViews × 1.5), sans vrai tracking d'apparitions en recherche.
             À réintroduire quand un comptage réel existera. */}

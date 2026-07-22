@@ -41,6 +41,7 @@ import {
   useDeleteMessage,
   useMarkAsRead,
   useAddReaction,
+  useRemoveReaction,
   type Conversation,
   type Message,
   type UploadedAttachment,
@@ -233,6 +234,7 @@ const MessagesPage = () => {
   const deleteMessage = useDeleteMessage();
   const markAsRead = useMarkAsRead();
   const addReaction = useAddReaction();
+  const removeReaction = useRemoveReaction();
 
   // Derived data
   const conversations = conversationsData?.conversations ?? [];
@@ -530,6 +532,28 @@ const MessagesPage = () => {
     [selectedConversationId, addReaction],
   );
 
+  // M6 : toggle d'une pastille existante. reactedByMe vient du back
+  // (groupReactions) : si j'ai déjà réagi avec cet emoji on retire, sinon on ajoute.
+  const handleToggleReaction = useCallback(
+    (messageId: string, emoji: string, reactedByMe: boolean) => {
+      if (!selectedConversationId) return;
+      if (reactedByMe) {
+        removeReaction.mutate({
+          messageId,
+          emoji,
+          conversationId: selectedConversationId,
+        });
+      } else {
+        addReaction.mutate({
+          messageId,
+          emoji,
+          conversationId: selectedConversationId,
+        });
+      }
+    },
+    [selectedConversationId, addReaction, removeReaction],
+  );
+
   const handleCopyMessage = useCallback((message: Message) => {
     if (message.content) {
       navigator.clipboard.writeText(message.content);
@@ -582,6 +606,14 @@ const MessagesPage = () => {
         };
         const createdAt = msg.createdAt ?? new Date().toISOString();
         const normalizedStatus = (msg.status ?? 'sent').toLowerCase();
+        // M5 : le back ne passe jamais message.status à 'READ', mais renvoie
+        // isRead/readCount (accusés de lecture via MessageRead). On dérive donc
+        // le statut 'read' depuis isRead pour afficher l'icône de lecture.
+        const derivedStatus = msg.isRead
+          ? 'read'
+          : normalizedStatus === 'delivered'
+            ? 'sent'
+            : normalizedStatus;
 
         // Le composant MessageItem attend `image` / `attachment` (singulier) ;
         // on dérive ces champs du tableau `attachments` renvoyé par l'API.
@@ -619,16 +651,14 @@ const MessagesPage = () => {
             avatarUrl: sender.avatarUrl ?? undefined,
             me: Boolean(sender.isMe),
           },
-          status: (normalizedStatus === 'delivered' ? 'sent' : normalizedStatus) as
-            | 'sent'
-            | 'read'
-            | 'failed'
-            | undefined,
+          status: derivedStatus as 'sent' | 'read' | 'failed' | undefined,
           reactions: (msg.reactions ?? []).map((r: any) => ({
             content: r.emoji,
+            emoji: r.emoji,
             count: r.count,
-            users:
-              r.users?.map((u: any) => `${u.firstName} ${u.lastName}`.trim()) ?? [],
+            // Le back renvoie déjà `users` comme tableau de noms (strings).
+            users: r.users ?? [],
+            reactedByMe: Boolean(r.reactedByMe),
           })),
           reply: msg.replyTo ? { text: msg.replyTo.content ?? '' } : undefined,
           image,
@@ -964,6 +994,9 @@ const MessagesPage = () => {
                                 handleDeleteMessage(msg as unknown as Message)
                               }
                               onReact={emoji => handleAddReaction(msg.id, emoji)}
+                              onToggleReaction={(emoji, reactedByMe) =>
+                                handleToggleReaction(msg.id, emoji, reactedByMe)
+                              }
                             />
                           </Fragment>
                         ))}

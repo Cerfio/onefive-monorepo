@@ -409,7 +409,15 @@ export class SpotlightService {
       const includeRelations = {
         accelerator: true,
         contest: true,
-        event: true,
+        event: {
+          include: {
+            prices: {
+              include: {
+                plan: true,
+              },
+            },
+          },
+        },
         incubator: true,
         coworkingSpace: {
           include: {

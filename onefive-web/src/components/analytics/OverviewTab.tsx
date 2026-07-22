@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Eye, Users, FileText, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/base/skeleton/skeleton';
-import { Toggle } from '@/components/base/toggle/toggle';
 import { Avatar } from '@/components/base/avatar/avatar';
 import { getAvatarUrl } from '@/utils/avatar';
 import { KPICard } from './KPICard';
@@ -95,7 +94,7 @@ export const OverviewTab = ({
                 key={index}
                 title={stat.label}
                 value={stat.value}
-                change={`${stat.change} depuis la dernière période`}
+                change={stat.change && stat.change !== '-' ? `${stat.change} depuis la dernière période` : ''}
                 trend={stat.trend}
                 icon={
                   index === 0 ? <Eye className="h-5 w-5" /> :
@@ -112,10 +111,6 @@ export const OverviewTab = ({
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-[#101828]">Activité sur la période</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-[#475467]">Comparer</span>
-              <Toggle isSelected={isComparing} onChange={onToggleComparison} size="sm" />
-            </div>
           </div>
           {isLoading ? (
             <Skeleton className="h-60 w-full" />

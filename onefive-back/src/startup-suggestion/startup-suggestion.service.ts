@@ -47,6 +47,7 @@ export class StartupSuggestionService {
           id: true,
           name: true,
           description: true,
+          logo: true,
           categories: true,
           countryCode: true,
           city: true,
@@ -66,6 +67,7 @@ export class StartupSuggestionService {
         id: startup.id,
         name: startup.name,
         description: startup.description || undefined,
+        logo: startup.logo || undefined,
         categories: startup.categories || [], // Ensure it's always an array
         countryCode: startup.countryCode,
         city: startup.city,

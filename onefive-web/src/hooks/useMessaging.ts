@@ -43,6 +43,7 @@ export interface MessageReaction {
   emoji: string;
   count: number;
   users: string[];
+  reactedByMe: boolean;
 }
 
 export interface MessageAttachment {
