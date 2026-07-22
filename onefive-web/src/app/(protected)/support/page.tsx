@@ -388,7 +388,7 @@ const SupportPage = () => {
                           <h3 className="font-semibold text-lg mb-1">Discord</h3>
                           <p className="text-gray-600 mb-3">Rejoignez notre communauté Discord</p>
                           <a 
-                            href="https://discord.gg/onefive" 
+                            href="https://discord.gg/GeDqWr4jvr"
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-[#5865F2] hover:text-[#5865F2]/80 font-medium inline-flex items-center gap-1"

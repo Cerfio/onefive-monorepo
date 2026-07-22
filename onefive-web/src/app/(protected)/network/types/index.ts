@@ -6,7 +6,8 @@ export interface Person {
   location: string;
   countryCode: string;
   intention: string;
-  intentionCategory: 'cofounder' | 'mentor' | 'opportunities';
+  // Vocabulaire réellement émis par le back (network.service intentionCategory)
+  intentionCategory: 'opportunities' | 'hiring' | 'investing' | 'mentoring';
   role?: 'founder' | 'vc' | 'angel' | 'mentor' | 'executive' | 'investor' | 'entrepreneur';
   tags: string[];
   mentorshipDomain?: string; // Domaine de mentorat spécifique
@@ -39,7 +40,7 @@ export interface Startup {
   location: string;
   countryCode: string;
   intention: string;
-  intentionCategory: 'cofounder' | 'hiring' | 'fundraising';
+  intentionCategory: 'hiring' | 'investing' | 'opportunities';
   stats: {
     stage: string;
     industry: string;

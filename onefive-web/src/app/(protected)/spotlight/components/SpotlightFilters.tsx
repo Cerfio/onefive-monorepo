@@ -79,8 +79,6 @@ const filterOptions = {
     { value: 'recent', label: 'Plus récent' },
     { value: 'name', label: 'Nom (A-Z)' },
     { value: 'distance', label: 'Distance' },
-    { value: 'popularity', label: 'Popularité' },
-    { value: 'price', label: 'Prix' },
     { value: 'date', label: 'Date' },
   ],
   distance: [

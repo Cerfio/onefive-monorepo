@@ -54,9 +54,10 @@ export const sortOptions = [
     { id: 'location', label: 'Localisation' },
 ];
 
+// Clés alignées sur le vocabulaire intentionCategory réellement émis par le back.
 export const intentionConfig = {
-    cofounder: { icon: Users, text: 'Cherche associé(s)', color: 'bg-blue-100 text-blue-800 hover:bg-blue-200' },
     hiring: { icon: Briefcase, text: 'Recrute', color: 'bg-green-100 text-green-800 hover:bg-green-200' },
-    fundraising: { icon: Megaphone, text: 'Lève des fonds', color: 'bg-purple-100 text-purple-800 hover:bg-purple-200' },
-    mentor: { icon: Lightbulb, text: 'Propose du mentorat', color: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' },
+    investing: { icon: Megaphone, text: 'Lève des fonds', color: 'bg-purple-100 text-purple-800 hover:bg-purple-200' },
+    opportunities: { icon: Users, text: 'Ouvert aux opportunités', color: 'bg-blue-100 text-blue-800 hover:bg-blue-200' },
+    mentoring: { icon: Lightbulb, text: 'Propose du mentorat', color: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' },
 }; 

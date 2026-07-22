@@ -33,7 +33,6 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isOnline, _setIsOnline] = useState(true);
 
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
@@ -103,9 +102,6 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
               className="h-14 w-14 rounded-full bg-[#5E6AD2] hover:bg-[#5E6AD2]/90 shadow-lg relative"
             >
               <MessageCircle className="h-6 w-6 text-white" />
-              {isOnline && (
-                <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white"></div>
-              )}
             </Button>
           </motion.div>
         )}
@@ -132,8 +128,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ onClose: _onClose }) => {
                     <div>
                       <CardTitle className="text-sm font-medium">Support OneFive</CardTitle>
                       <div className="flex items-center gap-2 text-xs text-white/80">
-                        <div className="h-2 w-2 bg-green-400 rounded-full"></div>
-                        En ligne
+                        Réponse sous 24h
                       </div>
                     </div>
                   </div>

@@ -143,8 +143,6 @@ const _filterOptions = {
     { value: 'recent', label: 'Plus récent' },
     { value: 'name', label: 'Nom (A-Z)' },
     { value: 'distance', label: 'Distance' },
-    { value: 'popularity', label: 'Popularité' },
-    { value: 'price', label: 'Prix' },
     { value: 'date', label: 'Date' }
   ],
   distance: [
@@ -661,11 +659,7 @@ const Spotlight = () => {
     if (sortBy === 'name') {
       filtered.sort((a: any, b: any) => a.name.localeCompare(b.name));
     } else if (sortBy === 'distance') {
-      // Tri par distance (à implémenter)
-    } else if (sortBy === 'popularity') {
-      // Tri par popularité (à implémenter)
-    } else if (sortBy === 'price') {
-      // Tri par prix (à implémenter)
+      // Déjà trié par distance côté API (ORDER BY ST_Distance), rien à refaire.
     } else if (sortBy === 'date') {
       // Tri par date
       filtered.sort((a: any, b: any) => {

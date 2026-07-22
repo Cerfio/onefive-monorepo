@@ -28,6 +28,7 @@ import {
   Trash01
 } from '@untitledui/icons';
 import { createFeedback, type FeedbackType as FeedbackTypeApi } from '@/queries/report';
+import { useMe } from '@/hooks/useUser';
 import posthog from 'posthog-js';
 
 interface FeedbackModalProps {
@@ -119,6 +120,7 @@ const Confetti = () => {
 };
 
 export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onOpenChange }) => {
+  const { data: user } = useMe();
   const [_step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -437,7 +439,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onOpenChan
                                 <span className="text-sm text-blue-800">Identité</span>
                               </div>
                               <BadgeWithDot type="pill-color" color="brand" size="sm">
-                                @yanniscoulibaly
+                                {user ? `${user.firstName} ${user.lastName}` : 'Vous'}
                               </BadgeWithDot>
                             </div>
                           </div>

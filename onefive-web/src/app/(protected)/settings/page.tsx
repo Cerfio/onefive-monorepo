@@ -234,6 +234,17 @@ const SettingsPage = () => {
     }
   };
 
+  // Le changement de langue doit aussi mettre à jour la locale locale : l'app
+  // lit localStorage['language'] via currentLanguage(). Sans ça, la préférence
+  // est persistée au back mais l'interface ne change jamais de langue.
+  const handleLanguageChange = async (value: string) => {
+    await handlePreferenceChange('preferences', 'language', value);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', value);
+      window.location.reload();
+    }
+  };
+
   const handleToggleChange = (category: string, field: string, checked: boolean) => {
     handlePreferenceChange(category, field, checked);
   };
@@ -945,30 +956,12 @@ const SettingsPage = () => {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div>
-                        <Label htmlFor="theme">Thème de l'interface</Label>
-                        <Select
-                          label=""
-                          placeholder="Sélectionner un thème"
-                          selectedKey={user.preferences.theme}
-                          onSelectionChange={value => handlePreferenceChange('theme', 'theme', String(value))}
-                          items={[
-                            { id: 'light', label: '🌞 Clair' },
-                            { id: 'dark', label: '🌙 Sombre' },
-                            { id: 'system', label: '⚙️ Automatique (selon le système)' }
-                          ]}
-                          className="mt-2"
-                        >
-                          {item => <Select.Item id={item.id}>{item.label}</Select.Item>}
-                        </Select>
-                      </div>
-
-                      <div>
                         <Label htmlFor="language">Langue de l'interface</Label>
                         <Select
                           label=""
                           placeholder="Sélectionner une langue"
                           selectedKey={user.preferences.language}
-                          onSelectionChange={value => handlePreferenceChange('language', 'language', String(value))}
+                          onSelectionChange={value => handleLanguageChange(String(value))}
                           items={[
                             { id: 'fr', label: '🇫🇷 Français' },
                             { id: 'en', label: '🇺🇸 English' }
@@ -1288,16 +1281,6 @@ const SettingsPage = () => {
                   <Button color="secondary" size="lg" onClick={() => setIsSecurityHistoryOpen(false)}>
                     Fermer
                   </Button>
-                  <Button
-                    color="primary"
-                    size="lg"
-                    onClick={() => {
-                      toast.success('Historique exporté avec succès');
-                      setIsSecurityHistoryOpen(false);
-                    }}
-                  >
-                    Exporter l'historique
-                  </Button>
                 </div>
               </div>
             </Dialog>
@@ -1476,16 +1459,6 @@ const SettingsPage = () => {
                 <div className="z-10 flex flex-1 flex-col-reverse gap-3 p-4 pt-6 sm:flex sm:flex-row sm:items-center sm:justify-end sm:px-6 sm:pt-8 sm:pb-6">
                   <Button color="secondary" size="lg" onClick={() => setIsSecurityAuditOpen(false)}>
                     Fermer
-                  </Button>
-                  <Button
-                    color="primary"
-                    size="lg"
-                    onClick={() => {
-                      toast.success("Rapport d'audit exporté avec succès");
-                      setIsSecurityAuditOpen(false);
-                    }}
-                  >
-                    Exporter le rapport
                   </Button>
                 </div>
               </div>

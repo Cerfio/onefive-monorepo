@@ -3,7 +3,7 @@ import { Tooltip } from '@/components/base/tooltip/tooltip';
 import { intentionConfig } from '../lib/constants';
 
 interface IntentionBadgeProps {
-    intentionCategory: 'cofounder' | 'hiring' | 'fundraising' | 'mentor' | 'opportunities';
+    intentionCategory: 'hiring' | 'investing' | 'opportunities' | 'mentoring';
     onClick: (e: React.MouseEvent) => void;
 }
 

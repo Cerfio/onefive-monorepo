@@ -57,7 +57,7 @@ export const getPersonBadges = (person: Person) => {
         badges.push(getRoleBadge(roleFromTags, "role"));
     }
 
-    if (person.intentionCategory === 'mentor' && person.mentorshipDomain) {
+    if (person.intentionCategory === 'mentoring' && person.mentorshipDomain) {
         const mentorBadges: { [key: string]: { label: string; color: any } } = {
             'finance': { label: 'Finance', color: 'success' },
             'marketing': { label: 'Marketing', color: 'orange' },
@@ -87,8 +87,7 @@ export const getDisplayReasons = (person: Person, networkView: 'discover' | 'net
     }
   
     if (person.intentionCategory) {
-        if (person.intentionCategory === 'cofounder') reasons.push('Cherche associé(s)');
-        else if (person.intentionCategory === 'mentor') {
+        if (person.intentionCategory === 'mentoring') {
             if (person.mentorshipDomain) {
                 const domainLabels = {
                     'finance': 'Mentor Finance', 'marketing': 'Mentor Marketing', 'product': 'Mentor Product',
@@ -100,6 +99,10 @@ export const getDisplayReasons = (person: Person, networkView: 'discover' | 'net
             }
         } else if (person.intentionCategory === 'opportunities') {
             reasons.push('Cherche opportunités');
+        } else if (person.intentionCategory === 'hiring') {
+            reasons.push('Recrute');
+        } else if (person.intentionCategory === 'investing') {
+            reasons.push('Investit');
         }
     }
   
