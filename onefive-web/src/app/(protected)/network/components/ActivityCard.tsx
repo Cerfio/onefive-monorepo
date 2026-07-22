@@ -8,13 +8,14 @@ import {
 } from '@untitledui/icons';
 
 import { Button } from '@/components/base/buttons/button';
-import type { ActivityEvent, Person, Startup } from '../types';
-import MentionTag from './MentionTag';
+import type { ActivityEvent } from '../types';
 import { formatTimestamp } from '../lib/utils';
 import { cardVariants } from '../lib/animations';
 import { Avatar } from '@/components/base/avatar/avatar';
+import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
 
 const ActivityCard = ({ event }: { event: ActivityEvent }) => {
+    const { navigateToConversation, isLoading: isOpeningConversation } = useNavigateToConversation();
     // Extraire prénom et nom pour la génération automatique d'initiales
     const nameParts = event.person.name.split(' ');
     const firstName = nameParts[0] || '';
@@ -22,27 +23,36 @@ const ActivityCard = ({ event }: { event: ActivityEvent }) => {
 
     const renderContent = () => {
         const personLink = <Link href={`/profile/${event.person.id}`} className="font-semibold hover:text-[#5E6AD2] transition-colors">{event.person.name}</Link>;
+        // Le backend fournit un libellé `details` lisible pour chaque type d'activité
+        // réellement émis (a rejoint votre réseau / a publié un nouveau post / suit
+        // maintenant X). On l'affiche directement pour ne jamais rendre une carte vide.
+        if (event.details) {
+            return <>{personLink} {event.details}</>;
+        }
+        // Fallbacks pour d'anciens types sans `details`.
         switch (event.type) {
             case 'NEW_CONNECTION':
-                return <>{personLink} est maintenant connecté(e) avec {event.target ? <MentionTag profile={event.target as Person} /> : 'quelqu\'un'}</>;
+                return <>{personLink} a rejoint votre réseau</>;
             case 'FOLLOWED_STARTUP':
-                return <>{personLink} a commencé à suivre {event.target ? <MentionTag profile={event.target as Startup} /> : 'une startup'}</>;
+            case 'STARTUP_FOLLOW':
+                return <>{personLink} suit maintenant une startup</>;
+            case 'PROFILE_FOLLOW':
+                return <>{personLink} suit maintenant un membre</>;
+            case 'NEW_POST':
+                return <>{personLink} a publié un nouveau post</>;
             case 'NEW_INTENTION':
                 return <>{personLink} cherche maintenant un associé technique</>;
-            case 'JOB_CHANGE':
-            case 'STARTUP_UPDATE':
-            case 'MENTORSHIP_OFFER':
-            case 'PROFILE_UPDATE':
-            case 'NEW_SKILL':
-            case 'JOINED_PLATFORM':
-                return <>{personLink} {event.details}</>;
-            default: return null;
+            default:
+                return <>{personLink}</>;
         }
     };
 
     const getEventIcon = () => {
         switch (event.type) {
             case 'NEW_CONNECTION': return <Users className="h-4 w-4 text-blue-600" />;
+            case 'NEW_POST': return <MessageCircle className="h-4 w-4 text-violet-600" />;
+            case 'PROFILE_FOLLOW': return <Users className="h-4 w-4 text-blue-600" />;
+            case 'STARTUP_FOLLOW':
             case 'FOLLOWED_STARTUP': return <Building className="h-4 w-4 text-green-600" />;
             case 'NEW_INTENTION': return <Search className="h-4 w-4 text-purple-600" />;
             case 'JOB_CHANGE': return <Briefcase className="h-4 w-4 text-orange-600" />;
@@ -85,7 +95,7 @@ const ActivityCard = ({ event }: { event: ActivityEvent }) => {
                                         Voir profil
                                     </Button>
                                 </Link>
-                                <Button color="tertiary" size="sm" className="h-7 px-2 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-50" iconLeading={<MessageCircle className="h-3.5 w-3.5" data-icon />}>
+                                <Button color="tertiary" size="sm" className="h-7 px-2 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-50" iconLeading={<MessageCircle className="h-3.5 w-3.5" data-icon />} onClick={() => navigateToConversation(event.person.id)} isDisabled={isOpeningConversation}>
                                     Message
                                 </Button>
                             </div>

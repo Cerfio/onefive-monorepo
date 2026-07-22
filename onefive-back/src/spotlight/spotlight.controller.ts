@@ -48,6 +48,11 @@ export class ListSpotlightQueryDto {
   @IsNumber()
   @Type(() => Number)
   skip?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  radius?: number;
 }
 
 @Controller('spotlight')
@@ -71,6 +76,7 @@ export class SpotlightController {
       endDate: query.endDate,
       take: query.take,
       skip: query.skip,
+      radius: query.radius,
     });
 
     return {

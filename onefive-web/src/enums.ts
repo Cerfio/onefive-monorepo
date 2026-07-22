@@ -1,9 +1,11 @@
+// Valeurs alignées sur ce que le backend accepte réellement
+// (discussion list DTO @IsIn + list-discussion.handler). Les anciennes valeurs
+// POPULAR/INTERESTING/WEEK/MONTH étaient rejetées en 400 par l'API.
 export enum Sort {
   NEWEST = 'NEWEST',
-  POPULAR = 'POPULAR',
-  INTERESTING = 'INTERESTING',
-  WEEK = 'WEEK',
-  MONTH = 'MONTH',
+  MOST_UPVOTED = 'MOST_UPVOTED',
+  MOST_ANSWERED = 'MOST_ANSWERED',
+  MOST_VIEWED = 'MOST_VIEWED',
 }
 
 export enum Tags {

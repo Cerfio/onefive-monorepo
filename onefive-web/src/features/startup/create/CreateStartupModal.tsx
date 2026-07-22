@@ -63,7 +63,9 @@ export const CreateStartupModal = ({ open, onOpenChange }: CreateStartupModalPro
       coverImage: finalData.coverImage || undefined,
       invitations: finalData.members?.map((member: any) => ({
         profileId: member.profileId || undefined,
-        email: member.email?.includes('<') ? member.email.split('<')[1].replace('>', '') : undefined,
+        // Les membres "invited" portent l'email brut saisi (validé z.email()) ;
+        // les membres "existing" ont un profileId + un email placeholder à ignorer.
+        email: member.status === 'invited' ? member.email : undefined,
         firstName: member.firstName || undefined,
         lastName: member.lastName || undefined,
         position: member.position,

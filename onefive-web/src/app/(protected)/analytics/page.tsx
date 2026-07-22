@@ -185,16 +185,9 @@ const OverviewTab = ({ timeRange }: { timeRange: TimeRange }) => {
           chartData={overviewData.networkQuality.chartData}
           className="flex-1"
         />
-        <MetricsChart03
-          title={overviewData.searchAppearances.current.toLocaleString()}
-          subtitle="Apparitions recherche"
-          changeTrend={overviewData.searchAppearances.change >= 0 ? 'positive' : 'negative'}
-          change={`${overviewData.searchAppearances.change >= 0 ? '+' : ''}${overviewData.searchAppearances.change}%`}
-          changeDescription={getTimeRangeLabel()}
-          chartCurveType="linear"
-          chartData={overviewData.searchAppearances.chartData}
-          className="flex-1"
-        />
+        {/* Tuile "Apparitions recherche" retirée : le backend la fabriquait
+            (profileViews × 1.5), sans vrai tracking d'apparitions en recherche.
+            À réintroduire quand un comptage réel existera. */}
         <MetricsChart03
           title={`${overviewData.profileCompletion.current}%`}
           subtitle="Complétion du profil"

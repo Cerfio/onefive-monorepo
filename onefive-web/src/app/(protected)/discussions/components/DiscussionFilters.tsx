@@ -29,11 +29,10 @@ export const DiscussionFilters = ({
   };
 
   const sortOptions: { id: Sort; label: string }[] = [
-    { id: Sort.INTERESTING, label: 'Intéressant' },
-    { id: Sort.NEWEST, label: 'Nouveau' },
-    { id: Sort.POPULAR, label: 'Populaire' },
-    { id: Sort.WEEK, label: 'Semaine' },
-    { id: Sort.MONTH, label: 'Mois' },
+    { id: Sort.NEWEST, label: 'Récent' },
+    { id: Sort.MOST_UPVOTED, label: 'Populaire' },
+    { id: Sort.MOST_ANSWERED, label: 'Plus répondu' },
+    { id: Sort.MOST_VIEWED, label: 'Plus vu' },
   ];
 
   return (

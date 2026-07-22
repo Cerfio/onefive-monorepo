@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit3, MapPin, Calendar, Building, ExternalLink, Share2, Bookmark, MoreVertical, DollarSign, ArrowRightLeft, Trash2, LogOut } from 'lucide-react';
+import { Edit3, MapPin, Calendar, Building, ExternalLink, Share2, MoreVertical, DollarSign, ArrowRightLeft, Trash2, LogOut } from 'lucide-react';
 import LinkedInSquareIcon from '@/components/shared/LinkedInSquareIcon';
 import { Button } from '@/components/base/buttons/button';
 import { Badge } from '@/components/base/badges/badges';
@@ -12,6 +12,8 @@ import { Card } from '@/components/base/card/card';
 import { AnimatedNumber } from '@/components/ui/animated-number';
 import { Dropdown } from '@/components/base/dropdown/dropdown';
 import { InvestmentProposalModal } from './modals/InvestmentProposalModal';
+import { useToggleStartupFollow } from '@/hooks/useFollow';
+import { toast } from 'sonner';
 import { Tooltip } from '@/components/base/tooltip/tooltip';
 import { Flag } from '@/components/ui/flag';
 
@@ -35,18 +37,26 @@ export const StartupHeader = ({
   currentUser, 
   onEdit, 
   onLinkedInSync,
-  animateNumbers, 
-  params: _params,
+  animateNumbers,
+  params,
   isCreator,
   isMember,
   onTransferOwnership,
   onDeleteStartup,
   onLeaveStartup,
 }: StartupHeaderProps) => {
-  const [isBookmarked, _setIsBookmarked] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const { toggle: toggleFollow, isLoading: isFollowLoading } = useToggleStartupFollow();
+  const [isFollowing, setIsFollowing] = useState<boolean>(!!startupData.isFollowing);
   const [isInvestmentModalOpen, setIsInvestmentModalOpen] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const handleShare = () => {
+    if (typeof window === 'undefined') return;
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => toast.success('Lien de la startup copié'))
+      .catch(() => toast.error('Impossible de copier le lien'));
+  };
   
   const MAX_DESCRIPTION_LENGTH = 200;
   const description = startupData.description || '';
@@ -136,13 +146,14 @@ export const StartupHeader = ({
                       <Button
                         color={isFollowing ? "secondary" : "primary"}
                         size="sm"
-                        onClick={() => setIsFollowing(!isFollowing)}
+                        isDisabled={isFollowLoading}
+                        onClick={() => {
+                          toggleFollow(params.id, isFollowing);
+                          setIsFollowing((prev) => !prev);
+                        }}
                         className={isFollowing ? "border-violet-200 text-violet-700" : ""}
                       >
                         {isFollowing ? 'Suivi' : 'Suivre'}
-                      </Button>
-                      <Button color="secondary" size="sm">
-                        Contacter
                       </Button>
                     </>
                   )}
@@ -170,10 +181,7 @@ export const StartupHeader = ({
                           </Dropdown.Item>
                         )}
                         <Dropdown.Separator />
-                        <Dropdown.Item icon={Share2}>Partager</Dropdown.Item>
-                        <Dropdown.Item icon={Bookmark}>
-                          {isBookmarked ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                        </Dropdown.Item>
+                        <Dropdown.Item icon={Share2} onAction={handleShare}>Partager</Dropdown.Item>
                         {isCreator && onTransferOwnership && (
                           <>
                             <Dropdown.Separator />

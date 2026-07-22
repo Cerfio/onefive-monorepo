@@ -61,6 +61,7 @@ export function StartupFullView({ startupId }: { startupId: string }) {
   // Mapper les données backend vers le format attendu par les composants
   const startupData = startup ? {
     id: startup.id,
+    isFollowing: startup.isFollowing ?? false,
     name: startup.name,
     tagline: startup.tagline || '',
     description: startup.description || '',
@@ -246,13 +247,14 @@ export function StartupFullView({ startupId }: { startupId: string }) {
               {/* Sidebar sticky - 1/3 */}
               <motion.div variants={cardVariants} className="lg:col-span-1">
                 <div className="sticky top-8 space-y-8">
-                  <FundingCard 
+                  <FundingCard
+                    startupId={startupId}
                     funding={funding || {
                       totalRaised: '0',
                       lastRound: null,
                       investors: [],
                       fundraisingType: 'none',
-                    }} 
+                    }}
                     history={fundingHistory}
                     currentUser={currentUser} 
                     onAddHistory={() => {

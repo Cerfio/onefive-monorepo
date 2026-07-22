@@ -65,6 +65,15 @@ const NetworkPage = () => {
 
     const currentList = filters.activeTab === 'people' ? filteredPeople : filteredStartups;
 
+    // Nombre réel de connexions acceptées dans la liste chargée. Le Set
+    // `interactions.connectedProfiles` est un stub resté vide depuis le retrait
+    // de l'endpoint relationships : il affichait toujours 0. (Le total exact
+    // au-delà de la page chargée dépend du fix pagination réseau.)
+    const connectedProfilesCount = useMemo(
+        () => networkApi.people.filter((p) => p.relationStatus === 'ACCEPTED').length,
+        [networkApi.people],
+    );
+
     const handleLoadMore = () => {
         setLoadingMore(true);
         setTimeout(() => {
@@ -104,7 +113,7 @@ const NetworkPage = () => {
                             <p className="text-[#475467] mt-1">
                                 {filters.networkView === 'discover' 
                                     ? 'Découvrez de nouveaux entrepreneurs, mentors et opportunités' 
-                                    : `Votre réseau compte ${filters.activeTab === 'people' ? interactions.connectedProfiles.size : filteredStartups.length} ${filters.activeTab === 'people' ? 'connexion' : 'startup'}${(filters.activeTab === 'people' ? interactions.connectedProfiles.size : filteredStartups.length) > 1 ? 's' : ''}`
+                                    : `Votre réseau compte ${filters.activeTab === 'people' ? connectedProfilesCount : filteredStartups.length} ${filters.activeTab === 'people' ? 'connexion' : 'startup'}${(filters.activeTab === 'people' ? connectedProfilesCount : filteredStartups.length) > 1 ? 's' : ''}`
                                 }
                             </p>
                         </div>
@@ -160,7 +169,7 @@ const NetworkPage = () => {
                 {filters.networkView === 'network' && filters.activeTab === 'people' && (
                     <div className="mb-6 w-fit">
                         <Tabs selectedKey={filters.networkSubView} onSelectionChange={(key) => filters.setNetworkSubView(key as any)}>
-                            <Tabs.List type="button-minimal" items={[{ id: 'connections', label: `Mes Connexions (${interactions.connectedProfiles.size})` }, { id: 'feed', label: "Flux d'activité" }]}>
+                            <Tabs.List type="button-minimal" items={[{ id: 'connections', label: `Mes Connexions (${connectedProfilesCount})` }, { id: 'feed', label: "Flux d'activité" }]}>
                                 {(tab) => <Tabs.Item key={tab.id}>{tab.label}</Tabs.Item>}
                             </Tabs.List>
                         </Tabs>

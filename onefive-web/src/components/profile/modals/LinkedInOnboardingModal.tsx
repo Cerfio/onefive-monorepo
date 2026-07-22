@@ -137,7 +137,7 @@ export const LinkedInOnboardingModal = ({
                         Importez vos données LinkedIn
                       </h3>
                       <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-                        Entrez l'URL de votre profil LinkedIn pour récupérer automatiquement vos expériences, formations et compétences.
+                        Entrez l'URL de votre profil LinkedIn pour pré-remplir automatiquement votre nom, votre localisation et votre photo de profil.
                       </p>
                     </div>
 
@@ -195,7 +195,7 @@ export const LinkedInOnboardingModal = ({
                       </p>
                       <p className="flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500" />
-                        Choisissez ce que vous souhaitez importer
+                        Nom, localisation et photo pré-remplis pour vous
                       </p>
                       <p className="flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-green-500" />

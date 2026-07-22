@@ -3,6 +3,7 @@ import {
   LogOut01,
   Settings01,
   User01,
+  Users01,
   Activity,
   LayersTwo01,
   Star04,
@@ -210,6 +211,9 @@ const UserDropdown: React.FC = () => {
             <Dropdown.Section>
               <Dropdown.Item icon={Activity} onAction={navigateTo('/analytics')}>
                 Analytics
+              </Dropdown.Item>
+              <Dropdown.Item icon={Users01} onAction={navigateTo('/relationships')}>
+                Mes relations
               </Dropdown.Item>
             </Dropdown.Section>
 

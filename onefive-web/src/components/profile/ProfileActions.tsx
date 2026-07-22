@@ -84,7 +84,7 @@ export default function ProfileActions({
   profileName,
   isCurrentUser,
   currentTags = [],
-  onTagChange,
+  onTagChange: _onTagChange,
   linkedinUrl: _linkedinUrl,
   isFollowing = false,
   profileData
@@ -154,13 +154,11 @@ export default function ProfileActions({
   const [reminderReason, setReminderReason] = useState('');
   const [noteContent, setNoteContent] = useState('');
 
-  const handleTagToggle = (tagId: string) => {
-    const newTags = currentTags.includes(tagId)
-      ? currentTags.filter(t => t !== tagId)
-      : [...currentTags, tagId];
-    
-    onTagChange?.(newTags);
-    toast.success(`Tag ${currentTags.includes(tagId) ? 'retiré' : 'ajouté'} avec succès`);
+  const handleTagToggle = (_tagId: string) => {
+    // Les listes/tags de contacts ne sont pas encore persistés côté serveur
+    // (le CRM ne gère que stage/notes/rappels). On reste honnête — comme pour
+    // les tags personnalisés — plutôt que de simuler un succès non sauvegardé.
+    toast.info('Les listes de contacts arrivent bientôt');
   };
 
   const handleAddCustomTag = () => {

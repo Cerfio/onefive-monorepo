@@ -1,8 +1,8 @@
 'use client';
 import Navbar from '@/components/navbar';
+import Link from 'next/link';
 import { Post, FeedSkeleton } from '@/features/post/components/post';
 import { CreatePostButton } from '@/components/feed/CreatePostButton';
-import { CreatePostModal } from '@/components/feed/CreatePostModal';
 import { UnifiedComposerModal } from '@/components/feed/UnifiedComposerModal';
 import { FeedPollsSection } from '@/components/feed/FeedPollsSection';
 import { CreateBuildInPublicModal } from '@/components/feed/CreateBuildInPublicModal';
@@ -351,7 +351,9 @@ function FeedLeftSidebar() {
           <div><span className="font-bold">{user.postCount || 0}</span> posts</div>
         </div>
         {/* Bouton profil */}
-        <Button color="primary" size="sm" className="mt-2">Voir mon profil</Button>
+        <Link href="/profile/current_user" className="mt-2 w-full">
+          <Button color="primary" size="sm" className="w-full">Voir mon profil</Button>
+        </Link>
       </div>
 
       {/* Centres d'intérêt */}

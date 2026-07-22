@@ -118,6 +118,16 @@ export class GetStartupHandler {
       }
     }
 
+    // L'utilisateur courant suit-il cette startup ? (état initial du bouton "Suivre")
+    let isFollowing = false;
+    if (profileId) {
+      const follow = await this.prisma.startupFollow.findUnique({
+        where: { profileId_startupId: { profileId, startupId } },
+        select: { profileId: true },
+      });
+      isFollowing = !!follow;
+    }
+
     const founders = await Promise.all(
       startup.members
         .filter((m) => m.isFounder)
@@ -196,6 +206,7 @@ export class GetStartupHandler {
       },
       isMember,
       canEdit,
+      isFollowing,
     };
 
     // Ajouter les données supplémentaires pour les membres/admins

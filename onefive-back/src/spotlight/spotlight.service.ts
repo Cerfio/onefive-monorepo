@@ -19,6 +19,7 @@ export interface ListSpotsInput {
   transactionId: string;
   lat?: number;
   lng?: number;
+  radius?: number;
   take?: number;
   skip?: number;
   spot?: string[];
@@ -175,6 +176,7 @@ export class SpotlightService {
     transactionId,
     lat,
     lng,
+    radius,
     take = 10,
     skip = 0,
     spot = [],
@@ -417,6 +419,9 @@ export class SpotlightService {
       };
 
       if (typeof lat === 'number' && typeof lng === 'number') {
+        // Rayon de recherche en mètres, piloté par le filtre distance du front
+        // (défaut 4 km si absent, borné à [100 m, 200 km] par sécurité).
+        const radiusMeters = Math.min(Math.max(radius ?? 4000, 100), 200000);
         const nearbySpots = await this.prisma.$queryRaw<
           Array<{ id: string }>
         >(Prisma.sql`
@@ -425,7 +430,7 @@ export class SpotlightService {
             AND ST_DWithin(
               ST_GeomFromGeoJSON(location::jsonb)::geography,
               ST_Point(${lng}, ${lat})::geography,
-              4000
+              ${radiusMeters}
             )
           ORDER BY ST_Distance(
             ST_GeomFromGeoJSON(location::jsonb)::geography,

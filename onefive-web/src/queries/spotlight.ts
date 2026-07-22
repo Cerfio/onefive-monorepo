@@ -143,6 +143,7 @@ export type SpotlightEventWithSpotData = {
 export interface ListSpotlightParams {
   latitude: number;
   longitude: number;
+  radius?: number;
   spot?: string[];
   provider?: string[];
   expertiseDomains?: string[];
@@ -156,6 +157,7 @@ export interface ListSpotlightParams {
 export const listSpotlight = async ({
   latitude,
   longitude,
+  radius,
   spot = [],
   provider = [],
   expertiseDomains = [],
@@ -173,6 +175,7 @@ export const listSpotlight = async ({
       skip: skip.toString(),
     });
 
+    if (radius && radius > 0) params.set('radius', Math.round(radius).toString());
     if (spot.length > 0) params.set('spot', spot.join(','));
     if (provider.length > 0) params.set('provider', provider.join(','));
     if (expertiseDomains.length > 0) {

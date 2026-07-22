@@ -16,6 +16,7 @@ export interface ListSpotlightInput {
   endDate?: string;
   take?: number;
   skip?: number;
+  radius?: number;
 }
 
 function parseCsvQueryParam(value?: string): string[] {
@@ -67,12 +68,14 @@ export class ListSpotlightHandler {
     endDate,
     take,
     skip,
+    radius,
   }: ListSpotlightInput) {
     try {
       const result = await this.spotlightService.list({
         transactionId,
         lat,
         lng,
+        radius,
         take,
         skip,
         provider: parseCsvQueryParam(provider),

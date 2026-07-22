@@ -105,32 +105,13 @@ export const InvestmentProposalModal = ({
       return;
     }
 
-    try {
-      // Simulation d'envoi
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success('Proposition d\'investissement envoyée avec succès !');
-      onOpenChange(false);
-      
-      // Reset form
-      setFormData({
-        amount: '',
-        currency: 'EUR',
-        investmentType: '',
-        otherInvestmentType: '',
-        valuation: '',
-        equityPercentage: '',
-        horizon: '',
-        objectives: [],
-        message: '',
-        document: null,
-        isConfidential: true,
-        allowRecommendations: false,
-      });
-      setErrors([]);
-    } catch {
-      toast.error('Erreur lors de l\'envoi de la proposition');
-    }
+    // Il n'existe pas encore d'endpoint backend pour les propositions
+    // d'investissement : on ne prétend pas au succès (cf. audit features fantômes).
+    // La modale reste ouverte pour ne pas faire disparaître le brouillon de l'utilisateur.
+    toast.info(
+      "Les propositions d'investissement arrivent bientôt — votre message n'a pas encore été envoyé.",
+    );
+    setErrors([]);
   };
 
   const handleObjectiveChange = (objective: string, checked: boolean) => {

@@ -184,6 +184,7 @@ export interface Startup {
   stats: StartupStats;
   isMember: boolean;
   canEdit: boolean;
+  isFollowing?: boolean;
   role?: string;
   currentProfileId?: string;
 }
@@ -285,6 +286,7 @@ const getStartupSchema = z.object({
     }),
     isMember: z.boolean(),
     canEdit: z.boolean(),
+    isFollowing: z.boolean().optional().default(false),
     role: z.string().optional(),
     currentProfileId: z.string().optional(),
   })

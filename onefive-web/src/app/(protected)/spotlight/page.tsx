@@ -400,6 +400,7 @@ const Spotlight = () => {
         longitude: mapCenter.lng,
         take: 10,
         skip: pageParam as number,
+        ...(Number(distanceFilter) > 0 ? { radius: Number(distanceFilter) * 1000 } : {}),
         ...(typeFilter !== 'all' ? { spot: [typeFilter] } : {}),
         ...(sectorFilter !== 'all' ? { expertiseDomains: [sectorFilter] } : {}),
         ...(pricingFilter !== 'all' ? { cost: [pricingFilter] } : {}),

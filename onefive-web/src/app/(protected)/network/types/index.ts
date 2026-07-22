@@ -51,9 +51,14 @@ export interface Startup {
 
 export interface ActivityEvent {
   id: string;
-  type: 'NEW_CONNECTION' | 'FOLLOWED_STARTUP' | 'NEW_INTENTION' | 'PROFILE_UPDATE' | 'JOINED_PLATFORM' | 'NEW_SKILL' | 'JOB_CHANGE' | 'MENTORSHIP_OFFER' | 'STARTUP_UPDATE';
+  // Types réellement émis par le backend getNetworkActivity : NEW_CONNECTION,
+  // NEW_POST, PROFILE_FOLLOW, STARTUP_FOLLOW. Les autres sont des legacy conservés
+  // pour compat. Le backend fournit toujours un `details` lisible par event.
+  type: 'NEW_CONNECTION' | 'NEW_POST' | 'PROFILE_FOLLOW' | 'STARTUP_FOLLOW' | 'FOLLOWED_STARTUP' | 'NEW_INTENTION' | 'PROFILE_UPDATE' | 'JOINED_PLATFORM' | 'NEW_SKILL' | 'JOB_CHANGE' | 'MENTORSHIP_OFFER' | 'STARTUP_UPDATE';
   person: Person;
   target?: Person | Startup;
+  targetPerson?: Person;
+  targetStartup?: Startup;
   timestamp: string;
   details?: string;
 } 

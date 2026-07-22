@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { DollarSign, Users, FileText, Calendar, Plus, Trash2, Edit3 } from 'lucide-react';
+import { DollarSign, Users, FileText, Calendar, Plus, Trash2, Edit3, Settings } from 'lucide-react';
 import { Card } from '@/components/base/card/card';
 import { Badge } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
 import { Avatar } from '@/components/base/avatar/avatar';
-import { FundingData, FundingHistoryEntry, parseInvestors } from '@/queries/startup';
+import { FundingData, FundingHistoryEntry, parseInvestors, useUpdateFunding } from '@/queries/startup';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Link from 'next/link';
@@ -23,6 +23,8 @@ import {
 import { UserMiniProfile } from '@/components/base/avatar/user-mini-profile';
 import { resolveAvatarUrl } from '@/utils/avatar';
 import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
+import { EditFundingModal } from './modals/EditFundingModal';
+import { InvestmentSettingsModal } from './InvestmentSettingsModal';
 
 const ROUND_LABELS: Record<FundingHistoryEntry['round'], string> = {
   LOVE_MONEY: 'Love Money',
@@ -54,6 +56,7 @@ export const FundingCard = ({
   onAddHistory,
   onEditHistory,
   onDeleteHistory,
+  startupId,
 }: {
   funding: FundingData;
   history?: FundingHistoryEntry[];
@@ -61,11 +64,15 @@ export const FundingCard = ({
   onAddHistory?: () => void;
   onEditHistory?: (entry: FundingHistoryEntry) => void;
   onDeleteHistory?: (entryId: string) => void;
+  startupId: string;
 }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [entryToDelete, setEntryToDelete] = useState<FundingHistoryEntry | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditFundingOpen, setIsEditFundingOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { navigateToConversation } = useNavigateToConversation();
+  const updateFunding = useUpdateFunding();
 
   // Calculer le total levé depuis l'historique
   const calculatedTotal = history.reduce((sum, entry) => sum + entry.amountRaised, 0);
@@ -96,9 +103,35 @@ export const FundingCard = ({
 
   return (
     <Card className="p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <DollarSign className="w-5 h-5 text-gray-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Financement</h3>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <DollarSign className="w-5 h-5 text-gray-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Financement</h3>
+        </div>
+        {currentUser && (
+          <div className="flex gap-1">
+            <Button
+              color="tertiary"
+              size="sm"
+              onClick={() => setIsEditFundingOpen(true)}
+              className="h-8 gap-1.5 text-xs"
+              title="Modifier les investisseurs et la dernière levée"
+            >
+              <Users className="w-4 h-4" />
+              Investisseurs
+            </Button>
+            <Button
+              color="tertiary"
+              size="sm"
+              onClick={() => setIsSettingsOpen(true)}
+              className="h-8 gap-1.5 text-xs"
+              title="Configurer la levée en cours"
+            >
+              <Settings className="w-4 h-4" />
+              Levée
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -469,6 +502,29 @@ export const FundingCard = ({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+      )}
+
+      {/* Édition funding (investisseurs globaux + dernière levée) et configuration
+          de la levée en cours — auparavant construites mais jamais montées. */}
+      {currentUser && (
+        <>
+          <EditFundingModal
+            open={isEditFundingOpen}
+            onOpenChange={setIsEditFundingOpen}
+            fundingData={funding}
+            onSave={(data) => updateFunding.mutate({ startupId, data })}
+          />
+          <InvestmentSettingsModal
+            open={isSettingsOpen}
+            onOpenChange={setIsSettingsOpen}
+            settings={{
+              fundraisingType: funding.fundraisingType,
+              structuredRound: funding.structuredRound,
+              rollingInvestment: funding.rollingInvestment,
+            }}
+            onSave={(settings) => updateFunding.mutate({ startupId, data: settings })}
+          />
+        </>
       )}
     </Card>
   );
