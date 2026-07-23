@@ -452,7 +452,7 @@ export function ProfileFullView({ profileId }: { profileId: string }) {
         >
           <motion.div variants={cardVariants}>
             <ProfileHeader
-              profileData={profileData}
+              profileData={{ ...profileData, connectionsData }}
               currentUser={currentUser}
               onEdit={() => setIsEditHeaderModalOpen(true)}
               profileTags={profileTags}

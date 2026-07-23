@@ -88,6 +88,7 @@ export class ListSpotlightHandler {
 
       const payload = result.spots.map((spot: any) => ({
         id: spot.id,
+        createdAt: spot.createdAt,
         url: spot.url || null,
         spot: spot.spot,
         name: spot.name,

@@ -25,8 +25,6 @@ import { ButtonUtility } from "@/components/base/buttons/button-utility";
 import NumberFlow from '@number-flow/react';
 import { Dataroom, Group, DisplayedDocument, DerivedCategory, DataroomStat } from '../types';
 import { getFileIcon } from '../utils';
-import { UploadNewVersionModal } from './UploadNewVersionModal';
-import { VersionHistoryModal } from './VersionHistoryModal';
 import { FileText } from "lucide-react";
 
 const CATEGORY_BADGE_COLORS = [
@@ -88,9 +86,6 @@ interface DataroomMainProps {
     onInvite: (groupId: string) => void;
     onInvitationResponse: (groupId: string, invitationId: string, status: 'accepted' | 'refused') => void;
     onOpenGroupDetails: (group: Group) => void;
-    onUploadNewVersion: (file: File, documentId: string) => Promise<void>;
-    onDownloadVersion: (versionId: string, version: number) => void;
-    onViewVersion: (versionId: string, version: number) => void;
     onDirectFilesDrop?: (files: File[]) => void;
     onBulkDelete?: (ids: string[]) => Promise<void>;
     isOwner?: boolean;
@@ -268,9 +263,6 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
     onInvite: _onInvite,
     onInvitationResponse: _onInvitationResponse,
     onOpenGroupDetails,
-    onUploadNewVersion,
-    onDownloadVersion,
-    onViewVersion,
     onDirectFilesDrop,
     onBulkDelete,
     isOwner = false,
@@ -313,11 +305,6 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
         const files = Array.from(e.dataTransfer.files || []);
         if (files.length > 0) onDirectFilesDrop(files);
     };
-
-    // Versioning state (owned by this component only)
-    const [documentForVersioning, setDocumentForVersioning] = useState<DisplayedDocument | null>(null);
-    const [isUploadNewVersionModalOpen, setIsUploadNewVersionModalOpen] = useState(false);
-    const [isVersionHistoryModalOpen, setIsVersionHistoryModalOpen] = useState(false);
 
     // Bulk selection state
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -863,7 +850,7 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                                                         {getFileIcon(doc.name, doc.mimetype)}
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <Tooltip title={`${doc.name} - Version ${doc.version || 1}`}>
+                                                        <Tooltip title={doc.name}>
                                                             <TooltipTrigger>
                                                                 <div>
                                                                     <div className="flex items-center gap-2 min-w-0">
@@ -932,27 +919,6 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                                                             <Dropdown.Menu>
                                                                 <Dropdown.Section>
                                                                     <Dropdown.Item
-                                                                        icon={Upload}
-                                                                        onAction={() => {
-                                                                            setDocumentForVersioning(doc);
-                                                                            setIsUploadNewVersionModalOpen(true);
-                                                                        }}
-                                                                    >
-                                                                        Nouvelle version
-                                                                    </Dropdown.Item>
-                                                                    <Dropdown.Item
-                                                                        icon={Clock}
-                                                                        onAction={() => {
-                                                                            setDocumentForVersioning(doc);
-                                                                            setIsVersionHistoryModalOpen(true);
-                                                                        }}
-                                                                    >
-                                                                        Historique des versions
-                                                                    </Dropdown.Item>
-                                                                </Dropdown.Section>
-                                                                <Dropdown.Separator />
-                                                                <Dropdown.Section>
-                                                                    <Dropdown.Item
                                                                         icon={Folder}
                                                                         onAction={() => {
                                                                             onSetFileToChangeCategory({ id: doc.id, name: doc.name, category: doc.category });
@@ -1006,27 +972,6 @@ export const DataroomMain: React.FC<DataroomMainProps> = ({
                 </div>
             </div>
 
-            {/* Versioning modals (state owned by this component) */}
-            <UploadNewVersionModal
-                isOpen={isUploadNewVersionModalOpen}
-                onClose={() => {
-                    setIsUploadNewVersionModalOpen(false);
-                    setDocumentForVersioning(null);
-                }}
-                document={documentForVersioning}
-                onUploadNewVersion={onUploadNewVersion}
-            />
-
-            <VersionHistoryModal
-                isOpen={isVersionHistoryModalOpen}
-                onClose={() => {
-                    setIsVersionHistoryModalOpen(false);
-                    setDocumentForVersioning(null);
-                }}
-                document={documentForVersioning}
-                onDownloadVersion={onDownloadVersion}
-                onViewVersion={onViewVersion}
-            />
         </main>
     );
 };

@@ -651,7 +651,7 @@ const MessagesPage = () => {
             avatarUrl: sender.avatarUrl ?? undefined,
             me: Boolean(sender.isMe),
           },
-          status: derivedStatus as 'sent' | 'read' | 'failed' | undefined,
+          status: derivedStatus as 'sending' | 'sent' | 'read' | 'failed' | undefined,
           reactions: (msg.reactions ?? []).map((r: any) => ({
             content: r.emoji,
             emoji: r.emoji,
@@ -893,7 +893,7 @@ const MessagesPage = () => {
                             ? `${selectedParticipant.firstName} ${selectedParticipant.lastName}`
                             : 'Unknown'}
                       </span>
-                      {selectedParticipant && (
+                      {selectedParticipant && connectedIdSet.has(selectedParticipant.id) && (
                         <BadgeWithDot
                           color={
                             isOnline(selectedParticipant.id) ? 'success' : 'gray'

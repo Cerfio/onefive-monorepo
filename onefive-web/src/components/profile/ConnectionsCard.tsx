@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/base/card
 import { Button } from '../base/buttons/button';
 import { Avatar } from '../base/avatar/avatar';
 import { MessageCircle } from 'lucide-react';
+import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
 
 export const ConnectionsCard = ({ profileData }: { profileData: any }) => {
+    const { navigateToConversation, loadingProfileId } = useNavigateToConversation();
     const connections = profileData.connectionsData ?? [];
     const mutualMode = !!profileData.mutualMode;
     const title = mutualMode ? 'Connexions en commun' : 'Connexions';
@@ -30,7 +32,14 @@ export const ConnectionsCard = ({ profileData }: { profileData: any }) => {
                                     <p className="text-xs text-gray-500">{conn.mutual} connexions en commun</p>
                                 )}
                             </div>
-                            <Button size="sm" color="secondary"><MessageCircle size={14} /></Button>
+                            <Button
+                                size="sm"
+                                color="secondary"
+                                onClick={() => navigateToConversation(conn.id)}
+                                isDisabled={!conn.id || loadingProfileId === conn.id}
+                            >
+                                <MessageCircle size={14} />
+                            </Button>
                         </div>
                     ))
                 )}

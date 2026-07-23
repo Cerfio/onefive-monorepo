@@ -141,6 +141,10 @@ const PhoneNumberVerification = ({
         tagFollowing: payload.tags,
         code: isAlreadyVerified ? '' : code,
         ecosystemRoles,
+        // Transmettre le code de parrainage saisi manuellement (contexte via ...payload).
+        // Si vide (cas d'un lien ?ref= : l'input n'est pas affiché), on laisse createProfile
+        // reprendre le cookie referredByCode via son fallback interne.
+        referredByCode: payload.referredByCode || undefined,
       });
 
       // 3. Ensuite uploader l'avatar si un fichier a été sélectionné

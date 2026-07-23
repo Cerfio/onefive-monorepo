@@ -88,8 +88,6 @@ const SettingsPage = () => {
   // Tab items definition
   const tabs = [
     { id: 'account', label: 'Compte' },
-    { id: 'notifications', label: 'Notifications' },
-    { id: 'privacy', label: 'Confidentialité' },
     { id: 'security', label: 'Sécurité' },
     { id: 'preferences', label: 'Préférences' },
     { id: 'billing', label: 'Facturation' }
@@ -366,10 +364,6 @@ const SettingsPage = () => {
                     year: 'numeric'
                   })}
                 </span>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-sm font-medium text-gray-600">Dernière connexion</span>
-                <span className="text-sm text-gray-900">{new Date(user.lastLogin).toLocaleDateString('fr-FR')}</span>
               </div>
             </div>
           </div>
@@ -965,57 +959,6 @@ const SettingsPage = () => {
                           items={[
                             { id: 'fr', label: '🇫🇷 Français' },
                             { id: 'en', label: '🇺🇸 English' }
-                          ]}
-                          className="mt-2"
-                        >
-                          {item => <Select.Item id={item.id}>{item.label}</Select.Item>}
-                        </Select>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Localisation */}
-                  <Card className="bg-white rounded-xl shadow-sm border border-gray-100">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Globe className="h-5 w-5" />
-                        Localisation
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <Label htmlFor="timezone">Fuseau horaire</Label>
-                        <Select
-                          label=""
-                          placeholder="Sélectionner un fuseau horaire"
-                          selectedKey={user.preferences.timezone}
-                          onSelectionChange={value => handlePreferenceChange('preferences', 'timezone', String(value))}
-                          items={[
-                            { id: 'Europe/Paris', label: 'Europe/Paris (UTC+1)' },
-                            { id: 'Europe/London', label: 'Europe/London (UTC+0)' },
-                            { id: 'America/New_York', label: 'America/New_York (UTC-5)' },
-                            { id: 'America/Los_Angeles', label: 'America/Los_Angeles (UTC-8)' },
-                            { id: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' }
-                          ]}
-                          className="mt-2"
-                        >
-                          {item => <Select.Item id={item.id}>{item.label}</Select.Item>}
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="dateFormat">Format de date</Label>
-                        <Select
-                          label=""
-                          placeholder="Sélectionner un format de date"
-                          selectedKey={user.preferences.dateFormat}
-                          onSelectionChange={value =>
-                            handlePreferenceChange('preferences', 'dateFormat', String(value))
-                          }
-                          items={[
-                            { id: 'dd/mm/yyyy', label: 'DD/MM/YYYY (31/12/2024)' },
-                            { id: 'mm/dd/yyyy', label: 'MM/DD/YYYY (12/31/2024)' },
-                            { id: 'yyyy-mm-dd', label: 'YYYY-MM-DD (2024-12-31)' }
                           ]}
                           className="mt-2"
                         >

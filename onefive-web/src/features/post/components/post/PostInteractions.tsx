@@ -121,9 +121,9 @@ const PostInteractions: React.FC<PostInteractionsProps> = ({
               )}
             </button>
             <span>•</span>
-            <button className="hover:underline" disabled={disabled}>
+            <span>
               {repostCount === 0 ? 'aucun repost' : `${repostCount} reposts`}
-            </button>
+            </span>
             {viewCount > 0 && (
               <>
                 <span>•</span>

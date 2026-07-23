@@ -133,7 +133,7 @@ export class ReferralService {
               select: {
                 following: true,
                 followedBy: true,
-                discussions: true,
+                posts: true,
               },
             },
             followedBy: {
@@ -164,7 +164,7 @@ export class ReferralService {
             stats: {
               followers: r.invitedProfile._count.followedBy,
               following: r.invitedProfile._count.following,
-              posts: r.invitedProfile._count.discussions,
+              posts: r.invitedProfile._count.posts,
             },
           }
         : null,

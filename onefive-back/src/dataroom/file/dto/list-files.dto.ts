@@ -58,6 +58,7 @@ export class ListFilesResponseDto {
       size: number;
       mimetype: string;
       storageId: string;
+      viewCount?: number;
       category: {
         id: string;
         name: string;
@@ -72,6 +73,7 @@ export class ListFilesResponseDto {
       size: number;
       mimetype: string;
       storageId: string;
+      viewCount?: number;
       category: {
         id: string;
         name: string;

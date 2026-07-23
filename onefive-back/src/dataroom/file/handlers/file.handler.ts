@@ -138,6 +138,7 @@ export class FileHandler {
       size: file.size,
       mimetype: file.mimetype,
       storageId: file.storageId,
+      viewCount: file._count?.accessLogs ?? 0,
       category: {
         id: file.category.id,
         name: file.category.name,

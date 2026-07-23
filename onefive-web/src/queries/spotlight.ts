@@ -16,6 +16,7 @@ const spotlightSchema = z.object({
     payload: z.array(
       z.object({
         id: z.string(),
+        createdAt: z.union([z.string(), z.date()]).optional().nullable(),
         name: z.string(),
         highlight: z.string().nullable(),
         address: z.string().nullable(),

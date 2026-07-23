@@ -6,8 +6,6 @@ import {
   Users,
   ArrowLeft,
   ExternalLink,
-  Share2,
-  Heart,
   Calendar,
   Layers,
   Rocket,
@@ -487,12 +485,6 @@ export default async function SpotlightPublicPage({
             </Link>
 
             <div className="flex items-center gap-2">
-              <button className="h-9 w-9 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
-                <Heart className="h-4 w-4" />
-              </button>
-              <button className="h-9 w-9 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
-                <Share2 className="h-4 w-4" />
-              </button>
               {spot.url && urlHost && (
                 <a
                   href={spot.url}

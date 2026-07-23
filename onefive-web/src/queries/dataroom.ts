@@ -214,6 +214,7 @@ export const getDataroomFiles = async ({ dataroomId, categoryId }: { dataroomId:
       uploadedBy: z.string(),
       createdAt: z.string(),
       updatedAt: z.string(),
+      viewCount: z.number().optional(),
     });
     const parse = z.object({
       code: z.number().optional(),
@@ -232,7 +233,7 @@ export const getDataroomFiles = async ({ dataroomId, categoryId }: { dataroomId:
     return files.map(file => ({
       ...file,
       category: file.category.name,
-      viewCount: 0, // Backend doesn't return viewCount in list endpoint
+      viewCount: file.viewCount ?? 0,
     }));
   } catch (error: any) {
     throw error;

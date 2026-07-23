@@ -406,6 +406,14 @@ export class NetworkService {
           countryCode: true,
           createdAt: true,
           categories: true,
+          logo: true,
+          tagline: true,
+          fundingInfo: {
+            select: {
+              lastRound: true,
+              totalRaised: true,
+            },
+          },
         },
       });
 
@@ -439,28 +447,15 @@ export class NetworkService {
         // Déterminer le secteur basé sur les catégories
         const industry = categories.length > 0 ? categories[0] : 'Technology';
 
-        // Estimer le stage basé sur l'ancienneté (très basique)
-        const now = new Date();
-        const createdAt = startup.createdAt;
-        const ageInMonths =
-          (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
-
-        let stage = 'Seed';
-        if (ageInMonths > 24) stage = 'Series A';
-        else if (ageInMonths > 12) stage = 'Pre-seed';
-
-        // Estimation basique du funding
-        const fundingEstimates = {
-          Seed: '500k€',
-          'Pre-seed': '200k€',
-          'Series A': '2M€',
-        };
+        // Stage et montant levé réels, issus de fundingInfo (chaîne vide si non renseigné).
+        const stage = startup.fundingInfo?.lastRound || '';
+        const funding = startup.fundingInfo?.totalRaised || '';
 
         return {
           id: startup.id,
           name: startup.name,
-          logo: '/default-startup-logo.png',
-          tagline: startup.description || 'Innovation en cours',
+          logo: startup.logo || '/default-startup-logo.png',
+          tagline: startup.tagline || '',
           location: `${startup.city}, ${startup.countryCode}`,
           countryCode: startup.countryCode,
           intention,
@@ -468,9 +463,7 @@ export class NetworkService {
           stats: {
             stage,
             industry,
-            funding:
-              fundingEstimates[stage as keyof typeof fundingEstimates] ||
-              '500k€',
+            funding,
           },
           createdAt: startup.createdAt.toISOString(),
           isFollow: startupFollowSet.has(startup.id),

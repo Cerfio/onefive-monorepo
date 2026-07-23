@@ -522,7 +522,20 @@ export const FundingCard = ({
               structuredRound: funding.structuredRound,
               rollingInvestment: funding.rollingInvestment,
             }}
-            onSave={(settings) => updateFunding.mutate({ startupId, data: settings })}
+            onSave={(settings) =>
+              updateFunding.mutate({
+                startupId,
+                data: {
+                  ...settings,
+                  // La modale « Levée » ne gère QUE fundraisingType/structuredRound/rollingInvestment.
+                  // L'upsert back écrit `investors: data.investors || []`, donc un payload sans
+                  // `investors` vide la liste en base. On re-transmet la liste existante (comme le
+                  // fait EditFundingModal pour les champs qu'elle ne modifie pas) pour ne rien perdre.
+                  investors: funding.investors,
+                  lastRound: funding.lastRound,
+                },
+              })
+            }
           />
         </>
       )}

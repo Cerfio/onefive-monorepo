@@ -253,10 +253,25 @@ const NotificationDropdown: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<Key>("engagement");
   const [isOpen, setIsOpen] = useState(false);
   
-  // Fetch des notifications réelles
-  const { data: notificationsData, isLoading: isLoadingNotifications, refetch: refetchNotifications } = useNotificationsList({
-    limit: 20,
-  });
+  // Fetch des notifications par catégorie — chaque onglet interroge sa propre
+  // catégorie (param déjà supporté par GET /notifications) pour que le contenu
+  // corresponde exactement à son badge (compteur de non-lus par catégorie côté
+  // serveur). Auparavant un unique pool global de 20 items filtré client pouvait
+  // afficher un onglet vide alors que le badge promettait N, et faire sortir du
+  // dropdown une invitation en attente (seule surface pour l'Accepter/Refuser).
+  // NB: l'enum Prisma NotificationCategory est en MAJUSCULES.
+  const engagementQuery = useNotificationsList({ category: 'ENGAGEMENT', limit: 20 });
+  const invitationsQuery = useNotificationsList({ category: 'INVITATIONS', limit: 20 });
+  const systemQuery = useNotificationsList({ category: 'SYSTEM', limit: 20 });
+
+  const isLoadingNotifications =
+    engagementQuery.isLoading || invitationsQuery.isLoading || systemQuery.isLoading;
+
+  const refetchNotifications = React.useCallback(() => {
+    engagementQuery.refetch();
+    invitationsQuery.refetch();
+    systemQuery.refetch();
+  }, [engagementQuery.refetch, invitationsQuery.refetch, systemQuery.refetch]);
   
   // Invitation mutations
   const acceptInvitationMutation = useAcceptInvitation();
@@ -315,12 +330,19 @@ const NotificationDropdown: React.FC = () => {
     });
   };
 
-  // Filtrer les notifications par catégorie
+  // Chaque catégorie provient de sa propre requête (déjà filtrée côté serveur),
+  // donc le contenu de l'onglet est scoping-cohérent avec son badge.
   const getNotificationsForCategory = (category: string): NotificationItem[] => {
-    if (notificationsData?.notifications) {
-      return notificationsData.notifications.filter(n => n.category === category);
+    switch (category) {
+      case 'engagement':
+        return engagementQuery.data?.notifications ?? [];
+      case 'invitations':
+        return invitationsQuery.data?.notifications ?? [];
+      case 'system':
+        return systemQuery.data?.notifications ?? [];
+      default:
+        return [];
     }
-    return [];
   };
 
   const tabs = [

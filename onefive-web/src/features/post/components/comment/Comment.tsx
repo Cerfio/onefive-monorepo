@@ -191,7 +191,7 @@ const Comment: React.FC<Props> = ({ comment }) => {
               </Dropdown.Trigger>
               <Dropdown.Popover placement="bottom right">
                 <Dropdown.Menu>
-                  <Dropdown.Item>Copy text</Dropdown.Item>
+                  <Dropdown.Item onAction={() => navigator.clipboard?.writeText(content)}>Copy text</Dropdown.Item>
                   {canEditWithinTime && (
                     <>
                       <Dropdown.Separator />

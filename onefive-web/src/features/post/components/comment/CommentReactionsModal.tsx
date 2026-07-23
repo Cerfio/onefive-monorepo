@@ -78,7 +78,7 @@ export default function CommentReactionsModal({ open, onOpenChange, postId, comm
         </DialogHeader>
 
         <div className="space-y-4">
-          {groups.length === 0 && (
+          {groups.length === 0 && (!data?.data || data.data.length === 0) && (
             <div className="text-sm text-gray-500">No reactions yet.</div>
           )}
 

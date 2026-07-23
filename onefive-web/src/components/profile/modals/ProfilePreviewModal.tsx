@@ -12,9 +12,6 @@ import { CompanyIcon } from '../CompanyIcon';
 import Link from 'next/link';
 import { Flag } from '@/components/ui/flag';
 import { getProfileRoleLabel, getGenderedShortLabel, type GenderPreference, ProfileRole } from '@/sharing-enum/profile';
-import { decodeBuildInPublicData, hasBuildInPublicData } from '@/utils/buildInPublic';
-import ProjectAvatar from '@/features/post/components/post/ProjectAvatar';
-import PostTypeBadge from '@/features/post/components/post/PostTypeBadge';
 import { BioWithExpand } from '../BioWithExpand';
 import { getInterestDisplayLabel } from '@/shared/constants/tags';
 
@@ -230,7 +227,7 @@ const ProfilePreviewModal = ({
                 </div>
 
                 {/* Informations privées (si activées) */}
-                {showPrivateInfo && profileData.contactInfo && (
+                {showPrivateInfo && (
                   <div className="p-6 bg-orange-50 rounded-lg border border-orange-200">
                     <h4 className="text-orange-800 flex items-center gap-2 text-sm font-semibold mb-4">
                       <EyeOff className="h-4 w-4" />
@@ -267,75 +264,9 @@ const ProfilePreviewModal = ({
                 )}
 
                 {/* Contenu principal */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Colonne principale */}
-                  <div className="lg:col-span-2 space-y-6">
-                    {/* Posts récents */}
-                    <div className="p-6 bg-white rounded-lg border">
-                      <h4 className="text-sm font-semibold text-[#101828] mb-4">Posts récents</h4>
-                      <div className="space-y-4">
-                        {profileData.posts?.slice(0, 2).map((post: any) => {
-                          const { visibleContent, buildInPublicData } = decodeBuildInPublicData(post.content || '');
-                          const isBuildInPublic = hasBuildInPublicData(post.content || '');
-                          return (
-                          <div key={post.id} className="border-b border-gray-100 last:border-b-0 pb-4 last:pb-0">
-                            {/* Header avec badges en haut à droite */}
-                            <div className="flex items-start justify-between gap-3 mb-2">
-                              <p className="text-sm text-[#475467] flex-1">{visibleContent || post.content}</p>
-                              {/* Badge du projet et type pour les posts Build in Public - en haut à droite */}
-                              {isBuildInPublic && buildInPublicData && (
-                                <div className="flex items-center gap-2 flex-shrink-0">
-                                  {buildInPublicData.projectId || buildInPublicData.projectName ? (
-                                    buildInPublicData.projectId ? (
-                                      <Link 
-                                        href={`/startups/${buildInPublicData.projectId}`}
-                                        className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-full text-xs text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
-                                      >
-                                        <ProjectAvatar 
-                                          projectId={buildInPublicData.projectId}
-                                          projectName={buildInPublicData.projectName}
-                                          size="sm"
-                                        />
-                                        <span className="font-medium">{buildInPublicData.projectName}</span>
-                                      </Link>
-                                    ) : (
-                                      <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-full text-xs text-gray-600">
-                                        <ProjectAvatar 
-                                          projectId={buildInPublicData.projectId || ''}
-                                          projectName={buildInPublicData.projectName}
-                                          size="sm"
-                                        />
-                                        <span className="font-medium">{buildInPublicData.projectName}</span>
-                                      </div>
-                                    )
-                                  ) : null}
-                                  {buildInPublicData.type && (
-                                    <PostTypeBadge buildInPublicData={buildInPublicData} />
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                            {post.image && (
-                              <img 
-                                src={post.image} 
-                                alt="Post" 
-                                className="w-full h-32 object-cover rounded-lg mb-2"
-                              />
-                            )}
-                            <div className="flex items-center gap-4 text-xs text-gray-500">
-                              <span>{post.likes} likes</span>
-                              <span>{post.comments} commentaires</span>
-                              <span>{post.createdAt}</span>
-                            </div>
-                          </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-
+                <div className="grid grid-cols-1 gap-6">
                   {/* Sidebar */}
-                  <div className="lg:col-span-1 space-y-6">
+                  <div className="space-y-6">
                     {/* À Propos */}
                     <div className="p-6 bg-white rounded-lg border">
                       <h4 className="text-sm font-semibold text-[#101828] mb-4">À Propos</h4>

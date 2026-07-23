@@ -41,13 +41,13 @@ const StartupCard = React.memo(({ startup, handleFollowStartup, searchQuery, han
                     )}
                     <div className="mb-2">
                         <h3 className="font-semibold text-lg text-[#101828] mb-1 group-hover:text-green-600 transition-colors">{highlightText(startup.name, searchQuery)}</h3>
-                        <p className="text-sm text-[#475467]">{highlightText(startup.tagline, searchQuery)}</p>
+                        {startup.tagline && <p className="text-sm text-[#475467]">{highlightText(startup.tagline, searchQuery)}</p>}
                     </div>
                     <div className="mb-4">
                         <IntentionBadge intentionCategory={startup.intentionCategory} onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); handleIntentionClick(startup.intentionCategory); }} />
                     </div>
                     <div className="flex gap-2 mb-4">
-                        <Badge type="color" color="gray" size="sm" className="text-xs group-hover:border-green-500/50 transition-colors">{startup.stats.stage}</Badge>
+                        {startup.stats.stage && <Badge type="color" color="gray" size="sm" className="text-xs group-hover:border-green-500/50 transition-colors">{startup.stats.stage}</Badge>}
                         <Badge type="color" color="gray" size="sm" className="text-xs group-hover:border-green-500/50 transition-colors">{startup.stats.industry}</Badge>
                     </div>
                     <div className="flex-1"></div>

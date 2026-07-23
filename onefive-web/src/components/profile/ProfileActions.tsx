@@ -28,7 +28,8 @@ import { Clock, CheckCircle, Trash01 } from '@untitledui/icons';
 import { useMeProfile } from '@/queries/profile';
 import { CancelConnectionModal } from '@/components/modals/CancelConnectionModal';
 import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
-import { addCrmNote, addCrmReminder } from '@/queries/crm';
+import { addCrmNote, addCrmReminder, getCrmContact, completeCrmReminder } from '@/queries/crm';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 // Types pour la gestion relationnelle
 interface ProfileTag {
@@ -154,6 +155,18 @@ export default function ProfileActions({
   const [reminderReason, setReminderReason] = useState('');
   const [noteContent, setNoteContent] = useState('');
 
+  const crmQueryClient = useQueryClient();
+  const { data: crmContact } = useQuery({
+    queryKey: ['crm-contact', profileId],
+    queryFn: () => getCrmContact(profileId),
+    enabled: !isCurrentUser && (isNoteModalOpen || isReminderModalOpen),
+  });
+  const completeReminderMut = useMutation({
+    mutationFn: (reminderId: string) => completeCrmReminder(reminderId),
+    onSuccess: () =>
+      crmQueryClient.invalidateQueries({ queryKey: ['crm-contact', profileId] }),
+  });
+
   const handleTagToggle = (_tagId: string) => {
     // Les listes/tags de contacts ne sont pas encore persistés côté serveur
     // (le CRM ne gère que stage/notes/rappels). On reste honnête — comme pour
@@ -177,6 +190,7 @@ export default function ProfileActions({
           reminderReason,
           new Date(`${reminderDate}T${reminderTime}`).toISOString(),
         );
+        crmQueryClient.invalidateQueries({ queryKey: ['crm-contact', profileId] });
         toast.success('Rappel créé');
         setIsReminderModalOpen(false);
         setReminderDate('');
@@ -192,6 +206,7 @@ export default function ProfileActions({
     if (noteContent.trim()) {
       try {
         await addCrmNote(profileId, noteContent.trim());
+        crmQueryClient.invalidateQueries({ queryKey: ['crm-contact', profileId] });
         toast.success('Note enregistrée');
         setIsNoteModalOpen(false);
         setNoteContent('');
@@ -438,6 +453,39 @@ export default function ProfileActions({
                       />
                     </div>
                     
+                    {crmContact && crmContact.reminders.length > 0 && (
+                      <div className="space-y-2 border-t border-gray-100 pt-3">
+                        <p className="text-sm font-medium text-secondary">Rappels enregistrés</p>
+                        <ul className="space-y-1.5 max-h-48 overflow-y-auto">
+                          {crmContact.reminders.map((r) => (
+                            <li key={r.id} className="flex items-start gap-2 text-sm">
+                              <button
+                                type="button"
+                                onClick={() => completeReminderMut.mutate(r.id)}
+                                disabled={r.done || completeReminderMut.isPending}
+                                className="mt-0.5 shrink-0 text-gray-400 hover:text-green-600 disabled:opacity-50"
+                                title={r.done ? 'Fait' : 'Marquer comme fait'}
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </button>
+                              <div className={r.done ? 'line-through text-gray-400' : 'text-gray-700'}>
+                                <p>{r.reason}</p>
+                                <p className="text-xs text-gray-400">
+                                  {new Date(r.dueAt).toLocaleString('fr-FR', {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'short',
+                                  })}
+                                </p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-xs text-tertiary">
+                          Vos rappels s&apos;affichent ici sur ce contact. Cochez-les une fois traités.
+                        </p>
+                      </div>
+                    )}
+
                     <div className="flex justify-end gap-2">
                       <Button color="secondary" size="md" onClick={() => setIsReminderModalOpen(false)}>
                         Annuler
@@ -477,6 +525,22 @@ export default function ProfileActions({
                       />
                     </div>
                     
+                    {crmContact && crmContact.notes.length > 0 && (
+                      <div className="space-y-2 border-t border-gray-100 pt-3">
+                        <p className="text-sm font-medium text-secondary">Notes enregistrées</p>
+                        <ul className="space-y-2 max-h-48 overflow-y-auto">
+                          {crmContact.notes.map((n) => (
+                            <li key={n.id} className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                              <p className="whitespace-pre-wrap">{n.content}</p>
+                              <p className="mt-1 text-xs text-gray-400">
+                                {new Date(n.createdAt).toLocaleDateString('fr-FR', { dateStyle: 'medium' })}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                     <div className="flex justify-end gap-2">
                       <Button color="secondary" size="md" onClick={() => setIsNoteModalOpen(false)}>
                         Annuler

@@ -38,6 +38,9 @@ const PersonCard = React.memo(({ person, networkView, pendingRequests, followedP
     const firstName = nameParts[0] || '';
     const lastName = nameParts.slice(1).join(' ') || '';
 
+    const isConnected = person.relationStatus === 'ACCEPTED';
+    const isPendingConnect = person.relationStatus === 'PENDING' || pendingRequests.has(person.id);
+
     return (
         <motion.div variants={cardVariants} layout="position">
             <Link href={`/profile/${person.id}`} className="block h-full">
@@ -97,15 +100,16 @@ const PersonCard = React.memo(({ person, networkView, pendingRequests, followedP
                         </div>
 
                         <div className="flex gap-2 w-full">
-                            <Tooltip title="Envoyer une demande de connexion pour échanger en privé.">
+                            <Tooltip title={isConnected ? 'Vous êtes déjà connecté avec cette personne.' : 'Envoyer une demande de connexion pour échanger en privé.'}>
                                 <Button
                                     size="md"
-                                    color={(person.relationStatus === 'PENDING' || pendingRequests.has(person.id)) ? "secondary" : "secondary"}
+                                    color="secondary"
                                     className="text-xs flex-1"
-                                    iconLeading={(person.relationStatus === 'PENDING' || pendingRequests.has(person.id)) ? <Clock className="h-3 w-3" data-icon /> : <UserPlus className="h-3 w-3" data-icon />}
-                                    onClick={(e: React.MouseEvent) => handleConnect(person.id, person.name, e)}
+                                    isDisabled={isConnected || isPendingConnect}
+                                    iconLeading={isConnected ? <CheckCircle className="h-3 w-3" data-icon /> : isPendingConnect ? <Clock className="h-3 w-3" data-icon /> : <UserPlus className="h-3 w-3" data-icon />}
+                                    onClick={(e: React.MouseEvent) => { if (isConnected || isPendingConnect) { e.preventDefault(); e.stopPropagation(); return; } handleConnect(person.id, person.name, e); }}
                                 >
-                                    {(person.relationStatus === 'PENDING' || pendingRequests.has(person.id)) ? 'Demande envoyée' : 'Se connecter'}
+                                    {isConnected ? 'Connecté' : isPendingConnect ? 'Demande envoyée' : 'Se connecter'}
                                 </Button>
                             </Tooltip>
                             <Tooltip title="Suivre pour voir les actualités de cette personne dans votre feed.">

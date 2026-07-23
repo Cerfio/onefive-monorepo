@@ -478,33 +478,6 @@ const DataroomPage = () => {
         ));
     };
 
-    // --- Versioning handlers ---
-
-    const handleUploadNewVersion = async (file: File, documentId: string) => {
-        try {
-            setIsUploading(true);
-            const formData = new FormData();
-            formData.append('files', file);
-            formData.append('newVersion', 'true');
-            formData.append('originalDocumentId', documentId);
-            await mutations.upload.mutateAsync(formData);
-            toast.success("Nouvelle version uploadée !");
-        } catch {
-            toast.error("Erreur lors de l'upload de la nouvelle version");
-            throw new Error("Upload failed");
-        } finally {
-            setIsUploading(false);
-        }
-    };
-
-    const handleDownloadVersion = (_versionId: string, version: number) => {
-        toast.info(`Téléchargement de la version ${version}...`);
-    };
-
-    const handleViewVersion = (versionId: string, version: number) => {
-        window.open(`/dataroom/${dataroomId}/file/${versionId}?version=${version}`, '_blank');
-    };
-
     // --- Adapted data for child components ---
 
     const adaptedGroups = groups.map(group => ({
@@ -736,9 +709,6 @@ const DataroomPage = () => {
                 onInvite={(groupId) => { modals.setInviteTargetGroupId(groupId); modals.setIsInviteModalOpen(true); }}
                 onInvitationResponse={handleInvitationResponse}
                 onOpenGroupDetails={handleOpenGroupDetails}
-                onUploadNewVersion={handleUploadNewVersion}
-                onDownloadVersion={handleDownloadVersion}
-                onViewVersion={handleViewVersion}
                 onDirectFilesDrop={(files) => {
                     processNewFiles(files);
                     modals.setIsUploadModalOpen(true);

@@ -623,7 +623,7 @@ const Spotlight = () => {
   }, []);
 
   const handleShareSpot = useCallback((spotId: string, spotName: string) => {
-    const shareUrl = `${process.env.NEXT_PUBLIC_URL_PUBLIC}/spotlight?lat=${mapCenter.lat}&lng=${mapCenter.lng}&spot=${spotId}`;
+    const shareUrl = `${process.env.NEXT_PUBLIC_URL_PUBLIC}/spotlight/${spotId}`;
     if (navigator.share) {
       navigator.share({
         title: `Spotlight OneFive - ${spotName}`,

@@ -437,11 +437,11 @@ const FileViewerPage = () => {
             {isPDFFile(document.mimetype) ? (
                 <PDFViewer {...sharedViewerProps} />
             ) : isDocxFile(document.mimetype) ? (
-                <DocxViewer {...sharedViewerProps} />
+                <DocxViewer {...sharedViewerProps} shortcuts={shortcutsList} />
             ) : isImageFile(document.mimetype) ? (
                 <ImageViewer {...sharedViewerProps} />
             ) : isVideoFile(document.mimetype) ? (
-                <VideoViewer {...sharedViewerProps} />
+                <VideoViewer {...sharedViewerProps} shortcuts={shortcutsList} />
             ) : (
                 <div className="h-screen w-full flex items-center justify-center">
                     <div className="text-center">

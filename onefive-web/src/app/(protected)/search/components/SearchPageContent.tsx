@@ -13,7 +13,7 @@ import { DiscussionCard } from '@/app/(protected)/discussions/components/Discuss
 import { UserMiniProfile } from '@/components/base/avatar/user-mini-profile';
 import { Badge } from '@/components/base/badges/badges';
 import type { BadgeColors } from '@/components/base/badges/badge-types';
-import { useSendConnectionRequest, useCancelConnectionRequest } from '@/hooks/useConnection';
+import { useSendConnectionRequest, useCancelConnectionRequest, useAcceptConnectionRequest } from '@/hooks/useConnection';
 import { CancelConnectionModal } from '@/components/modals/CancelConnectionModal';
 import { useNavigateToConversation } from '@/hooks/useNavigateToConversation';
 
@@ -241,6 +241,7 @@ function PeopleResults({ people }: { people: SearchPerson[] }) {
   const router = useRouter();
   const sendConnectionRequest = useSendConnectionRequest();
   const cancelConnectionRequest = useCancelConnectionRequest();
+  const acceptConnectionRequest = useAcceptConnectionRequest();
   const { navigateToConversation } = useNavigateToConversation();
   
   // État local pour suivre les statuts de connexion après actions
@@ -288,6 +289,27 @@ function PeopleResults({ people }: { people: SearchPerson[] }) {
         setConnectionStates(prev => ({
           ...prev,
           [personId]: people.find(p => p.id === personId)?.relationshipStatus || null
+        }));
+      }
+    });
+  };
+
+  const handleAcceptClick = (e: React.MouseEvent, personId: string) => {
+    e.stopPropagation();
+
+    // Mise à jour optimiste de l'état local
+    setConnectionStates(prev => ({
+      ...prev,
+      [personId]: 'CONNECTED'
+    }));
+
+    // Appel API
+    acceptConnectionRequest.mutate(personId, {
+      onError: () => {
+        // Restaurer l'état précédent en cas d'erreur
+        setConnectionStates(prev => ({
+          ...prev,
+          [personId]: people.find(p => p.id === personId)?.relationshipStatus || 'PENDING_RECEIVED'
         }));
       }
     });
@@ -370,11 +392,9 @@ function PeopleResults({ people }: { people: SearchPerson[] }) {
     if (status === 'PENDING_RECEIVED') {
       return (
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            router.push(`/profile/${personId}`);
-          }}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors shrink-0 bg-brand-primary text-white hover:bg-brand-primary/90"
+          onClick={(e) => handleAcceptClick(e, personId)}
+          disabled={acceptConnectionRequest.isPending}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors shrink-0 bg-brand-primary text-white hover:bg-brand-primary/90 disabled:opacity-60"
           aria-label={`Accepter la demande de ${personName}`}
         >
           <UserCheck className="h-4 w-4" />

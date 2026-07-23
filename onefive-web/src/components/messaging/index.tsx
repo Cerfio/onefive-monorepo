@@ -1,6 +1,7 @@
 import {
     AlertCircle,
     Check,
+    Clock,
     ClockCheck,
     File01 as File,
     Image01 as Image,
@@ -54,7 +55,7 @@ import { TextArea } from "../base/textarea/textarea";
     id: string;
     sentAt?: string;
     readAt?: string;
-    status?: "sent" | "read" | "failed";
+    status?: "sending" | "sent" | "read" | "failed";
     text?: ReactNode;
     user: {
       name: string;
@@ -85,13 +86,15 @@ import { TextArea } from "../base/textarea/textarea";
   /* -------------------------------------------------------------------------- */
   
   type MessageStatusProps = {
-    status?: "sent" | "read" | "failed";
+    status?: "sending" | "sent" | "read" | "failed";
     readAt?: string;
   };
   
   export const MessageStatus = ({ status, readAt }: MessageStatusProps) => {
     const content =
-      status === "sent"
+      status === "sending"
+        ? "Sending…"
+        : status === "sent"
         ? "Sent"
         : status === "read"
         ? readAt
@@ -100,7 +103,9 @@ import { TextArea } from "../base/textarea/textarea";
         : "Failed to send";
   
     const icon =
-      status === "sent" ? (
+      status === "sending" ? (
+        <Clock className="size-4 text-gray-400" />
+      ) : status === "sent" ? (
         <Check className="size-4 text-gray-500" />
       ) : status === "read" ? (
         <ClockCheck className="size-4 text-blue-500" />

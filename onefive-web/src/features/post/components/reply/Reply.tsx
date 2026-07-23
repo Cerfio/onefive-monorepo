@@ -126,7 +126,7 @@ const Reply: React.FC<CommentReplyProps> = ({ reply }) => {
               </Dropdown.Trigger>
               <Dropdown.Popover placement="bottom right">
                 <Dropdown.Menu>
-                  <Dropdown.Item>Copy text</Dropdown.Item>
+                  <Dropdown.Item onAction={() => navigator.clipboard?.writeText(reply.content)}>Copy text</Dropdown.Item>
                   {canEdit && (
                     <>
                       <Dropdown.Separator />

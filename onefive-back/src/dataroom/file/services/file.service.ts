@@ -109,6 +109,11 @@ export class FileService {
         orderBy,
         include: {
           category: true,
+          _count: {
+            select: {
+              accessLogs: true,
+            },
+          },
         },
       });
     } catch (error) {

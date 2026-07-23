@@ -121,7 +121,7 @@ export const ProfileAnalyticsCard = ({ analytics, profileName: _profileName }: {
       </div>
 
       {/* Métriques rapides */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="p-3 bg-gray-50 rounded-lg text-center">
           <p className="text-lg font-bold text-[#101828]">{analytics.weeklyViews || 0}</p>
           <p className="text-xs text-[#475467]">Cette semaine</p>
@@ -129,10 +129,6 @@ export const ProfileAnalyticsCard = ({ analytics, profileName: _profileName }: {
         <div className="p-3 bg-gray-50 rounded-lg text-center">
           <p className="text-lg font-bold text-[#101828]">{analytics.dailyAverage || 0}</p>
           <p className="text-xs text-[#475467]">Moy. par jour</p>
-        </div>
-        <div className="p-3 bg-gray-50 rounded-lg text-center">
-          <p className="text-lg font-bold text-[#101828]">{analytics.profileRank || '-'}</p>
-          <p className="text-xs text-[#475467]">Classement</p>
         </div>
       </div>
 

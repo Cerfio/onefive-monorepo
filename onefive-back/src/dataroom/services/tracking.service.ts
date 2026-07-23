@@ -33,7 +33,7 @@ export class TrackingService {
           timestamp: { gte: startDate, lte: now },
         },
         include: {
-          file: { select: { name: true } },
+          file: { select: { name: true, category: { select: { name: true } } } },
         },
       });
 
@@ -71,30 +71,56 @@ export class TrackingService {
             sessionDurations.length
           : 0;
 
-      // Top files (count only view events)
-      const fileViews = new Map<
+      // Top files (aggregate views, downloads, avg time spent and category)
+      const fileStats = new Map<
         string,
-        { fileName: string; views: number; viewerIds: Set<string> }
+        {
+          fileName: string;
+          category: string;
+          views: number;
+          downloadCount: number;
+          viewerIds: Set<string>;
+          durations: number[];
+        }
       >();
-      trackingEvents
-        .filter((e) => VIEW_EVENT_TYPES.includes(e.eventType))
-        .forEach((event) => {
-          const current = fileViews.get(event.fileId) || {
-            fileName: event.file.name,
-            views: 0,
-            viewerIds: new Set<string>(),
-          };
+      trackingEvents.forEach((event) => {
+        const current = fileStats.get(event.fileId) || {
+          fileName: event.file.name,
+          category: event.file.category?.name || '',
+          views: 0,
+          downloadCount: 0,
+          viewerIds: new Set<string>(),
+          durations: [],
+        };
+        if (VIEW_EVENT_TYPES.includes(event.eventType)) {
           current.views += 1;
           current.viewerIds.add(event.profileId);
-          fileViews.set(event.fileId, current);
-        });
+        }
+        if (DOWNLOAD_EVENT_TYPES.includes(event.eventType)) {
+          current.downloadCount += 1;
+        }
+        if (event.sessionDuration && event.sessionDuration > 0) {
+          current.durations.push(event.sessionDuration);
+        }
+        fileStats.set(event.fileId, current);
+      });
 
-      const topFiles = Array.from(fileViews.entries())
+      const topFiles = Array.from(fileStats.entries())
         .map(([fileId, data]) => ({
           fileId,
           fileName: data.fileName,
+          category: data.category,
           views: data.views,
           uniqueViewers: data.viewerIds.size,
+          downloadCount: data.downloadCount,
+          avgTimeSpent:
+            data.durations.length > 0
+              ? Math.round(
+                  data.durations.reduce((s, d) => s + d, 0) /
+                    data.durations.length /
+                    1000,
+                )
+              : 0,
         }))
         .sort((a, b) => b.views - a.views)
         .slice(0, 10);
